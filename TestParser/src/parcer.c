@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 		fgets(linea,1024,programaANSISOP);
 		while(strcmp(linea,"\n")){
 			printf("%s\n",linea);
-			analizadorLinea(strdup(linea),&functions,&kernel_functions);
+			analizadorLinea(strdup(linea),&functions,&kernel_functions);//si se pasa strdup("variables a b"), anda pero con la variable linea no
 			fgets(linea,1024,programaANSISOP);
 		}
 		printf("Fin de Archivo");
