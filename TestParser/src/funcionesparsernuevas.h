@@ -9,7 +9,9 @@
 #define FUNCIONESPARSERNUEVAS_H_
 
 	#include <parser/parser.h>
+
 	#include <stdio.h>
+
 	t_puntero vardef(t_nombre_variable var);
 	t_puntero getvarpos(t_nombre_variable var);
 	t_valor_variable derf(t_puntero puntero_var);

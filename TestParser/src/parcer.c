@@ -1,6 +1,8 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdint.h>
+#include <commons/log.h>
 #include <parser/parser.h>
 #include "funcionesparsernuevas.h"
 
@@ -19,19 +21,18 @@ AnSISOP_funciones functions = {
 };
 AnSISOP_kernel kernel_functions = { };
 
-
 int main(int argc, char **argv) {
 	FILE *programaANSISOP;
-	programaANSISOP = fopen("facil.ansisop","r");//Archivo ejemplo
+	programaANSISOP = fopen("facil.ansisop","r");
 	if(programaANSISOP){
-		char* linea; //aca va a almacenar la linea leida
+		char* linea = malloc(120);
 		fgets(linea,1024,programaANSISOP);
 		while(strcmp(linea,"\n")){
-		//ERROR1:	analizadorLinea(strdup(linea),&functions,&kernel_functions);//CUANDO ESTA LINEA NO ESTA COMENTADA NO COMPILA
 			printf("%s\n",linea);
+			analizadorLinea(strdup(linea),&functions,&kernel_functions);
 			fgets(linea,1024,programaANSISOP);
 		}
-		printf("Fin de Archivo");//No lo imprime nosexq error: No source available for "0xa323120"
+		printf("Fin de Archivo");
 	}
 	else
 	{

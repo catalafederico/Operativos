@@ -1,3 +1,4 @@
+
 #include "funcionesparsernuevas.h"
 
 static const int CONTENIDO_VARIABLE = 20;
