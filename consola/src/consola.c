@@ -17,8 +17,8 @@
  #include <netinet/in.h>
  #include <sys/socket.h>
 
-#define PORT 4000;
-#define MAXDATESIZE 100;
+#define PORT 4000
+#define MAXDATASIZE 100
 
 
 
@@ -26,7 +26,7 @@
 int main(int argc, char *argv[]) {
 int consola,numBytes;
 struct hostent *he;//represento una entrada al host
-char buf[MAXDATESIZE];//cadena de cantidad maxima d e caracteres que puedo leer
+char buf[MAXDATASIZE];//cadena de cantidad maxima d e caracteres que puedo leer
 
 struct sockaddr_in their_addr;
 
