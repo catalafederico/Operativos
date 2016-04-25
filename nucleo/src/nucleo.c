@@ -8,9 +8,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
 #include <commons/config.h>
+
+#include <unistd.h>
+#include <errno.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+
+ #include <errno.h>
 //#include <netinet/in.h>
 //#include <sys/types.h>
 //#include <signal.h>
@@ -41,14 +48,41 @@ int main(int argc, char **argv) {
 	printf("parametro puerto prog %d \n", reg_config.puerto_prog);
 
 // Creo socket para procesos (CONSOLA) ------------------------------
+	int servidor=0;
+	int ret_code=0;
 	struct sockaddr_in nucleo_addr_proc;
 	nucleo_addr_proc.sin_family = AF_INET;
 	nucleo_addr_proc.sin_addr.s_addr = INADDR_ANY;
 	nucleo_addr_proc.sin_port = htons(reg_config.puerto_prog);
+	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc));
+
+	servidor = socket(AF_INET, SOCK_STREAM, 0);
+	if (servidor == -1) {
+	    perror("socket");
+	    exit(1);
+	}
+	int activado = 1;
+	setsockopt(servidor, SOL_SOCKET, SO_REUSEADDR, &activado, sizeof(activado));
+	ret_code = bind(servidor, (void*) &nucleo_addr_proc, sizeof(nucleo_addr_proc));
+	if (ret_code != 0) {
+			perror("bind");
+			exit(1);
+	}
+
+	ret_code = listen(servidor, SOMAXCONN);
+	if (ret_code != 0) {
+			perror("listen");
+			exit(1);
+	}
+
 
 	return 0;
+
 }
 
+
+
+// get_config_params ---------------------------------------------------------
 t_reg_config get_config_params(void){
 
 	t_config * archivo_config = NULL;
