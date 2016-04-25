@@ -12,6 +12,7 @@ struct server;
 struct server crearServer();
 void ponerServerEscucha(struct server preocesosServer);
 void enviarMensajeACliente(char* mensaje, int socket);
-
+void ponerServerEscuchaSelect(struct server procesosServer);
+void atenderConexionNuevaSelect(struct server procesosServer, fd_set* descriptor_maestro, int* maxfichero);
 
 #endif /* SRC_SOCKETSERVER_H_ */

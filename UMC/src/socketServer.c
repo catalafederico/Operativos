@@ -18,7 +18,6 @@ struct server{
 	t_list* listaSockets;
 };
 
-
 struct server crearServer(int puerto){
 
 	struct server* serverProceso = malloc(sizeof(struct server));
@@ -56,13 +55,68 @@ void atenderConexionNueva(struct server procesosServer){
 	return;
 }
 
+int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){
+
+	int nuevaConexion;//socket donde va a estar nueva conexion
+	struct sockaddr_in direccionEntrante;
+	aceptarConexion(&nuevaConexion,procesosServer.socketServer, &direccionEntrante);
+	// si es mayor sobreescribo
+	if(nuevaConexion > *maxfichero){
+		*maxfichero=nuevaConexion;
+	}
+	printf("Se ha conectado alguien\n");
+	//Agrega socket a la lista, seguro despues se haga diccionario con el handshake
+	list_add(procesosServer.listaSockets,(int *)&nuevaConexion);
+	return nuevaConexion;
+}
+
 void ponerServerEscucha(struct server procesosServer){
-	escucharConexiones(procesosServer.socketServer,1);
-	atenderConexionNueva(procesosServer);
+	escucharConexiones(procesosServer.socketServer,10);
 	return;
 }
 
 void enviarMensajeACliente(char* mensaje, int socket){
 	enviarMensaje(socket,mensaje);
+}
+
+void ponerServerEscuchaSelect(struct server procesosServer){
+
+	//Tuto Select: http://www.tyr.unlu.edu.ar/tyr/TYR-trab/satobigal/documentacion/beej/advanced.html
+	int i=0;
+	fd_set descriptor_maestro;
+	fd_set descriptor_temporal;
+	int maxFichero;
+	FD_ZERO(&descriptor_maestro);
+	FD_ZERO(&descriptor_temporal);
+	ponerServerEscucha(procesosServer);
+	FD_SET(procesosServer.socketServer,&descriptor_maestro);
+	maxFichero = procesosServer.socketServer;
+	while(1){
+		descriptor_temporal = descriptor_maestro;
+        if (select(maxFichero+1, &descriptor_temporal, NULL, NULL, NULL) == -1) {
+            perror("Error en select, Check it");
+            exit(1);
+        }
+        	for(i=0;i <= maxFichero;i++){
+        		if(FD_ISSET(i,&descriptor_temporal)){
+        		if(i==procesosServer.socketServer){
+        			int nuevaconexion = atenderConexionNuevaSelect(procesosServer,&maxFichero);
+        			FD_SET(nuevaconexion,&descriptor_maestro);
+        		}
+        		else {
+        			char* mensaje = recibirMensaje(i);
+        			//si se cerro la conexion
+        			if(!strcmp("Se desconecto",mensaje)){
+        				close(i);
+        			}
+        			else{
+        				printf("%s\n",mensaje);
+        				close(i);
+        			}
+        			FD_CLR(i,&descriptor_maestro);
+        		}
+        	}
+        }
+	}
 }
 

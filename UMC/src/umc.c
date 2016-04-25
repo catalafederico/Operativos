@@ -20,8 +20,7 @@ struct server{
 
 int main(void) {
 	struct server serverUMC;
-	serverUMC = crearServer(8080);
-	ponerServerEscucha(serverUMC);
-	enviarMensajeACliente("hola",(list_get(serverUMC.listaSockets,1)));
+	serverUMC = crearServer(9000);
+	ponerServerEscuchaSelect(serverUMC);
 	return 0;
 }

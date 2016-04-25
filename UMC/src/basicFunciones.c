@@ -12,9 +12,14 @@
 #include <commons/log.h>
 
 void crearSocket(int* socketacrear){
+	int yes = 1;
 	if((*socketacrear = socket(AF_INET,SOCK_STREAM,0)) == -1 ){
 		perror("Error al crear el socket. Fin del programa.");
 		exit(EXIT_FAILURE);
+	}
+	if(setsockopt(*socketacrear,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int))){
+        perror("Error en setsockopt, en basicFunciones.c");
+        exit(1);
 	}
 }
 
@@ -47,6 +52,21 @@ void enviarMensaje(int socketDestino, char* mensaje){
     close(socketDestino);
     exit(0);
     }
+}
+
+char* recibirMensaje(int socketCliente){
+	int bytesRecibidos;
+	char* buf = malloc(256);
+	bytesRecibidos = recv(socketCliente,buf,sizeof(buf),0);
+	if(bytesRecibidos<=0)
+	{
+		free(buf);
+		return "Se desconecto";
+	}
+	else
+	{
+		return buf;
+	}
 }
 
 
