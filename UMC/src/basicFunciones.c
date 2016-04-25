@@ -40,3 +40,13 @@ void aceptarConexion(int* socketnuevo, int socketescuchador,struct sockaddr_in* 
 		exit(EXIT_FAILURE);
 	}
 }
+
+void enviarMensaje(int socketDestino, char* mensaje){
+    if (send(socketDestino, "Hello, world!\n", 14, 0) == -1){
+        perror("send");
+    close(socketDestino);
+    exit(0);
+    }
+}
+
+
