@@ -72,6 +72,7 @@ int main(int argc, char **argv) {
 	ponerServerEscuchaSelect(serverNucleo);
 	mensaje = recibirMensaje((list_get(serverNucleo.listaSockets,1)));
 	printf("mensaje: %s \n", mensaje);
+
 //	enviarMensajeACliente("hola",(list_get(serverNucleo.listaSockets,1)));
 
 /*	servidor = socket(AF_INET, SOCK_STREAM, 0);
