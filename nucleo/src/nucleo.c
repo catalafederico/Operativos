@@ -41,12 +41,6 @@ typedef struct {
 	char ** shared_vars;
 } t_reg_config;
 
-struct server{
-	int socketServer;
-	struct sockaddr_in direccion;
-	t_list* listaSockets;
-};
-
 // Funciones
 t_reg_config get_config_params(void);
 
@@ -65,12 +59,11 @@ int main(int argc, char **argv) {
 	nucleo_addr_proc.sin_family = AF_INET;
 	nucleo_addr_proc.sin_addr.s_addr = INADDR_ANY;
 	nucleo_addr_proc.sin_port = htons(reg_config.puerto_prog);
-	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc)); */
-
+	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc));
+*/
 	struct server serverNucleo;
 	serverNucleo = crearServer(reg_config.puerto_prog);
-	ponerServerEscucha(serverNucleo);
-	enviarMensajeACliente("hola",(list_get(serverNucleo.listaSockets,1)));
+	ponerServerEscuchaSelect(serverNucleo);
 
 /*	servidor = socket(AF_INET, SOCK_STREAM, 0);
 	if (servidor == -1) {
@@ -106,20 +99,22 @@ int main(int argc, char **argv) {
 	if (ret_code == -1) {
 			perror("send");
 			exit(1);
-	} */
+	}
 
-
+*/
 	return 0;
 
 }
 
 
-
-// get_config_params ---------------------------------------------------------
+//------------------------------------------------------------------------------------------
+// ---------------------------------- get_config_params ------------------------------------
+// funcion que retorna una estructura con los datos del archivo de Configuracion de Nucleo
+//------------------------------------------------------------------------------------------
 t_reg_config get_config_params(void){
 
 	t_config * archivo_config = NULL;
-	char * archivo_config_nombre = "archivo_configuracion.txt";
+	char * archivo_config_nombre = "archivo_configuracion.cfg";
 	t_reg_config reg_config;
 
 	archivo_config = config_create(archivo_config_nombre);

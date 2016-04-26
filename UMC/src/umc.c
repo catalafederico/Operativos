@@ -12,23 +12,18 @@
 #include "socketServer.h"
 #include <commons/collections/list.h>
 #include "socketCliente.h"
-/*
-struct server{
-	int socketServer;
-	struct sockaddr_in direccion;
-	t_list* listaSockets;
-};*/
-
-
+#define SERVERPORT 9999
+#define SERVERCLIENTE 9998
 
 int main(void) {
 	struct server serverUMC;
-	serverUMC = crearServer(9000);
+	serverUMC = crearServer(SERVERPORT);
 	ponerServerEscuchaSelect(serverUMC);
 	//Esto deberia ir en otro hilo
-	 struct cliente clienteUMC;
-	 clienteUMC = crearCliente(9001,"127.0.0.1");
+	//Comentar la seccion de arriba y descomentar la de abajo para probar como cliente
+	 /*struct cliente clienteUMC;
+	 clienteUMC = crearCliente(SERVERCLIENTE,"127.0.0.1");
 	 conectarConServidor(clienteUMC);
-	 enviarMensaje(clienteUMC.socketCliente,"hola");
+	 enviarMensaje(clienteUMC.socketCliente,"hola");*/
 	return 0;
 }

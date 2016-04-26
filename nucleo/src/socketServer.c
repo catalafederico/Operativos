@@ -15,15 +15,11 @@
 struct server{
 	int socketServer;
 	struct sockaddr_in direccion;
-	t_list* listaSockets;
 };
 
 struct server crearServer(int puerto){
 
 	struct server* serverProceso = malloc(sizeof(struct server));
-
-	//Creacion de estructura contenedora de los sockets q se conectan
-	(*serverProceso).listaSockets = list_create();
 
 	//Creacion del socket server
 	crearSocket(&((*serverProceso).socketServer));
@@ -44,16 +40,12 @@ struct server crearServer(int puerto){
 	return (*serverProceso);
 }
 
+/*
 void atenderConexionNueva(struct server procesosServer){
-
 	int nuevaConexion;
 	struct sockaddr_in direccionEntrante;
 	aceptarConexion(&nuevaConexion,procesosServer.socketServer, &direccionEntrante);
-
-	//Agrega socket a la lista, seguro despues se haga diccionario con el handshake
-	list_add(procesosServer.listaSockets,(int *)&nuevaConexion);
-	return;
-}
+}*///Funcion reemplazada por atenderConexionNuevaSelect
 
 int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){
 
@@ -65,8 +57,6 @@ int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){
 		*maxfichero=nuevaConexion;
 	}
 	printf("Se ha conectado alguien\n");
-	//Agrega socket a la lista, seguro despues se haga diccionario con el handshake
-	list_add(procesosServer.listaSockets,(int *)&nuevaConexion);
 	return nuevaConexion;
 }
 
@@ -79,6 +69,12 @@ void enviarMensajeACliente(char* mensaje, int socket){
 	enviarMensaje(socket,mensaje);
 }
 
+void cerrarConexion(int socketACerrar, fd_set* descriptor){
+	close(socketACerrar);
+	FD_CLR(socketACerrar,descriptor);
+	printf("Se cerro la conexion con %d\n",socketACerrar);
+}
+
 void ponerServerEscuchaSelect(struct server procesosServer){
 
 	//Tuto Select: http://www.tyr.unlu.edu.ar/tyr/TYR-trab/satobigal/documentacion/beej/advanced.html
@@ -89,6 +85,7 @@ void ponerServerEscuchaSelect(struct server procesosServer){
 	FD_ZERO(&descriptor_maestro);
 	FD_ZERO(&descriptor_temporal);
 	ponerServerEscucha(procesosServer);
+	printf("Server escuchando\n");
 	FD_SET(procesosServer.socketServer,&descriptor_maestro);
 	maxFichero = procesosServer.socketServer;
 	while(1){
@@ -107,16 +104,28 @@ void ponerServerEscuchaSelect(struct server procesosServer){
         			char* mensaje = recibirMensaje(i);
         			//si se cerro la conexion
         			if(!strcmp("Se desconecto",mensaje)){
-        				close(i);
+        				cerrarConexion(i,&descriptor_maestro);
         			}
         			else{
         				printf("%s\n",mensaje);
-        				close(i);
+        				if(strcmp("cerrar",mensaje)){//compara si es diferente a cerrar, con cerrar cierra la conexion
+        					//Acciones a realizar
+        					//enviarMensaje(i,"Hola de nuevo");
+        					//POR EJEMPLO SE PUEDE PONER UN SEND PARA RESPONER. ACORDARSE DE PONER EL RECIBE EN EL PROCESO
+        					// DESTINO
+        				}
+        				else{
+        					cerrarConexion(i,&descriptor_maestro);
+        				}
         			}
-        			FD_CLR(i,&descriptor_maestro);
+
         		}
         	}
         }
 	}
 }
+
+
+
+
 

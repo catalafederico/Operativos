@@ -47,7 +47,7 @@ void aceptarConexion(int* socketnuevo, int socketescuchador,struct sockaddr_in* 
 }
 
 void enviarMensaje(int socketDestino, char* mensaje){
-    if (send(socketDestino, "Hello, world!\n", 14, 0) == -1){
+    if (send(socketDestino, mensaje, sizeof(mensaje), 0) == -1){
         perror("send");
     close(socketDestino);
     exit(0);
@@ -57,7 +57,7 @@ void enviarMensaje(int socketDestino, char* mensaje){
 char* recibirMensaje(int socketCliente){
 	int bytesRecibidos;
 	char* buf = malloc(256);
-	bytesRecibidos = recv(socketCliente,buf,sizeof(buf),0);
+	bytesRecibidos = recv(socketCliente,buf,256,0);
 	if(bytesRecibidos<=0)
 	{
 		free(buf);
@@ -66,6 +66,13 @@ char* recibirMensaje(int socketCliente){
 	else
 	{
 		return buf;
+	}
+}
+
+void conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){
+	if (connect(*socketMio, (struct sockaddr*)direccionDestino, sizeof(struct sockaddr)) != 0) {
+		perror("No se pudo conectar");
+		exit(EXIT_FAILURE);
 	}
 }
 
