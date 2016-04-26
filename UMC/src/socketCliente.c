@@ -38,5 +38,15 @@ void conectarConServidor(struct cliente procesoCliente){
 	conectarConDireccion(&(procesoCliente.socketCliente),&(procesoCliente.direccionDestino));
 }
 
+void enviarMensajeServidor(int servidorDestino,char* mensaje){
+	enviarMensaje(servidorDestino,mensaje);
+}
 
+char* esperarRespuestaServidor(int socketServidor){
+	return recibirMensaje(socketServidor);
+}
+char* chatConProceso(int socketProceso, char* mensaje){
+	enviarMensaje(socketProceso,mensaje);
+	return esperarRespuestaServidor(socketProceso);
+}
 

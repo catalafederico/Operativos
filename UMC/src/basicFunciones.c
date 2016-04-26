@@ -47,7 +47,7 @@ void aceptarConexion(int* socketnuevo, int socketescuchador,struct sockaddr_in* 
 }
 
 void enviarMensaje(int socketDestino, char* mensaje){
-    if (send(socketDestino, mensaje, sizeof(mensaje), 0) == -1){
+    if (send(socketDestino, mensaje, strlen(mensaje), 0) == -1){
         perror("send");
     close(socketDestino);
     exit(0);
@@ -57,7 +57,7 @@ void enviarMensaje(int socketDestino, char* mensaje){
 char* recibirMensaje(int socketCliente){
 	int bytesRecibidos;
 	char* buf = malloc(256);
-	bytesRecibidos = recv(socketCliente,buf,256,0);
+	bytesRecibidos = recv(socketCliente,buf,strlen(256),0);
 	if(bytesRecibidos<=0)
 	{
 		free(buf);
