@@ -57,20 +57,38 @@ int main(int argc, char **argv) {
 	reg_config = get_config_params();
 	printf("parametro puerto prog %d \n", reg_config.puerto_prog);
 
+<<<<<<< HEAD
 // Creo socket para procesos (CONSOLA) ------------------------------
 	int servidor=0;
 
+=======
+
+// Creo socket para procesos (CONSOLA) ------------------------------
+/*	int servidor=0;
+>>>>>>> b2d556063a60f1f05456c325746fd7965a4d595d
 	int ret_code=0;
 	struct sockaddr_in nucleo_addr_proc;
 	nucleo_addr_proc.sin_family = AF_INET;
 	nucleo_addr_proc.sin_addr.s_addr = INADDR_ANY;
 	nucleo_addr_proc.sin_port = htons(reg_config.puerto_prog);
+<<<<<<< HEAD
 	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc));
 
 	struct server serverNucleo;
 	serverNucleo = crearServer(reg_config.puerto_prog);
 	ponerServerEscuchaSelect(serverNucleo);
 	enviarMensajeACliente("hola",(list_get(serverNucleo.listaSockets,1)));
+=======
+	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc)); */
+	char * mensaje;
+	struct server serverNucleo;
+	serverNucleo = crearServer(reg_config.puerto_prog);
+	ponerServerEscuchaSelect(serverNucleo);
+	mensaje = recibirMensaje((list_get(serverNucleo.listaSockets,1)));
+	printf("mensaje: %s \n", mensaje);
+
+//	enviarMensajeACliente("hola",(list_get(serverNucleo.listaSockets,1)));
+>>>>>>> b2d556063a60f1f05456c325746fd7965a4d595d
 
 	servidor = socket(AF_INET, SOCK_STREAM, 0);
 	if (servidor == -1) {
@@ -84,14 +102,17 @@ int main(int argc, char **argv) {
 			perror("bind");
 			exit(1);
 	}
-printf("estoy escuchando\n");
+
 	ret_code = listen(servidor, SOMAXCONN);
 	if (ret_code != 0) {
 			perror("listen");
 			exit(1);
 	}
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> b2d556063a60f1f05456c325746fd7965a4d595d
 
 	struct sockaddr_in direccionCliente;
 	unsigned int tamanioDireccion;
@@ -116,8 +137,10 @@ printf("estoy escuchando\n");
 }
 
 
-
-// get_config_params ---------------------------------------------------------
+//------------------------------------------------------------------------------------------
+// ---------------------------------- get_config_params ------------------------------------
+// funcion que retorna una estructura con los datos del archivo de Configuracion de Nucleo
+//------------------------------------------------------------------------------------------
 t_reg_config get_config_params(void){
 
 	t_config * archivo_config = NULL;
