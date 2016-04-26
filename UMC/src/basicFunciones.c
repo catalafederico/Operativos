@@ -69,4 +69,11 @@ char* recibirMensaje(int socketCliente){
 	}
 }
 
+void conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){
+	if (connect(*socketMio, (struct sockaddr*)direccionDestino, sizeof(struct sockaddr)) != 0) {
+		perror("No se pudo conectar");
+		exit(EXIT_FAILURE);
+	}
+}
+
 
