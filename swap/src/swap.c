@@ -15,9 +15,11 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <commons/config.h>
+#include <commons/log.h>
 
 
 // Estructuras
+
 typedef struct {
 	int PUERTO_ESCUCHA;
 	int CANTIDAD_PAGINAS;
@@ -26,9 +28,14 @@ typedef struct {
 } t_reg_config;
 
 // Funciones
+
 t_reg_config get_config_params(void);
 
+
 int main(void) {
+
+	//Creo el archivo de log
+	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
 
 	//Archivo configuración
 
@@ -42,21 +49,26 @@ t_reg_config swap_config = get_config_params();
 		direccionServidor.sin_port = htons(swap_config.PUERTO_ESCUCHA);
 
 		int servidor = socket(AF_INET, SOCK_STREAM, 0);
+		log_info(log_swap,"Socket creado correctamente.");
 
 		int activado = 1;
 		setsockopt(servidor, SOL_SOCKET, SO_REUSEADDR, &activado, sizeof(activado));
 
 		if (bind(servidor, (void*) &direccionServidor, sizeof(direccionServidor)) != 0) {
 			perror("Falló el bind");
+			log_info(log_swap,"El socket no se pudo asociar al puerto.");
 			return 1;
 		}
+		log_info(log_swap,"El socket se asocio correctamente al puerto");
 
 		printf("Estoy escuchando\n");
 		listen(servidor, 100);
+		log_info(log_swap,"El socket esta escuchando conexiones.");
 
 		struct sockaddr_in direccionCliente;
 		unsigned int tamanioDireccion;
 		int cliente = accept(servidor, (void*) &direccionCliente, &tamanioDireccion);
+		log_info(log_swap,"El socket establecio una conexion correctamente");
 
 		printf("Recibí una conexión en %d!!\n", cliente);
 		send(cliente, "Hola!", 6, 0);
@@ -64,10 +76,13 @@ t_reg_config swap_config = get_config_params();
 		return 0;
 }
 
+
+ //Funcion para extraer los datos del archivo de configuracion
+
 t_reg_config get_config_params(void){
 
 	t_config * swap_config = NULL;
-	char * swap_config_path = "swap_config.txt";
+	char * swap_config_path = "swap_config.cfg";
 	t_reg_config reg_config;
 
 	swap_config = config_create(swap_config_path);
