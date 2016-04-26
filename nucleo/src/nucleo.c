@@ -66,11 +66,13 @@ int main(int argc, char **argv) {
 	nucleo_addr_proc.sin_addr.s_addr = INADDR_ANY;
 	nucleo_addr_proc.sin_port = htons(reg_config.puerto_prog);
 	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc)); */
-
+	char * mensaje;
 	struct server serverNucleo;
 	serverNucleo = crearServer(reg_config.puerto_prog);
-	ponerServerEscucha(serverNucleo);
-	enviarMensajeACliente("hola",(list_get(serverNucleo.listaSockets,1)));
+	ponerServerEscuchaSelect(serverNucleo);
+	mensaje = recibirMensaje((list_get(serverNucleo.listaSockets,1)));
+	printf("mensaje: %s \n", mensaje);
+//	enviarMensajeACliente("hola",(list_get(serverNucleo.listaSockets,1)));
 
 /*	servidor = socket(AF_INET, SOCK_STREAM, 0);
 	if (servidor == -1) {
@@ -114,8 +116,10 @@ int main(int argc, char **argv) {
 }
 
 
-
-// get_config_params ---------------------------------------------------------
+//------------------------------------------------------------------------------------------
+// ---------------------------------- get_config_params ------------------------------------
+// funcion que retorna una estructura con los datos del archivo de Configuracion de Nucleo
+//------------------------------------------------------------------------------------------
 t_reg_config get_config_params(void){
 
 	t_config * archivo_config = NULL;
