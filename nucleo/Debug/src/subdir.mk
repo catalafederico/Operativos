@@ -4,13 +4,19 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/nucleo.c 
+../src/basicFunciones.c \
+../src/nucleo.c \
+../src/socketServer.c 
 
 OBJS += \
-./src/nucleo.o 
+./src/basicFunciones.o \
+./src/nucleo.o \
+./src/socketServer.o 
 
 C_DEPS += \
-./src/nucleo.d 
+./src/basicFunciones.d \
+./src/nucleo.d \
+./src/socketServer.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
