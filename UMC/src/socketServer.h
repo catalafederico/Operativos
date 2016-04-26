@@ -7,8 +7,14 @@
 
 #ifndef SRC_SOCKETSERVER_H_
 #define SRC_SOCKETSERVER_H_
+#include <commons/collections/list.h>
 
-struct server;
+struct server{
+	int socketServer;
+	struct sockaddr_in direccion;
+	t_list* listaSockets;
+};
+
 struct server crearServer();
 void ponerServerEscucha(struct server preocesosServer);
 void enviarMensajeACliente(char* mensaje, int socket);
