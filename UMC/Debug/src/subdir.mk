@@ -4,15 +4,21 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/basicfunciones.c \
+../src/basicFunciones.c \
+../src/socketCliente.c \
+../src/socketServer.c \
 ../src/umc.c 
 
 OBJS += \
-./src/basicfunciones.o \
+./src/basicFunciones.o \
+./src/socketCliente.o \
+./src/socketServer.o \
 ./src/umc.o 
 
 C_DEPS += \
-./src/basicfunciones.d \
+./src/basicFunciones.d \
+./src/socketCliente.d \
+./src/socketServer.d \
 ./src/umc.d 
 
 

@@ -1,3 +1,5 @@
-src/umc.d: ../src/umc.c ../src/basicfunciones.h
+src/umc.d: ../src/umc.c ../src/socketServer.h ../src/socketCliente.h
 
-../src/basicfunciones.h:
+../src/socketServer.h:
+
+../src/socketCliente.h:

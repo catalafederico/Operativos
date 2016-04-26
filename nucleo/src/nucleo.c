@@ -16,8 +16,12 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include "socketServer.h"
+#include <commons/collections/list.h>
 
- #include <errno.h>
+
 //#include <netinet/in.h>
 //#include <sys/types.h>
 //#include <signal.h>
@@ -37,6 +41,12 @@ typedef struct {
 	char ** shared_vars;
 } t_reg_config;
 
+struct server{
+	int socketServer;
+	struct sockaddr_in direccion;
+	t_list* listaSockets;
+};
+
 // Funciones
 t_reg_config get_config_params(void);
 
@@ -47,16 +57,27 @@ int main(int argc, char **argv) {
 	reg_config = get_config_params();
 	printf("parametro puerto prog %d \n", reg_config.puerto_prog);
 
+<<<<<<< HEAD
 /*// Creo socket para procesos (CONSOLA) ------------------------------
 	int servidor=0;
+=======
+
+// Creo socket para procesos (CONSOLA) ------------------------------
+/*	int servidor=0;
+>>>>>>> ed2692a63936d0dc74a945846cbfa2056d6104e9
 	int ret_code=0;
 	struct sockaddr_in nucleo_addr_proc;
 	nucleo_addr_proc.sin_family = AF_INET;
 	nucleo_addr_proc.sin_addr.s_addr = INADDR_ANY;
 	nucleo_addr_proc.sin_port = htons(reg_config.puerto_prog);
-	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc));
+	memset(&(nucleo_addr_proc.sin_zero),0, sizeof(nucleo_addr_proc)); */
 
-	servidor = socket(AF_INET, SOCK_STREAM, 0);
+	struct server serverNucleo;
+	serverNucleo = crearServer(reg_config.puerto_prog);
+	ponerServerEscucha(serverNucleo);
+	enviarMensajeACliente("hola",(list_get(serverNucleo.listaSockets,1)));
+
+/*	servidor = socket(AF_INET, SOCK_STREAM, 0);
 	if (servidor == -1) {
 	    perror("socket");
 	    exit(1);
@@ -99,6 +120,23 @@ printf("estoy escuchando\n");
 
 		printf("Recibí una conexión en %d!!\n", cliente);
 		send(cliente, "Hola!", 6, 0);
+
+	struct sockaddr_in direccionCliente;
+	unsigned int tamanioDireccion;
+
+	int cliente = accept(servidor, (void*) &direccionCliente, &tamanioDireccion);
+
+	printf("recibi conexion en el socket %d \n", cliente);
+	if (cliente == -1) {
+			perror("accept");
+			exit(1);
+	}
+
+	ret_code = send(cliente, "Enhorabuena! Te conectaste!", 27, 0);
+	if (ret_code == -1) {
+			perror("send");
+			exit(1);
+	} */
 
 
 	return 0;
@@ -190,7 +228,7 @@ t_reg_config get_config_params(void){
 	// 8 get SEM_INIT
 	if (config_has_property(archivo_config,"SEM_INIT")){
 		reg_config.sem_init = (int *) config_get_array_value(archivo_config,"SEM_INIT");
-		printf("SEM_INIT= %d \n", reg_config.sem_init);
+		printf("SEM_INIT= %d \n", *reg_config.sem_init);
 
 	}
 	else{
