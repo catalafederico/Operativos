@@ -43,7 +43,7 @@ t_reg_config swap_config = get_config_params();
 
 	//Conexion
 
-	struct sockaddr_in direccionServidor;
+struct sockaddr_in direccionServidor;
 		direccionServidor.sin_family = AF_INET;
 		direccionServidor.sin_addr.s_addr = INADDR_ANY;
 		direccionServidor.sin_port = htons(swap_config.PUERTO_ESCUCHA);
@@ -59,19 +59,46 @@ t_reg_config swap_config = get_config_params();
 			log_info(log_swap,"El socket no se pudo asociar al puerto.");
 			return 1;
 		}
-		log_info(log_swap,"El socket se asocio correctamente al puerto");
+		log_info(log_swap,"El socket se asocio correctamente al puerto.");
 
-		printf("Estoy escuchando\n");
-		listen(servidor, 100);
+		printf("Estoy escuchando.\n");
+		listen(servidor, 10);
 		log_info(log_swap,"El socket esta escuchando conexiones.");
 
 		struct sockaddr_in direccionCliente;
-		unsigned int tamanioDireccion;
-		int cliente = accept(servidor, (void*) &direccionCliente, &tamanioDireccion);
-		log_info(log_swap,"El socket establecio una conexion correctamente");
+		unsigned int tamanioDireccion = sizeof(struct sockaddr);
+		int cliente = accept(servidor, (struct sockaddr*) &direccionCliente, &tamanioDireccion);
+		if(cliente < 0){
+			perror("Falló el accept.");
+			printf("No se conecto.\n");
+			log_info(log_swap,"Falló el accept.");
+
+		} else {
+
+			printf("Se conecto.\n");
+			log_info(log_swap,"El socket establecio una conexion correctamente.");
+
+		}
+
 
 		printf("Recibí una conexión en %d!!\n", cliente);
-		send(cliente, "Hola!", 6, 0);
+
+		char* buffer = malloc(1000);
+
+			while (1) {
+				int bytesRecibidos = recv(cliente, buffer, 1000, 0);
+				if (bytesRecibidos <= 0) {
+					perror("El cliente se desconectó.");
+					return 1;
+				}
+
+				buffer[bytesRecibidos] = '\0';
+				printf("Me llegaron %d bytes con %s\n", bytesRecibidos, buffer);
+			}
+
+			free(buffer);
+
+		//send(cliente, "Hola!", 6, 0);
 
 		return 0;
 }

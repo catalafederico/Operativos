@@ -17,8 +17,8 @@
 int main(void) {
 	struct sockaddr_in direccionServidor;
 	direccionServidor.sin_family = AF_INET;
-	direccionServidor.sin_addr.s_addr = inet_addr("127.0.0.1");
-	direccionServidor.sin_port = htons(5000);
+	direccionServidor.sin_addr.s_addr = INADDR_ANY;
+	direccionServidor.sin_port = htons(6000);
 
 	int cliente1 = socket(AF_INET, SOCK_STREAM, 0);
 	if (connect(cliente1, (void*) &direccionServidor, sizeof(direccionServidor)) != 0) {
