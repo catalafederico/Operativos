@@ -15,12 +15,12 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include "socketCliente.h"
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <commons/collections/list.h>
+#include "socketCliente.h"
 
 #define  SERVERCLIENTE1 9999
 #define  SERVERCLIENTE2  5001
