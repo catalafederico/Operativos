@@ -8,56 +8,42 @@
  ============================================================================
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
 #include <string.h>
-#include <arpa/inet.h>
+#include <sys/types.h>
 #include <sys/socket.h>
+#include "socketCliente.h"
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <commons/collections/list.h>
 
+#define  SERVERCLIENTE1 9999
+#define  SERVERCLIENTE2  5001
 int main(void) {
-	struct sockaddr_in direccionServidor;
-	direccionServidor.sin_family = AF_INET;
-	direccionServidor.sin_addr.s_addr = INADDR_ANY;
-	direccionServidor.sin_port = htons(6000);
+	struct cliente clienteCPU;
+	clienteCPU = crearCliente(SERVERCLIENTE1, "127.0.0.1");
+	conectarConServidor(clienteCPU);
+	char *mensaje =esperarRespuestaServidor(clienteCPU.socketCliente);
 
-	int cliente1 = socket(AF_INET, SOCK_STREAM, 0);
-	if (connect(cliente1, (void*) &direccionServidor, sizeof(direccionServidor)) != 0) {
-		perror("No se pudo conectar");
-		return 1;
-	}
-
-	while (1) {
-		char mensaje[1000];
-		scanf("%s", mensaje);
-
-		send(cliente1, mensaje, strlen(mensaje), 0);
-	}
+	struct cliente clienteCPU1;
+	clienteCPU1 = crearCliente(SERVERCLIENTE2, "127.0.0.1");
+	conectarConServidor(clienteCPU1);
+	enviarMensaje(clienteCPU1.socketCliente, mensaje);
 
 	return 0;
+
 }
 /*
 
-	struct sockaddr_in direccionServidor;
-	direccionServidor.sin_family = AF_INET;
-	direccionServidor.sin_addr.s_addr = inet_addr("127.0.0.1");
-	direccionServidor.sin_port = htons(9000);
-
-	int cliente2 = socket(AF_INET, SOCK_STREAM, 0);
-	if (connect(cliente2, (void*) &direccionServidor, sizeof(direccionServidor)) != 0) {
-		perror("No se pudo conectar");
-		return 1;
-	}
-
-	while (1) {
-		char mensaje[1000];
-		scanf("%s", mensaje);
-
-		send(cliente2, mensaje, strlen(mensaje), 0);
-	}
-
-	return 0;
-
-
+ struct cliente clienteCPU;
+ clienteCPU = crearCliente(SERVERCLIENTE2,"127.0.0.1");
+ conectarConServidor(clienteCPU);
+ enviarMensaje(clienteCPU.socketCliente,"hola");
 
 
 
