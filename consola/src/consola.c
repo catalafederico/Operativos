@@ -42,7 +42,7 @@ int main(void) {
 				perror("No se pudo conectar");
 				return 1;}*/
 	struct cliente clienteConsola;
-	clienteConsola=crearCliente(8080,INADDR_ANY);
+	clienteConsola=crearCliente(8080,"127.0.0.1");
 	conectarConServidor(clienteConsola);
 	while (1) {
 		char mensaje[SOMAXCONN];

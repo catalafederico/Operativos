@@ -57,7 +57,7 @@ void enviarMensaje(int socketDestino, char* mensaje){
 char* recibirMensaje(int socketCliente){
 	int bytesRecibidos;
 	char* buf = malloc(256);
-	bytesRecibidos = recv(socketCliente,buf,strlen(256),0);
+	bytesRecibidos = recv(socketCliente,buf,strlen(buf),0);
 	if(bytesRecibidos<=0)
 	{
 		free(buf);
