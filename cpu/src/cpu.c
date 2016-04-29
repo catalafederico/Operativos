@@ -22,29 +22,21 @@
 #include <commons/collections/list.h>
 #include "socketCliente.h"
 
-#define  SERVERCLIENTE1 9999
-#define  SERVERCLIENTE2  5001
+#define  SERVERUMC 9999 //puerto de la umc
+#define  SERVERNUCLEO 8080 // puerto del nucleo
 int main(void) {
-	struct cliente clienteCPU;
-	clienteCPU = crearCliente(SERVERCLIENTE1, "127.0.0.1");
-	conectarConServidor(clienteCPU);
-	char *mensaje =esperarRespuestaServidor(clienteCPU.socketCliente);
-
-	struct cliente clienteCPU1;
-	clienteCPU1 = crearCliente(SERVERCLIENTE2, "127.0.0.1");
-	conectarConServidor(clienteCPU1);
-	enviarMensaje(clienteCPU1.socketCliente, mensaje);
-
+	struct cliente clienteCpuNucleo;
+	clienteCpuNucleo = crearCliente(SERVERNUCLEO, "127.0.0.1");
+	conectarConServidor(clienteCpuNucleo);
+	char *mensajeRecibidoDelNucleo = esperarRespuestaServidor(
+			clienteCpuNucleo.socketCliente);
+	printf("Mensaje recibido de Nucleo %s \n", mensajeRecibidoDelNucleo);
+	close(clienteCpuNucleo);
+	struct cliente clienteCpuUmc;
+	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
+	conectarConServidor(clienteCpuUmc);
+	enviarMensaje(clienteCpuUmc.socketCliente, mensajeRecibidoDelNucleo);
+	close(clienteCpuUmc);
 	return 0;
 
 }
-/*
-
- struct cliente clienteCPU;
- clienteCPU = crearCliente(SERVERCLIENTE2,"127.0.0.1");
- conectarConServidor(clienteCPU);
- enviarMensaje(clienteCPU.socketCliente,"hola");
-
-
-
- */
