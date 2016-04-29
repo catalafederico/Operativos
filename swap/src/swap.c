@@ -37,7 +37,8 @@ int main(void) {
 	//Creo el archivo de log
 	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
 
-	//Archivo configuración
+	//Archivo configuración -- Duda: Quise pasar swap_config como variable global
+	//para hacer pequeñas funciones auxiliares pero tenia problemas con inicializarla
 
 t_reg_config swap_config = get_config_params();
 
@@ -51,6 +52,7 @@ struct sockaddr_in direccionServidor;
 		int servidor = socket(AF_INET, SOCK_STREAM, 0);
 		log_info(log_swap,"Socket creado correctamente.");
 
+		//En teoria permite reutilizar el puerto (A veces falla)
 		int activado = 1;
 		setsockopt(servidor, SOL_SOCKET, SO_REUSEADDR, &activado, sizeof(activado));
 
@@ -61,8 +63,8 @@ struct sockaddr_in direccionServidor;
 		}
 		log_info(log_swap,"El socket se asocio correctamente al puerto.");
 
-		printf("Estoy escuchando.\n");
 		listen(servidor, 10);
+		printf("Estoy escuchando.\n");
 		log_info(log_swap,"El socket esta escuchando conexiones.");
 
 		struct sockaddr_in direccionCliente;
@@ -98,7 +100,7 @@ struct sockaddr_in direccionServidor;
 
 			free(buffer);
 
-		//send(cliente, "Hola!", 6, 0);
+		send(cliente, "Hola!", 6, 0);
 
 		return 0;
 }
