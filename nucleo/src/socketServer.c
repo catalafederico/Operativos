@@ -61,7 +61,7 @@ int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){
 }
 
 void ponerServerEscucha(struct server procesosServer){
-	escucharConexiones(procesosServer.socketServer,10);
+	escucharConexiones(procesosServer.socketServer,SOMAXCONN);
 	return;
 }
 
@@ -125,6 +125,33 @@ void ponerServerEscuchaSelect(struct server procesosServer){
 	}
 }
 
+
+char * hacerHandShake_server(int socketDestino, char * mensaje){
+
+//	VER DE HACER UNA CONSTANTE GLOBAL CON EL TAMANIO DEL HANDSHAKE
+	// Enviar mensaje
+	char *mje_saludo="Te conectaste con: ";
+	char * saludo = malloc(strlen(mje_saludo)+strlen(mensaje));
+	strcpy(saludo, mje_saludo);
+	strcat(saludo, mensaje);
+    if (send(socketDestino, saludo, strlen(saludo), 0) == -1){
+        perror("send");
+        free(saludo);
+        close(socketDestino);
+        exit(0);
+    }
+    free(saludo);
+	// Recibir Respuesta.
+	mje_saludo = recibirMensaje(socketDestino);
+	if(!strcmp("Se desconecto",mje_saludo)){
+		perror("Se cerro la conexion");
+        close(socketDestino);
+        exit(0);
+	}
+	printf ("%s\n", mje_saludo);
+	return mje_saludo;
+
+}
 
 
 

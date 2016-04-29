@@ -8,6 +8,7 @@
 #ifndef SRC_SOCKETSERVER_H_
 #define SRC_SOCKETSERVER_H_
 #include <commons/collections/list.h>
+#include <netinet/in.h>
 
 struct server{
 	int socketServer;
@@ -19,5 +20,6 @@ struct server crearServer();
 void enviarMensajeACliente(char* mensaje, int socket);
 void ponerServerEscuchaSelect(struct server procesosServer);
 void atenderConexionNuevaSelect(struct server procesosServer, fd_set* descriptor_maestro, int* maxfichero);
+char * hacerHandShake_server(int socketDestino, char * mensaje);
 
 #endif /* SRC_SOCKETSERVER_H_ */
