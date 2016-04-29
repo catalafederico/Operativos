@@ -12,10 +12,35 @@
 #include "socketServer.h"
 #include <commons/collections/list.h>
 #include "socketCliente.h"
+#include "umcConsola.h"
+#include <pthread.h>
+#include "archivoConf.h"
 #define SERVERPORT 9999
 #define SERVERCLIENTE 9998
 
+void sockets();
+void inicializacionConsola();
+t_reg_config configuracionUMC;
+
+
+
 int main(void) {
+
+	inicializacionConsola();
+	sleep(5);
+
+	pthread_t consola;
+	pthread_t socket;
+
+	pthread_create(&consola,NULL,(void*)consolaUMC,NULL);
+	pthread_create(&socket,NULL,(void*)sockets,NULL);
+
+	pthread_join(consola,NULL);
+	pthread_join(socket,NULL);
+	return 0;
+}
+
+void sockets(){
 	struct server serverUMC;
 	serverUMC = crearServer(SERVERPORT);
 	ponerServerEscuchaSelect(serverUMC);
@@ -25,5 +50,12 @@ int main(void) {
 	 clienteUMC = crearCliente(SERVERCLIENTE,"127.0.0.1");
 	 conectarConServidor(clienteUMC);
 	 enviarMensaje(clienteUMC.socketCliente,"hola");*/
-	return 0;
+}
+
+void inicializacionConsola(){
+	printf("Leyendo parametros de configuraion\n");
+	configuracionUMC = get_config_params();
+	printf("Parametros de configuraion leidos\n");
+	printf("Inicializando consola\n");
+	printf("Consola inicializada\n");
 }
