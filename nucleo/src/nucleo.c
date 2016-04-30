@@ -107,6 +107,7 @@ int main(int argc, char **argv) {
 
 	pthread_join(thread_CPU, NULL);
 	pthread_join(thread_consola, NULL);
+
 //	ponerServerEscuchaSelect(serverPaConsolas);
 
 	return 0;
