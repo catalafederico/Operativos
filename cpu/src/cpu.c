@@ -23,7 +23,7 @@
 #include "socketCliente.h"
 
 #define  SERVERUMC 9999 //puerto de la umc
-#define  SERVERNUCLEO 8080 // puerto del nucleo
+#define  SERVERNUCLEO 5001 // puerto del nucleo
 int main(void) {
 	struct cliente clienteCpuNucleo;
 	clienteCpuNucleo = crearCliente(SERVERNUCLEO, "127.0.0.1");
@@ -31,12 +31,12 @@ int main(void) {
 	char *mensajeRecibidoDelNucleo = esperarRespuestaServidor(
 			clienteCpuNucleo.socketCliente);
 	printf("Mensaje recibido de Nucleo %s \n", mensajeRecibidoDelNucleo);
-	close(clienteCpuNucleo);
+	close(clienteCpuNucleo.socketCliente);
 	struct cliente clienteCpuUmc;
 	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
 	conectarConServidor(clienteCpuUmc);
 	enviarMensaje(clienteCpuUmc.socketCliente, mensajeRecibidoDelNucleo);
-	close(clienteCpuUmc);
+	close(clienteCpuUmc.socketCliente);
 	return 0;
 
 }
