@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -13,7 +14,7 @@
 #include <commons/collections/list.h>
 #include "socketCliente.h"
 #include "umcConsola.h"
-#include <pthread.h>
+
 #include "archivoConf.h"
 #define SERVERPORT 9999
 #define SERVERCLIENTE 9998
@@ -35,7 +36,7 @@ int main(void) {
 	pthread_create(&consola,NULL,(void*)consolaUMC,NULL);
 	pthread_create(&socket,NULL,(void*)sockets,NULL);
 
-	pthread_join(consola,NULL);
+	pthread_join()in(consola,NULL);
 	pthread_join(socket,NULL);
 	return 0;
 }
