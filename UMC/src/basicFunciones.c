@@ -55,9 +55,11 @@ void enviarMensaje(int socketDestino, char* mensaje){
 }
 
 char* recibirMensaje(int socketCliente){
+//	PRIMERO SE RECIBE EL HEADER CON UN TAMANIO FIJO QUE ES TIPO t_head_mje
 	int bytesRecibidos;
-	char* buf = malloc(256);
-	bytesRecibidos = recv(socketCliente,buf,strlen(256),0);
+	char cantcaracteres[256];
+	char* buf = malloc(sizeof(cantcaracteres));
+	bytesRecibidos = recv(socketCliente,buf,sizeof(cantcaracteres)-1,0);
 	if(bytesRecibidos<=0)
 	{
 		free(buf);

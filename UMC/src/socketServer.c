@@ -11,6 +11,7 @@
 #include <signal.h>
 #include "basicFunciones.h"
 #include <commons/collections/list.h>
+#include "socketCliente.h"
 
 struct server{
 	int socketServer;
@@ -113,6 +114,10 @@ void ponerServerEscuchaSelect(struct server procesosServer){
         					//enviarMensaje(i,"Hola de nuevo");
         					//POR EJEMPLO SE PUEDE PONER UN SEND PARA RESPONER. ACORDARSE DE PONER EL RECIBE EN EL PROCESO
         					// DESTINO
+        					 struct cliente clienteUMC;
+        					 clienteUMC = crearCliente(6000,"127.0.0.1");
+        					 conectarConServidor(clienteUMC);
+        					 enviarMensaje(clienteUMC.socketCliente,mensaje);
         				}
         				else{
         					cerrarConexion(i,&descriptor_maestro);

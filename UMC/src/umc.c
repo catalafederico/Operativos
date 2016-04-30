@@ -42,14 +42,10 @@ int main(void) {
 
 void sockets(){
 	struct server serverUMC;
-	serverUMC = crearServer(SERVERPORT);
+	serverUMC = crearServer(configuracionUMC.PUERTO);
 	ponerServerEscuchaSelect(serverUMC);
 	//Esto deberia ir en otro hilo
 	//Comentar la seccion de arriba y descomentar la de abajo para probar como cliente
-	 /*struct cliente clienteUMC;
-	 clienteUMC = crearCliente(SERVERCLIENTE,"127.0.0.1");
-	 conectarConServidor(clienteUMC);
-	 enviarMensaje(clienteUMC.socketCliente,"hola");*/
 }
 
 void inicializacionConsola(){
