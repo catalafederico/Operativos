@@ -55,19 +55,22 @@ void enviarMensaje(int socketDestino, char* mensaje){
 }
 
 char* recibirMensaje(int socketCliente){
-	int bytesRecibidos;
-	char* buf = malloc(256);
-	bytesRecibidos = recv(socketCliente,buf,strlen(256),0);
-	if(bytesRecibidos<=0)
-	{
-		free(buf);
-		return "Se desconecto";
+	//	PRIMERO SE RECIBE EL HEADER CON UN TAMANIO FIJO QUE ES TIPO t_head_mje
+		int bytesRecibidos;
+		char cantcaracteres[256];
+		char* buf = malloc(sizeof(cantcaracteres));
+		bytesRecibidos = recv(socketCliente,buf,sizeof(cantcaracteres)-1,0);
+		if(bytesRecibidos<=0)
+		{
+			free(buf);
+			return "Se desconecto";
+		}
+		else
+		{
+			return buf;
+		}
 	}
-	else
-	{
-		return buf;
-	}
-}
+
 
 void conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){
 	if (connect(*socketMio, (struct sockaddr*)direccionDestino, sizeof(struct sockaddr)) != 0) {
