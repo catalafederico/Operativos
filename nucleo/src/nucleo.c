@@ -228,7 +228,14 @@ void *atender_consola(void *socket_desc){
 
 		while (i<=fin_list){
 			cpu_destino = list_get(cpus_dispo, i);
-			enviarMensaje(cpu_destino, mje_recibido);
+			//enviarMensaje(cpu_destino, mje_recibido);
+
+
+			scanf("%s", mje_recibido);
+
+			send(cpu_destino, mje_recibido, strlen(mje_recibido), 0);
+
+
 			i++;
 		}
 

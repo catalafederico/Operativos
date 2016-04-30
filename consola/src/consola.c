@@ -50,6 +50,7 @@ int main(void) {
 
 		send((clienteConsola.socketCliente), mensaje, strlen(mensaje), 0);
 	}
+	fclose(clienteConsola.socketCliente);
 
 
 	return 0;
