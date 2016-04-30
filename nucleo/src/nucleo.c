@@ -172,8 +172,8 @@ void *atender_conexion_CPU(void *socket_desc){
 		}
 		printf("CPU %d atendido \n", *socket_nuevo);
 	// agrego CPU a la lista de disponibles
-		list_add(cpus_dispo,(void *) &nuevaConexion);
-
+//		list_add(cpus_dispo,(void *) nuevaConexion);
+		list_add(cpus_dispo, socket_nuevo);
 		socket_local = (int)socket_desc; //*(int*)socket_desc;
 		aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
 		if (nuevaConexion < 0)	{
@@ -213,29 +213,26 @@ void *atender_consola(void *socket_desc){
 
 		int i = 0;
 		// me fijo si hay Cpu disponible o espero un ratito, si no hay se retorna error
-		while (list_is_empty(cpus_dispo)&&(i<=10000)) i++;
+/*		while (list_is_empty(cpus_dispo)&&(i<=10000)) i++;
 		if (i>10000){
 			perror("No hay CPU disponible");
 						free((void *) mje_recibido);
 				        close(socket_co);
 				        exit(0);
-		}
-
+		} */
+		while (list_is_empty(cpus_dispo)){
+			sleep(5);
+			printf ("No hay CPU disponoble, reintentando...");
+				}
 		//Envio mensaje a todas las CPU disponibles.
 		int fin_list = list_size(cpus_dispo);
-		int cpu_destino;
-		i = 1;
 
-		while (i<=fin_list){
+		int* cpu_destino;
+		i = 0;
+		while (i<fin_list){
 			cpu_destino = list_get(cpus_dispo, i);
-			//enviarMensaje(cpu_destino, mje_recibido);
 
-
-			scanf("%s", mje_recibido);
-
-			send(cpu_destino, mje_recibido, strlen(mje_recibido), 0);
-
-
+			enviarMensaje(*cpu_destino, mje_recibido);
 			i++;
 		}
 
