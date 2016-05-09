@@ -23,4 +23,12 @@ void enviarMensaje(int socketDestino, char* mensaje);
 char* recibirMensaje(int socketCliente);
 char* recibirMensaje_tamanio(int socketCliente, int * long_mje);
 
+/**
+* @NAME: leerHeader
+* @DESC: Lee el header del mensaje, un int
+* Acordarse: HACER FREE DEL INT RECIBIDO
+*/
+
+int* leerHeader(int socketARecibir());
+
 #endif /* SRC_BASICFUNCIONES_H_ */

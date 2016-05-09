@@ -14,8 +14,8 @@
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
 #include "umcConsola.h"
-
 #include "archivoConf.h"
+
 #define SERVERPORT 9999
 #define SERVERCLIENTE 9998
 

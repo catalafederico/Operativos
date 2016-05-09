@@ -97,4 +97,19 @@ void conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){
 	}
 }
 
+int* leerHeader(int socketARecibir){
+	int* header = malloc(sizeof(int));
+	int bytesRecibidos = -1;
+	bytesRecibidos = recv(socketARecibir,header,sizeof(int),0);
+	if(bytesRecibidos<=0)
+	{
+		*header = -1;
+		return header;
+	}
+	else{
+		return header;
+	}
+}
+
+
 
