@@ -12,7 +12,7 @@
 #include <signal.h>
 #include "socketServer.h"
 #include <commons/collections/list.h>
-#include "socketCliente.h"
+#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketCliente.h>
 #include "umcConsola.h"
 
 #include "archivoConf.h"

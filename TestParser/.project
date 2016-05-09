@@ -3,6 +3,7 @@
 	<name>TestParser</name>
 	<comment></comment>
 	<projects>
+		<project>bibliotecaC</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

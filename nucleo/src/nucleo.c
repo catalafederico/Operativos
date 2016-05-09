@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <commons/config.h>
 //#include "basicFunciones.h"
-#include "socketServer.h"
+//#include "socketServer.h"
 #include<pthread.h>
 
 #include <unistd.h>
@@ -23,6 +23,8 @@
 #include <signal.h>
 
 #include <commons/collections/list.h>
+#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketServer.h>
+#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/basicFunciones.h>
 
 
 //#include <netinet/in.h>

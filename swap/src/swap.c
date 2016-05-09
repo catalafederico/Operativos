@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <commons/config.h>
 #include <commons/log.h>
+#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketServer.h>
 
 
 // Estructuras
