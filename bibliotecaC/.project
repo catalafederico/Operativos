@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>UMC</name>
+	<name>bibliotecaC</name>
 	<comment></comment>
 	<projects>
-		<project>bibliotecaC</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
