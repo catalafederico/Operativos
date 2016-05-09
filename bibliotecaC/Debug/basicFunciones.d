@@ -1,1 +1,0 @@
-basicFunciones.d: ../basicFunciones.c

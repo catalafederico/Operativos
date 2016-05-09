@@ -19,12 +19,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <commons/config.h>
-#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketCliente.h>
-
-
-
-
-
+#include <sockets/socketCliente.h>
 
 int main(void) {
 

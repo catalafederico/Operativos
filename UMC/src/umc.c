@@ -10,9 +10,9 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include "socketServer.h"
 #include <commons/collections/list.h>
-#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketCliente.h>
+#include <sockets/socketCliente.h>
+#include <sockets/socketServer.h>
 #include "umcConsola.h"
 
 #include "archivoConf.h"
@@ -36,7 +36,7 @@ int main(void) {
 	pthread_create(&consola,NULL,(void*)consolaUMC,NULL);
 	pthread_create(&socket,NULL,(void*)sockets,NULL);
 
-	pthread_join()in(consola,NULL);
+	pthread_join(consola,NULL);
 	pthread_join(socket,NULL);
 	return 0;
 }
@@ -56,3 +56,5 @@ void inicializacionConsola(){
 	printf("Inicializando consola\n");
 	printf("Consola inicializada\n");
 }
+
+

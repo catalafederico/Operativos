@@ -23,8 +23,9 @@
 #include <signal.h>
 
 #include <commons/collections/list.h>
-#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketServer.h>
-#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/basicFunciones.h>
+#include <sockets/socketCliente.h>
+#include <sockets/socketServer.h>
+#include <sockets/basicFunciones.h>
 
 
 //#include <netinet/in.h>

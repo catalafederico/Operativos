@@ -1,0 +1,28 @@
+!SESSION 2016-05-09 15:56:26.572 -----------------------------------------------
+eclipse.buildId=4.4.1.M20140925-0400
+java.version=1.7.0_75
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=es_AR
+Framework arguments:  -product org.eclipse.epp.package.cpp.product
+Command-line arguments:  -os linux -ws gtk -arch x86 -product org.eclipse.epp.package.cpp.product
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-05-09 15:57:07.783
+!MESSAGE Indexed 'nucleo' (1 sources, 98 headers) in 1,02 sec: 3.646 declarations; 4.577 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-05-09 15:57:08.182
+!MESSAGE Indexed 'tpsolib' (3 sources, 88 headers) in 0,39 sec: 2.868 declarations; 3.780 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-05-09 15:57:08.366
+!MESSAGE Indexed 'swap' (1 sources, 63 headers) in 0,18 sec: 1.741 declarations; 2.683 references; 1 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-05-09 15:57:08.701
+!MESSAGE Indexed 'TestParser' (2 sources, 54 headers) in 0,333 sec: 1.561 declarations; 2.427 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-05-09 15:57:09.072
+!MESSAGE Indexed 'cpu' (3 sources, 87 headers) in 0,371 sec: 2.823 declarations; 3.579 references; 1 unresolved inclusions; 0 syntax errors; 4 unresolved names (0,062%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-05-09 15:57:09.203
+!MESSAGE Indexed 'consola' (1 sources, 62 headers) in 0,13 sec: 1.687 declarations; 2.505 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-05-09 15:57:09.964
+!MESSAGE Indexed 'UMC' (3 sources, 102 headers) in 0,76 sec: 4.065 declarations; 5.384 references; 0 unresolved inclusions; 0 syntax errors; 0 unresolved names (0%)
