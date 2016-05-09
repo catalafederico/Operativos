@@ -69,6 +69,7 @@ void *atender_conexion_CPU(void *socket_desc);
 void *atender_consola(void *socket_desc);
 
 void *atender_CPU(void *socket_desc);
+void roundRobin( int quantum);
 
 // ****************************************** FIN FUNCIONES.h ***************************************
 
@@ -400,7 +401,7 @@ t_reg_config get_config_params(void){
 	config_destroy(archivo_config);
 	return reg_config;
 }
-void RoundRobin( int quantum){
+void roundRobin( int quantum){
 int count,j,n,tiempo,restante,flag=0;
   int tiempo_espera=0,tiempo_cambio=0,at[10],bt[10],rt[10];
   printf("Enter Total Process:\t ");
