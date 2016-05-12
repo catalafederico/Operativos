@@ -56,11 +56,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.1898878064.491786502" name="umcMemoria.c" rcbsApplicability="disable" resourcePath="src/umcMemoria.c" toolsToInvoke="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1676629538.1504988517">
-						<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1676629538.1504988517" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1676629538">
-							<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.670212270" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
-						</tool>
-					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
