@@ -1,12 +1,3 @@
-/*
- * socketCliente.c
-
- *
- *  Created on: 25/4/2016
- *      Author: utnso
- */
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -46,3 +37,16 @@ struct cliente crearCliente(int puerto,char* ip){
 void conectarConServidor(struct cliente procesoCliente){
 	conectarConDireccion(&(procesoCliente.socketCliente),&(procesoCliente.direccionDestino));
 }
+
+void enviarMensajeServidor(int servidorDestino,char* mensaje){
+	enviarMensaje(servidorDestino,mensaje);
+}
+
+char* esperarRespuestaServidor(int socketServidor){
+	return recibirMensaje(socketServidor);
+}
+char* chatConProceso(int socketProceso, char* mensaje){
+	enviarMensaje(socketProceso,mensaje);
+	return esperarRespuestaServidor(socketProceso);
+}
+
