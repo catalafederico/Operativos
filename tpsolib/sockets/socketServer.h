@@ -19,7 +19,7 @@ struct server{
 struct server crearServer();
 void enviarMensajeACliente(char* mensaje, int socket);
 void ponerServerEscuchaSelect(struct server procesosServer);
-void atenderConexionNuevaSelect(struct server procesosServer, fd_set* descriptor_maestro, int* maxfichero);
+int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero);
 char * hacerHandShake_server(int socketDestino, char * mensaje);
 
 #endif /* SRC_SOCKETSERVER_H_ */

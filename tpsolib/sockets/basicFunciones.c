@@ -71,6 +71,29 @@ char* recibirMensaje(int socketCliente){
 	}
 }
 
+void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje){
+	send(socketDestino,&header,sizeof(int),0);
+	send(socketDestino,mensaje,tamanioMensaje,0);
+}
+
+void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
+//	PRIMERO SE RECIBE EL HEADER CON UN TAMANIO FIJO QUE ES TIPO t_head_mje
+	int bytesRecibidos;
+	void* recibido = malloc(tamanioEstructuraARecibir);
+	void* tempRcv;
+	bytesRecibidos = recv(socketDondeRecibe,tempRcv,tamanioEstructuraARecibir,0);
+	memcpy(recibido,tempRcv,tamanioEstructuraARecibir);
+	if(bytesRecibidos<=0)
+	{
+		free(recibido);
+		return NULL;
+	}
+	else
+	{
+		return recibido;
+	}
+}
+
 char* recibirMensaje_tamanio(int socketCliente, int * long_mje){
 	int bytesRecibidos;
 	char cantcaracteres[*long_mje];
