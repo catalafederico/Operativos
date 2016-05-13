@@ -16,7 +16,9 @@
 #include <sys/socket.h>
 #include <commons/config.h>
 #include <commons/log.h>
-#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketServer.h>
+#include <sockets/socketServer.h>
+#include <sockets/basicFunciones.h>
+
 
 
 // Estructuras
@@ -32,20 +34,25 @@ typedef struct {
 
 t_reg_config get_config_params(void);
 
+//Variables globales
+
+t_reg_config swap_config;
 
 int main(void) {
 
 	//Creo el archivo de log
 	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
 
-	//Archivo configuración -- Duda: Quise pasar swap_config como variable global
-	//para hacer pequeñas funciones auxiliares pero tenia problemas con inicializarla
 
 t_reg_config swap_config = get_config_params();
 
 	//Conexion
 
-struct sockaddr_in direccionServidor;
+struct server servidor;
+	servidor = crearServer(swap_config.PUERTO_ESCUCHA);
+	ponerServerEscucha(servidor);
+	printf("Escuchando UMC en socket %d \n", servidor.socketServer);
+/*struct sockaddr_in direccionServidor;
 		direccionServidor.sin_family = AF_INET;
 		direccionServidor.sin_addr.s_addr = INADDR_ANY;
 		direccionServidor.sin_port = htons(swap_config.PUERTO_ESCUCHA);
@@ -101,7 +108,7 @@ struct sockaddr_in direccionServidor;
 
 			free(buffer);
 
-		send(cliente, "Hola!", 6, 0);
+		send(cliente, "Hola!", 6, 0);*/
 
 		return 0;
 }
