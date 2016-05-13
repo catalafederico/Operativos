@@ -22,6 +22,8 @@ void aceptarConexion(int* socketnuevo, int socketescuchador,struct sockaddr_in* 
 void enviarMensaje(int socketDestino, char* mensaje);
 char* recibirMensaje(int socketCliente);
 char* recibirMensaje_tamanio(int socketCliente, int * long_mje);
+void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir);
+void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje);
 
 /**
 * @NAME: leerHeader

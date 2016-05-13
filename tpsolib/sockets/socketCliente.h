@@ -16,5 +16,9 @@ struct cliente{
 
 struct cliente crearCliente(int puerto,char* ip);
 void conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino);
+void enviarMensajeServidor(int servidorDestino,char* mensaje);
+char* esperarRespuestaServidor(int socketServidor);
+char* chatConProceso(int socketProceso, char* mensaje);
+void hacerHandShake_cliente(int socketServer,char* mensaje);
 
 #endif /* SRC_SOCKETCLIENTE_H_ */

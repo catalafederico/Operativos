@@ -20,7 +20,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <commons/collections/list.h>
-#include </home/utnso/workspace/tp-2016-1c-Explosive-code/bibliotecaC/socketCliente.h>
+#include <sockets/socketCliente.h>
 
 #define  SERVERUMC 9999 //puerto de la umc
 #define  SERVERNUCLEO 5001 // puerto del nucleo
