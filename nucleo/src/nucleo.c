@@ -8,9 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <commons/config.h>
-//#include "basicFunciones.h"
-//#include "socketServer.h"
 #include<pthread.h>
 
 #include <unistd.h>
@@ -23,20 +20,21 @@
 #include <signal.h>
 
 #include <commons/collections/list.h>
+#include <commons/config.h>
+#include <commons/string.h>
+#include <commons/log.h>
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
 
 
-//#include <netinet/in.h>
-//#include <sys/types.h>
-//#include <signal.h>
-//#include <unistd.h>
-
-// Variables compartidas
+// Variables compartidas ---------------------------------------------
 
 t_list* cpus_dispo;
 t_list* consolas_dispo;
+t_log *logger;
+
+
 
 // Estructuras
 
@@ -74,16 +72,23 @@ void roundRobin( int quantum);
 
 // ****************************************** FIN FUNCIONES.h ***************************************
 
+// **************************************************************************************************
+// ****************************************** FIN FUNCIONES.h ***************************************
+// **************************************************************************************************
 int main(int argc, char **argv) {
 // Leo archivo de configuracion ------------------------------
 	t_reg_config reg_config;
 	reg_config = get_config_params();
 
+// Inicializa el log.
+	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
+
 // Crear socket para CPU  ------------------------------
 	struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
 	ponerServerEscucha(serverPaCPU);
-	printf("Escuchando Cpus en socket %d \n", serverPaCPU.socketServer);
+	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
+	//printf("Escuchando Cpus en socket %d \n", serverPaCPU.socketServer);
 // crear lista para CPUs
 	cpus_dispo = list_create();
 
@@ -92,7 +97,8 @@ int main(int argc, char **argv) {
 	pthread_t thread_CPU;
 	if( pthread_create( &thread_CPU, NULL , atender_conexion_CPU, (void*) serverPaCPU.socketServer) < 0)
 	{
-		perror("No fue posible crear thread p/ CPU");
+		log_debug(logger, "No fue posible crear thread para CPU");
+		//perror("No fue posible crear thread p/ CPU");
 		exit(EXIT_FAILURE);
 	}
 
@@ -112,8 +118,7 @@ int main(int argc, char **argv) {
 	pthread_join(thread_CPU, NULL);
 	pthread_join(thread_consola, NULL);
 
-//	ponerServerEscuchaSelect(serverPaConsolas);
-
+	log_destroy(logger);
 	return 0;
 
 }
@@ -124,15 +129,19 @@ void *atender_conexion_consolas(void *socket_desc){
 
 	int nuevaConexion, *socket_nuevo; //socket donde va a estar nueva conexion
 	struct sockaddr_in direccionEntrante;
-	int socket_local = (int)socket_desc; //*(int*)socket_desc;
+	int socket_local = (int)socket_desc;
 	aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
 	while(nuevaConexion){
 		printf("Se ha conectado una Consola\n");
 
+		pthread_attr_t attr;
 		pthread_t thread_consola_con;
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
 		socket_nuevo = malloc(sizeof(int));
 		*socket_nuevo = nuevaConexion;
-		if( pthread_create( &thread_consola_con , NULL , atender_consola, (void*) socket_nuevo) < 0)
+		if( pthread_create( &thread_consola_con , &attr , atender_consola, (void*) socket_nuevo) < 0)
 		{
 			perror("No fue posible crear thread p/ consolas");
 			exit(EXIT_FAILURE);
@@ -194,7 +203,7 @@ void *atender_conexion_CPU(void *socket_desc){
 }
 
 //------------------------------------------------------------------------------------------
-// ---------------------------------- atender_consola-----  --------------------------------
+// ---------------------------------- atender_consola---------------------------------------
 void *atender_consola(void *socket_desc){
 	  //Get the socket descriptor
 		int socket_co = *(int*)socket_desc;
@@ -210,20 +219,15 @@ void *atender_consola(void *socket_desc){
 		if(!strcmp("Se desconecto",mje_recibido)){
 			perror("Se cerro la conexion");
 			free((void *) mje_recibido);
+			free(socket_desc);
 	        close(socket_co);
 	        exit(0);
 		}
 		printf ("Mensaje recibido de consola %d : %s \n", socket_co, mje_recibido);
 
 		int i = 0;
-		// me fijo si hay Cpu disponible o espero un ratito, si no hay se retorna error
-/*		while (list_is_empty(cpus_dispo)&&(i<=10000)) i++;
-		if (i>10000){
-			perror("No hay CPU disponible");
-						free((void *) mje_recibido);
-				        close(socket_co);
-				        exit(0);
-		} */
+		// me fijo si hay Cpu disponible
+
 		while (list_is_empty(cpus_dispo)){
 			sleep(5);
 			printf ("No hay CPU disponoble, reintentando...");
@@ -241,6 +245,7 @@ void *atender_consola(void *socket_desc){
 		}
 
 		free((void *) mje_recibido);
+		free(socket_desc);
 		close(socket_co);
 		return NULL;
 }
@@ -402,6 +407,7 @@ t_reg_config get_config_params(void){
 	config_destroy(archivo_config);
 	return reg_config;
 }
+/*
 void roundRobin( int quantum){
 int count,j,n,tiempo,restante,flag=0;
   int tiempo_espera=0,tiempo_cambio=0,at[10],bt[10],rt[10];
@@ -453,3 +459,4 @@ int count,j,n,tiempo,restante,flag=0;
   return;
 
 }
+*/
