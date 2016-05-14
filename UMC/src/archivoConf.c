@@ -27,7 +27,7 @@ typedef struct {
 t_config * UMC_config = NULL;
 
 
-t_reg_config get_config_params(){
+t_reg_config* get_config_params(){
 
 	char * UMC_config_path = "umc_config.cfg";
 	UMC_config = config_create(UMC_config_path);
@@ -45,7 +45,7 @@ t_reg_config get_config_params(){
 	setearValorEntero(&configuracion.RETARDO,"RETARDO");
 
 	config_destroy(UMC_config);
-	return configuracion;
+	return puntero_configuracion;
 }
 
 void setearValorEntero(int* valorASetear,char* parametroABuscar){

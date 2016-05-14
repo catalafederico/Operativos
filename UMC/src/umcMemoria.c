@@ -8,13 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-t_reg_config* configuracionUMC;
-void* memoriaPrincipal; //Acordarse de hacer free
 
 
-void inicializarMemoria(){
+void* inicializarMemoria(t_reg_config* configuracionUMC){
 	int cantidadDeMarcos = (*configuracionUMC).MARCOS;
 	int tamanioMarcos = (*configuracionUMC).MARCO_SIZE;
-	memoriaPrincipal = calloc(cantidadDeMarcos, tamanioMarcos);
+	void* memoriaPrincipal = calloc(cantidadDeMarcos, tamanioMarcos);
+	return memoriaPrincipal;
 }
 
