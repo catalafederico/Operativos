@@ -72,8 +72,9 @@ char* recibirMensaje(int socketCliente){
 }
 
 void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje){
-	send(socketDestino,&header,sizeof(int),0);
+	send(socketDestino,header,sizeof(int),0);
 	send(socketDestino,mensaje,tamanioMensaje,0);
+
 }
 
 void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){

@@ -19,6 +19,6 @@ typedef struct {
 	int RETARDO;
 } t_reg_config;
 
-t_reg_config get_config_params();
+t_reg_config* get_config_params();
 
 #endif /* SRC_ARCHIVOCONF_H_ */
