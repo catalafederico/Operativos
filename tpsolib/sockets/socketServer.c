@@ -126,11 +126,11 @@ void ponerServerEscuchaSelect(struct server procesosServer){
 }
 
 
-char * hacerHandShake_server(int socketDestino, char * mensaje){
+void hacerHandShake_server(int socketDestino, char * mensaje){
 
 //	VER DE HACER UNA CONSTANTE GLOBAL CON EL TAMANIO DEL HANDSHAKE
 	// Enviar mensaje
-	char *mje_saludo="Te conectaste con: ";
+/*	char *mje_saludo="Te conectaste con: ";
 	char * saludo = malloc(strlen(mje_saludo)+strlen(mensaje));
 	strcpy(saludo, mje_saludo);
 	strcat(saludo, mensaje);
@@ -152,7 +152,24 @@ char * hacerHandShake_server(int socketDestino, char * mensaje){
 	return mje_saludo;
 
 }
+*/
+//	char* mensajeAEnviar;
 
+	if(recv(socketDestino,mensaje,strlen(mensaje),0)==-1){
+				perror("no se recibio mensaje");
+				close(socketDestino);
+				exit(0);
+			}
+	if (send(socketDestino,"hola",strlen("hola"),0)== -1){
+		        perror("send");
+		        close(socketDestino);
+		        exit(1);
+		    }
+
+
+
+		return;
+	}
 
 
 

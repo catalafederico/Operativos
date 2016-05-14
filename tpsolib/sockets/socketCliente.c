@@ -50,3 +50,21 @@ char* chatConProceso(int socketProceso, char* mensaje){
 	return esperarRespuestaServidor(socketProceso);
 }
 
+void hacerHandShake_cliente(struct cliente socket,char* mensaje){
+	char* mensajeRecibido;
+
+	if (send(socket.socketServer,mensaje,strlen(mensaje),0)== -1){
+	        perror("send");
+	        close(socket.socketServer);
+	        exit(0);
+	    }
+
+	if(recv(socket.socketServer,mensajeRecibido,strlen(mensajeRecibido),0)==-1){
+		perror("no se recibio mensaje");
+		close(socket.socketServer);
+		exit(1);
+	}
+
+	printf("%s/n",mensajeRecibido);
+	return;
+}
