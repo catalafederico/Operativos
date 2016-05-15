@@ -25,6 +25,7 @@
 
 typedef struct {
 	int PUERTO_ESCUCHA;
+	char* NOMBRE_SWAP;
 	int CANTIDAD_PAGINAS;
 	int TAMANIO_PAGINA;
 	int RETARDO_COMPACTACION;
@@ -33,6 +34,12 @@ typedef struct {
 // Funciones
 
 t_reg_config get_config_params(void);
+
+void crearArchivo();
+
+void inicializarArchivo();
+
+int conectarseConUMC(struct server servidor);
 
 //Variables globales
 
@@ -44,14 +51,21 @@ int main(void) {
 	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
 
 
-t_reg_config swap_config = get_config_params();
+	swap_config = get_config_params();
 
-	//Conexion
+    crearArchivo();
+    inicializarArchivo();
 
-struct server servidor;
-	servidor = crearServer(swap_config.PUERTO_ESCUCHA);
-	ponerServerEscucha(servidor);
-	printf("Escuchando UMC en socket %d \n", servidor.socketServer);
+    //Conexion
+
+    struct server servidor;
+    	servidor = crearServer(swap_config.PUERTO_ESCUCHA);
+    	ponerServerEscucha(servidor);
+    	printf("Escuchando UMC en socket %d \n", servidor.socketServer);
+    	int cliente = conectarseConUMC(servidor);
+
+
+
 /*struct sockaddr_in direccionServidor;
 		direccionServidor.sin_family = AF_INET;
 		direccionServidor.sin_addr.s_addr = INADDR_ANY;
@@ -113,8 +127,27 @@ struct server servidor;
 		return 0;
 }
 
+ //---------Funciones para crear el archivo y manejarlo
 
- //Funcion para extraer los datos del archivo de configuracion
+void crearArchivo(){
+	char* datos = malloc(100);
+	sprintf(datos,"dd if=/dev/zero of=%s bs=%d count=%d",swap_config.NOMBRE_SWAP,swap_config.TAMANIO_PAGINA,swap_config.CANTIDAD_PAGINAS);
+	system(datos);
+	free(datos);
+	printf("El archivo se crea correctamente.\n");
+}
+
+void inicializarArchivo(){
+	FILE* archivo = fopen(swap_config.NOMBRE_SWAP,"r+");
+		fseek(archivo,0,SEEK_END);
+		char* texto = malloc(swap_config.CANTIDAD_PAGINAS*swap_config.TAMANIO_PAGINA);
+		memset(texto,'\0',swap_config.CANTIDAD_PAGINAS*swap_config.TAMANIO_PAGINA);
+		fwrite(texto,sizeof(char),sizeof(texto), archivo );
+		free(texto);
+		fclose(archivo);
+
+}
+ //---------Funcion para extraer los datos del archivo de configuracion
 
 t_reg_config get_config_params(void){
 
@@ -134,7 +167,17 @@ t_reg_config get_config_params(void){
 			printf("No se encontro PUERTO_ESCUCHA \n");
 	}
 
-	// 2 get CANTIDAD_PAGINAS
+	// 2 get PUERTO_ESCUCHA          --------------
+		if (config_has_property(swap_config,"NOMBRE_SWAP")){
+			reg_config.NOMBRE_SWAP = config_get_string_value(swap_config,"NOMBRE_SWAP");
+			printf("NOMBRE_SWAP= %s \n", reg_config.NOMBRE_SWAP);
+
+		}
+		else{
+				printf("No se encontro PUERTO_ESCUCHA \n");
+		}
+
+	// 3 get CANTIDAD_PAGINAS
 	if (config_has_property(swap_config,"CANTIDAD_PAGINAS")){
 		reg_config.CANTIDAD_PAGINAS = config_get_int_value(swap_config,"CANTIDAD_PAGINAS");
 		printf("CANTIDAD_PAGINAS= %d \n", reg_config.CANTIDAD_PAGINAS);
@@ -144,7 +187,7 @@ t_reg_config get_config_params(void){
 			printf("No se encontro CANTIDAD_PAGINAS \n");
 	}
 
-	// 3 get TAMAÑO_PAGINA
+	// 4 get TAMAÑO_PAGINA
 	if (config_has_property(swap_config,"TAMANIO_PAGINA")){
 		reg_config.TAMANIO_PAGINA = config_get_int_value(swap_config,"TAMANIO_PAGINA");
 		printf("TAMANIO_PAGINA= %d \n", reg_config.TAMANIO_PAGINA);
@@ -154,7 +197,7 @@ t_reg_config get_config_params(void){
 			printf("No se encontro TAMANIO_PAGINA \n");
 	}
 
-	// 4 get RETARDO_COMPACTACION
+	// 5 get RETARDO_COMPACTACION
 	if (config_has_property(swap_config,"RETARDO_COMPACTACION")){
 		reg_config.RETARDO_COMPACTACION = config_get_int_value(swap_config,"RETARDO_COMPACTACION");
 		printf("RETARDO_COMPACTACION= %d \n", reg_config.RETARDO_COMPACTACION);
@@ -167,3 +210,22 @@ t_reg_config get_config_params(void){
 	config_destroy(swap_config);
 	return reg_config;
 }
+
+	//Conexiones
+
+	int conectarseConUMC(struct server servidor){
+		struct sockaddr_in direccionCliente;
+				unsigned int tamanioDireccion = sizeof(struct sockaddr);
+				int cliente = accept(servidor.socketServer, (struct sockaddr*) &direccionCliente, &tamanioDireccion);
+				if(cliente < 0){
+
+					perror("Falló el accept.");
+					printf("No se conecto.\n");
+
+				} else {
+
+					printf("Se conecto con la UMC.\n");
+					return cliente;
+
+				}
+	}
