@@ -8,6 +8,7 @@
 #ifndef SRC_ESTRUCTURASUMC_H_
 #define SRC_ESTRUCTURASUMC_H_
 
+#include <commons/collections/dictionary.h>
 
 typedef struct {
 	int PUERTO;
@@ -19,6 +20,11 @@ typedef struct {
 	int ENTRADAS_TLB;
 	int RETARDO;
 } t_reg_config;
+
+typedef struct{
+	int* id_programa;
+	t_dictionary* pag_marco;
+}proceso;
 
 typedef struct{
 	t_reg_config configuracionUMC;
@@ -37,9 +43,6 @@ typedef struct {
 } __attribute__((packed))
 id_programa;
 
-typedef struct{
-	int* id_programa;
-	t_dictionary* pag_marco;
-}proceso;
+
 
 #endif /* SRC_ESTRUCTURASUMC_H_ */

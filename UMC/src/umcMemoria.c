@@ -10,11 +10,14 @@
 #include <commons/collections/list.h>
 #include "estructurasUMC.h"
 
-void* memoriaPrincipal = memoriaPrincipal();
+void* memoriaPrincipal;
 t_list* marcosLibres;
+t_dictionary* tabla_actual;
+t_dictionary* programas_ejecucion;
 
 void* inicializarMemoria(t_reg_config* configuracionUMC){
 	marcosLibres = list_create();
+	programas_ejecucion = dictionary_create();
 	int i = 1;
 	int cantidadDeMarcos = (*configuracionUMC).MARCOS;
 	int tamanioMarcos = (*configuracionUMC).MARCO_SIZE;
@@ -28,20 +31,23 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 }
 
 
-int alocarPrograma(int paginasRequeridas, proceso* proceso_alocar){
+int alocarPrograma(int paginasRequeridas, int id_proceso){
 	if(list_size(memoriaPrincipal) < paginasRequeridas){
 		return -1;
 	}
 	else{
 		int i = 1;
+		t_dictionary* pag_frame = dictionary_create();
 		for(i = 1;i<=paginasRequeridas;i++){
 			char* pagina = malloc(sizeof(int));
 			*pagina = i;
 			//obtengo un marco y lo saco
 			void* nroMarco = list_remove(memoriaPrincipal,0);
 			//asigno marco a la pagina, DICCIONARIO YA DEBE ESTAR CREADO
-			dictionary_put(proceso_alocar->pag_marco,pagina,nroMarco);
+			dictionary_put(pag_frame,pagina,nroMarco);
 		}
+		dictionary_put(programas_ejecucion,(char *) &id_proceso,pag_frame);
+		tabla_actual = pag_frame;
 		return 0;
 	}
 }
@@ -56,4 +62,13 @@ int desalojarPrograma(proceso* proceso_desalojar){
 		list_add(marcoLibre,marcoLibre);
 	}
 	return 0;
+}
+
+
+void* obtenerBytes(){
+
+}
+
+void cambiarProceso(){
+
 }

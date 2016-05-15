@@ -36,6 +36,8 @@
 #define FINALIZACIONPROGRAMA 51
 
 umcNucleo *umcConfg;
+void atenderNucleo(pthread_attr_t atributo,int socketNucleo);
+void atenderCpu(pthread_attr_t atributo,int socketCPU);
 
 void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
 

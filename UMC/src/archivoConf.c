@@ -14,17 +14,6 @@
 void setearValorEntero(int* valorASetear,char* parametroABuscar);
 void setearValorChar(char* valorASetear,char* parametroABuscar);
 
-typedef struct {
-	int PUERTO;
-	char IP_SWAP[16];
-	int PUERTO_SWAP;
-	int MARCOS;
-	int MARCO_SIZE;
-	int MARCO_X_PROC;
-	int ENTRADAS_TLB;
-	int RETARDO;
-} t_reg_config;
-
 t_config * UMC_config = NULL;
 
 
