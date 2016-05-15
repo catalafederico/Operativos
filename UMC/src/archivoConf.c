@@ -9,6 +9,7 @@
 #include <commons/log.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "estructurasUMC.h"
 
 void setearValorEntero(int* valorASetear,char* parametroABuscar);
 void setearValorChar(char* valorASetear,char* parametroABuscar);

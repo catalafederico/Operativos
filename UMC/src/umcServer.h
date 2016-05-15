@@ -7,14 +7,10 @@
 
 #ifndef SRC_UMCSERVER_H_
 #define SRC_UMCSERVER_H_
-#include <sockets/socketServer.h>
 #include "archivoConf.h"
+#include "estructurasUMC.h"
+#include <sockets/socketServer.h>
 
-typedef struct{
-	t_reg_config configuracionUMC;
-	void* memoriaPrincipal;
-	int socketSwap;
-}umcNucleo;
 
 void ponerUmcAEscuchar(struct server* procesosServer,umcNucleo* umcConfg);
 

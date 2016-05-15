@@ -17,6 +17,7 @@
 #include "umcConsola.h"
 #include "archivoConf.h"
 #include "umcMemoria.h"
+#include "estructurasUMC.h"
 
 #define SERVERPORT 9999
 #define SERVERCLIENTE 9998

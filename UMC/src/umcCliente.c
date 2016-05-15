@@ -6,14 +6,14 @@
  */
 
 #include <sockets/basicFunciones.h>
+#include "estructurasUMC.h"
 #define creacionPrograma 60
-
-typedef struct {
-	int identificador;
-	int paginas_requeridas;
-} __attribute__((packed))
-id_programa;
+#define finalizacionPrograma 61
 
 void notificarASwapPrograma(id_programa* programaCreador, int socketSwap){
 	enviarStream(socketSwap,creacionPrograma,sizeof(id_programa),programaCreador);
+}
+
+void notificarASwapFinPrograma(int id, int socketSwap){
+	enviarStream(socketSwap,finalizacionPrograma,sizeof(id),id);
 }

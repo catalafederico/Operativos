@@ -19,19 +19,7 @@
 #include <sockets/header.h>
 #include <sockets/basicFunciones.h>
 #include "archivoConf.h"
-
-
-typedef struct{
-	t_reg_config configuracionUMC;
-	void* memoriaPrincipal;
-	int socketSwap;
-}umcNucleo;
-
-
-typedef struct{
-	umcNucleo* umcConfig;
-	int socket;
-}tempStruct;
+#include "estructurasUMC.h"
 
 void* conexionCpu(tempStruct socketCpu){
 	while(1){
