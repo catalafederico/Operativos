@@ -9,6 +9,10 @@
 #define SRC_UMCMEMORIA_H_
 
 void* inicializarMemoria(t_reg_config* configuracionUMC);
-int alocarPrograma(int paginasRequeridas, proceso* proceso_alocar);
+int alocarPrograma(int paginasRequeridas, int id_proceso);
+int desalojarPrograma(int id);
+void* obtenerBytesMemoria(int pagina,int offset,int tamanio);
+void almacenarBytes(int pagina, int offset, int tamanio, void* buffer);
+void cambiarProceso(int idProceso);
 
 #endif /* SRC_UMCMEMORIA_H_ */

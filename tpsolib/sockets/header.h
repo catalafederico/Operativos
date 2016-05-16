@@ -13,7 +13,11 @@
 #define CPU 3
 #define UMC 4
 #define SWAP 5
-#define NUEVOPROGRAMA 50 //Nucleo le manda umc, programa ansisop
-#define FINALIZACIONPROGRAMA 51 //Nucleo notifica q se termino programa ansisop
-
+#define OK 6
+#define ERROR 7
+#define NUEVOPROGRAMA 50
+#define FINALIZACIONPROGRAMA 51
+#define SOLICITARBYTES 52
+#define ALMACENARBYTES 53
+#define CAMBIOPROCESO 54
 #endif /* SOCKETS_HEADER_H_ */

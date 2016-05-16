@@ -6,6 +6,7 @@
  */
 #include "estructurasUMC.h"
 #include <stdio.h>
+#include <sockets/header.h>
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -17,7 +18,6 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <sockets/header.h>
 #include <sockets/basicFunciones.h>
 #include <commons/collections/list.h>
 #include <commons/collections/dictionary.h>
@@ -30,24 +30,54 @@ tempStruct* todoUMC;
 
 
 void inicializar_programa(int socket) {
-	id_programa nuevoPrograma;
 	int* id = (int*) recibirStream(socket, sizeof(int));
 	int* cantPag = (int*) recibirStream(socket, sizeof(int));
+	alocarPrograma(*cantPag,*id);
+	free(id);
+	free(cantPag);
 }
 
 void finalizar_programa(int socket){
 	int* id = (int*) recibirStream(socket, sizeof(int));
-	int i = 0;
-	while(i<list_size(programasEjecucion)){
-		proceso* tempPro = list_get(programasEjecucion,i);
-		if(*(tempPro->id_programa)==*id){
-			desalojarPrograma(tempPro);
-			notificarASwapFinPrograma(*id,todoUMC->umcConfig->socketSwap);
-			return;
-		}
-	}
+	desalojarPrograma(*id);
+	free(id);
 	return;
 }
+
+void* solicitar_Bytes(int socket){
+	int* pagina = (int*) recibirStream(socket, sizeof(int));
+	int* offset = (int*) recibirStream(socket, sizeof(int));
+	int* tamanio = (int*) recibirStream(socket, sizeof(int));
+	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
+	free(pagina);
+	free(offset);
+	free(tamanio);
+	return obtenido;
+}
+
+void change_Proceso(int socket){
+	int* idProceso = (int*) recibirStream(socket, sizeof(int));
+	cambiarProceso(*idProceso);
+	free(idProceso);
+}
+
+void almacenar_Byte(int socket){
+	int* pagina = (int*) recibirStream(socket, sizeof(int));
+	int* offset = (int*) recibirStream(socket, sizeof(int));
+	int* tamanio =(int*) recibirStream(socket, sizeof(int));
+	void* aAlmacenar = recibirStream(socket, *tamanio);
+	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
+	free(pagina);
+	free(offset);
+	free(tamanio);
+	free(aAlmacenar);
+	return;
+}
+
+
+
+
+
 
 
 void* conexionNucleo(tempStruct* socketNucleo){
@@ -61,9 +91,20 @@ void* conexionNucleo(tempStruct* socketNucleo){
 			case NUEVOPROGRAMA:
 				inicializar_programa(socketNucleo->umcConfig->socketSwap);
 				break;
+			case CAMBIOPROCESO:
+				change_Proceso(socketNucleo->umcConfig->socketSwap);
+				break;
+			case SOLICITARBYTES:
+				solicitar_Bytes(socketNucleo->umcConfig->socketSwap);
+				break;
+			case ALMACENARBYTES:
+				almacenar_Byte(socketNucleo->umcConfig->socketSwap);
+				break;
 			default:
 				break;
 		}
+
+		free(header);
 	}
 }
 

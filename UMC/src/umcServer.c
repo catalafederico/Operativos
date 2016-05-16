@@ -5,7 +5,7 @@
  *      Author: utnso
  */
 
-
+#include <sockets/header.h>
 #include <sockets/socketServer.h>
 //#include <sockets/basicFunciones.h>
 #include <stdio.h>
@@ -24,16 +24,6 @@
 #include "umcNucleo.h"
 #include <commons/config.h>
 #include "archivoConf.h"
-
-
-//Headers
-#define CONSOLA 1
-#define NUCLEO 2
-#define CPU 3
-#define UMC 4
-#define SWAP 5
-#define NUEVOPROGRAMA 50
-#define FINALIZACIONPROGRAMA 51
 
 umcNucleo *umcConfg;
 void atenderNucleo(pthread_attr_t atributo,int socketNucleo);
