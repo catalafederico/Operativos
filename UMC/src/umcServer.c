@@ -7,7 +7,7 @@
 
 
 #include <sockets/socketServer.h>
-#include <sockets/basicFunciones.h>
+//#include <sockets/basicFunciones.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -20,17 +20,32 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <commons/collections/list.h>
+#include <pthread.h>
+#include "umcNucleo.h"
+#include <commons/config.h>
+#include "archivoConf.h"
 
+
+//Headers
 #define CONSOLA 1
 #define NUCLEO 2
 #define CPU 3
 #define UMC 4
 #define SWAP 5
-#define NWCPU 50
+#define NUEVOPROGRAMA 50
+#define FINALIZACIONPROGRAMA 51
 
+umcNucleo *umcConfg;
+void atenderNucleo(pthread_attr_t atributo,int socketNucleo);
+void atenderCpu(pthread_attr_t atributo,int socketCPU);
 
+void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
 
-void ponerServerEscuchaSelect(struct server procesosServer){
+	umcConfg = umcTodo;
+	//Atributo para no hacer join de los thread
+	pthread_attr_t noJoin;
+	pthread_attr_init(&noJoin);
+	pthread_attr_setdetachstate(&noJoin,PTHREAD_CREATE_DETACHED);
 
 	//Tuto Select: http://www.tyr.unlu.edu.ar/tyr/TYR-trab/satobigal/documentacion/beej/advanced.html
 	int nroSocket=0;
@@ -56,22 +71,24 @@ void ponerServerEscuchaSelect(struct server procesosServer){
         			FD_SET(nuevaconexion,&descriptor_maestro);
         		}
         		else {
-        			int* header = leerHeader(nroSocket);
+        			int* header = (int*)leerHeader(nroSocket);
         			switch (*header) {
 						case CONSOLA:
 							enviarMensaje(nroSocket,"Te intentaste conectar a UMC\0");
 							break;
 						case NUCLEO:
 							enviarMensaje(nroSocket,"Te has conectado a UMC correctamente\0");
+							atenderNucleo(noJoin,nroSocket);
+							FD_CLR(nroSocket,&descriptor_maestro);
 							break;
 						case CPU:
 							enviarMensaje(nroSocket,"Te has conectado a UMC correctamente\0");
+							atenderCpu(noJoin, nroSocket);
+							FD_CLR(nroSocket,&descriptor_maestro);
 							break;
 							//VA A RECIBIR MAS INFO DE CPU, HACER OTRO RCV
 						case SWAP:
 							enviarMensaje(nroSocket,"Te intentaste conectar a UMC\0");
-							break;
-						case NWCPU:
 							break;
 						default:
 							break;
@@ -82,3 +99,24 @@ void ponerServerEscuchaSelect(struct server procesosServer){
         }
 	}
 }
+
+
+
+
+void atenderNucleo(pthread_attr_t atributo,int socketNucleo){
+	pthread_t nucleo;
+	tempStruct aMandar;
+	aMandar.umcConfig = umcConfg;
+	aMandar.socket = socketNucleo;
+	pthread_create(&nucleo,&atributo,conexionNucleo,&aMandar);
+}
+
+void atenderCpu(pthread_attr_t atributo,int socketCPU){
+	pthread_t cpu;
+	tempStruct aMandar;
+	aMandar.umcConfig = umcConfg;
+	aMandar.socket = socketCPU;
+	pthread_create(&cpu,&atributo,conexionNucleo,&aMandar);
+}
+
+

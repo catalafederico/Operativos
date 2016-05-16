@@ -12,49 +12,45 @@
 #include <signal.h>
 #include <commons/collections/list.h>
 #include <sockets/socketCliente.h>
+#include "umcServer.h"
 #include <sockets/socketServer.h>
 #include "umcConsola.h"
 #include "archivoConf.h"
+#include "umcMemoria.h"
+#include "estructurasUMC.h"
 
 #define SERVERPORT 9999
 #define SERVERCLIENTE 9998
 
-void sockets();
-void inicializacionConsola();
-t_reg_config configuracionUMC;
 
+void sockets();
 
 
 int main(void) {
+	umcNucleo umcConfg;
+	umcConfg.configuracionUMC = *get_config_params();
+	umcConfg.memoriaPrincipal = inicializarMemoria(&(umcConfg.configuracionUMC));
 
-	inicializacionConsola();
-	sleep(5);
+	struct cliente aSwap;
+	aSwap = crearCliente(6000,"127.0.0.1");
+	conectarConServidor(aSwap);
+	umcConfg.socketSwap = aSwap.socketCliente;
 
 	pthread_t consola;
 	pthread_t socket;
 
 	pthread_create(&consola,NULL,(void*)consolaUMC,NULL);
-	pthread_create(&socket,NULL,(void*)sockets,NULL);
+	pthread_create(&socket,NULL,(void*)sockets,&umcConfg);
 
 	pthread_join(consola,NULL);
-	pthread_join(socket,NULL);
 	return 0;
 }
 
-void sockets(){
+void sockets(umcNucleo* umcConfg){
 	struct server serverUMC;
-	serverUMC = crearServer(configuracionUMC.PUERTO);
-	ponerServerEscuchaSelect(serverUMC);
-	//Esto deberia ir en otro hilo
-	//Comentar la seccion de arriba y descomentar la de abajo para probar como cliente
+	serverUMC = crearServer(umcConfg->configuracionUMC.PUERTO);
+	ponerUmcAEscuchar(&serverUMC,umcConfg);
 }
 
-void inicializacionConsola(){
-	printf("Leyendo parametros de configuraion\n");
-	configuracionUMC = get_config_params();
-	printf("Parametros de configuraion leidos\n");
-	printf("Inicializando consola\n");
-	printf("Consola inicializada\n");
-}
 
 

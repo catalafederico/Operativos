@@ -19,6 +19,7 @@
 #include <commons/config.h>
 #include <sockets/socketCliente.h>
 #include <sockets/basicFunciones.h>
+#include <sockets/header.h>
 #include <commons/txt.h>
 #include <string.h>
 
@@ -52,9 +53,11 @@ int main(void) {
 		ch = fgetc(archivoAnsisop);
 	}
 
-	send((clienteConsola.socketCliente), buffer, strlen(buffer), 0);
-	close(clienteConsola.socketCliente);
+//send((clienteConsola.socketCliente), buffer, strlen(buffer), 0);
+	enviarStream(clienteConsola.socketCliente,CONSOLA,strlen(buffer),buffer);
 	free(buffer);
+	close(clienteConsola.socketCliente);
+
 
 
 

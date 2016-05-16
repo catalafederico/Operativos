@@ -9,25 +9,15 @@
 #include <commons/log.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "estructurasUMC.h"
 
 void setearValorEntero(int* valorASetear,char* parametroABuscar);
 void setearValorChar(char* valorASetear,char* parametroABuscar);
 
-typedef struct {
-	int PUERTO;
-	char IP_SWAP[16];
-	int PUERTO_SWAP;
-	int MARCOS;
-	int MARCO_SIZE;
-	int MARCO_X_PROC;
-	int ENTRADAS_TLB;
-	int RETARDO;
-} t_reg_config;
-
 t_config * UMC_config = NULL;
 
 
-t_reg_config get_config_params(){
+t_reg_config* get_config_params(){
 
 	char * UMC_config_path = "umc_config.cfg";
 	UMC_config = config_create(UMC_config_path);
@@ -45,7 +35,7 @@ t_reg_config get_config_params(){
 	setearValorEntero(&configuracion.RETARDO,"RETARDO");
 
 	config_destroy(UMC_config);
-	return configuracion;
+	return puntero_configuracion;
 }
 
 void setearValorEntero(int* valorASetear,char* parametroABuscar){
