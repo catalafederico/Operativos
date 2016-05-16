@@ -48,7 +48,11 @@ int conectarseConUMC(struct server servidor);
 
 void manejarConexionesConUMC(void);
 
-int recibirMensajes(int socketCliente);
+int recibirMensajes(void);
+
+int recibirHeader(void);
+
+void iniciar(void);
 
 int entraProceso(proceso proceso,int bitMap[]);
 
@@ -170,6 +174,10 @@ int main(void) {
 		}
 	}
 
+	void iniciar(void){
+
+	}
+
  //---------Funciones para crear el archivo y manejarlo
 
 void crearArchivo(){
@@ -271,41 +279,42 @@ t_reg_config get_config_params(void){
 					return cliente;
 
 				}
+	}
 
 			void manejarConexionesConUMC(void){
-				int status;
+				int status = 1;
 				struct server servidor;
-				    	servidor = crearServer(swap_config.PUERTO_ESCUCHA);
-				    	ponerServerEscucha(servidor);
-				    	printf("Escuchando UMC en socket %d \n", servidor.socketServer);
-				    	int clienteUMC = conectarseConUMC(servidor);
+				servidor = crearServer(swap_config.PUERTO_ESCUCHA);
+				ponerServerEscucha(servidor);
+				printf("Escuchando UMC en socket %d \n", servidor.socketServer);
+				socketAdministradorDeMemoria = conectarseConUMC(servidor);
 
 				    	while(status){
-				    		status = recibirMensajes(clienteUMC);
+				    		status = recibirMensajes();
 				    	}
 
-				    	printf("Desconectado\n")
+				    	printf("Desconectado.\n");
 
 			}
 
-			int recibirMensajes(int socketCliente){
+			int recibirMensajes(){
 
-				int header = recibirHeader(socketCliente);
+				int header = recibirHeader();
 
 					switch(header){
 
 					        case '60':
-								//iniciar();
+								iniciar();
 								return 1;
 
 							/*case '':
 								finalizar();
 								return 1;
 							case '':
-								//leer();
+								leer();
 								return 1;
 							case '':
-								//escribir();
+								escribir();
 								return 1;
 							break;
 							}*/
@@ -313,8 +322,8 @@ t_reg_config get_config_params(void){
 			}
 	}
 
-	char recibirHeader(int socketCliente){
+	int recibirHeader(void){
 		int header;
-		recv(socketCliente, &header, sizeof(header), 0);
+		recv(socketAdministradorDeMemoria, &header, sizeof(header), 0);
 		return header;
 	}
