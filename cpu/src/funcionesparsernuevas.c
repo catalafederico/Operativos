@@ -1,13 +1,25 @@
 
 #include "funcionesparsernuevas.h"
-
+#include "estructuras.h";
+#include <sockets/basicFunciones.h>
+#include <sockets/header.h>
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
 
+int socketMemoria;
+
+void inicialzarParser(int socketMem){
+	socketMemoria = socketMem;
+}
 
 //DefinirVariable
 t_puntero vardef(t_nombre_variable var){
 	printf("Se difinio variable: ");
+	solcUMC aSolicitar;
+	aSolicitar.pagina=0;
+	aSolicitar.offset=5;
+	aSolicitar.tamanio=10;
+	enviarStream(socketMemoria,52,sizeof(solcUMC),&aSolicitar);
 	return POSICION_MEMORIA;
 }
 

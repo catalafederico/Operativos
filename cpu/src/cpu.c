@@ -47,14 +47,15 @@ struct cliente clienteCpuNucleo;
 #define  SERVERNUCLEO 5001 // puerto del nucleo
 
 void conectarseConUMC(struct cliente clienteCpuUmc);
+void procesarInstruccion(char* instruccion);
 
 int main(void) {
 	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
 	conectarseConUMC(clienteCpuUmc);
-
-	clienteCpuUmc = crearCliente(SERVERNUCLEO, "127.0.0.1");
-	conectarseConUMC(clienteCpuNucleo);
-
+	inicialzarParser(clienteCpuUmc.socketCliente);
+	/*clienteCpuUmc = crearCliente(SERVERNUCLEO, "127.0.0.1");
+	conectarseConUMC(clienteCpuNucleo);*/
+	procesarInstruccion("variables a,b,c");
 
 	return 0;
 

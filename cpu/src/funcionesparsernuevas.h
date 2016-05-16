@@ -9,9 +9,6 @@
 #define FUNCIONESPARSERNUEVAS_H_
 
 	#include <parser/parser.h>
-
-	#include <stdio.h>
-
 	t_puntero vardef(t_nombre_variable var);
 	t_puntero getvarpos(t_nombre_variable var);
 	t_valor_variable derf(t_puntero puntero_var);
@@ -24,6 +21,7 @@
 	int imprimir(t_valor_variable var);
 	int imptxt(char* aimpprimir);
 	int ionotif(t_nombre_dispositivo ioname, int tiempo);
+	void inicialzarParser(int socketMem);
 	//int wait(t_nombre_semaforo semf);
 	//int signal(t_nombre_semaforo semf);
 

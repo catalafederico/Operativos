@@ -72,8 +72,12 @@ char* recibirMensaje(int socketCliente){
 }
 
 void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje){
-	send(socketDestino,header,sizeof(int),0);
-	send(socketDestino,mensaje,tamanioMensaje,0);
+	if(send(socketDestino,&header,sizeof(int),0)==-1){
+		perror("Error al enviar stream.");
+	}
+	if(send(socketDestino,mensaje,tamanioMensaje,0)==-1){
+		perror("Error al enviar stream.");
+	}
 
 }
 
@@ -81,8 +85,12 @@ void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
 //	PRIMERO SE RECIBE EL HEADER CON UN TAMANIO FIJO QUE ES TIPO t_head_mje
 	int bytesRecibidos;
 	void* recibido = malloc(tamanioEstructuraARecibir);
-	void* tempRcv;
+	void* tempRcv = malloc(tamanioEstructuraARecibir);
 	bytesRecibidos = recv(socketDondeRecibe,tempRcv,tamanioEstructuraARecibir,0);
+	if(bytesRecibidos == -1){
+		perror("error en recibir stream");
+		exit(-1);
+	}
 	memcpy(recibido,tempRcv,tamanioEstructuraARecibir);
 	if(bytesRecibidos<=0)
 	{

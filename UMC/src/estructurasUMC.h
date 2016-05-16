@@ -44,7 +44,7 @@ typedef struct{
 typedef struct {
 	int identificador;
 	int paginas_requeridas;
-} __attribute__((packed))
+}__attribute__((packed))
 id_programa;
 
 

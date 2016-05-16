@@ -5,9 +5,9 @@
  *      Author: utnso
  */
 
-#ifndef SRC_UMCNUCLEO_H_
-#define SRC_UMCNUCLEO_H_
+#ifndef SRC_UMCCPU_H_
+#define SRC_UMCCPU_H_
 
-void* conexionCpu(tempStruct socketCpu);
+void* conexionCpu(tempStruct* socketNucleo);
 
-#endif /* SRC_UMCNUCLEO_H_ */
+#endif /* SRC_UMCCPU_H_ */

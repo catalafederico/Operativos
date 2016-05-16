@@ -29,16 +29,19 @@ t_list* programasEjecucion;
 tempStruct* todoUMC;
 
 void* solicitar_Bytes(int socket){
-	int* pagina = (int*) recibirStream(socket, sizeof(int));
-	int* offset = (int*) recibirStream(socket, sizeof(int));
-	int* tamanio = (int*) recibirStream(socket, sizeof(int));
+	int* pagina = (int*) recibirStream(todoUMC->socket, sizeof(int));
+	int* offset = (int*) recibirStream(todoUMC->socket, sizeof(int));
+	int* tamanio = (int*) recibirStream(todoUMC->socket, sizeof(int));
 	log_info(todoUMC->umcConfig->loguer, "Obtener bytes iniciado");
-	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
+	printf("%d\n", *pagina);
+	printf("%d\n", *offset);
+	printf("%d\n", *tamanio);
+	//void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
 	log_info(todoUMC->umcConfig->loguer, "Obtener bytes terminado");
 	free(pagina);
 	free(offset);
 	free(tamanio);
-	return obtenido;
+	return ;
 }
 
 void almacenar_Byte(int socket){
@@ -56,18 +59,12 @@ void almacenar_Byte(int socket){
 	return;
 }
 
-
-
-
-
-
-
-void* conexionCPU(tempStruct* socketNucleo){
+void* conexionCpu(tempStruct* socketNucleo){
 	todoUMC = socketNucleo;
 	while(1){
-		int* header =(int *) recibirStream(socketNucleo->socket,sizeof(int));
+		int* header = leerHeader(socketNucleo->socket);
 		switch (*header) {
-			case SOLICITARBYTES:
+			case 52:
 				solicitar_Bytes(socketNucleo->umcConfig->socketSwap);
 				break;
 			case ALMACENARBYTES:
