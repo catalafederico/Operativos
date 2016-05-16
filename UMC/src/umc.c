@@ -18,6 +18,7 @@
 #include "archivoConf.h"
 #include "umcMemoria.h"
 #include "estructurasUMC.h"
+#include <commons/log.h>
 
 #define SERVERPORT 9999
 #define SERVERCLIENTE 9998
@@ -28,19 +29,35 @@ void sockets();
 
 int main(void) {
 	umcNucleo umcConfg;
+	umcConfg.loguer = log_create("logUMC.txt","UMC", false,LOG_LEVEL_INFO);
+
+	log_info(umcConfg.loguer, "Cargando parametros");
 	umcConfg.configuracionUMC = *get_config_params();
+	log_info(umcConfg.loguer, "Cargado parametros");
+
+	log_info(umcConfg.loguer, "Inicializando memoria");
 	umcConfg.memoriaPrincipal = inicializarMemoria(&(umcConfg.configuracionUMC));
+	log_info(umcConfg.loguer, "Memoria Inicializada");
 
 	struct cliente aSwap;
 	aSwap = crearCliente(6000,"127.0.0.1");
+
+	log_info(umcConfg.loguer, "Conectando a Swap");
 	conectarConServidor(aSwap);
+	log_info(umcConfg.loguer, "Conectado a Swap");
+
 	umcConfg.socketSwap = aSwap.socketCliente;
 
 	pthread_t consola;
 	pthread_t socket;
 
+	log_info(umcConfg.loguer, "Creando proceso consola");
 	pthread_create(&consola,NULL,(void*)consolaUMC,NULL);
+	log_info(umcConfg.loguer, "Proceso consola creado");
+
+	log_info(umcConfg.loguer, "Creando proceso umcServer");
 	pthread_create(&socket,NULL,(void*)sockets,&umcConfg);
+	log_info(umcConfg.loguer, "Proceso Creado");
 
 	pthread_join(consola,NULL);
 	return 0;

@@ -9,6 +9,7 @@
 #define SRC_ESTRUCTURASUMC_H_
 
 #include <commons/collections/dictionary.h>
+#include <commons/log.h>
 
 typedef struct {
 	int PUERTO;
@@ -30,6 +31,7 @@ typedef struct{
 	t_reg_config configuracionUMC;
 	void* memoriaPrincipal;
 	int socketSwap;
+	t_log* loguer;
 }umcNucleo;
 
 typedef struct{

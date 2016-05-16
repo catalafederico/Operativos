@@ -10,5 +10,6 @@
 #include "estructurasUMC.h"
 void notificarASwapPrograma(id_programa* programaCreador, int socketSwap);
 void notificarASwapFinPrograma(int id, int socketSwap);
+void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer, int socketSwap);
 
 #endif /* SRC_UMCCLIENTE_H_ */

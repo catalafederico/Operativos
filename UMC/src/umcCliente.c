@@ -6,14 +6,44 @@
  */
 
 #include <sockets/basicFunciones.h>
+#include <sockets/header.h>
 #include "estructurasUMC.h"
-#define creacionPrograma 60
-#define finalizacionPrograma 61
+
+typedef struct {
+	int id;
+	int pagina;
+	int offset;
+	int tamanio;
+} __attribute__((packed))
+aEnviar;
+
 
 void notificarASwapPrograma(id_programa* programaCreador, int socketSwap){
-	enviarStream(socketSwap,creacionPrograma,sizeof(id_programa),programaCreador);
+	enviarStream(socketSwap,NUEVOPROGRAMA,sizeof(id_programa),programaCreador);
 }
 
 void notificarASwapFinPrograma(int id, int socketSwap){
-	enviarStream(socketSwap,finalizacionPrograma,sizeof(id),id);
+	enviarStream(socketSwap,FINALIZACIONPROGRAMA,sizeof(id),id);
+}
+
+void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer, int socketSwap){
+	aEnviar almcenarSwap;
+	almcenarSwap.id = id;
+	almcenarSwap.pagina = pagina;
+	almcenarSwap.offset = offset;
+	almcenarSwap.tamanio = tamanio;
+
+	enviarStream(socketSwap,ALMACENARBYTES,sizeof(aEnviar),&almcenarSwap);
+	send(socketSwap,buffer,tamanio, 0);
+}
+
+void* solicitarEnSwap(int id, int pagina, int offset, int tamanio, int socketSwap){
+	aEnviar	solicitarSwap;
+	solicitarSwap.id = id;
+	solicitarSwap.pagina = pagina;
+	solicitarSwap.offset = offset;
+
+	enviarStream(socketSwap,SOLCITARBYTES,sizeof(aEnviar),&solicitarSwap);
+	void* recibido = recibirStream(socketSwap,tamanio);
+	return recibido;
 }
