@@ -126,50 +126,29 @@ void ponerServerEscuchaSelect(struct server procesosServer){
 }
 
 
-void hacerHandShake_server(int socketDestino, char * mensaje){
+char* hacerHandShake_server(int socketDestino, char * mensaje){
 
-//	VER DE HACER UNA CONSTANTE GLOBAL CON EL TAMANIO DEL HANDSHAKE
 	// Enviar mensaje
-/*	char *mje_saludo="Te conectaste con: ";
-	char * saludo = malloc(strlen(mje_saludo)+strlen(mensaje));
-	strcpy(saludo, mje_saludo);
-	strcat(saludo, mensaje);
-    if (send(socketDestino, saludo, strlen(saludo), 0) == -1){
+	char * mje_retorno = malloc(strlen(mensaje));
+    if (send(socketDestino, mje_retorno, strlen(mensaje), 0) == -1){
         perror("send");
-        free(saludo);
+        mje_retorno = (char *) realloc(mje_retorno,strlen("Error en el send"));
+		strcpy(mje_retorno,"Error en el send");
         close(socketDestino);
-        exit(0);
+    	return mje_retorno;
     }
-    free(saludo);
+
 	// Recibir Respuesta.
-	mje_saludo = recibirMensaje(socketDestino);
-	if(!strcmp("Se desconecto",mje_saludo)){
+    int long_mje = strlen(mensaje);
+    mje_retorno = recibirMensaje_tamanio(socketDestino,&long_mje);
+	if(!strcmp("Se desconecto",mje_retorno)){
 		perror("Se cerro la conexion");
+		mje_retorno = (char *) realloc(mje_retorno,strlen("Se cerro la conexion"));
+		strcpy(mje_retorno,"Se cerro la conexion");
         close(socketDestino);
-        exit(0);
+    	return mje_retorno;
 	}
-	printf ("%s\n", mje_saludo);
-	return mje_saludo;
-
+	return mje_retorno;
 }
-*/
-//	char* mensajeAEnviar;
-
-	if(recv(socketDestino,mensaje,strlen(mensaje),0)==-1){
-				perror("no se recibio mensaje");
-				close(socketDestino);
-				exit(0);
-			}
-	if (send(socketDestino,"hola",strlen("hola"),0)== -1){
-		        perror("send");
-		        close(socketDestino);
-		        exit(1);
-		    }
-
-
-
-		return;
-	}
-
 
 

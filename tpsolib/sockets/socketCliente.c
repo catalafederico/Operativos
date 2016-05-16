@@ -50,21 +50,28 @@ char* chatConProceso(int socketProceso, char* mensaje){
 	return esperarRespuestaServidor(socketProceso);
 }
 
-void hacerHandShake_cliente(struct cliente socket,char* mensaje){
-	char* mensajeRecibido;
+char* hacerHandShake_cliente(int socketDestino,char* mensaje){
+	char * mje_retorno = malloc(strlen(mensaje));
 
-	if (send(socket.socketServer,mensaje,strlen(mensaje),0)== -1){
-	        perror("send");
-	        close(socket.socketServer);
-	        exit(0);
-	    }
-
-	if(recv(socket.socketServer,mensajeRecibido,strlen(mensajeRecibido),0)==-1){
-		perror("no se recibio mensaje");
-		close(socket.socketServer);
-		exit(1);
+	// Recibir Saludo.
+	int long_mje = strlen(mensaje);
+	mje_retorno = recibirMensaje_tamanio(socketDestino,&long_mje);
+	if(!strcmp("Se desconecto",mje_retorno)){
+		perror("Se cerro la conexion");
+		mje_retorno = (char *) realloc(mje_retorno,strlen("Se cerro la conexion"));
+		strcpy(mje_retorno,"Se cerro la conexion");
+		close(socketDestino);
+		return mje_retorno;
 	}
+	// Enviar mensaje
+    if (send(socketDestino, mensaje, strlen(mensaje), 0) == -1){
+        perror("send");
+        mje_retorno = (char *) realloc(mje_retorno,strlen("Error en el send"));
+		strcpy(mje_retorno,"Error en el send");
+        close(socketDestino);
+    	return mje_retorno;
+    }
+	return mje_retorno;
 
-	printf("%s/n",mensajeRecibido);
-	return;
 }
+

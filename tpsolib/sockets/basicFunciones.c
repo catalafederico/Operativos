@@ -32,7 +32,7 @@ void abrirPuerto(int socket, struct sockaddr_in* adress){
 
 void escucharConexiones(int socket, int colamax){
 	if(listen(socket,colamax)==-1){
-		perror("No fue posible empesar la escucha. Fin del programa");
+		perror("No fue posible empezar la escucha. Fin del programa");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -96,21 +96,19 @@ void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
 
 char* recibirMensaje_tamanio(int socketCliente, int * long_mje){
 	int bytesRecibidos;
-	char cantcaracteres[*long_mje];
-	char* buf = (char *) malloc(sizeof(cantcaracteres));
-	bytesRecibidos = recv(socketCliente,buf,sizeof(cantcaracteres)-1,0);
+	char* buf = (char *) malloc(long_mje+1);
+	bytesRecibidos = recv(socketCliente,buf,long_mje,0);
 	if(bytesRecibidos<=0)
 	{
-		free(buf);
-		return "Se desconecto";
+		buf = (char *) realloc(buf,strlen("Se desconecto"));
+		strcpy(buf,"Se desconecto");
 	}
 	else
 	{
-		buf[bytesRecibidos]='\0';
-		buf = (char *) realloc(buf, bytesRecibidos+1);
-		*long_mje = bytesRecibidos+1;
-		return buf;
+		buf = (char *) realloc(buf, bytesRecibidos);
+		*long_mje = bytesRecibidos;
 	}
+	return buf;
 }
 
 void conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){

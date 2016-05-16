@@ -51,11 +51,11 @@ typedef struct {
 } t_reg_config;
 
 // CONSTANTES -----
-#define SOY_CPU 	"CPU____"
-#define SOY_UMC 	"UMC____"
-#define SOY_SWAP	"SWAP___"
-#define SOY_NUCLEO  "NUCLEO_"
-#define SOY_CONSOLA	"CONSOLA"
+#define SOY_CPU 	"Te_conectaste_con_CPU____"
+#define SOY_UMC 	"Te_conectaste_con_UMC____"
+#define SOY_SWAP	"Te_conectaste_con_SWAP___"  // 25 de long sin \0
+#define SOY_NUCLEO  "Te_conectaste_con_NUCLEO_"
+#define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
 
 // ****************************************** FUNCIONES.h  ******************************************
@@ -68,37 +68,44 @@ void *atender_conexion_CPU(void *socket_desc);
 void *atender_consola(void *socket_desc);
 
 void *atender_CPU(void *socket_desc);
+
 void roundRobin( int quantum);
 
 // ****************************************** FIN FUNCIONES.h ***************************************
 
 // **************************************************************************************************
-// ****************************************** FIN FUNCIONES.h ***************************************
+// ****************************************** MAIN           ***************************************
 // **************************************************************************************************
 int main(int argc, char **argv) {
+// Inicializa el log.
+	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
+
 // Leo archivo de configuracion ------------------------------
 	t_reg_config reg_config;
 	reg_config = get_config_params();
 
-// Inicializa el log.
-	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
+
+// Me conecto con la UMC
+//	struct cliente clienteNucleo;
+//	clienteNucleo = crearCliente(9999, "127.0.0.1");
+//	conectarConServidor(clienteNucleo);
+	//hacerHandShake_cliente()
+
 
 // Crear socket para CPU  ------------------------------
 	struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
 	ponerServerEscucha(serverPaCPU);
 	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
-	//printf("Escuchando Cpus en socket %d \n", serverPaCPU.socketServer);
+
 // crear lista para CPUs
 	cpus_dispo = list_create();
 
 // Crear thread para atender los procesos CPU
-
 	pthread_t thread_CPU;
 	if( pthread_create( &thread_CPU, NULL , atender_conexion_CPU, (void*) serverPaCPU.socketServer) < 0)
 	{
 		log_debug(logger, "No fue posible crear thread para CPU");
-		//perror("No fue posible crear thread p/ CPU");
 		exit(EXIT_FAILURE);
 	}
 
@@ -106,12 +113,15 @@ int main(int argc, char **argv) {
 	struct server serverPaConsolas;
 	serverPaConsolas = crearServer(reg_config.puerto_prog);
 	ponerServerEscucha(serverPaConsolas);
-	printf("Escuchando Consolas en socket %d \n", serverPaConsolas.socketServer);
+	log_debug(logger, "Escuchando Consolas en socket %d", serverPaConsolas.socketServer);
+
+
+
 // Crear thread para atender los procesos consola
 	pthread_t thread_consola;
 	if( pthread_create( &thread_consola , NULL , atender_conexion_consolas, (void*) serverPaConsolas.socketServer) < 0)
 	{
-		perror("No fue posible crear thread p/ consolas");
+		log_debug(logger, "No fue posible crear thread p/ consolas");
 		exit(EXIT_FAILURE);
 	}
 
@@ -132,32 +142,33 @@ void *atender_conexion_consolas(void *socket_desc){
 	int socket_local = (int)socket_desc;
 	aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
 	while(nuevaConexion){
-		printf("Se ha conectado una Consola\n");
 
-		pthread_attr_t attr;
+		log_debug(logger, "Se ha conectado una Consola");
+
+//		pthread_attr_t attr;
 		pthread_t thread_consola_con;
-		pthread_attr_init(&attr);
-		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+//		pthread_attr_init(&attr);
+//		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
 		socket_nuevo = malloc(sizeof(int));
 		*socket_nuevo = nuevaConexion;
-		if( pthread_create( &thread_consola_con , &attr , atender_consola, (void*) socket_nuevo) < 0)
+		if( pthread_create( &thread_consola_con , NULL /*&attr*/ , atender_consola, (void*) socket_nuevo) < 0)
 		{
-			perror("No fue posible crear thread p/ consolas");
+			log_debug(logger, "No fue posible crear thread p/ consolas");
 			exit(EXIT_FAILURE);
 		}
-		printf("Consola %d atendida \n", *socket_nuevo);
+		log_debug(logger, "Consola %d atendida", *socket_nuevo);
 
-		socket_local = (int)socket_desc; //*(int*)socket_desc;
+		socket_local = (int)socket_desc;
 		aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
 		if (nuevaConexion < 0)	{
-				perror("accept failed");
+			log_debug(logger, "accept failed");
 			//	exit(EXIT_FAILURE);
 			}
 	}
 
 	if (nuevaConexion < 0)	{
-		perror("accept failed");
+		log_debug(logger, "Accept failed");
 		exit(EXIT_FAILURE);
 	}
 	return NULL;
@@ -172,7 +183,7 @@ void *atender_conexion_CPU(void *socket_desc){
 	int socket_local = (int)socket_desc; //*(int*)socket_desc;
 	aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
 	while(nuevaConexion){
-		printf("Se ha conectado una CPU\n");
+		log_debug(logger, "Se ha conectado una CPU");
 
 		pthread_t thread_cpu_con;
 		socket_nuevo = malloc(sizeof(int));
@@ -180,23 +191,24 @@ void *atender_conexion_CPU(void *socket_desc){
 
 		if( pthread_create( &thread_cpu_con , NULL , atender_CPU, (void*) socket_nuevo) < 0)
 		{
-			perror("No fue posible crear thread p/ CPU");
+			log_debug(logger, "No fue posible crear thread p/ CPU");
 			exit(EXIT_FAILURE);
 		}
-		printf("CPU %d atendido \n", *socket_nuevo);
+		log_debug(logger, "CPU %d atendido", *socket_nuevo);
+
+
 	// agrego CPU a la lista de disponibles
-//		list_add(cpus_dispo,(void *) nuevaConexion);
 		list_add(cpus_dispo, socket_nuevo);
 		socket_local = (int)socket_desc; //*(int*)socket_desc;
 		aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
 		if (nuevaConexion < 0)	{
-				perror("accept failed");
+				log_debug(logger, "accept failed");
 			//	exit(EXIT_FAILURE);
 			}
 	}
 
 	if (nuevaConexion < 0)	{
-		perror("accept failed");
+		log_debug(logger, "accept failed");
 		exit(EXIT_FAILURE);
 	}
 	return NULL;
@@ -210,29 +222,31 @@ void *atender_consola(void *socket_desc){
 //		int read_size;
 //		t_head_mje header;
 
-//		char * mensajeHandShake = hacerHandShake_server(socket_co, SOY_NUCLEO); por ahora los sacamos
-
+		char * mensajeHandShake = hacerHandShake_server(socket_co, SOY_NUCLEO);
+//liberar mensajeHandShake
 		// Recibir Mensaje de consola.
 		int tamanio_mje = 256;
 		char * mje_recibido = recibirMensaje_tamanio(socket_co, &tamanio_mje);
 
 		if(!strcmp("Se desconecto",mje_recibido)){
-			perror("Se cerro la conexion");
+			log_debug(logger, "Se cerro la conexion");
 			free((void *) mje_recibido);
 			free(socket_desc);
 	        close(socket_co);
 	        exit(0);
 		}
-		printf ("Mensaje recibido de consola %d : %s \n", socket_co, mje_recibido);
+		log_debug(logger, "Mensaje recibido de consola %d : %s", socket_co, mje_recibido);
+
 
 		int i = 0;
 		// me fijo si hay Cpu disponible
 
 		while (list_is_empty(cpus_dispo)){
 			sleep(5);
-			printf ("No hay CPU disponoble, reintentando...");
-				}
-		//Envio mensaje a todas las CPU disponibles.
+			log_debug(logger, "No hay CPU disponoble, reintentando...");
+						}
+		//Envio mensaje a todas las CPU disponibles. verr
+
 		int fin_list = list_size(cpus_dispo);
 
 		int* cpu_destino;
@@ -316,92 +330,75 @@ t_reg_config get_config_params(void){
 	// 1 get PUERTO_PROG          --------------
 	if (config_has_property(archivo_config,"PUERTO_PROG")){
 		reg_config.puerto_prog = config_get_int_value(archivo_config,"PUERTO_PROG");
-		printf("PUERTO_PROG= %d \n", reg_config.puerto_prog);
-
+		log_debug(logger, "PUERTO_PROG= %d", reg_config.puerto_prog);
 	}
 	else{
-			printf("no se encontro PUERTO_PROG \n");
+		log_debug(logger, "No se encontro PUERTO_PROG");
 	}
 
 	// 2 get PUERTO_CPU
 	if (config_has_property(archivo_config,"PUERTO_CPU")){
 		reg_config.puerto_cpu = config_get_int_value(archivo_config,"PUERTO_CPU");
-		printf("PUERTO_CPU= %d \n", reg_config.puerto_cpu);
-
+		log_debug(logger, "PUERTO_CPU= %d", reg_config.puerto_cpu);
 	}
 	else{
-			printf("no se encontro PUERTO_CPU \n");
+		log_debug(logger, "No se encontro PUERTO_CPU");
 	}
 
 	// 3 get QUANTUM
 	if (config_has_property(archivo_config,"QUANTUM")){
 		reg_config.quantum = config_get_int_value(archivo_config,"QUANTUM");
-//		printf("QUANTUM= %d \n", reg_config.quantum);
-
 	}
 	else{
-			printf("no se encontro QUANTUM \n");
+		log_debug(logger, "No se encontro QUANTUM");
 	}
 
 	// 4 get QUANTUM_SLEEP
 	if (config_has_property(archivo_config,"QUANTUM_SLEEP")){
 		reg_config.quantum_sleep = config_get_int_value(archivo_config,"QUANTUM_SLEEP");
-//		printf("QUANTUM_SLEEP= %d \n", reg_config.quantum_sleep);
-
 	}
 	else{
-			printf("no se encontro QUANTUM_SLEEP \n");
+		log_debug(logger, "No se encontro QUANTUM_SLEEP");
 	}
 
 	// 5 get IO_ID
 	if (config_has_property(archivo_config,"IO_ID")){
 		reg_config.io_id = config_get_array_value(archivo_config,"IO_ID");
-
-//		printf("IO_ID= %s \n", reg_config.io_id);
-
 	}
 	else{
-			printf("no se encontro IO_ID \n");
+		log_debug(logger, "No se encontro IO_ID");
 	}
 
 	// 6 get IO_SLEEP
 	if (config_has_property(archivo_config,"IO_SLEEP")){
 		reg_config.io_sleep = (int *) config_get_array_value(archivo_config,"IO_SLEEP");
-//		printf("IO_SLEEP= %d \n", reg_config.io_sleep);
-
 	}
 	else{
-			printf("no se encontro IO_SLEEP \n");
+		log_debug(logger, "No se encontro IO_SLEEP");
 	}
 
 	// 7 get SEM_ID
 	if (config_has_property(archivo_config,"SEM_ID")){
 		reg_config.sem_id = config_get_array_value(archivo_config,"SEM_ID");
-//		printf("SEM_ID= %d \n", reg_config.sem_id);
-
 	}
 	else{
-			printf("no se encontro SEM_ID \n");
+		log_debug(logger, "No se encontro SEM_ID");
 	}
 
 	// 8 get SEM_INIT
 	if (config_has_property(archivo_config,"SEM_INIT")){
 		reg_config.sem_init = (int *) config_get_array_value(archivo_config,"SEM_INIT");
-//		printf("SEM_INIT= %d \n", *reg_config.sem_init);
-
 	}
 	else{
-			printf("no se encontro SEM_INIT \n");
+		log_debug(logger, "No se encontro SEM_INIT");
 	}
 
 	// 9 get SHARED_VARS
 	if (config_has_property(archivo_config,"SHARED_VARS")){
 		reg_config.shared_vars = config_get_array_value(archivo_config,"SHARED_VARS");
-//		printf("SHARED_VARS= %d \n", reg_config.shared_vars);
-
 	}
 	else{
-			printf("no se encontro SHARED_VARS \n");
+		log_debug(logger, "No se encontro SHARED_VARS");
 	}
 
 	config_destroy(archivo_config);
