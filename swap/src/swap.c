@@ -31,6 +31,11 @@ typedef struct {
 	int RETARDO_COMPACTACION;
 } t_reg_config;
 
+typedef struct{
+	int pid;
+	int cantidadDePaginas;
+}proceso;
+
 // Funciones
 
 t_reg_config get_config_params(void);
@@ -41,11 +46,25 @@ void inicializarArchivo();
 
 int conectarseConUMC(struct server servidor);
 
+void manejarConexionesConUMC(void);
+
+int recibirMensajes(int socketCliente);
+
+int entraProceso(proceso proceso,int bitMap[]);
+
+proceso crearProceso(int pid, int cantidadDePaginas);
+
 //Variables globales
 
 t_reg_config swap_config;
 
+int socketAdministradorDeMemoria;
+
 int main(void) {
+
+	//Variables locales
+
+	int bitMap[swap_config.CANTIDAD_PAGINAS];
 
 	//Creo el archivo de log
 	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
@@ -53,16 +72,15 @@ int main(void) {
 
 	swap_config = get_config_params();
 
+	//Archivo swap
+
     crearArchivo();
     inicializarArchivo();
 
+
     //Conexion
 
-    struct server servidor;
-    	servidor = crearServer(swap_config.PUERTO_ESCUCHA);
-    	ponerServerEscucha(servidor);
-    	printf("Escuchando UMC en socket %d \n", servidor.socketServer);
-    	int cliente = conectarseConUMC(servidor);
+    manejarConexionesConUMC();
 
 
 
@@ -126,6 +144,31 @@ int main(void) {
 
 		return 0;
 }
+
+ //----------Funciones para crear procesos y manejarlos
+
+	proceso crearProceso(int pid, int cantidadDePaginas){
+		proceso proceso;
+		proceso.pid = pid;
+		proceso.cantidadDePaginas = cantidadDePaginas;
+
+		return proceso;
+	}
+
+	int entraProceso(proceso proceso,int bitMap[]){
+
+		int paginasLibres;
+		int pag = 0;
+		for (pag ; pag < (swap_config.CANTIDAD_PAGINAS); ++pag) {
+			if(bitMap[pag]==0) paginasLibres++;
+		}
+
+		if(paginasLibres > proceso.cantidadDePaginas){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
 
  //---------Funciones para crear el archivo y manejarlo
 
@@ -228,4 +271,50 @@ t_reg_config get_config_params(void){
 					return cliente;
 
 				}
+
+			void manejarConexionesConUMC(void){
+				int status;
+				struct server servidor;
+				    	servidor = crearServer(swap_config.PUERTO_ESCUCHA);
+				    	ponerServerEscucha(servidor);
+				    	printf("Escuchando UMC en socket %d \n", servidor.socketServer);
+				    	int clienteUMC = conectarseConUMC(servidor);
+
+				    	while(status){
+				    		status = recibirMensajes(clienteUMC);
+				    	}
+
+				    	printf("Desconectado\n")
+
+			}
+
+			int recibirMensajes(int socketCliente){
+
+				int header = recibirHeader(socketCliente);
+
+					switch(header){
+
+					        case '60':
+								//iniciar();
+								return 1;
+
+							/*case '':
+								finalizar();
+								return 1;
+							case '':
+								//leer();
+								return 1;
+							case '':
+								//escribir();
+								return 1;
+							break;
+							}*/
+					return 0;
+			}
+	}
+
+	char recibirHeader(int socketCliente){
+		int header;
+		recv(socketCliente, &header, sizeof(header), 0);
+		return header;
 	}
