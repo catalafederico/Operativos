@@ -12,6 +12,6 @@
 #include <sockets/socketServer.h>
 
 
-void ponerUmcAEscuchar(struct server* procesosServer,umcNucleo* umcConfg);
+void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcConfg);
 
 #endif /* SRC_UMCSERVER_H_ */

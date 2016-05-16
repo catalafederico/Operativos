@@ -43,7 +43,7 @@ void* solicitarEnSwap(int id, int pagina, int offset, int tamanio, int socketSwa
 	solicitarSwap.pagina = pagina;
 	solicitarSwap.offset = offset;
 
-	enviarStream(socketSwap,SOLCITARBYTES,sizeof(aEnviar),&solicitarSwap);
+	enviarStream(socketSwap,SOLICITARBYTES,sizeof(aEnviar),&solicitarSwap);
 	void* recibido = recibirStream(socketSwap,tamanio);
 	return recibido;
 }

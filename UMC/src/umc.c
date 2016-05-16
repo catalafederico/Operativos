@@ -42,9 +42,9 @@ int main(void) {
 	struct cliente aSwap;
 	aSwap = crearCliente(6000,"127.0.0.1");
 
-	log_info(umcConfg.loguer, "Conectando a Swap");
+	/*log_info(umcConfg.loguer, "Conectando a Swap");
 	conectarConServidor(aSwap);
-	log_info(umcConfg.loguer, "Conectado a Swap");
+	log_info(umcConfg.loguer, "Conectado a Swap");*/
 
 	umcConfg.socketSwap = aSwap.socketCliente;
 
@@ -66,7 +66,7 @@ int main(void) {
 void sockets(umcNucleo* umcConfg){
 	struct server serverUMC;
 	serverUMC = crearServer(umcConfg->configuracionUMC.PUERTO);
-	ponerUmcAEscuchar(&serverUMC,umcConfg);
+	ponerUmcAEscuchar(serverUMC,umcConfg);
 }
 
 

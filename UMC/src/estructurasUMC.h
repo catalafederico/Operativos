@@ -10,6 +10,8 @@
 
 #include <commons/collections/dictionary.h>
 #include <commons/log.h>
+#include <commons/collections/list.h>
+#include <netinet/in.h>
 
 typedef struct {
 	int PUERTO;

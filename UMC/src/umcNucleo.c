@@ -48,7 +48,7 @@ void finalizar_programa(int socket){
 	return;
 }
 
-void* solicitar_Bytes(int socket){
+void* solicitar_Bytes_NL(int socket){
 	int* pagina = (int*) recibirStream(socket, sizeof(int));
 	int* offset = (int*) recibirStream(socket, sizeof(int));
 	int* tamanio = (int*) recibirStream(socket, sizeof(int));
@@ -68,7 +68,7 @@ void change_Proceso(int socket){
 	free(idProceso);
 }
 
-void almacenar_Byte(int socket){
+void almacenar_Byte_NL(int socket){
 	int* pagina = (int*) recibirStream(socket, sizeof(int));
 	int* offset = (int*) recibirStream(socket, sizeof(int));
 	int* tamanio =(int*) recibirStream(socket, sizeof(int));
@@ -104,10 +104,10 @@ void* conexionNucleo(tempStruct* socketNucleo){
 				change_Proceso(socketNucleo->umcConfig->socketSwap);
 				break;
 			case SOLICITARBYTES:
-				solicitar_Bytes(socketNucleo->umcConfig->socketSwap);
+				solicitar_Bytes_NL(socketNucleo->umcConfig->socketSwap);
 				break;
 			case ALMACENARBYTES:
-				almacenar_Byte(socketNucleo->umcConfig->socketSwap);
+				almacenar_Byte_NL(socketNucleo->umcConfig->socketSwap);
 				break;
 			default:
 				break;

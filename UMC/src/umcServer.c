@@ -6,7 +6,7 @@
  */
 
 #include <sockets/header.h>
-#include <sockets/socketServer.h>
+//#include <sockets/socketServer.h>
 //#include <sockets/basicFunciones.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,9 +25,19 @@
 #include <commons/config.h>
 #include "archivoConf.h"
 
+
+struct server{
+	int socketServer;
+	struct sockaddr_in direccion;
+	t_list* listaSockets;
+};
+
+
 umcNucleo *umcConfg;
 void atenderNucleo(pthread_attr_t atributo,int socketNucleo);
 void atenderCpu(pthread_attr_t atributo,int socketCPU);
+int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero);
+void enviarConfirmacion(int socket);
 
 void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
 
@@ -57,7 +67,8 @@ void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
         	for(nroSocket=0;nroSocket <= maxFichero;nroSocket++){
         		if(FD_ISSET(nroSocket,&descriptor_temporal)){
         		if(nroSocket==procesosServer.socketServer){
-        			int nuevaconexion = atenderConexionNuevaSelect(procesosServer,&maxFichero);
+        			int* tempMF = &maxFichero;
+        			int nuevaconexion = atenderConexionNuevaSelect(procesosServer,tempMF);
         			FD_SET(nuevaconexion,&descriptor_maestro);
         		}
         		else {
@@ -72,8 +83,8 @@ void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
 							FD_CLR(nroSocket,&descriptor_maestro);
 							break;
 						case CPU:
-							enviarMensaje(nroSocket,"Te has conectado a UMC correctamente\0");
 							atenderCpu(noJoin, nroSocket);
+							enviarConfirmacion(nroSocket);
 							FD_CLR(nroSocket,&descriptor_maestro);
 							break;
 							//VA A RECIBIR MAS INFO DE CPU, HACER OTRO RCV
@@ -109,4 +120,23 @@ void atenderCpu(pthread_attr_t atributo,int socketCPU){
 	pthread_create(&cpu,&atributo,conexionNucleo,&aMandar);
 }
 
+int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){
+
+	int nuevaConexion;//socket donde va a estar nueva conexion
+	struct sockaddr_in direccionEntrante;
+	aceptarConexion(&nuevaConexion,procesosServer.socketServer, &direccionEntrante);
+	// si es mayor sobreescribo
+	if(nuevaConexion > *maxfichero){
+		*maxfichero=nuevaConexion;
+	}
+	printf("Se ha conectado alguien\n");
+	return nuevaConexion;
+}
+
+void enviarConfirmacion(int socket){
+	int ok = 6;
+	if(send(socket,&ok,sizeof(int),0)==-1){
+		perror("no anda:\0");
+	}
+}
 

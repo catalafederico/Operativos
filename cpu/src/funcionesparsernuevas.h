@@ -24,7 +24,7 @@
 	int imprimir(t_valor_variable var);
 	int imptxt(char* aimpprimir);
 	int ionotif(t_nombre_dispositivo ioname, int tiempo);
-	int wait(t_nombre_semaforo semf);
-	int signal(t_nombre_semaforo semf);
+	//int wait(t_nombre_semaforo semf);
+	//int signal(t_nombre_semaforo semf);
 
 #endif /* FUNCIONESPARSERNUEVAS_H_ */

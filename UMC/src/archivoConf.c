@@ -35,7 +35,7 @@ t_reg_config* get_config_params(){
 	setearValorEntero(&configuracion.RETARDO,"RETARDO");
 
 	config_destroy(UMC_config);
-	return puntero_configuracion;
+	return &configuracion;
 }
 
 void setearValorEntero(int* valorASetear,char* parametroABuscar){

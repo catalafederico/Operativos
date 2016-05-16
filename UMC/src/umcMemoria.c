@@ -10,6 +10,7 @@
 #include <commons/collections/list.h>
 #include "estructurasUMC.h"
 #include "umcCliente.h"
+#include <pthread.h>
 
 void* memoriaPrincipal;
 t_reg_config* config_UMC;
@@ -21,14 +22,14 @@ int tamanioMarcos;
 pthread_mutex_t* semaforoMemoria;
 
 void* inicializarMemoria(t_reg_config* configuracionUMC){
-	pthread_mutex_init(semaforoMemoria,NULL);
+	//pthread_mutex_init(semaforoMemoria,NULL);
 	config_UMC = configuracionUMC;
 	marcosLibres = list_create();
 	programas_ejecucion = dictionary_create();
 	int i = 1;
 	int cantidadDeMarcos = (*configuracionUMC).MARCOS;
 	tamanioMarcos = (*configuracionUMC).MARCO_SIZE;
-	void* memoriaPrincipal = calloc(cantidadDeMarcos, tamanioMarcos);
+	memoriaPrincipal = calloc(cantidadDeMarcos, tamanioMarcos);
 	for(i = 1;i<=cantidadDeMarcos;i++){
 		int* tempMarcoNro = malloc(sizeof(int));
 		*tempMarcoNro = i;
@@ -97,7 +98,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 	pthread_mutex_lock(semaforoMemoria);
 	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
 	pthread_mutex_unlock(semaforoMemoria);
-	almacenarEnSwap(*idProcesoActual,pagina,tamanio,buffer);
+	almacenarEnSwap(*idProcesoActual,pagina,offset,tamanio,buffer,40);
 }
 
 void cambiarProceso(int idProceso){
