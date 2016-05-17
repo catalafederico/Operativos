@@ -8,8 +8,8 @@
 #ifndef SOCKETS_HEADER_H_
 #define SOCKETS_HEADER_H_
 
-#define SOLICITARBYTES 52
-#define ALMACENARBYTES 53
+#define SOLICITAR 52
+#define ALMACENAR 53
 #define CAMBIOPROCESO 54
 #define CONSOLA 1
 #define NUCLEO 2
