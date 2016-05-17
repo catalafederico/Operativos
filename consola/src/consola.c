@@ -54,21 +54,34 @@ int main(void) {
 		ch = fgetc(archivoAnsisop);
 	}
 
-//send((clienteConsola.socketCliente), buffer, strlen(buffer), 0);
-	enviarStream(clienteConsola.socketCliente,CONSOLA,strlen(buffer),buffer);
+	int consola = CONSOLA;
+	enviarStream(clienteConsola.socketCliente,consola,strlen(buffer),buffer);
+	free(&consola);
 	free(buffer);
-	escucharConexiones(clienteConsola.socketCliente,2);
-
-	aceptarConexion(clienteConsola.socketServer,clienteConsola.socketCliente,INADDR_ANY);
-	buff=malloc(128);
-	buff=recibirMensaje(clienteConsola.socketCliente);
-	printf("%s/n",buff);
-	free(buff);
+	int seguir = 1;
+	int* tamanio;
+	char* mensaje;
+	while(seguir){
+		int* header = leerHeader(clienteConsola.socketCliente);
+				switch (*header) {
+					case 100://imprimir
+						tamanio = recibirStream(clienteConsola.socketCliente,sizeof(int));
+						mensaje = recibirStream(clienteConsola.socketCliente,*tamanio);
+						printf("%s",mensaje);
+						break;
+					case 101://imprimirTexto
+						tamanio = recibirStream(clienteConsola.socketCliente,sizeof(int));
+						mensaje = recibirStream(clienteConsola.socketCliente,*tamanio);
+						printf("%s",mensaje);
+						break;
+					case -1://pierde conexion
+						printf("fin");
+						printf("desconectado");
+						seguir =0;
+						break;
+				}
+	}
 	close(clienteConsola.socketCliente);
-
-
-
-
 	return 0;
 }
 
