@@ -86,10 +86,10 @@ int main(int argc, char **argv) {
 
 
 // Me conecto con la UMC
-//	struct cliente clienteNucleo;
-//	clienteNucleo = crearCliente(9999, "127.0.0.1");
-//	conectarConServidor(clienteNucleo);
-	//hacerHandShake_cliente()
+	struct cliente clienteNucleo;
+	clienteNucleo = crearCliente(9999, "127.0.0.1");
+	conectarConServidor(clienteNucleo);
+	char * mensajeHandShake = hacerHandShake_cliente(clienteNucleo.socketServer, SOY_NUCLEO);
 
 
 // Crear socket para CPU  ------------------------------
