@@ -6,9 +6,9 @@
  */
 
 #include <sockets/basicFunciones.h>
-#include <sockets/header.h>
-#include "estructurasUMC.h"
 
+#include "estructurasUMC.h"
+#include <sockets/header.h>
 typedef struct {
 	int id;
 	int pagina;

@@ -27,6 +27,7 @@ int main(void) {
 	int ch;
 	char* buffer;
 	int size;
+	char* buff[128];
 	FILE *archivoAnsisop;
 	archivoAnsisop =fopen("/home/utnso/workspace/tp-2016-1c-Explosive-code/consola/facil.ansisop","r");
 
@@ -56,6 +57,12 @@ int main(void) {
 //send((clienteConsola.socketCliente), buffer, strlen(buffer), 0);
 	enviarStream(clienteConsola.socketCliente,CONSOLA,strlen(buffer),buffer);
 	free(buffer);
+	escucharConexiones(clienteConsola.socketCliente,2);
+	//accept = accept(clienteConsola.socketServer,clienteConsola.direccionDestino,sizeof(clienteConsola.direccionDestino));
+	aceptarConexion(clienteConsola.socketServer,clienteConsola.socketCliente,clienteConsola.direccionDestino);
+	buff=recibirMensaje(clienteConsola.socketCliente);
+	printf("%s/n",buff);
+	free(buff);
 	close(clienteConsola.socketCliente);
 
 
