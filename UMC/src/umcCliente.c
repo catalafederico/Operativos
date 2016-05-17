@@ -48,8 +48,8 @@ void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer){
 	almcenarSwap.pagina = pagina;
 	almcenarSwap.offset = offset;
 	almcenarSwap.tamanio = tamanio;
-
-	enviarStream(*socketSwap,ALMACENAR,sizeof(aEnviar),&almcenarSwap);
+	int almc = ALMACENAR;
+	enviarStream(*socketSwap,almc,sizeof(aEnviar),&almcenarSwap);
 	if(send(socketSwap,buffer,tamanio, 0)==-1){
 		perror("error al enviar");
 	};
@@ -60,8 +60,8 @@ void* solicitarEnSwap(int id, int pagina, int offset, int tamanio){
 	solicitarSwap.id = id;
 	solicitarSwap.pagina = pagina;
 	solicitarSwap.offset = offset;
-
-	enviarStream(*socketSwap,SOLICITAR,sizeof(aEnviar),&solicitarSwap);
+	int solc = SOLICITAR;
+	enviarStream(*socketSwap,solc,sizeof(aEnviar),&solicitarSwap);
 	void* recibido = recibirStream(socketSwap,tamanio);
 	return recibido;
 }

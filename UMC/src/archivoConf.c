@@ -24,7 +24,7 @@ t_reg_config* get_config_params(){
 	int a = sizeof(int)*7+sizeof(char)*16;
 	t_reg_config* puntero_configuracion = malloc(a);
 	t_reg_config configuracion = *puntero_configuracion;
-
+	configuracion.IP_SWAP = malloc(16);
 	setearValorEntero(&configuracion.PUERTO,"PUERTO");
 	setearValorChar(configuracion.IP_SWAP,"IP_SWAP");
 	setearValorEntero(&configuracion.PUERTO_SWAP,"PUERTO_SWAP");
