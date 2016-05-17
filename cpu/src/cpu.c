@@ -7,12 +7,11 @@
  Description : Hello World in C, Ansi-style
  ============================================================================
  */
-#include <parser/parser.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <errno.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -23,6 +22,7 @@
 #include <sockets/header.h>
 #include "funcionesparsernuevas.h"
 #include <sockets/socketCliente.h>
+#include <parser/parser.h>
 
 
 AnSISOP_funciones functions = {
@@ -56,9 +56,7 @@ int main(void) {
 	/*clienteCpuUmc = crearCliente(SERVERNUCLEO, "127.0.0.1");
 	conectarseConUMC(clienteCpuNucleo);*/
 	procesarInstruccion("variables a,b,c");
-
 	return 0;
-
 }
 
 void conectarseConUMC(struct cliente clienteCpuUmc){

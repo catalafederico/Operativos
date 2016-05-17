@@ -1,8 +1,9 @@
 
 #include "funcionesparsernuevas.h"
-#include "estructuras.h";
-#include <sockets/basicFunciones.h>
+#include "estructuras.h"
 #include <sockets/header.h>
+#include <sockets/basicFunciones.h>
+#include <string.h>
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
 

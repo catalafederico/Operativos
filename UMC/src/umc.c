@@ -18,6 +18,7 @@
 #include "archivoConf.h"
 #include "umcMemoria.h"
 #include "estructurasUMC.h"
+#include "umcCliente.h"
 #include <commons/log.h>
 
 #define SERVERPORT 9999
@@ -45,6 +46,7 @@ int main(void) {
 	/*log_info(umcConfg.loguer, "Conectando a Swap");
 	conectarConServidor(aSwap);
 	log_info(umcConfg.loguer, "Conectado a Swap");*/
+	inicializarSwap(&umcConfg.socketSwap);
 
 	umcConfg.socketSwap = aSwap.socketCliente;
 

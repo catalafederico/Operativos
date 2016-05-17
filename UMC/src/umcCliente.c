@@ -17,33 +17,51 @@ typedef struct {
 } __attribute__((packed))
 aEnviar;
 
+typedef struct {
+	int id;
+	int pag;
+}__attribute__((packed))
+newProgram;
 
-void notificarASwapPrograma(id_programa* programaCreador, int socketSwap){
-	enviarStream(socketSwap,NUEVOPROGRAMA,sizeof(id_programa),programaCreador);
+int* socketSwap;
+
+void inicializarSwap(int* socket){
+	socketSwap = socket;
 }
 
-void notificarASwapFinPrograma(int id, int socketSwap){
-	enviarStream(socketSwap,FINALIZACIONPROGRAMA,sizeof(id),id);
+void notificarASwapPrograma(int id,int paginas){
+	newProgram newProceso ;
+	newProceso.id = id;
+	newProceso.pag = paginas;
+	int nuevoPrograma = NUEVOPROGRAMA;
+	enviarStream(*socketSwap,nuevoPrograma,sizeof(int),&nuevoPrograma);
 }
 
-void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer, int socketSwap){
+void notificarASwapFinPrograma(int id){
+	int finalid = FINALIZACIONPROGRAMA;
+	enviarStream(*socketSwap,finalid,sizeof(id),id);
+}
+
+void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer){
 	aEnviar almcenarSwap;
 	almcenarSwap.id = id;
 	almcenarSwap.pagina = pagina;
 	almcenarSwap.offset = offset;
 	almcenarSwap.tamanio = tamanio;
 
-	enviarStream(socketSwap,ALMACENAR,sizeof(aEnviar),&almcenarSwap);
-	send(socketSwap,buffer,tamanio, 0);
+	enviarStream(*socketSwap,ALMACENAR,sizeof(aEnviar),&almcenarSwap);
+	if(send(socketSwap,buffer,tamanio, 0)==-1){
+		perror("error al enviar");
+	};
 }
 
-void* solicitarEnSwap(int id, int pagina, int offset, int tamanio, int socketSwap){
+void* solicitarEnSwap(int id, int pagina, int offset, int tamanio){
 	aEnviar	solicitarSwap;
 	solicitarSwap.id = id;
 	solicitarSwap.pagina = pagina;
 	solicitarSwap.offset = offset;
 
-	enviarStream(socketSwap,SOLICITAR,sizeof(aEnviar),&solicitarSwap);
+	enviarStream(*socketSwap,SOLICITAR,sizeof(aEnviar),&solicitarSwap);
 	void* recibido = recibirStream(socketSwap,tamanio);
 	return recibido;
 }

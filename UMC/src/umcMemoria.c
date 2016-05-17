@@ -26,6 +26,7 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 	config_UMC = configuracionUMC;
 	marcosLibres = list_create();
 	programas_ejecucion = dictionary_create();
+	idProcesoActual = malloc(sizeof(int));
 	int i = 1;
 	int cantidadDeMarcos = (*configuracionUMC).MARCOS;
 	tamanioMarcos = (*configuracionUMC).MARCO_SIZE;
@@ -40,7 +41,12 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 
 
 int alocarPrograma(int paginasRequeridas, int id_proceso){
-	if(list_size(memoriaPrincipal) < paginasRequeridas){
+	//Esto va para la entrega 2
+	notificarASwapPrograma(paginasRequeridas,id_proceso);
+	*idProcesoActual = id_proceso;
+	return 0;
+	//Esto es para la entrega 3
+	/*if(list_size(marcosLibres) < paginasRequeridas  && paginasRequeridas < todoUMC->umcConfig->configuracionUMC.MARCO_X_PROC){
 		return -1;
 	}
 	else{
@@ -60,12 +66,19 @@ int alocarPrograma(int paginasRequeridas, int id_proceso){
 		dictionary_put(programas_ejecucion,(char *) &id_proceso,pag_frame);
 
 		return 0;
-	}
+	}*/
+
 }
 
 
 int desalojarPrograma(int id){
-	t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,(char *)&id);
+
+	//Esto es de la entrega 2
+	notificarASwapFinPrograma(id);
+	return 0;
+
+	//Esto es mas de la entrega 3
+	/*t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,(char *)&id);
 	int cant_paginas = dictionary_size(tabla_desalojar);
 	int i;
 	pthread_mutex_lock(semaforoMemoria);
@@ -78,33 +91,45 @@ int desalojarPrograma(int id){
 	pthread_mutex_unlock(semaforoMemoria);
 	dictionary_destroy(tabla_desalojar);
 	int idRemovido = dictionary_remove(programas_ejecucion,(char *)&id);
-	return 0;
+	return 0;*/
 }
 
 
 void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
-	void* obtenido = malloc(tamanio);
+	//Esto es de la entrega 2
+	solicitarEnSwap(*idProcesoActual,pagina,offset,tamanio);
+
+
+	//Esto es mas de la entrega 3
+	/*void* obtenido = malloc(tamanio);
 	int marco = dictionary_get(tabla_actual,(char*)pagina);
 	int posicionDeMemoria = (marco*tamanioMarcos) + offset;
 	pthread_mutex_lock(semaforoMemoria);
 	memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
 	pthread_mutex_unlock(semaforoMemoria);
-	return obtenido;
+	return obtenido;*/
 }
 
 void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
-	int marco = dictionary_get(tabla_actual,(char*)pagina);
+	//Esto es de la entrega 2
+	almacenarEnSwap(*idProcesoActual,pagina,offset,tamanio,buffer);
+
+
+	//Esto es mas de la entrega 3
+	/*int marco = dictionary_get(tabla_actual,(char*)pagina);
 	int posicionDeMemoria = (marco*tamanioMarcos) + offset;
 	pthread_mutex_lock(semaforoMemoria);
 	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
 	pthread_mutex_unlock(semaforoMemoria);
-	almacenarEnSwap(*idProcesoActual,pagina,offset,tamanio,buffer,40);
+	almacenarEnSwap(*idProcesoActual,pagina,offset,tamanio,buffer,40);*/
 }
 
 void cambiarProceso(int idProceso){
-	//Ak un mutex para q no cambie y acceda
-	pthread_mutex_lock(semaforoMemoria);
+	//Esto es de la entrega 2
+	*idProcesoActual = idProceso;
+	//Esto es mas de la entrega 3
+	/*pthread_mutex_lock(semaforoMemoria);
 	tabla_actual = dictionary_get(programas_ejecucion,(char*)&idProceso);
 	*idProcesoActual = idProceso;
-	pthread_mutex_unlock(semaforoMemoria);
+	pthread_mutex_unlock(semaforoMemoria);*/
 }
