@@ -18,7 +18,6 @@
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <signal.h>
-
 #include <commons/collections/list.h>
 #include <commons/config.h>
 #include <commons/string.h>
@@ -49,6 +48,35 @@ typedef struct {
 	int * sem_init;
 	char ** shared_vars;
 } t_reg_config;
+//Pcb
+typedef struct{
+	unsigned int matriz[32][2],fila,col;
+
+
+}indiceCodigo;
+//indice de etiquetas falta
+//listas del stack
+typedef struct{
+	unsigned int lstArg;
+	struct lstArg* sig;
+}lstArg;
+typedef struct{
+	unsigned int lstVar;
+	struct lstVar* sig;
+}lstVar;
+// indice del stack
+typedef struct{
+	struct lstArg* args;
+	struct lstVar* vars;
+	int retPos;
+	int* retVar;
+}indiceStack;
+//creo PCB
+typedef struct{
+	int PID;
+	int PC;
+	int SP;
+};
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
