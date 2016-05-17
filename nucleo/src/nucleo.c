@@ -66,8 +66,8 @@ typedef struct{
 }lstVar;
 // indice del stack
 typedef struct{
-	struct lstArg* args;
-	struct lstVar* vars;
+	struct t_list* args;
+	struct l_list* vars;
 	int retPos;
 	int* retVar;
 }indiceStack;
