@@ -18,6 +18,7 @@
 #include <commons/log.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
+#include <commons/collections/list.h>
 
 
 
@@ -34,15 +35,16 @@ typedef struct {
 typedef struct{
 	int pid;
 	int cantidadDePaginas;
+	int comienzo;
 }proceso;
 
 // Funciones
 
 t_reg_config get_config_params(void);
 
-void crearArchivo();
+void crearArchivo(void);
 
-void inicializarArchivo();
+void inicializarArchivo(void);
 
 int conectarseConUMC(struct server servidor);
 
@@ -54,11 +56,11 @@ int recibirHeader(void);
 
 void iniciar(void);
 
-int entraProceso(proceso proceso,int bitMap[]);
+int entraProceso(proceso proceso);
 
 proceso crearProceso(int pid, int cantidadDePaginas);
 
-void inicializarBitMap(int bitMap[]);
+void inicializarBitMap(void);
 
 //Variables globales
 
@@ -66,88 +68,33 @@ t_reg_config swap_configuracion;
 
 int socketAdministradorDeMemoria;
 
+int *bitMap;
+
+t_list* listaDeProcesosEnSwap;
+
+
+
+
 int main(void) {
 
+
+	//Leo el archivo de configuración
 	swap_configuracion = get_config_params();
 
-	//Variables locales
-
-	int bitMap[swap_configuracion.CANTIDAD_PAGINAS];
-	inicializarBitMap(bitMap);
+	inicializarBitMap();
 
 	//Creo el archivo de log
-	//t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
+	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
 
 	//Archivo swap
-
     crearArchivo();
     inicializarArchivo();
-
 
     //Conexion
 
     manejarConexionesConUMC();
 
-
-
-/*struct sockaddr_in direccionServidor;
-		direccionServidor.sin_family = AF_INET;
-		direccionServidor.sin_addr.s_addr = INADDR_ANY;
-		direccionServidor.sin_port = htons(swap_config.PUERTO_ESCUCHA);
-
-		int servidor = socket(AF_INET, SOCK_STREAM, 0);
-		log_info(log_swap,"Socket creado correctamente.");
-
-		//En teoria permite reutilizar el puerto (A veces falla)
-		int activado = 1;
-		setsockopt(servidor, SOL_SOCKET, SO_REUSEADDR, &activado, sizeof(activado));
-
-		if (bind(servidor, (void*) &direccionServidor, sizeof(direccionServidor)) != 0) {
-			perror("Falló el bind");
-			log_info(log_swap,"El socket no se pudo asociar al puerto.");
-			return 1;
-		}
-		log_info(log_swap,"El socket se asocio correctamente al puerto.");
-
-		listen(servidor, 10);
-		printf("Estoy escuchando.\n");
-		log_info(log_swap,"El socket esta escuchando conexiones.");
-
-		struct sockaddr_in direccionCliente;
-		unsigned int tamanioDireccion = sizeof(struct sockaddr);
-		int cliente = accept(servidor, (struct sockaddr*) &direccionCliente, &tamanioDireccion);
-		if(cliente < 0){
-			perror("Falló el accept.");
-			printf("No se conecto.\n");
-			log_info(log_swap,"Falló el accept.");
-
-		} else {
-
-			printf("Se conecto.\n");
-			log_info(log_swap,"El socket establecio una conexion correctamente.");
-
-		}
-
-
-		printf("Recibí una conexión en %d!!\n", cliente);
-
-		char* buffer = malloc(1000);
-
-			while (1) {
-				int bytesRecibidos = recv(cliente, buffer, 1000, 0);
-				if (bytesRecibidos <= 0) {
-					perror("El cliente se desconectó.");
-					return 1;
-				}
-
-				buffer[bytesRecibidos] = '\0';
-				printf("Me llegaron %d bytes con %s\n", bytesRecibidos, buffer);
-			}
-
-			free(buffer);
-
-		send(cliente, "Hola!", 6, 0);*/
-
+    	free(bitMap);
 		return 0;
 }
 
@@ -161,7 +108,7 @@ int main(void) {
 		return proceso;
 	}
 
-	int entraProceso(proceso proceso,int bitMap[]){
+	int entraProceso(proceso proceso){
 
 		int paginasLibres;
 		int pag = 0;
@@ -176,9 +123,10 @@ int main(void) {
 		}
 	}
 
-	void inicializarBitMap(int bitMap[]){
+	void inicializarBitMap(){
 		int pag = 0;
 		int cantidadPaginas = swap_configuracion.CANTIDAD_PAGINAS;
+		bitMap = (int *)malloc (cantidadPaginas*sizeof(int));
 		for(; pag <= cantidadPaginas; pag++) {
 					bitMap[pag] = 0;
 					printf("Pagina %d: %d \n",pag,bitMap[pag]);
@@ -186,8 +134,17 @@ int main(void) {
 	}
 
 	void iniciar(void){
-
+		int pid;
+		int cantidadPaginas;
+		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
+		recv(socketAdministradorDeMemoria, &cantidadPaginas, sizeof(int), 0);
+		proceso proceso = crearProceso(pid, cantidadPaginas);
+		if(entraProceso(proceso)){
+			//El proceso entra, realizar insercion
+		} else {
+			//El proceso no entra, avisar rechazo
 	}
+}
 
  //---------Funciones para crear el archivo y manejarlo
 
