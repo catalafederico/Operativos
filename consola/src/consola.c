@@ -80,6 +80,8 @@ int main(void) {
 						seguir =0;
 						break;
 				}
+				free(tamanio);
+				free(mensaje);
 	}
 	close(clienteConsola.socketCliente);
 	return 0;
