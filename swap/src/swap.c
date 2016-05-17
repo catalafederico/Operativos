@@ -58,23 +58,25 @@ int entraProceso(proceso proceso,int bitMap[]);
 
 proceso crearProceso(int pid, int cantidadDePaginas);
 
+void inicializarBitMap(int bitMap[]);
+
 //Variables globales
 
-t_reg_config swap_config;
+t_reg_config swap_configuracion;
 
 int socketAdministradorDeMemoria;
 
 int main(void) {
 
+	swap_configuracion = get_config_params();
+
 	//Variables locales
 
-	int bitMap[swap_config.CANTIDAD_PAGINAS];
+	int bitMap[swap_configuracion.CANTIDAD_PAGINAS];
+	inicializarBitMap(bitMap);
 
 	//Creo el archivo de log
-	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
-
-
-	swap_config = get_config_params();
+	//t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
 
 	//Archivo swap
 
@@ -163,7 +165,7 @@ int main(void) {
 
 		int paginasLibres;
 		int pag = 0;
-		for (pag ; pag < (swap_config.CANTIDAD_PAGINAS); ++pag) {
+		for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
 			if(bitMap[pag]==0) paginasLibres++;
 		}
 
@@ -174,6 +176,15 @@ int main(void) {
 		}
 	}
 
+	void inicializarBitMap(int bitMap[]){
+		int pag = 0;
+		int cantidadPaginas = swap_configuracion.CANTIDAD_PAGINAS;
+		for(; pag <= cantidadPaginas; pag++) {
+					bitMap[pag] = 0;
+					printf("Pagina %d: %d \n",pag,bitMap[pag]);
+				}
+	}
+
 	void iniciar(void){
 
 	}
@@ -182,17 +193,17 @@ int main(void) {
 
 void crearArchivo(){
 	char* datos = malloc(100);
-	sprintf(datos,"dd if=/dev/zero of=%s bs=%d count=%d",swap_config.NOMBRE_SWAP,swap_config.TAMANIO_PAGINA,swap_config.CANTIDAD_PAGINAS);
+	sprintf(datos,"dd if=/dev/zero of=%s bs=%d count=%d",swap_configuracion.NOMBRE_SWAP,swap_configuracion.TAMANIO_PAGINA,swap_configuracion.CANTIDAD_PAGINAS);
 	system(datos);
 	free(datos);
 	printf("El archivo se crea correctamente.\n");
 }
 
 void inicializarArchivo(){
-	FILE* archivo = fopen(swap_config.NOMBRE_SWAP,"r+");
+	FILE* archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
 		fseek(archivo,0,SEEK_END);
-		char* texto = malloc(swap_config.CANTIDAD_PAGINAS*swap_config.TAMANIO_PAGINA);
-		memset(texto,'\0',swap_config.CANTIDAD_PAGINAS*swap_config.TAMANIO_PAGINA);
+		char* texto = malloc(swap_configuracion.CANTIDAD_PAGINAS*swap_configuracion.TAMANIO_PAGINA);
+		memset(texto,'\0',swap_configuracion.CANTIDAD_PAGINAS*swap_configuracion.TAMANIO_PAGINA);
 		fwrite(texto,sizeof(char),sizeof(texto), archivo );
 		free(texto);
 		fclose(archivo);
@@ -258,8 +269,10 @@ t_reg_config get_config_params(void){
 			printf("No se encontro RETARDO_COMPACTACION \n");
 	}
 
-	config_destroy(swap_config);
 	return reg_config;
+
+	config_destroy(swap_config);
+
 }
 
 	//Conexiones
@@ -284,7 +297,7 @@ t_reg_config get_config_params(void){
 			void manejarConexionesConUMC(void){
 				int status = 1;
 				struct server servidor;
-				servidor = crearServer(swap_config.PUERTO_ESCUCHA);
+				servidor = crearServer(swap_configuracion.PUERTO_ESCUCHA);
 				ponerServerEscucha(servidor);
 				printf("Escuchando UMC en socket %d \n", servidor.socketServer);
 				socketAdministradorDeMemoria = conectarseConUMC(servidor);
