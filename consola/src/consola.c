@@ -59,7 +59,7 @@ int main(void) {
 	free(buffer);
 	escucharConexiones(clienteConsola.socketCliente,2);
 
-	aceptarConexion(clienteConsola.socketServer,clienteConsola.socketCliente,);
+	aceptarConexion(clienteConsola.socketServer,clienteConsola.socketCliente,INADDR_ANY);
 	buff=malloc(128);
 	buff=recibirMensaje(clienteConsola.socketCliente);
 	printf("%s/n",buff);
