@@ -50,20 +50,9 @@ typedef struct {
 } t_reg_config;
 //Pcb
 typedef struct{
-	unsigned int matriz[32][2],fila,col;
-
-
+	 int matriz[4][2],fila,col;
 }indiceCodigo;
-//indice de etiquetas falta
-//listas del stack
-typedef struct{
-	unsigned int lstArg;
-	struct lstArg* sig;
-}lstArg;
-typedef struct{
-	unsigned int lstVar;
-	struct lstVar* sig;
-}lstVar;
+//indice de etiquetas declaro en main
 // indice del stack
 typedef struct{
 	struct t_list* args;
@@ -76,7 +65,7 @@ typedef struct{
 	int PID;
 	int PC;
 	int SP;
-};
+}PCB;
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -105,6 +94,8 @@ void roundRobin( int quantum);
 // ****************************************** MAIN           ***************************************
 // **************************************************************************************************
 int main(int argc, char **argv) {
+	//declaro indice etiquetas
+	t_dictionary indiceEtiquetas;
 // Inicializa el log.
 	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
 
