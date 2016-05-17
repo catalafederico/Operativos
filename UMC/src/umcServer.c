@@ -80,27 +80,28 @@ void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
         			int* header = (int*)leerHeader(nroSocket);
         			switch (*header) {
 						case CONSOLA:
-							enviarMensaje(nroSocket,"Te intentaste conectar a UMC\0");
+							enviarError(nroSocket);
 							break;
 						case NUCLEO:
-							enviarMensaje(nroSocket,"Te has conectado a UMC correctamente\0");
+							log_info(umcTodo->loguer, "handshake cpu");
 							atenderNucleo(noJoin,nroSocket);
-							FD_CLR(nroSocket,&descriptor_maestro);
+							enviarConfirmacion(nroSocket);
+							log_info(umcTodo->loguer, "handshake cpu terminado");
 							break;
 						case CPU:
 							log_info(umcTodo->loguer, "handshake cpu");
 							atenderCpu(noJoin, nroSocket);
 							enviarConfirmacion(nroSocket);
-							FD_CLR(nroSocket,&descriptor_maestro);
 							log_info(umcTodo->loguer, "handshake cpu terminado");
 							break;
 							//VA A RECIBIR MAS INFO DE CPU, HACER OTRO RCV
 						case SWAP:
-							enviarMensaje(nroSocket,"Te intentaste conectar a UMC\0");
+							enviarError(nroSocket);
 							break;
 						default:
 							break;
 					}
+        			FD_CLR(nroSocket,&descriptor_maestro);
 
         		}
         	}
@@ -147,6 +148,13 @@ int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){
 void enviarConfirmacion(int socket){
 	int ok = 6;
 	if(send(socket,&ok,sizeof(int),0)==-1){
+		perror("no anda:\0");
+	}
+}
+
+void enviarError(int socket){
+	int error = 7;
+	if(send(socket,&error,sizeof(int),0)==-1){
 		perror("no anda:\0");
 	}
 }

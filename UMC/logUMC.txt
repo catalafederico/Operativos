@@ -1,0 +1,10 @@
+[INFO] 22:17:23:457 UMC/(4539:4539): Cargando parametros
+[INFO] 22:17:23:479 UMC/(4539:4539): Cargado parametros
+[INFO] 22:17:23:479 UMC/(4539:4539): Inicializando memoria
+[INFO] 22:17:23:479 UMC/(4539:4539): Memoria Inicializada
+[INFO] 22:17:23:479 UMC/(4539:4539): Creando proceso consola
+[INFO] 22:17:23:479 UMC/(4539:4539): Proceso consola creado
+[INFO] 22:17:23:479 UMC/(4539:4539): Creando proceso umcServer
+[INFO] 22:17:23:480 UMC/(4539:4539): Proceso Creado
+[INFO] 22:17:23:481 UMC/(4539:4544): iniciando escucha de la umc
+[INFO] 22:17:23:506 UMC/(4539:4544): umc escuchando

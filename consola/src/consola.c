@@ -27,6 +27,7 @@ int main(void) {
 	int ch;
 	char* buffer;
 	int size;
+	char* buff;
 	FILE *archivoAnsisop;
 	archivoAnsisop =fopen("/home/utnso/workspace/tp-2016-1c-Explosive-code/consola/facil.ansisop","r");
 
@@ -53,14 +54,36 @@ int main(void) {
 		ch = fgetc(archivoAnsisop);
 	}
 
-//send((clienteConsola.socketCliente), buffer, strlen(buffer), 0);
-	enviarStream(clienteConsola.socketCliente,CONSOLA,strlen(buffer),buffer);
+	int consola = CONSOLA;
+	enviarStream(clienteConsola.socketCliente,consola,strlen(buffer),buffer);
+	free(&consola);
 	free(buffer);
+	int seguir = 1;
+	int* tamanio;
+	char* mensaje;
+	while(seguir){
+		int* header = leerHeader(clienteConsola.socketCliente);
+				switch (*header) {
+					case 100://imprimir
+						tamanio = recibirStream(clienteConsola.socketCliente,sizeof(int));
+						mensaje = recibirStream(clienteConsola.socketCliente,*tamanio);
+						printf("%s",mensaje);
+						break;
+					case 101://imprimirTexto
+						tamanio = recibirStream(clienteConsola.socketCliente,sizeof(int));
+						mensaje = recibirStream(clienteConsola.socketCliente,*tamanio);
+						printf("%s",mensaje);
+						break;
+					case -1://pierde conexion
+						printf("fin");
+						printf("desconectado");
+						seguir =0;
+						break;
+				}
+				free(tamanio);
+				free(mensaje);
+	}
 	close(clienteConsola.socketCliente);
-
-
-
-
 	return 0;
 }
 

@@ -18,11 +18,8 @@
 #include "archivoConf.h"
 #include "umcMemoria.h"
 #include "estructurasUMC.h"
+#include "umcCliente.h"
 #include <commons/log.h>
-
-#define SERVERPORT 9999
-#define SERVERCLIENTE 9998
-
 
 void sockets();
 
@@ -40,11 +37,11 @@ int main(void) {
 	log_info(umcConfg.loguer, "Memoria Inicializada");
 
 	struct cliente aSwap;
-	aSwap = crearCliente(6000,"127.0.0.1");
-
-	/*log_info(umcConfg.loguer, "Conectando a Swap");
+	aSwap = crearCliente(umcConfg.configuracionUMC.PUERTO_SWAP,"127.0.0.1");
+	log_info(umcConfg.loguer, "Conectando a Swap Puerto: %d Direc: %s",umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
 	conectarConServidor(aSwap);
-	log_info(umcConfg.loguer, "Conectado a Swap");*/
+	log_info(umcConfg.loguer, "Conectado a Swap socket: %d", aSwap.socketCliente);
+	inicializarSwap(&umcConfg.socketSwap);
 
 	umcConfg.socketSwap = aSwap.socketCliente;
 

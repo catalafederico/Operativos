@@ -8,8 +8,11 @@
 #ifndef SRC_UMCCLIENTE_H_
 #define SRC_UMCCLIENTE_H_
 #include "estructurasUMC.h"
-void notificarASwapPrograma(id_programa* programaCreador, int socketSwap);
-void notificarASwapFinPrograma(int id, int socketSwap);
-void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer, int socketSwap);
+
+void inicializarSwap(int* socket);
+void notificarASwapPrograma(int id,int paginas);
+void notificarASwapFinPrograma(int id);
+void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer);
+void* solicitarEnSwap(int id, int pagina, int offset, int tamanio);
 
 #endif /* SRC_UMCCLIENTE_H_ */

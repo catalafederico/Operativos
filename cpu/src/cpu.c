@@ -7,12 +7,11 @@
  Description : Hello World in C, Ansi-style
  ============================================================================
  */
-#include <parser/parser.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <errno.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -23,6 +22,7 @@
 #include <sockets/header.h>
 #include "funcionesparsernuevas.h"
 #include <sockets/socketCliente.h>
+#include <parser/parser.h>
 
 
 AnSISOP_funciones functions = {
@@ -50,15 +50,34 @@ void conectarseConUMC(struct cliente clienteCpuUmc);
 void procesarInstruccion(char* instruccion);
 
 int main(void) {
+
+	//Empieza conexion UMC
 	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
 	conectarseConUMC(clienteCpuUmc);
+	//Termina conexion UMC
+
+	//Empieza conexion Nucleo
+	clienteCpuNucleo = crearCliente(SERVERNUCLEO, "127.0.0.1");
+	conectarseConNucleo(clienteCpuNucleo);
+	//Termina conexion Nucleo
+
+	//Le paso el socket de la umc, para no pasarlo x cada pedido
 	inicialzarParser(clienteCpuUmc.socketCliente);
-	/*clienteCpuUmc = crearCliente(SERVERNUCLEO, "127.0.0.1");
-	conectarseConUMC(clienteCpuNucleo);*/
-	procesarInstruccion("variables a,b,c");
 
+	//Empieza la escucha de nucleo
+	int seguir = 1;
+	while(seguir){
+		int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
+		switch (*header) {
+			case 163://Recibir PCB
+
+				break;
+			default:
+				break;
+		}
+		free(header);
+	}
 	return 0;
-
 }
 
 void conectarseConUMC(struct cliente clienteCpuUmc){
@@ -70,6 +89,21 @@ void conectarseConUMC(struct cliente clienteCpuUmc){
 		perror("no anda:\0");
 	}
 	int* recibido = recibirStream(clienteCpuUmc.socketCliente,sizeof(int));
+	if(*recibido==OK){
+		printf("Se ha conectado correctamente con UMC.\n");
+	}
+	//Termina Handshake
+}
+
+void conectarseConNucleo(struct cliente clienteCpuNucleo){
+	conectarConServidor(clienteCpuNucleo);
+	int cpuid = CPU;
+	//Empieza handshake
+	if(send(clienteCpuNucleo.socketCliente,&cpuid,sizeof(int),0)==-1){
+		printf("no se ha podido conectar con UMC.\n");
+		perror("no anda:\0");
+	}
+	int* recibido = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
 	if(*recibido==OK){
 		printf("Se ha conectado correctamente con UMC.\n");
 	}

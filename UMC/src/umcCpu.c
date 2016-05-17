@@ -33,15 +33,12 @@ void* solicitar_Bytes(int socket){
 	int* offset = (int*) recibirStream(todoUMC->socket, sizeof(int));
 	int* tamanio = (int*) recibirStream(todoUMC->socket, sizeof(int));
 	log_info(todoUMC->umcConfig->loguer, "Obtener bytes iniciado");
-	printf("%d\n", *pagina);
-	printf("%d\n", *offset);
-	printf("%d\n", *tamanio);
-	//void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
+	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
 	log_info(todoUMC->umcConfig->loguer, "Obtener bytes terminado");
 	free(pagina);
 	free(offset);
 	free(tamanio);
-	return ;
+	return obtenido;
 }
 
 void almacenar_Byte(int socket){
@@ -61,19 +58,24 @@ void almacenar_Byte(int socket){
 
 void* conexionCpu(tempStruct* socketNucleo){
 	todoUMC = socketNucleo;
-	while(1){
+	int seguir = 1;
+	while(seguir){
 		int* header = leerHeader(socketNucleo->socket);
 		switch (*header) {
-			case 52:
+			case 52://SOLICITAR
 				solicitar_Bytes(socketNucleo->umcConfig->socketSwap);
 				break;
-			case ALMACENARBYTES:
+			case 53://ALMACENAR
 				almacenar_Byte(socketNucleo->umcConfig->socketSwap);
+				break;
+			case -1:
+				printf("Perdida la conexion con cpu\n");
+				close(socketNucleo->socket);
+				seguir = 0;
 				break;
 			default:
 				break;
 		}
-
 		free(header);
 	}
 }

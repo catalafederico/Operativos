@@ -18,6 +18,7 @@
 #include <commons/log.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
+#include <commons/collections/list.h>
 
 
 
@@ -34,15 +35,16 @@ typedef struct {
 typedef struct{
 	int pid;
 	int cantidadDePaginas;
+	int comienzo;
 }proceso;
 
 // Funciones
 
 t_reg_config get_config_params(void);
 
-void crearArchivo();
+void crearArchivo(void);
 
-void inicializarArchivo();
+void inicializarArchivo(void);
 
 int conectarseConUMC(struct server servidor);
 
@@ -54,98 +56,45 @@ int recibirHeader(void);
 
 void iniciar(void);
 
-int entraProceso(proceso proceso,int bitMap[]);
+int entraProceso(proceso proceso);
 
 proceso crearProceso(int pid, int cantidadDePaginas);
 
+void inicializarBitMap(void);
+
 //Variables globales
 
-t_reg_config swap_config;
+t_reg_config swap_configuracion;
 
 int socketAdministradorDeMemoria;
 
+int *bitMap;
+
+t_list* listaDeProcesosEnSwap;
+
+
+
+
 int main(void) {
 
-	//Variables locales
 
-	int bitMap[swap_config.CANTIDAD_PAGINAS];
+	//Leo el archivo de configuración
+	swap_configuracion = get_config_params();
+
+	inicializarBitMap();
 
 	//Creo el archivo de log
 	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
 
-
-	swap_config = get_config_params();
-
 	//Archivo swap
-
     crearArchivo();
     inicializarArchivo();
-
 
     //Conexion
 
     manejarConexionesConUMC();
 
-
-
-/*struct sockaddr_in direccionServidor;
-		direccionServidor.sin_family = AF_INET;
-		direccionServidor.sin_addr.s_addr = INADDR_ANY;
-		direccionServidor.sin_port = htons(swap_config.PUERTO_ESCUCHA);
-
-		int servidor = socket(AF_INET, SOCK_STREAM, 0);
-		log_info(log_swap,"Socket creado correctamente.");
-
-		//En teoria permite reutilizar el puerto (A veces falla)
-		int activado = 1;
-		setsockopt(servidor, SOL_SOCKET, SO_REUSEADDR, &activado, sizeof(activado));
-
-		if (bind(servidor, (void*) &direccionServidor, sizeof(direccionServidor)) != 0) {
-			perror("Falló el bind");
-			log_info(log_swap,"El socket no se pudo asociar al puerto.");
-			return 1;
-		}
-		log_info(log_swap,"El socket se asocio correctamente al puerto.");
-
-		listen(servidor, 10);
-		printf("Estoy escuchando.\n");
-		log_info(log_swap,"El socket esta escuchando conexiones.");
-
-		struct sockaddr_in direccionCliente;
-		unsigned int tamanioDireccion = sizeof(struct sockaddr);
-		int cliente = accept(servidor, (struct sockaddr*) &direccionCliente, &tamanioDireccion);
-		if(cliente < 0){
-			perror("Falló el accept.");
-			printf("No se conecto.\n");
-			log_info(log_swap,"Falló el accept.");
-
-		} else {
-
-			printf("Se conecto.\n");
-			log_info(log_swap,"El socket establecio una conexion correctamente.");
-
-		}
-
-
-		printf("Recibí una conexión en %d!!\n", cliente);
-
-		char* buffer = malloc(1000);
-
-			while (1) {
-				int bytesRecibidos = recv(cliente, buffer, 1000, 0);
-				if (bytesRecibidos <= 0) {
-					perror("El cliente se desconectó.");
-					return 1;
-				}
-
-				buffer[bytesRecibidos] = '\0';
-				printf("Me llegaron %d bytes con %s\n", bytesRecibidos, buffer);
-			}
-
-			free(buffer);
-
-		send(cliente, "Hola!", 6, 0);*/
-
+    	free(bitMap);
 		return 0;
 }
 
@@ -159,11 +108,11 @@ int main(void) {
 		return proceso;
 	}
 
-	int entraProceso(proceso proceso,int bitMap[]){
+	int entraProceso(proceso proceso){
 
 		int paginasLibres;
 		int pag = 0;
-		for (pag ; pag < (swap_config.CANTIDAD_PAGINAS); ++pag) {
+		for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
 			if(bitMap[pag]==0) paginasLibres++;
 		}
 
@@ -174,25 +123,44 @@ int main(void) {
 		}
 	}
 
-	void iniciar(void){
-
+	void inicializarBitMap(){
+		int pag = 0;
+		int cantidadPaginas = swap_configuracion.CANTIDAD_PAGINAS;
+		bitMap = (int *)malloc (cantidadPaginas*sizeof(int));
+		for(; pag <= cantidadPaginas; pag++) {
+					bitMap[pag] = 0;
+					printf("Pagina %d: %d \n",pag,bitMap[pag]);
+				}
 	}
+
+	void iniciar(void){
+		int pid;
+		int cantidadPaginas;
+		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
+		recv(socketAdministradorDeMemoria, &cantidadPaginas, sizeof(int), 0);
+		proceso proceso = crearProceso(pid, cantidadPaginas);
+		if(entraProceso(proceso)){
+			//El proceso entra, realizar insercion
+		} else {
+			//El proceso no entra, avisar rechazo
+	}
+}
 
  //---------Funciones para crear el archivo y manejarlo
 
 void crearArchivo(){
 	char* datos = malloc(100);
-	sprintf(datos,"dd if=/dev/zero of=%s bs=%d count=%d",swap_config.NOMBRE_SWAP,swap_config.TAMANIO_PAGINA,swap_config.CANTIDAD_PAGINAS);
+	sprintf(datos,"dd if=/dev/zero of=%s bs=%d count=%d",swap_configuracion.NOMBRE_SWAP,swap_configuracion.TAMANIO_PAGINA,swap_configuracion.CANTIDAD_PAGINAS);
 	system(datos);
 	free(datos);
 	printf("El archivo se crea correctamente.\n");
 }
 
 void inicializarArchivo(){
-	FILE* archivo = fopen(swap_config.NOMBRE_SWAP,"r+");
+	FILE* archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
 		fseek(archivo,0,SEEK_END);
-		char* texto = malloc(swap_config.CANTIDAD_PAGINAS*swap_config.TAMANIO_PAGINA);
-		memset(texto,'\0',swap_config.CANTIDAD_PAGINAS*swap_config.TAMANIO_PAGINA);
+		char* texto = malloc(swap_configuracion.CANTIDAD_PAGINAS*swap_configuracion.TAMANIO_PAGINA);
+		memset(texto,'\0',swap_configuracion.CANTIDAD_PAGINAS*swap_configuracion.TAMANIO_PAGINA);
 		fwrite(texto,sizeof(char),sizeof(texto), archivo );
 		free(texto);
 		fclose(archivo);
@@ -258,8 +226,10 @@ t_reg_config get_config_params(void){
 			printf("No se encontro RETARDO_COMPACTACION \n");
 	}
 
-	config_destroy(swap_config);
 	return reg_config;
+
+	config_destroy(swap_config);
+
 }
 
 	//Conexiones
@@ -284,7 +254,7 @@ t_reg_config get_config_params(void){
 			void manejarConexionesConUMC(void){
 				int status = 1;
 				struct server servidor;
-				servidor = crearServer(swap_config.PUERTO_ESCUCHA);
+				servidor = crearServer(swap_configuracion.PUERTO_ESCUCHA);
 				ponerServerEscucha(servidor);
 				printf("Escuchando UMC en socket %d \n", servidor.socketServer);
 				socketAdministradorDeMemoria = conectarseConUMC(servidor);

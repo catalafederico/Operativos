@@ -15,7 +15,7 @@
 
 typedef struct {
 	int PUERTO;
-	char IP_SWAP[16];
+	char* IP_SWAP;
 	int PUERTO_SWAP;
 	int MARCOS;
 	int MARCO_SIZE;
