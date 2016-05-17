@@ -33,7 +33,7 @@ void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer, 
 	almcenarSwap.offset = offset;
 	almcenarSwap.tamanio = tamanio;
 
-	enviarStream(socketSwap,ALMACENARBYTES,sizeof(aEnviar),&almcenarSwap);
+	enviarStream(socketSwap,ALMACENAR,sizeof(aEnviar),&almcenarSwap);
 	send(socketSwap,buffer,tamanio, 0);
 }
 
@@ -43,7 +43,7 @@ void* solicitarEnSwap(int id, int pagina, int offset, int tamanio, int socketSwa
 	solicitarSwap.pagina = pagina;
 	solicitarSwap.offset = offset;
 
-	enviarStream(socketSwap,SOLICITARBYTES,sizeof(aEnviar),&solicitarSwap);
+	enviarStream(socketSwap,SOLICITAR,sizeof(aEnviar),&solicitarSwap);
 	void* recibido = recibirStream(socketSwap,tamanio);
 	return recibido;
 }

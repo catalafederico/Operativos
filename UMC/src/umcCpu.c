@@ -62,18 +62,22 @@ void almacenar_Byte(int socket){
 void* conexionCpu(tempStruct* socketNucleo){
 	todoUMC = socketNucleo;
 	while(1){
-		int* header = leerHeader(socketNucleo->socket);
+		int* header = 	leerHeader(socketNucleo->socket);
 		switch (*header) {
-			case 52:
+			case 52://SOLICITAR
 				solicitar_Bytes(socketNucleo->umcConfig->socketSwap);
 				break;
-			case ALMACENARBYTES:
+			case 53: //ALMACENAR
 				almacenar_Byte(socketNucleo->umcConfig->socketSwap);
+				break;
+			case -1:
+				printf("Perdida la conexion con cpu\n");
+				close(socketNucleo->socket);
+				return;
 				break;
 			default:
 				break;
 		}
-
 		free(header);
 	}
 }
