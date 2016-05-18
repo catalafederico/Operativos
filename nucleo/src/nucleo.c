@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
 
 
 // Crear socket para CPU  ------------------------------
-	struct server serverPaCPU;
+	/*struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
 	ponerServerEscucha(serverPaCPU);
 	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
 	pthread_join(thread_CPU, NULL);
 	pthread_join(thread_consola, NULL);
 
-	log_destroy(logger);
+	log_destroy(logger);*/
 	return 0;
 
 }
@@ -507,7 +507,7 @@ void conectarseConUmc(struct cliente clienteNucleo){
 	if(*recibido==OK){
 		printf("Se ha conectado correctamente con UMC.\n");
 	}else{
-		printf("No se ha podido conectar con UMC");
+		printf("No se ha podido conectar con UMC\n");
 		exit(-1);
 	}
 	free(recibido);
@@ -515,15 +515,15 @@ void conectarseConUmc(struct cliente clienteNucleo){
 
 	//Solicito tamanio de pagina, asi calculo las paginas por proceso
 	int tamanioPagina = TAMANIOPAGINA;
-	if(send(clienteNucleo.socketCliente,&nucleoID,sizeof(int),0)==-1){
+	if(send(clienteNucleo.socketCliente,&tamanioPagina,sizeof(int),0)==-1){
 		printf("no se ha podido solicitar tamanio de pag a la UMC.\n");
 		perror("no anda:\n");
 	}
 	recibido = leerHeader(clienteNucleo.socketCliente);
 	if(*recibido==TAMANIOPAGINA){
 		int* recibirTamanioDePag = recibirStream(clienteNucleo.socketCliente,sizeof(int));
-		printf("Tamanio de pagina configurado en: %d.\n" + *recibirTamanioDePag);
 		tamanioPaginaUMC = *recibirTamanioDePag;
+		printf("Tamanio de pagina configurado en: %d \n", tamanioPaginaUMC);
 	}
 	free(recibido);
 
