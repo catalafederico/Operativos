@@ -7,8 +7,8 @@
 
 #include "estructuras.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <pthread.h>
 #include "funcionesparsernuevas.h"
 #include <unistd.h>
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
 	clienteNucleo = crearCliente(9999, "127.0.0.1");
 	conectarseConUmc(clienteNucleo);*/
 
-	nuevoPrograma("variables a");
+	nuevoPrograma("variables a\n");
 
 
 // Crear socket para CPU  ------------------------------
@@ -426,7 +426,12 @@ void nuevoPrograma(char* instrucciones){
 	indiceCodigo ic;
 	ic.inst_tamanio = dictionary_create();
 	inicialzarPrograma(ic.inst_tamanio);
+	char* lineaParaAnalizar;
+	do{
+	lineaParaAnalizar = strtok(instrucciones, "\n");
 	analizadorLinea(instrucciones,&functions,&kernel_functions);
+	}while(instrucciones!=NULL);
+
 
 	//Debug
 	//Muestro lo q guardo
