@@ -4,11 +4,10 @@
  *  Created on: 24/4/2016
  *      Author: Explosive Code - Lucas Marino
  */
-
+#include <string.h>
 #include "estructuras.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <pthread.h>
 #include "funcionesparsernuevas.h"
 #include <unistd.h>
@@ -109,7 +108,7 @@ int main(int argc, char **argv) {
 	clienteNucleo = crearCliente(9999, "127.0.0.1");
 	conectarseConUmc(clienteNucleo);*/
 
-	nuevoPrograma("variables a\n");
+	nuevoPrograma("variables a,b\nvariables c\0");
 
 
 // Crear socket para CPU  ------------------------------
@@ -424,22 +423,41 @@ void conectarseConUmc(struct cliente clienteNucleo){
 
 void nuevoPrograma(char* instrucciones){
 	indiceCodigo ic;
-	ic.inst_tamanio = dictionary_create();
-	inicialzarPrograma(ic.inst_tamanio);
-	char* lineaParaAnalizar;
+	char* tempInstruccion = strdup(instrucciones);
+	char* newInst = strtok(tempInstruccion,"\n");
+	inicialzarPrograma();// es instruccion en 0 (false)
+	ic.inst_tamanio = dictionary_create(); //inicializo indice de codigo
+	int i = 0; //numero de instrucciones
+	int* esInstruccion;
 	do{
-	lineaParaAnalizar = strtok(instrucciones, "\n");
-	analizadorLinea(instrucciones,&functions,&kernel_functions);
-	}while(instrucciones!=NULL);
+		analizadorLinea(newInst,&functions,&kernel_functions);
+		esInstruccion = obtenerEsVariable();
+		//analiso si es intruccion
+		if(*esInstruccion){
+			//tamanio llama un maloc para q perdure ya q es un puntero
+			int* tamanio = malloc(sizeof(int));
+			*tamanio = strlen(newInst)+1;
+			//tamanio llama un maloc para q perdure ya q es un puntero
+			int* nroInst = malloc(sizeof(int));
+			//la cantidad es el tamnio del dicc
+			/*0 elementos so instruccion 0
+			 *1 elemento so instruccion 1
+			 */
+			*nroInst = dictionary_size(ic.inst_tamanio);
 
+			// la coloco
+			dictionary_put(ic.inst_tamanio,nroInst,tamanio);
 
-	//Debug
-	//Muestro lo q guardo
-	int i;
-	int tamanio = dictionary_size(ic.inst_tamanio);
-	for(i=0;i<tamanio;i++){
+			// pongo es instruccion en falso
+			*esInstruccion = 0;
+			}
+		newInst =strtok(NULL,"\n");
+		}
+	while(newInst != NULL);
+	int tamanioDicc = dictionary_size(ic.inst_tamanio);
+	for(i=0;i<tamanioDicc;i++){
 		printf("En la instruccion: %d\n",i);
-		int* tamanio = dictionary_get(ic.inst_tamanio,&i);
-		printf("Hay un tamanio de: %d\n",*tamanio);
+		int* temp = dictionary_get(ic.inst_tamanio,&i);
+		printf("Hay un tamanio de: %d\n",*temp);
 	}
 }

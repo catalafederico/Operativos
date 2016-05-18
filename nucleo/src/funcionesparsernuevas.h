@@ -21,7 +21,8 @@
 	int imprimir(t_valor_variable var);
 	int imptxt(char* aimpprimir);
 	int ionotif(t_nombre_dispositivo ioname, int tiempo);
-	void inicialzarPrograma(t_dictionary* diccionarioInstrucciones);
+	void inicialzarPrograma();
+	int* obtenerEsVariable();
 	//int wait(t_nombre_semaforo semf);
 	//int signal(t_nombre_semaforo semf);
 
