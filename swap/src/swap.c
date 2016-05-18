@@ -36,6 +36,7 @@ typedef struct{
 	int pid;
 	int cantidadDePaginas;
 	int comienzo;
+	struct proceso* procesoSiguiente;
 }proceso;
 
 // Funciones
@@ -64,13 +65,15 @@ void inicializarBitMap(void);
 
 void listarBitMap(void);
 
-void insertarProceso(proceso proceso);
+void insertarProceso(proceso* proceso);
 
-int hayHuecoDondeCabeProceso(proceso proceso);
+int hayHuecoDondeCabeProceso(proceso* proceso);
 
-void actualizarBitMap(proceso proceso,int comienzoDelHueco);
+void actualizarBitMap(proceso* proceso,int comienzoDelHueco);
 
-void agregarProcesoAListaSwap(proceso proceso);
+void agregarProcesoAListaSwap(proceso* proceso);
+
+void inicializarListaDeProcesosEnSwap(void);
 
 //Variables globales
 
@@ -80,8 +83,7 @@ int socketAdministradorDeMemoria;
 
 int *bitMap;
 
-t_list* listaDeProcesosEnSwap;
-
+proceso* listaSwap;
 
 
 
@@ -100,15 +102,25 @@ int main(void) {
     crearArchivo();
     inicializarArchivo();
 
-    /*
+
     proceso proceso2 = crearProceso(1,23);
-    int comienzaHueco = hayHuecoDondeCabeProceso(proceso2);
+    /*int comienzaHueco = hayHuecoDondeCabeProceso(proceso2);
     printf("Hueco comienza en:%d \n",comienzaHueco);
     actualizarBitMap(proceso2,comienzaHueco);
-    listarBitMap();
+    listarBitMap();*/
+    insertarProceso(&proceso2);
+    //printf("Pid: %d \n", listaSwap->pid);
 
     proceso proceso1 = crearProceso(2,47);
-    int comienzaHueco1 = hayHuecoDondeCabeProceso(proceso1);
+    insertarProceso(&proceso1);
+    while(listaSwap != NULL){
+    	printf("Pid: %d \n", listaSwap->pid);
+    	listaSwap = listaSwap->procesoSiguiente;
+    }
+
+    //printf("Pid: %d \n",);
+
+    /*int comienzaHueco1 = hayHuecoDondeCabeProceso(proceso1);
     printf("Hueco comienza en:%d \n",comienzaHueco1);
     actualizarBitMap(proceso1,comienzaHueco1);
     listarBitMap();
@@ -122,6 +134,34 @@ int main(void) {
 		return 0;
 }
 
+ //----------Funciones para lista de procesos en swap
+
+void agregarProcesoAListaSwap(proceso* procesoAInsertar){
+	proceso* auxiliar1 = listaSwap;
+	proceso* auxiliar2 = NULL;
+	while(auxiliar1 != NULL && (auxiliar1->comienzo < procesoAInsertar->comienzo)){
+		auxiliar2 = auxiliar1;
+		auxiliar1 = auxiliar2->procesoSiguiente;
+	}
+	if(listaSwap == NULL){
+		listaSwap = procesoAInsertar;
+		procesoAInsertar->procesoSiguiente = NULL;
+	} else {
+
+		if(procesoAInsertar->comienzo == 0){
+
+			procesoAInsertar->procesoSiguiente = listaSwap;
+			listaSwap = procesoAInsertar;
+
+		} else {
+
+	auxiliar2->procesoSiguiente = procesoAInsertar;
+	procesoAInsertar->procesoSiguiente = auxiliar1;
+
+		}
+	}
+
+}
  //----------Funciones para crear procesos y manejarlos
 
 	proceso crearProceso(int pid, int cantidadDePaginas){
@@ -165,17 +205,17 @@ int main(void) {
 		proceso proceso = crearProceso(pid, cantidadPaginas);
 		if(entraProceso(proceso)){
 			//El proceso entra, realizar insercion
-			insertarProceso(proceso);
+			insertarProceso(&proceso);
 		} else {
 			//El proceso no entra, avisar rechazo
 	}
 }
 
-	void insertarProceso(proceso proceso){
+	void insertarProceso(proceso* proceso){
 		int comienzoDelHueco;
 		comienzoDelHueco = hayHuecoDondeCabeProceso(proceso);
-		if(comienzoDelHueco > 0){
-			proceso.comienzo = comienzoDelHueco;
+		if(comienzoDelHueco >= 0){
+			proceso->comienzo = comienzoDelHueco;
 			actualizarBitMap(proceso,comienzoDelHueco);
 			agregarProcesoAListaSwap(proceso);
 		} else {
@@ -185,7 +225,7 @@ int main(void) {
 	}
 
 	//Se fija si hay un hueco, si lo hay devuelve donde comienza
-	int hayHuecoDondeCabeProceso(proceso proceso){
+	int hayHuecoDondeCabeProceso(proceso* proceso){
 
 		int paginaActual = 0;
 		int ultimaPagina = swap_configuracion.CANTIDAD_PAGINAS;
@@ -197,37 +237,37 @@ int main(void) {
 				paginasLibresConsecutivas++;
 				paginaActual++;
 
-			if(proceso.cantidadDePaginas == paginasLibresConsecutivas)
-				return (paginaActual - proceso.cantidadDePaginas);
+			if(proceso->cantidadDePaginas == paginasLibresConsecutivas){
+				return (paginaActual - proceso->cantidadDePaginas); } else { }
 
 			} else {
 				paginasLibresConsecutivas = 0;
+				paginaActual++;
 			}
+
 		}
 
 	}
 
-	void actualizarBitMap(proceso proceso,int comienzoDelHueco){
+	void actualizarBitMap(proceso* proceso,int comienzoDelHueco){
 		int paginasActualizadas = 0;
-		while(paginasActualizadas <= proceso.cantidadDePaginas){
+		while(paginasActualizadas < proceso->cantidadDePaginas){
 			bitMap[comienzoDelHueco] = 1;
 			comienzoDelHueco++;
 			paginasActualizadas++;
 		}
+		listarBitMap();
 	}
 
 	void listarBitMap(){
 		int pag = 0;
 		int cantidadPaginas = swap_configuracion.CANTIDAD_PAGINAS;
-		for(; pag <= cantidadPaginas; pag++) {
+		for(; pag < cantidadPaginas; pag++) {
 
 				printf("Pagina %d: %d \n",pag,bitMap[pag]);
 		}
 	}
 
-	void agregarProcesoAListaSwap(proceso proceso){
-
-	}
 
  //---------Funciones para crear el archivo y manejarlo
 
