@@ -31,6 +31,11 @@
 
 t_list* cpus_dispo;
 t_list* consolas_dispo;
+t_list* proc_New;
+t_list* proc_Ready;
+t_list* proc_Block;
+t_list* proc_Reject;
+t_list* proc_Exit;
 t_log *logger;
 
 
@@ -48,6 +53,7 @@ typedef struct {
 	int * sem_init;
 	char ** shared_vars;
 } t_reg_config;
+
 //Pcb
 typedef struct{
 	 int matriz[4][2],fila,col;
@@ -66,6 +72,7 @@ typedef struct{
 	int PC;
 	int SP;
 }PCB;
+
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -86,7 +93,7 @@ void *atender_consola(void *socket_desc);
 
 void *atender_CPU(void *socket_desc);
 
-void roundRobin( int quantum);
+//void roundRobin( int quantum);
 
 // ****************************************** FIN FUNCIONES.h ***************************************
 
@@ -96,10 +103,19 @@ void roundRobin( int quantum);
 int main(int argc, char **argv) {
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
+
 // Inicializa el log.
 	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
 
-// Leo archivo de configuracion ------------------------------
+// crear listas
+		cpus_dispo = list_create();
+		proc_New = list_create();
+		proc_Ready = list_create();
+		proc_Block = list_create();
+		proc_Reject = list_create();
+		proc_Exit = list_create();
+
+		// Leo archivo de configuracion ------------------------------
 	t_reg_config reg_config;
 	reg_config = get_config_params();
 
@@ -117,8 +133,6 @@ int main(int argc, char **argv) {
 	ponerServerEscucha(serverPaCPU);
 	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
 
-// crear lista para CPUs
-	cpus_dispo = list_create();
 
 // Crear thread para atender los procesos CPU
 	pthread_t thread_CPU;

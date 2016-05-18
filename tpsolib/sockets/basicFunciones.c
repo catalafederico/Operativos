@@ -105,8 +105,8 @@ void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
 
 char* recibirMensaje_tamanio(int socketCliente, int * long_mje){
 	int bytesRecibidos;
-	char* buf = (char *) malloc(long_mje+1);
-	bytesRecibidos = recv(socketCliente,buf,long_mje,0);
+	char* buf = (char *) malloc(*long_mje+1);
+	bytesRecibidos = recv(socketCliente,buf,*long_mje,0);
 	if(bytesRecibidos<=0)
 	{
 		buf = (char *) realloc(buf,strlen("Se desconecto"));
