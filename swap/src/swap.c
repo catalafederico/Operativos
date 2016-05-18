@@ -62,6 +62,16 @@ proceso crearProceso(int pid, int cantidadDePaginas);
 
 void inicializarBitMap(void);
 
+void listarBitMap(void);
+
+void insertarProceso(proceso proceso);
+
+int hayHuecoDondeCabeProceso(proceso proceso);
+
+void actualizarBitMap(proceso proceso,int comienzoDelHueco);
+
+void agregarProcesoAListaSwap(proceso proceso);
+
 //Variables globales
 
 t_reg_config swap_configuracion;
@@ -89,6 +99,20 @@ int main(void) {
 	//Archivo swap
     crearArchivo();
     inicializarArchivo();
+
+    /*
+    proceso proceso2 = crearProceso(1,23);
+    int comienzaHueco = hayHuecoDondeCabeProceso(proceso2);
+    printf("Hueco comienza en:%d \n",comienzaHueco);
+    actualizarBitMap(proceso2,comienzaHueco);
+    listarBitMap();
+
+    proceso proceso1 = crearProceso(2,47);
+    int comienzaHueco1 = hayHuecoDondeCabeProceso(proceso1);
+    printf("Hueco comienza en:%d \n",comienzaHueco1);
+    actualizarBitMap(proceso1,comienzaHueco1);
+    listarBitMap();
+     */
 
     //Conexion
 
@@ -129,7 +153,7 @@ int main(void) {
 		bitMap = (int *)malloc (cantidadPaginas*sizeof(int));
 		for(; pag <= cantidadPaginas; pag++) {
 					bitMap[pag] = 0;
-					printf("Pagina %d: %d \n",pag,bitMap[pag]);
+					//printf("Pagina %d: %d \n",pag,bitMap[pag]);
 				}
 	}
 
@@ -141,10 +165,69 @@ int main(void) {
 		proceso proceso = crearProceso(pid, cantidadPaginas);
 		if(entraProceso(proceso)){
 			//El proceso entra, realizar insercion
+			insertarProceso(proceso);
 		} else {
 			//El proceso no entra, avisar rechazo
 	}
 }
+
+	void insertarProceso(proceso proceso){
+		int comienzoDelHueco;
+		comienzoDelHueco = hayHuecoDondeCabeProceso(proceso);
+		if(comienzoDelHueco > 0){
+			proceso.comienzo = comienzoDelHueco;
+			actualizarBitMap(proceso,comienzoDelHueco);
+			agregarProcesoAListaSwap(proceso);
+		} else {
+			//compactar();
+		}
+
+	}
+
+	//Se fija si hay un hueco, si lo hay devuelve donde comienza
+	int hayHuecoDondeCabeProceso(proceso proceso){
+
+		int paginaActual = 0;
+		int ultimaPagina = swap_configuracion.CANTIDAD_PAGINAS;
+		int paginasLibresConsecutivas = 0;
+
+		while(paginaActual <= ultimaPagina){
+
+			if(bitMap[paginaActual] == 0){
+				paginasLibresConsecutivas++;
+				paginaActual++;
+
+			if(proceso.cantidadDePaginas == paginasLibresConsecutivas)
+				return (paginaActual - proceso.cantidadDePaginas);
+
+			} else {
+				paginasLibresConsecutivas = 0;
+			}
+		}
+
+	}
+
+	void actualizarBitMap(proceso proceso,int comienzoDelHueco){
+		int paginasActualizadas = 0;
+		while(paginasActualizadas <= proceso.cantidadDePaginas){
+			bitMap[comienzoDelHueco] = 1;
+			comienzoDelHueco++;
+			paginasActualizadas++;
+		}
+	}
+
+	void listarBitMap(){
+		int pag = 0;
+		int cantidadPaginas = swap_configuracion.CANTIDAD_PAGINAS;
+		for(; pag <= cantidadPaginas; pag++) {
+
+				printf("Pagina %d: %d \n",pag,bitMap[pag]);
+		}
+	}
+
+	void agregarProcesoAListaSwap(proceso proceso){
+
+	}
 
  //---------Funciones para crear el archivo y manejarlo
 
