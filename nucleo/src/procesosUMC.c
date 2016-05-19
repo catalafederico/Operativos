@@ -24,6 +24,8 @@
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
+#include <sockets/header.h>
+#include <semaphore.h>
 
 #include "procesosUMC.h"
 
@@ -44,3 +46,63 @@ extern t_list* proc_Block;
 extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
+extern int tamanioPaginaUMC;
+extern struct cliente clienteNucleoUMC;
+extern sem_t* semaforoProgramasACargar;
+
+void *procesos_UMC(){
+	conectarseConUmc(clienteNucleoUMC);
+	int seguir = 1;
+	while(seguir){
+		sem_wait(semaforoProgramasACargar);//Espera a q halla programas a cargar
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+void conectarseConUmc(struct cliente clienteNucleo){
+	conectarConServidor(clienteNucleo);
+	int nucleoID = NUCLEO;
+	//Empieza handshake
+	if(send(clienteNucleo.socketCliente,&nucleoID,sizeof(int),0)==-1){
+		printf("no se ha podido conectar con UMC.\n");
+		perror("no anda:\0");
+	}
+	int* recibido = recibirStream(clienteNucleo.socketCliente,sizeof(int));
+	if(*recibido==OK){
+		printf("Se ha conectado correctamente con UMC.\n");
+	}else{
+		printf("No se ha podido conectar con UMC\n");
+		exit(-1);
+	}
+	free(recibido);
+	//Termina Handshake
+
+	//Solicito tamanio de pagina, asi calculo las paginas por proceso
+	int tamanioPagina = TAMANIOPAGINA;
+	if(send(clienteNucleo.socketCliente,&tamanioPagina,sizeof(int),0)==-1){
+		printf("no se ha podido solicitar tamanio de pag a la UMC.\n");
+		perror("no anda:\n");
+	}
+	recibido = leerHeader(clienteNucleo.socketCliente);
+	if(*recibido==TAMANIOPAGINA){
+		int* recibirTamanioDePag = recibirStream(clienteNucleo.socketCliente,sizeof(int));
+		tamanioPaginaUMC = *recibirTamanioDePag;
+		printf("Tamanio de pagina configurado en: %d \n", tamanioPaginaUMC);
+	}
+	free(recibido);
+
+	//TErmina
+}
+
+
+

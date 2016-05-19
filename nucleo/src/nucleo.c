@@ -27,6 +27,7 @@
 #include <sockets/basicFunciones.h>
 #include <sockets/header.h>
 #include "configuracionesNucleo.h"
+#include <semaphore.h>
 
 #include "procesosConsola.h"
 #include "procesosCPU.h"
@@ -43,51 +44,19 @@ t_list* proc_Block;
 t_list* proc_Reject;
 t_list* proc_Exit;
 t_log *logger;
-
+struct cliente clienteNucleoUMC;
 
 // Semaforos
-pthread_mutex_t sem_l_ready = PTHREAD_MUTEX_INITIALIZER;
+sem_t* semaforoProgramasACargar; //semaforo contador
+//info: http://man7.org/linux/man-pages/man3/sem_init.3.html
 pthread_mutex_t sem_l_cpus_dispo = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_ready = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_New = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Exec = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Block = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Reject = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Exit = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
-
-// Estructuras
-/*
-typedef struct {
-	int puerto_prog;
-	int puerto_cpu;
-	int quantum;
-	int quantum_sleep;			// Estructura del archivo de configuracion
-	char ** io_id;
-	int * io_sleep;
-	char ** sem_id;
-	int * sem_init;
-	char ** shared_vars;
-} t_reg_config;
-
-//Pcb
-typedef struct{
-	 int matriz[4][2],fila,col;
-}indiceCodigo;
-//indice de etiquetas declaro en main
-// indice del stack
-typedef struct{
-	struct t_list* args;
-	struct l_list* vars;
-	int retPos;
-	int* retVar;
-}indiceStack;
-//creo PCB
-typedef struct{
-	int PID;
-	int PC;
-	int SP;
-}PCB;
-*/
 
 int tamanioPaginaUMC;
 
@@ -104,16 +73,17 @@ int tamanioPaginaUMC;
 
 t_reg_config get_config_params(void); //obtener parametros del archivo de configuracion
 
-void conectarseConUmc(struct cliente clienteNucleo);
-
-//void roundRobin( int quantum);
+//void roundRobin(int quantum);
 
 // ****************************************** FIN FUNCIONES.h ***************************************
 
 // **************************************************************************************************
-// ****************************************** MAIN           ***************************************
+// ******************************************    MAIN     ***************************************
 // **************************************************************************************************
 int main(int argc, char **argv) {
+
+	sem_init(semaforoProgramasACargar,0,0);
+
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
 
@@ -135,7 +105,7 @@ int main(int argc, char **argv) {
 	/*log_debug(logger, "Creacion Thread para procesos con UMC");
 	//Crear thread para atender procesos con UMC
 	pthread_t thread_UMC;
-	if( pthread_create( &thread_UMC, NULL , procesos_UMC, (void*) clienteNucleo.socketServer) < 0)
+	if( pthread_create( &thread_UMC, NULL , procesos_UMC, &clienteNucleo.socketCliente) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread para UMC");
 			exit(EXIT_FAILURE);
@@ -146,18 +116,18 @@ int main(int argc, char **argv) {
 
 	//EJEMPLO DE COMO MANDA A LA UMC
 
-	/*struct cliente clienteNucleo;
-	clienteNucleo = crearCliente(9999, "127.0.0.1");
-	conectarseConUmc(clienteNucleo);
+
+	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
+	conectarseConUmc(clienteNucleoUMC);
 	t_list* instruccionAUMC = list_create();
 	indiceCodigo* icNuevo = nuevoPrograma("variables a,b\n variables c\n",instruccionAUMC);
 	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
-	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,list_size(instruccionAUMC),clienteNucleo.socketCliente);*/
+	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,list_size(instruccionAUMC),clienteNucleoUMC.socketCliente);
 
 
 	log_debug(logger, "Crear socket para CPUs");
 	// Crear socket para CPU  ------------------------------
-	struct server serverPaCPU;
+	/*struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
 	ponerServerEscucha(serverPaCPU);
 	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
@@ -193,7 +163,7 @@ int main(int argc, char **argv) {
 	pthread_join(thread_consola, NULL);
 
 	log_destroy(logger);
-	return 0;
+	return 0;*/
 
 }
 
@@ -252,38 +222,4 @@ int count,j,n,tiempo,restante,flag=0;
 }
 */
 
-/*void conectarseConUmc(struct cliente clienteNucleo){
-	conectarConServidor(clienteNucleo);
-	int nucleoID = NUCLEO;
-	//Empieza handshake
-	if(send(clienteNucleo.socketCliente,&nucleoID,sizeof(int),0)==-1){
-		printf("no se ha podido conectar con UMC.\n");
-		perror("no anda:\0");
-	}
-	int* recibido = recibirStream(clienteNucleo.socketCliente,sizeof(int));
-	if(*recibido==OK){
-		printf("Se ha conectado correctamente con UMC.\n");
-	}else{
-		printf("No se ha podido conectar con UMC\n");
-		exit(-1);
-	}
-	free(recibido);
-	//Termina Handshake
 
-	//Solicito tamanio de pagina, asi calculo las paginas por proceso
-	int tamanioPagina = TAMANIOPAGINA;
-	if(send(clienteNucleo.socketCliente,&tamanioPagina,sizeof(int),0)==-1){
-		printf("no se ha podido solicitar tamanio de pag a la UMC.\n");
-		perror("no anda:\n");
-	}
-	recibido = leerHeader(clienteNucleo.socketCliente);
-	if(*recibido==TAMANIOPAGINA){
-		int* recibirTamanioDePag = recibirStream(clienteNucleo.socketCliente,sizeof(int));
-		tamanioPaginaUMC = *recibirTamanioDePag;
-		printf("Tamanio de pagina configurado en: %d \n", tamanioPaginaUMC);
-	}
-	free(recibido);
-
-	//TErmina
-}
-*/
