@@ -8,6 +8,7 @@
 #ifndef PROCESOSUMC_H_
 #define PROCESOSUMC_H_
 
-void *procesos_UMC(void *socket_desc);
+void *procesos_UMC();
+void conectarseConUmc(struct cliente clienteNucleo);
 
 #endif /* PROCESOSUMC_H_ */

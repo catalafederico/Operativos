@@ -5,7 +5,6 @@
  *      Author: Explosive Code - Lucas Marino
  */
 #include <string.h>
-#include "estructuras.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -29,6 +28,7 @@
 #include "configuracionesNucleo.h"
 #include <semaphore.h>
 
+#include "estructurasNUCLEO.h"
 #include "procesosConsola.h"
 #include "procesosCPU.h"
 #include "procesosUMC.h"
@@ -70,8 +70,6 @@ int tamanioPaginaUMC;
 
 
 // ****************************************** FUNCIONES.h  ******************************************
-
-t_reg_config get_config_params(void); //obtener parametros del archivo de configuracion
 
 //void roundRobin(int quantum);
 

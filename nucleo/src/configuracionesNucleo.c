@@ -2,9 +2,9 @@
 // ---------------------------------- get_config_params ------------------------------------
 // funcion que retorna una estructura con los datos del archivo de Configuracion de Nucleo
 //------------------------------------------------------------------------------------------
-#include "estructuras.h"
 #include <commons/config.h>
 #include <commons/log.h>
+#include "estructurasNUCLEO.h"
 
 t_reg_config get_config_params(void){
 	t_log* logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);

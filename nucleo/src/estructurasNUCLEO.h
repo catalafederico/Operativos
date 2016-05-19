@@ -5,8 +5,8 @@
  *      Author: utnso
  */
 
-#ifndef ESTRUCTURAS_H_
-#define ESTRUCTURAS_H_
+#ifndef ESTRUCTURASNUCLEO_H_
+#define ESTRUCTURASNUCLEO_H_
 
 #include <commons/collections/dictionary.h>
 
@@ -29,18 +29,33 @@ typedef struct{
 
 //indice de etiquetas declaro en main
 // indice del stack
+
 typedef struct{
 	struct t_list* args;
 	struct l_list* vars;
 	int retPos;
 	int* retVar;
 }indiceStack;
+
 //creo PCB
+//No cambiar orden, si se cambia el orden, cambiar el recive de cpu
 typedef struct{
+	int id;
 	int PID;
 	int PC;
 	int SP;
+	int paginasDisponibles;
+	t_dictionary* indicie_codigo;
 }PCB;
+
+typedef struct{
+	int id;
+	int ip;
+	int sp;
+	int paginasDisponible;
+	int tamanioIC;
+}__attribute__((packed))
+serializablePCB;
 
 typedef struct{
 	int pagina;
@@ -55,4 +70,4 @@ typedef struct{
 }__attribute__((packed))
 programa_id;
 
-#endif /* ESTRUCTURAS_H_ */
+#endif /* ESTRUCTURASNUCLEO_H_ */

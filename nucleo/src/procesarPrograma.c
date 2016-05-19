@@ -5,7 +5,6 @@
  *      Author: utnso
  */
 
-#include "estructuras.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +13,7 @@
 #include <commons/collections/dictionary.h>
 #include <commons/collections/list.h>
 #include <sockets/header.h>
+#include "estructurasNUCLEO.h"
 
 extern int tamanioPaginaUMC;
 
