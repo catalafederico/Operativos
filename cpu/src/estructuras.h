@@ -7,13 +7,7 @@
 
 #ifndef ESTRUCTURAS_H_
 #define ESTRUCTURAS_H_
-
-typedef struct {
-	int pagina;
-	int offset;
-	int tamanio;
-}__attribute__((packed))
-solcUMC;
+#include <commons/collections/dictionary.h>
 
 typedef struct {
 	int pagina;
@@ -27,9 +21,17 @@ typedef struct{
 	int id;
 	int ip;
 	int sp;
-
+	int paginasDisponible;
+	t_dictionary* indiceDeCodigo;
 }pcb;
 
+
+typedef struct{
+	int pagina;
+	int offset;
+	int tamanio;
+}__attribute__((packed))
+direccionMemoria;
 
 
 

@@ -21,7 +21,7 @@
 	int imprimir(t_valor_variable var);
 	int imptxt(char* aimpprimir);
 	int ionotif(t_nombre_dispositivo ioname, int tiempo);
-	void inicialzarParser(int socketMem);
+	void inicialzarParser(int socketMem,int socketNuc);
 	//int wait(t_nombre_semaforo semf);
 	//int signal(t_nombre_semaforo semf);
 

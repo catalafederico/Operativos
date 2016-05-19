@@ -23,6 +23,7 @@
 #include "funcionesparsernuevas.h"
 #include <sockets/socketCliente.h>
 #include <parser/parser.h>
+#include "estructuras.h"
 
 
 AnSISOP_funciones functions = {
@@ -42,7 +43,8 @@ AnSISOP_kernel kernel_functions = { };
 
 struct cliente clienteCpuUmc;
 struct cliente clienteCpuNucleo;
-
+int tamanioPaginaUMC;
+pcb* pcb_actual;
 #define  SERVERUMC 9999 //puerto de la umc
 #define  SERVERNUCLEO 5001 // puerto del nucleo
 
@@ -62,7 +64,7 @@ int main(void) {
 	//Termina conexion Nucleo
 
 	//Le paso el socket de la umc, para no pasarlo x cada pedido
-	inicialzarParser(clienteCpuUmc.socketCliente);
+	inicialzarParser(clienteCpuUmc.socketCliente,clienteCpuNucleo.socketCliente);
 
 	//Empieza la escucha de nucleo
 	int seguir = 1;
@@ -70,7 +72,8 @@ int main(void) {
 		int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 		switch (*header) {
 			case 163://Recibir PCB
-
+				recibirPCB();
+				tratarPCB();
 				break;
 			default:
 				break;
@@ -92,6 +95,19 @@ void conectarseConUMC(struct cliente clienteCpuUmc){
 	if(*recibido==OK){
 		printf("Se ha conectado correctamente con UMC.\n");
 	}
+	//Solicito tamanio de paginas
+	int tamanioPagina = TAMANIOPAGINA;
+	if(send(clienteCpuUmc.socketCliente,&tamanioPagina,sizeof(int),0)==-1){
+		printf("no se ha podido solicitar tamanio de pag a la UMC.\n");
+		perror("no anda:\n");
+	}
+	recibido = leerHeader(clienteCpuUmc.socketCliente);
+	if(*recibido==TAMANIOPAGINA){
+		int* recibirTamanioDePag = recibirStream(clienteCpuUmc.socketCliente,sizeof(int));
+		tamanioPaginaUMC = *recibirTamanioDePag;
+		printf("Tamanio de pagina configurado en: %d \n", tamanioPaginaUMC);
+	}
+	free(recibido);
 	//Termina Handshake
 }
 
@@ -114,3 +130,41 @@ void procesarInstruccion(char* instruccion){
 	analizadorLinea(instruccion,&functions,&kernel_functions);
 }
 
+
+void recibirPCB(){
+	pcb* pcb_Recibido = malloc(sizeof(pcb));
+	pcb_Recibido->id = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	pcb_Recibido->ip = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	pcb_Recibido->sp = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	pcb_Recibido->paginasDisponible = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	int tamanioIC = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));
+	pcb_Recibido->indiceDeCodigo = dictionary_create();
+	int i;
+	for(i=0;i<tamanioIC;i++){
+		int* nuevaPagina = malloc(sizeof(int));
+		*nuevaPagina = i;
+		direccionMemoria* nuevaDireccionMemoria = recibirStream(clienteCpuNucleo.socketCliente,sizeof(direccionMemoria));
+		dictionary_put(pcb_Recibido->indiceDeCodigo,nuevaPagina,nuevaDireccionMemoria);
+	}
+	pcb_actual = pcb_Recibido;
+}
+
+void enviarPCB(){
+
+}
+
+
+void tratarPCB(){
+	//Leo la direccion de la proxima instruccion
+	direccionMemoria* direcProxIntruccion = dictionary_get(pcb_actual->indiceDeCodigo,pcb_actual->ip);
+	//Aumento ip
+	pcb_actual->ip = pcb_actual->ip+1;
+	//Solicito insturccion
+	int solicitar = SOLICITAR;
+	enviarStream(clienteCpuUmc.socketCliente,&solicitar,sizeof(direccionMemoria),direcProxIntruccion);
+	//Espero instruccion
+	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,direcProxIntruccion->tamanio);
+	//Analiso Instruccion
+	procesarInstruccion(proximaInstruccion);
+
+}

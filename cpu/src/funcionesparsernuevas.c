@@ -1,53 +1,51 @@
-#include "funcionesparsernuevas.h"
+//#include "funcionesparsernuevas.h"
 #include "estructuras.h"
 #include <sockets/header.h>
 #include <sockets/basicFunciones.h>
 #include <string.h>
+#include <stdlib.h>
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
-typedef solcUMC* t_puntero;
-typedef u_int32_t t_size;
-typedef u_int32_t t_puntero_instruccion;
+typedef direccionMemoria* t_puntero;
+typedef int t_size;
+typedef	int t_puntero_instruccion;
 typedef char t_nombre_variable;
-typedef void* t_valor_variable;
+typedef int* t_valor_variable;
 typedef t_nombre_variable* t_nombre_semaforo;
 typedef t_nombre_variable* t_nombre_etiqueta;
 typedef t_nombre_variable* t_nombre_compartida;
 typedef t_nombre_variable* t_nombre_dispositivo;
+almUMC calculoDeDedireccionAlmalcenar();
 
+extern int tamanioPaginaUMC;
 int socketMemoria;
 int socketNucleo;
-pcb* pcb_Actual;
+extern pcb* pcb_actual;
+direccionMemoria* ultimaDireccion;//Tenporal hasta q tengamos stack
+
 void inicialzarParser(int socketMem ,int socketNuc) {
 	socketMemoria = socketMem;
 	socketNucleo = socketNuc;
-}
-
-void cambiarPCB(pcb* pcb_actual) {
-	pcb_Actual = pcb_actual;
-
+	ultimaDireccion = NULL;
 }
 //DefinirVariable
 t_puntero vardef(t_nombre_variable var) {
-	printf("Se difinio variable: %s", var);
-	solcUMC* temp = malloc(sizeof(solcUMC));
-	almUMC aAlmacenar;
-	aAlmacenar.pagina = 0; //calcular con el pcb;
-	aAlmacenar.offset = 0; //
-	aAlmacenar.tamanio = sizeof(int);
+	printf("Se difinio variable: %s\n", var);
+	direccionMemoria* temp = malloc(sizeof(direccionMemoria));
+	almUMC aAlmacenar = calculoDeDedireccionAlmalcenar();
 	aAlmacenar.valor = 0;
-	temp->pagina=0;
-	temp->offset=0;
-	temp->tamanio= sizeof(int);
 	enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
-	//guardar aALcenar, pagina ,offset,tamnio en el pcb
+	ultimaDireccion->offset = aAlmacenar.offset;
+	ultimaDireccion->pagina = aAlmacenar.pagina;
+	ultimaDireccion->tamanio = aAlmacenar.tamanio;
 	return temp;
 }
 
 //ObtenerPosicionVariable
 t_puntero getvarpos(t_nombre_variable var) {
-	printf("Se llama obtener posicion variable : %s", var);
-	solcUMC* solicitarUMC = malloc(sizeof(solcUMC));
+	printf("Se llama obtener posicion variable : %s\n", var);
+	direccionMemoria* solicitarUMC = malloc(sizeof(direccionMemoria));
+	//Se necesita stack
 	solicitarUMC->pagina = 0; //obtener del pcb
 	solicitarUMC->offset = 0; //obtener del pcb
 	solicitarUMC->tamanio = 0; //obtener del pcb
@@ -58,7 +56,7 @@ t_puntero getvarpos(t_nombre_variable var) {
 //Dereferenciar , ya esta lista
 t_valor_variable derf(t_puntero puntero_var) {
 	printf("Se llama desreferenciar");
-	enviarStream(socketMemoria, 52, sizeof(solcUMC), puntero_var);
+	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), puntero_var);
 	void* valorRecibido;
 
 	if (*leerHeader(socketMemoria) == 200) {
@@ -77,7 +75,7 @@ void asignar(t_puntero puntero_var, t_valor_variable valor) {
 	printf("Se asigna una variable a un valor");
     int valorNuevo = *valor;
 	temp.valor= valorNuevo;
-   enviarStream(socketMemoria,53,sizeof(almUMC),&temp);
+	enviarStream(socketMemoria,53,sizeof(almUMC),&temp);
 	free(puntero_var);
    return;
 }
@@ -145,3 +143,43 @@ int signal(t_nombre_semaforo semf) {
 	return CONTENIDO_VARIABLE;
 }
 
+almUMC calculoDeDedireccionAlmalcenar(){
+	almUMC aAlmacenar;
+	int paginasDisponibles = pcb_actual->paginasDisponible;
+	if(ultimaDireccion==NULL){
+		int tamanioIC = dictionary_size(pcb_actual->indiceDeCodigo);
+		//primero hay q hacer un stack empty, xq en estack estaria la ultima posicion
+		//como no hay stack, me fijo primero donde se almaceno la ultima linea de codigo
+		int ultimoElemento = tamanioIC-1;
+		direccionMemoria* ultimaDireccionUtil = dictionary_get(pcb_actual->indiceDeCodigo,ultimoElemento);
+		//DA = direccion anterior
+		int paginaDA = ultimaDireccionUtil->pagina;
+		int offsetDA = ultimaDireccionUtil->offset;
+		int tamanioDA = ultimaDireccionUtil->tamanio;
+		int paginaNueva = paginaDA;
+		int offsetNuevo = offsetDA + tamanioDA;
+		int tamanioNuevo = sizeof(int);
+		if(offsetNuevo+tamanioNuevo>tamanioNuevo){
+			paginaNueva++;
+			offsetNuevo=0;
+		}
+		aAlmacenar.offset = offsetNuevo;
+		aAlmacenar.pagina = paginaNueva;
+		aAlmacenar.tamanio = tamanioNuevo;
+	}else{
+		int paginaDA = ultimaDireccion->pagina;
+		int offsetDA = ultimaDireccion->offset;
+		int tamanioDA = ultimaDireccion->tamanio;
+		int paginaNueva = paginaDA;
+		int offsetNuevo = offsetDA + tamanioDA;
+		int tamanioNuevo = sizeof(int);
+		if(offsetNuevo+tamanioNuevo>tamanioNuevo){
+			paginaNueva++;
+			offsetNuevo=0;
+		}
+		aAlmacenar.offset = offsetNuevo;
+		aAlmacenar.pagina = paginaNueva;
+		aAlmacenar.tamanio = tamanioNuevo;
+	}
+	return aAlmacenar;
+}
