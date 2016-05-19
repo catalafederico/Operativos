@@ -131,12 +131,16 @@ t_dictionary* paginarIC(t_dictionary* codigoSinPaginar) {
 }
 
 int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNecesarias,int socetUMC){
-	/*int solcPag = SOLICITARPAGINAS;
-	enviarStream(socetUMC,solcPag,sizeof(int),&pagNecesarias);//Solicito paginas a la umc
+	int newProgram = NUEVOPROGRAMA;
+	programa_id prog;
+	prog.id = 1;
+	prog.pagnias = pagNecesarias;
+	enviarStream(socetUMC,newProgram,sizeof(programa_id),&prog);//Solicito paginas a la umc
 	int* header = recibirStream(socetUMC,sizeof(int));
 	if(*header==ERROR){
 		return -1;//No hay paginas disponibles
-	}*/
+	}
+
 
 	int mensajesAEnviar = list_size(instrucciones);
 	int i;

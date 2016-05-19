@@ -49,4 +49,10 @@ typedef struct{
 }__attribute__((packed))
 direccionMemoria;
 
+typedef struct{
+	int id;
+	int pagnias;
+}__attribute__((packed))
+programa_id;
+
 #endif /* ESTRUCTURAS_H_ */

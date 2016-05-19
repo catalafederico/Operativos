@@ -33,7 +33,13 @@ void inicializar_programa() {
 	int* id = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* cantPag = (int*) recibirStream(socketNucleo, sizeof(int));
 	log_info(umcConfg.loguer, "Alocar Programa empesado");
-	alocarPrograma(*cantPag,*id);
+	if(alocarPrograma(*cantPag,*id)==-1){
+		int error = ERROR;
+		send(socketNucleo,&error, sizeof(int),0);
+	}else{
+		int ok = OK;
+		send(socketNucleo,&ok, sizeof(int),0);
+	}
 	log_info(umcConfg.loguer, "Programa Alocado correctamente");
 	free(id);
 	free(cantPag);
@@ -74,7 +80,7 @@ void almacenar_Byte_NL(){
 	int* tamanio =(int*) recibirStream(socketNucleo, sizeof(int));
 	void* aAlmacenar = recibirStream(socketNucleo, *tamanio);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
-	//almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
+	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
 	printf("Nucleo me pidio q almacene\n:");
 	printf("pagina:%d\n",*pagina);
 	printf("offset:%d\n",*offset);
