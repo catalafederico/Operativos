@@ -38,11 +38,12 @@ void atenderNucleo(pthread_attr_t atributo,int socketNucleo);
 void atenderCpu(pthread_attr_t atributo,int socketCPU);
 int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero);
 void enviarConfirmacion(int socket);
+extern t_log* logConexiones;
 
 void ponerUmcAEscuchar(struct server procesosServer){
 
 	//Atributo para no hacer join de los thread
-	log_info(umcConfg.loguer, "iniciando escucha de la umc");
+	log_trace(logConexiones,"Empiesa la escucha de nucleo y cpu.");
 	pthread_attr_t noJoin;
 	pthread_attr_init(&noJoin);
 	pthread_attr_setdetachstate(&noJoin,PTHREAD_CREATE_DETACHED);
@@ -60,19 +61,19 @@ void ponerUmcAEscuchar(struct server procesosServer){
 	maxFichero = procesosServer.socketServer;
 	while(1){
 		descriptor_temporal = descriptor_maestro;
-		log_info(umcConfg.loguer, "umc escuchando");
+		log_info(umcConfg.loguer, "Umc escuchando");
         if (select(maxFichero+1, &descriptor_temporal, NULL, NULL, NULL) == -1) {
             perror("Error en select, Check it");
             exit(1);
         }
-    	log_info(umcConfg.loguer, "se escucha algo");
+    	log_trace(logConexiones,"Se escucho conexion.");
         	for(nroSocket=0;nroSocket <= maxFichero;nroSocket++){
         		if(FD_ISSET(nroSocket,&descriptor_temporal)){
         		if(nroSocket==procesosServer.socketServer){
         			int* tempMF = &maxFichero;
         			int nuevaconexion = atenderConexionNuevaSelect(procesosServer,tempMF);
         			FD_SET(nuevaconexion,&descriptor_maestro);
-        			log_info(umcConfg.loguer, "se conecto alguien");
+        			log_info(logConexiones, "Se conecto alguien.");
         		}
         		else {
         			int* header = (int*)leerHeader(nroSocket);
@@ -81,16 +82,16 @@ void ponerUmcAEscuchar(struct server procesosServer){
 							enviarError(nroSocket);
 							break;
 						case NUCLEO:
-							log_info(umcConfg.loguer, "handshake cpu");
+							log_trace(logConexiones,"Empiesa la handshake nucleo.");
 							atenderNucleo(noJoin,nroSocket);
 							enviarConfirmacion(nroSocket);
-							log_info(umcConfg.loguer, "handshake cpu terminado");
+							log_trace(logConexiones,"Termina la handshake nucleo.");
 							break;
 						case CPU:
-							log_info(umcConfg.loguer, "handshake cpu");
+							log_trace(logConexiones,"Empiesa la handshake cpu.");
 							atenderCpu(noJoin, nroSocket);
 							enviarConfirmacion(nroSocket);
-							log_info(umcConfg.loguer, "handshake cpu terminado");
+							log_trace(logConexiones,"Termina la handshake cpu.");
 							break;
 							//VA A RECIBIR MAS INFO DE CPU, HACER OTRO RCV
 						case SWAP:
@@ -112,16 +113,16 @@ void ponerUmcAEscuchar(struct server procesosServer){
 
 void atenderNucleo(pthread_attr_t atributo,int socketNucleo){
 	pthread_t nucleo;
-	log_info(umcConfg.loguer, "creando proceso nucleo");
+	log_info(umcConfg.loguer, "Creando proceso nucleo.");
 	pthread_create(&nucleo,&atributo,conexionNucleo,socketNucleo);
-	log_info(umcConfg.loguer, "creado proceso nucleo");
+	log_info(umcConfg.loguer, "Creado proceso nucleo.");
 }
 
 void atenderCpu(pthread_attr_t atributo,int socketCPU){
 	pthread_t cpu;
-	log_info(umcConfg.loguer, "creando proceso cpu");
+	log_info(umcConfg.loguer, "Creando proceso cpu.");
 	pthread_create(&cpu,&atributo,conexionCpu,socketCPU);
-	log_info(umcConfg.loguer, "creano proceso cpu");
+	log_info(umcConfg.loguer, "Creano proceso cpu.");
 }
 
 int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){

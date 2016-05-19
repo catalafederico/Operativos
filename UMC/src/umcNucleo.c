@@ -28,19 +28,22 @@
 t_list* programasEjecucion;
 extern umcNucleo umcConfg;
 int socketNucleo;
+extern t_log* logConexiones;
 
 void inicializar_programa() {
 	int* id = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* cantPag = (int*) recibirStream(socketNucleo, sizeof(int));
-	log_info(umcConfg.loguer, "Alocar Programa empesado");
+	log_info(umcConfg.loguer, "Alocar Programa empezado");
 	if(alocarPrograma(*cantPag,*id)==-1){
 		int error = ERROR;
 		send(socketNucleo,&error, sizeof(int),0);
+		log_info(umcConfg.loguer, "Programa no ha sido alocado correctamente");
 	}else{
 		int ok = OK;
 		send(socketNucleo,&ok, sizeof(int),0);
+		log_info(umcConfg.loguer, "Programa alocado correctamente");
 	}
-	log_info(umcConfg.loguer, "Programa Alocado correctamente");
+
 	free(id);
 	free(cantPag);
 }
@@ -58,9 +61,9 @@ void* solicitar_Bytes_NL(){
 	int* pagina = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* offset = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* tamanio = (int*) recibirStream(socketNucleo, sizeof(int));
-	log_info(umcConfg.loguer, "Obtener bytes iniciado");
+	log_info(umcConfg.loguer, "Obtener bytes iniciado.\n");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
-	log_info(umcConfg.loguer, "Obtener bytes terminado");
+	log_info(umcConfg.loguer, "Obtener bytes terminado.\n");
 	free(pagina);
 	free(offset);
 	free(tamanio);
@@ -70,7 +73,7 @@ void* solicitar_Bytes_NL(){
 void change_Proceso(){
 	int* idProceso = (int*) recibirStream(socketNucleo, sizeof(int));
 	cambiarProceso(*idProceso);
-	log_info(umcConfg.loguer, "Tabla cambiada");
+	log_info(umcConfg.loguer, "Tabla cambiada.\n");
 	free(idProceso);
 }
 
@@ -79,14 +82,9 @@ void almacenar_Byte_NL(){
 	int* offset = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* tamanio =(int*) recibirStream(socketNucleo, sizeof(int));
 	void* aAlmacenar = recibirStream(socketNucleo, *tamanio);
-	log_info(umcConfg.loguer, "Almacenar byte comenzado");
+	log_info(umcConfg.loguer, "Almacenar byte comenzado.\n");
 	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
-	printf("Nucleo me pidio q almacene\n:");
-	printf("pagina:%d\n",*pagina);
-	printf("offset:%d\n",*offset);
-	printf("tamanio:%d\n",*tamanio);
-	printf("mensaje:%s\n",(char*)aAlmacenar);
-	log_info(umcConfg.loguer, "Almacenar byte terminado");
+	log_info(umcConfg.loguer, "Almacenar byte terminado.\n");
 	free(pagina);
 	free(offset);
 	free(tamanio);
@@ -106,6 +104,7 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 	int tamanioPag = umcConfg.configuracionUMC.MARCO_SIZE;
 	while(seguir){
 		int* header =leerHeader(socketEscuchaNucleo);
+		log_trace(logConexiones,"Header recibido en Nucleo: %d\n", *header);
 		switch (*header) {
 			case FINALIZACIONPROGRAMA:
 				finalizar_programa();
@@ -127,12 +126,12 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 				break;
 			case -1:
 				printf("Se desconecto Nucleo, terminado thread\n");
+				log_trace(logConexiones,"Nucleo desconectado.");
 				seguir = 0;
 				break;
 			default:
 				break;
 		}
-
 		free(header);
 	}
 }

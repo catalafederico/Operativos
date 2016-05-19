@@ -22,13 +22,14 @@
 #include <commons/log.h>
 umcNucleo umcConfg;
 void sockets();
-
+t_log* logConexiones;
 
 
 
 int main(void) {
 
-	umcConfg.loguer = log_create("logUMC.txt","UMC", false,LOG_LEVEL_INFO);
+	umcConfg.loguer = log_create("logs/logUMC.txt","UMC", false,LOG_LEVEL_INFO);
+	logConexiones = log_create("logs/conexiones.txt","UMC",false,LOG_LEVEL_TRACE);
 
 	log_info(umcConfg.loguer, "Cargando parametros");
 	umcConfg.configuracionUMC = *get_config_params();
