@@ -102,7 +102,7 @@ t_dictionary* paginarIC(t_dictionary* codigoSinPaginar) {
 		*nroInt = instNro;
 		tamanio = dictionary_get(codigoSinPaginar, &instNro);
 		direccionMemoria* dirInstucActual = malloc(sizeof(direccionMemoria));
-		if (!(tamanioDisponible >= *tamanio)) {
+		while (!(tamanioDisponible >= *tamanio)) {
 			//Hay cambio de pagina, ya q la instruccion no entra en la pagina
 			//Aumento la pagina
 			paginaActual++;
