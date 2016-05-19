@@ -83,6 +83,14 @@ void unirProcesos(proceso* procesoAnterior, proceso* procesoAJuntar);
 
 void moverPaginas(proceso* procesoAJuntar,int nuevoComienzo);
 
+int procesoSeEncuentraEnSwap(int pid);
+
+proceso obtenerProceso(int pid);
+
+void escribirPagina(int paginaAEscribir,char* texto);
+
+char* leerPagina(int pagina);
+
 void dormir(void);
 
 //Variables globales
@@ -125,13 +133,20 @@ int main(void) {
 
     proceso proceso1 = crearProceso(2,47);
     insertarProceso(&proceso1);
+    listarBitMap();
+    listaSwap = listaSwap->procesoSiguiente;
+    compactar();
+    listarBitMap();
+    proceso proceso123 = obtenerProceso(2);
+    printf("Cantidad de paginas del proceso 2: %d \n",proceso123.cantidadDePaginas);
     while(listaSwap != NULL){
-    	printf("Pid: %d \n", listaSwap->pid);
+    	printf("Pid: %d \n Comienzo: %d\n", listaSwap->pid, listaSwap->comienzo);
     	listaSwap = listaSwap->procesoSiguiente;
     }
 
-    eliminarDelBitMapLasPaginasDelProceso(&proceso1);
-    listarBitMap();
+    /*listaSwap = listaSwap->procesoSiguiente;
+    compactar();
+    listarBitMap();*/
 
     /*int comienzaHueco1 = hayHuecoDondeCabeProceso(proceso1);
     printf("Hueco comienza en:%d \n",comienzaHueco1);
@@ -199,8 +214,125 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			pthread_mutex_unlock(&mutex);
 		} else {
 			//El proceso no entra, avisar rechazo
+			//send
 	}
 }
+
+	void leer(void){
+		int pid;
+		int numeroPagina;
+		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
+		recv(socketAdministradorDeMemoria, &numeroPagina, sizeof(int), 0);
+		if(procesoSeEncuentraEnSwap(pid)){
+			proceso proceso = obtenerProceso(pid);
+			if(numeroPagina >= proceso.cantidadDePaginas){
+				printf("La pagina %d no se encuentra en el proceso %d y no puede ser leida\n",numeroPagina,pid);
+				//Avisar que no se encuentra la pagina
+			} else {
+
+				int paginaALeer = proceso.comienzo + numeroPagina;
+				char* texto = leerPagina(paginaALeer);
+				//printf("%s\n",texto);
+				//send(socketAdministradorDeMemoria,&texto, sizeof(texto), 0);
+				free(texto);
+			}
+		} else {
+			printf("Proceso %d no se encuentra en Swap y no puede ser leido\n",pid);
+			//Enviar que fallo
+		}
+	}
+
+	void escribir(){
+		int pid;
+		int numeroPagina;
+		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
+		recv(socketAdministradorDeMemoria, &numeroPagina, sizeof(int), 0);
+		char* texto = recibirCadena(socketAdministradorDeMemoria);
+		if(procesoSeEncuentraEnSwap(pid)){
+			proceso proceso = obtenerProceso(pid);
+			if(numeroPagina >= proceso.cantidadDePaginas){
+				printf("La pagina %d no se encuentra en el proceso %d y no puede ser escrita\n",numeroPagina,pid);
+				//Avisar que fallo a UMC
+			} else {
+				int paginaAEscribir = proceso.comienzo + numeroPagina;
+				escribirPagina(paginaAEscribir,texto);
+				//Avisar que se escribio con exitoa UMC
+
+			}
+		} else {
+			printf("Proceso %d no se encuentra en Swap y no puede ser escrito\n",pid);
+			//Avisar que fallo a UMC
+		}
+	}
+
+	void escribirPagina(int paginaAEscribir,char* texto){
+		int tamanioPagina = swap_configuracion.TAMANIO_PAGINA;
+		if(strlen(texto)>tamanioPagina){
+				printf("El texto es mas grande que el tamaño de pagina entonces se corta\n");
+			}
+			FILE* archivo;
+			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
+			//printf("%s\n",texto);
+			//printf("%d\n",strlen(texto));
+			char* texto2 = malloc(tamanioPagina);
+			memset(texto2,' ',tamanioPagina);
+			char* texto0 = string_new();
+			string_append(&texto0,texto);
+			string_append(&texto0,texto2);
+			char* texto1 = string_substring_until(texto0,tamanioPagina);
+			fseek(archivo,tamanioPagina*paginaAEscribir,SEEK_SET);
+			fwrite(texto1,sizeof(char),sizeof(texto1), archivo );
+			fclose(archivo);
+			free(texto2);
+	}
+
+	char* leerPagina(int pagina){
+			FILE* archivo;
+			int tamanioPagina = swap_configuracion.TAMANIO_PAGINA;
+			//printf("%d\n",pagina);
+			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
+			fseek(archivo,tamanioPagina*pagina,SEEK_SET);
+			char* texto = malloc(tamanioPagina+1);
+			//texto[tamanioPagina] = NULL;
+			fread(texto,tamanioPagina,1,archivo);
+			fclose(archivo);
+			//printf("%s\n",texto);
+			return texto;
+		}
+
+
+
+	int procesoSeEncuentraEnSwap(int pid){
+		proceso* auxiliar = listaSwap;
+		while(auxiliar != NULL){
+
+			if(auxiliar->pid == pid){
+				return 1;
+			} else {
+				auxiliar = auxiliar->procesoSiguiente;
+			}
+
+			return 0;
+		}
+	}
+
+	proceso obtenerProceso(int pid){
+
+		proceso* auxiliar = listaSwap;
+
+		while(auxiliar != NULL){
+
+			if(auxiliar->pid == pid){
+
+				return *auxiliar;
+
+			} else {
+
+				auxiliar = auxiliar->procesoSiguiente;
+
+			}
+		}
+	}
 
 	int entraProceso(proceso proceso){
 
@@ -227,7 +359,11 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			actualizarBitMap(proceso,comienzoDelHueco);
 			agregarProcesoAListaSwap(proceso);
 		} else {
-			//compactar();
+			compactar();
+			comienzoDelHueco = hayHuecoDondeCabeProceso(proceso);
+			proceso->comienzo = comienzoDelHueco;
+			actualizarBitMap(proceso,comienzoDelHueco);
+			agregarProcesoAListaSwap(proceso);
 		}
 
 	}
@@ -255,6 +391,8 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 
 		}
 
+		if(paginasLibresConsecutivas == 0) return -1;
+
 	}
 
 	void compactar(void){
@@ -276,10 +414,29 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			}
 
 		} else {
-			//moverPrimerProceso(); //Moveria el primer proceso a que tenga comienzo en pagina 0
-			//Aqui vendria un copy paste de lo que esta arriba
+			moverAPrimeraPosicionProceso(); //Mueve el proceso mas cercano a comienzo 0, a dicha posicion ( 0 )
+			auxiliar1 = auxiliar2->procesoSiguiente;
+			while(auxiliar1 != NULL){
+						if ((auxiliar2->comienzo + auxiliar2->cantidadDePaginas) + 1
+								== auxiliar1->comienzo){
+							auxiliar2 = auxiliar1;
+							auxiliar1 = auxiliar2->procesoSiguiente;
+							} else {
+							unirProcesos(auxiliar2,auxiliar1);
+							auxiliar2 = auxiliar1;
+							auxiliar1 = auxiliar2->procesoSiguiente;
+							}
+						}
 		}
 
+	}
+
+	void moverAPrimeraPosicionProceso(void){
+		proceso* procesoAMover = listaSwap;
+		moverPaginas(procesoAMover, 0);
+		eliminarDelBitMapLasPaginasDelProceso(procesoAMover);
+		procesoAMover->comienzo = 0;
+		actualizarBitMap(procesoAMover,0);
 	}
 
 	void unirProcesos(proceso* procesoAnterior,proceso* procesoAJuntar){
@@ -306,7 +463,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 	}
 
 	void dormir(){
-		usleep(swap_configuracion.RETARDO_COMPACTACION);
+		usleep(swap_configuracion.RETARDO_COMPACTACION*1000000);
 	}
 
 	//--Funciones del BitMap
@@ -339,7 +496,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			comienzoDelHueco++;
 			paginasActualizadas++;
 		}
-		listarBitMap();
+		//listarBitMap();
 	}
 
 	void listarBitMap(){
@@ -504,3 +661,17 @@ t_reg_config get_config_params(void){
 		return header;
 	}
 
+	void mandarCadena(char* cadena) {
+		int long_cadena = strlen(cadena)+1;
+		send(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
+		send(socketAdministradorDeMemoria, cadena, long_cadena, 0);
+	}
+
+	char* recibirCadena() {
+		char* cadena;
+		int long_cadena;
+		recv(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
+		cadena = malloc(long_cadena);
+		recv(socketAdministradorDeMemoria, cadena, long_cadena, 0);
+		return cadena;
+	}
