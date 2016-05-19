@@ -25,8 +25,8 @@
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
-
 #include "procesosCPU.h"
+#include "estructurasNUCLEO.h"
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -137,3 +137,23 @@ void *atender_CPU(void *socket_desc){
 	return NULL;
 }
 
+
+
+void enviarPCB(PCB* pcb,socket cpu){
+	serializablePCB aMandaCPU;
+	aMandaCPU.id = pcb->id;
+	aMandaCPU.ip = pcb->PC;
+	aMandaCPU.sp = pcb->SP;
+	aMandaCPU.paginasDisponible = pcb->paginasDisponibles;
+	aMandaCPU.tamanioIC = dictionary_size(pcb->indicie_codigo);
+	int enviaPCB = ENVIOPCB;
+	enviarStream(cpu,enviaPCB,sizeof(serializablePCB),&aMandaCPU);
+	//serializo diccionario y lo mando
+	int tamanioIndiceCode =  dictionary_size(pcb->indicie_codigo);
+	int i;
+	for(i=0;i<tamanioIndiceCode;i++){
+		direccionMemoria* aMandar = dictionary_get(pcb->indicie_codigo,&i);
+		send(cpu,aMandar,sizeof(direccionMemoria),0);
+	}
+	return;
+}
