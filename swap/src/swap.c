@@ -19,6 +19,8 @@
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
 #include <commons/collections/list.h>
+#include <pthread.h>
+#include <unistd.h>
 
 
 
@@ -65,15 +67,23 @@ void inicializarBitMap(void);
 
 void listarBitMap(void);
 
+void actualizarBitMap(proceso* proceso,int comienzoDelHueco);
+
+void eliminarDelBitMapLasPaginasDelProceso(proceso* proceso);
+
 void insertarProceso(proceso* proceso);
 
 int hayHuecoDondeCabeProceso(proceso* proceso);
 
-void actualizarBitMap(proceso* proceso,int comienzoDelHueco);
-
 void agregarProcesoAListaSwap(proceso* proceso);
 
-void inicializarListaDeProcesosEnSwap(void);
+void compactar(void);
+
+void unirProcesos(proceso* procesoAnterior, proceso* procesoAJuntar);
+
+void moverPaginas(proceso* procesoAJuntar,int nuevoComienzo);
+
+void dormir(void);
 
 //Variables globales
 
@@ -85,10 +95,12 @@ int *bitMap;
 
 proceso* listaSwap;
 
+pthread_mutex_t mutex;
 
 
 int main(void) {
 
+	pthread_mutex_init(&mutex,NULL);
 
 	//Leo el archivo de configuración
 	swap_configuracion = get_config_params();
@@ -118,7 +130,8 @@ int main(void) {
     	listaSwap = listaSwap->procesoSiguiente;
     }
 
-    //printf("Pid: %d \n",);
+    eliminarDelBitMapLasPaginasDelProceso(&proceso1);
+    listarBitMap();
 
     /*int comienzaHueco1 = hayHuecoDondeCabeProceso(proceso1);
     printf("Hueco comienza en:%d \n",comienzaHueco1);
@@ -172,30 +185,6 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		return proceso;
 	}
 
-	int entraProceso(proceso proceso){
-
-		int paginasLibres;
-		int pag = 0;
-		for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
-			if(bitMap[pag]==0) paginasLibres++;
-		}
-
-		if(paginasLibres > proceso.cantidadDePaginas){
-			return 1;
-		}else{
-			return 0;
-		}
-	}
-
-	void inicializarBitMap(){
-		int pag = 0;
-		int cantidadPaginas = swap_configuracion.CANTIDAD_PAGINAS;
-		bitMap = (int *)malloc (cantidadPaginas*sizeof(int));
-		for(; pag <= cantidadPaginas; pag++) {
-					bitMap[pag] = 0;
-					//printf("Pagina %d: %d \n",pag,bitMap[pag]);
-				}
-	}
 
 	void iniciar(void){
 		int pid;
@@ -205,11 +194,30 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		proceso proceso = crearProceso(pid, cantidadPaginas);
 		if(entraProceso(proceso)){
 			//El proceso entra, realizar insercion
+			pthread_mutex_lock(&mutex);
 			insertarProceso(&proceso);
+			pthread_mutex_unlock(&mutex);
 		} else {
 			//El proceso no entra, avisar rechazo
 	}
 }
+
+	int entraProceso(proceso proceso){
+
+			int paginasLibres;
+			int pag = 0;
+			for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
+				if(bitMap[pag]==0) paginasLibres++;
+			}
+
+			if(paginasLibres >= proceso.cantidadDePaginas){
+				return 1;
+			}else{
+				return 0;
+			}
+		}
+
+
 
 	void insertarProceso(proceso* proceso){
 		int comienzoDelHueco;
@@ -246,6 +254,81 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			}
 
 		}
+
+	}
+
+	void compactar(void){
+		dormir();
+		proceso* auxiliar1 = listaSwap;
+		proceso* auxiliar2 = listaSwap;
+		if(auxiliar1->comienzo == 0){
+			auxiliar1 = auxiliar2->procesoSiguiente;
+			while(auxiliar1 != NULL){
+			if ((auxiliar2->comienzo + auxiliar2->cantidadDePaginas) + 1
+					== auxiliar1->comienzo){
+				auxiliar2 = auxiliar1;
+				auxiliar1 = auxiliar2->procesoSiguiente;
+				} else {
+				unirProcesos(auxiliar2,auxiliar1);
+				auxiliar2 = auxiliar1;
+				auxiliar1 = auxiliar2->procesoSiguiente;
+				}
+			}
+
+		} else {
+			//moverPrimerProceso(); //Moveria el primer proceso a que tenga comienzo en pagina 0
+			//Aqui vendria un copy paste de lo que esta arriba
+		}
+
+	}
+
+	void unirProcesos(proceso* procesoAnterior,proceso* procesoAJuntar){
+		int nuevoComienzo = procesoAnterior->comienzo + 1;
+		moverPaginas(procesoAJuntar, nuevoComienzo);
+		eliminarDelBitMapLasPaginasDelProceso(procesoAJuntar);
+		procesoAJuntar->comienzo = nuevoComienzo;
+		actualizarBitMap(procesoAJuntar,nuevoComienzo);
+
+	}
+
+	void moverPaginas(proceso* procesoAJuntar,int nuevoComienzo){
+			FILE* archivo;
+			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
+			int tamanioPagina = swap_configuracion.TAMANIO_PAGINA;
+			fseek(archivo,tamanioPagina*(procesoAJuntar->comienzo),SEEK_SET);
+			char* texto = malloc(tamanioPagina* (procesoAJuntar->cantidadDePaginas));
+			fread(texto,tamanioPagina,procesoAJuntar->cantidadDePaginas,archivo);
+			fseek(archivo,tamanioPagina*nuevoComienzo,SEEK_SET);
+			fwrite(texto,sizeof(char),sizeof(texto), archivo );
+			fclose(archivo);
+			free(texto);
+
+	}
+
+	void dormir(){
+		usleep(swap_configuracion.RETARDO_COMPACTACION);
+	}
+
+	//--Funciones del BitMap
+
+	void inicializarBitMap(){
+			int pag = 0;
+			int cantidadPaginas = swap_configuracion.CANTIDAD_PAGINAS;
+			bitMap = (int *)malloc (cantidadPaginas*sizeof(int));
+			for(; pag <= cantidadPaginas; pag++) {
+						bitMap[pag] = 0;
+						//printf("Pagina %d: %d \n",pag,bitMap[pag]);
+					}
+		}
+
+	void eliminarDelBitMapLasPaginasDelProceso(proceso* proceso){
+		int paginasActualizadas = 0;
+		int comienzo = proceso->comienzo;
+				while(paginasActualizadas < proceso->cantidadDePaginas){
+					bitMap[comienzo] = 0;
+					comienzo++;
+					paginasActualizadas++;
+				}
 
 	}
 
@@ -420,3 +503,4 @@ t_reg_config get_config_params(void){
 		recv(socketAdministradorDeMemoria, &header, sizeof(header), 0);
 		return header;
 	}
+
