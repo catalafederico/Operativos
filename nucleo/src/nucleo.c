@@ -28,6 +28,9 @@
 #include <sockets/header.h>
 #include "configuracionesNucleo.h"
 
+#include "procesosConsola.h"
+#include "procesosCPU.h"
+#include "procesosUMC.h"
 
 // Variables compartidas ---------------------------------------------
 
@@ -35,11 +38,59 @@ t_list* cpus_dispo;
 t_list* consolas_dispo;
 t_list* proc_New;
 t_list* proc_Ready;
+t_list* proc_Exec;
 t_list* proc_Block;
 t_list* proc_Reject;
 t_list* proc_Exit;
 t_log *logger;
+
+
+// Semaforos
+pthread_mutex_t sem_l_ready = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_cpus_dispo = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_New = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_Exec = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_Block = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_Reject = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_Exit = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
+
+// Estructuras
+/*
+typedef struct {
+	int puerto_prog;
+	int puerto_cpu;
+	int quantum;
+	int quantum_sleep;			// Estructura del archivo de configuracion
+	char ** io_id;
+	int * io_sleep;
+	char ** sem_id;
+	int * sem_init;
+	char ** shared_vars;
+} t_reg_config;
+
+//Pcb
+typedef struct{
+	 int matriz[4][2],fila,col;
+}indiceCodigo;
+//indice de etiquetas declaro en main
+// indice del stack
+typedef struct{
+	struct t_list* args;
+	struct l_list* vars;
+	int retPos;
+	int* retVar;
+}indiceStack;
+//creo PCB
+typedef struct{
+	int PID;
+	int PC;
+	int SP;
+}PCB;
+*/
+
 int tamanioPaginaUMC;
+
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -50,13 +101,8 @@ int tamanioPaginaUMC;
 
 
 // ****************************************** FUNCIONES.h  ******************************************
-void *atender_conexion_consolas(void *socket_desc);
 
-void *atender_conexion_CPU(void *socket_desc);
-
-void *atender_consola(void *socket_desc);
-
-void *atender_CPU(void *socket_desc);
+t_reg_config get_config_params(void); //obtener parametros del archivo de configuracion
 
 void conectarseConUmc(struct cliente clienteNucleo);
 
@@ -82,9 +128,26 @@ int main(int argc, char **argv) {
 		proc_Reject = list_create();
 		proc_Exit = list_create();
 
-		// Leo archivo de configuracion ------------------------------
+// Leo archivo de configuracion ------------------------------
 	t_reg_config reg_config;
 	reg_config = get_config_params();
+
+
+	log_debug(logger, "Conexion con UMC");
+// Me conecto con la UMC ------------------------------
+//	struct cliente clienteNucleo;
+//	clienteNucleo = crearCliente(9999, "127.0.0.1");
+//	conectarConServidor(clienteNucleo);
+//	char * mensajeHandShake = hacerHandShake_cliente(clienteNucleo.socketServer, SOY_NUCLEO);
+
+//	log_debug(logger, "Creacion Thread para procesos con UMC");
+// Crear thread para atender procesos con UMC
+//		pthread_t thread_UMC;
+//		if( pthread_create( &thread_UMC, NULL , procesos_UMC, (void*) clienteNucleo.socketServer) < 0)
+//		{
+//			log_debug(logger, "No fue posible crear thread para UMC");
+//			exit(EXIT_FAILURE);
+//		}
 
 
 	// Me conecto con la UMC
@@ -100,6 +163,8 @@ int main(int argc, char **argv) {
 	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
 	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,list_size(instruccionAUMC),clienteNucleo.socketCliente);
 
+
+	log_debug(logger, "Crear socket para CPUs");
 // Crear socket para CPU  ------------------------------
 	/*struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
@@ -115,12 +180,12 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
+	log_debug(logger, "Crear socket para CONSOLAS");
 // Crear socket para procesos (CONSOLA) ------------------------------
 	struct server serverPaConsolas;
 	serverPaConsolas = crearServer(reg_config.puerto_prog);
 	ponerServerEscucha(serverPaConsolas);
 	log_debug(logger, "Escuchando Consolas en socket %d", serverPaConsolas.socketServer);
-
 
 
 // Crear thread para atender los procesos consola
@@ -130,7 +195,7 @@ int main(int argc, char **argv) {
 		log_debug(logger, "No fue posible crear thread p/ consolas");
 		exit(EXIT_FAILURE);
 	}
-
+//	pthread_join(thread_UMC, NULL);
 	pthread_join(thread_CPU, NULL);
 	pthread_join(thread_consola, NULL);
 
@@ -139,186 +204,6 @@ int main(int argc, char **argv) {
 
 }
 
-//------------------------------------------------------------------------------------------
-// ---------------------------------- atender_conexion_consolas  ---------------------------
-void *atender_conexion_consolas(void *socket_desc){
-
-	int nuevaConexion, *socket_nuevo; //socket donde va a estar nueva conexion
-	struct sockaddr_in direccionEntrante;
-	int socket_local = (int)socket_desc;
-	aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
-	while(nuevaConexion){
-
-		log_debug(logger, "Se ha conectado una Consola");
-
-//		pthread_attr_t attr;
-		pthread_t thread_consola_con;
-//		pthread_attr_init(&attr);
-//		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-
-		socket_nuevo = malloc(sizeof(int));
-		*socket_nuevo = nuevaConexion;
-		if( pthread_create( &thread_consola_con , NULL /*&attr*/ , atender_consola, (void*) socket_nuevo) < 0)
-		{
-			log_debug(logger, "No fue posible crear thread p/ consolas");
-			exit(EXIT_FAILURE);
-		}
-		log_debug(logger, "Consola %d atendida", *socket_nuevo);
-
-		socket_local = (int)socket_desc;
-		aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
-		if (nuevaConexion < 0)	{
-			log_debug(logger, "accept failed");
-			//	exit(EXIT_FAILURE);
-			}
-	}
-
-	if (nuevaConexion < 0)	{
-		log_debug(logger, "Accept failed");
-		exit(EXIT_FAILURE);
-	}
-	return NULL;
-}
-
-//------------------------------------------------------------------------------------------
-// ---------------------------------- atender_conexion_CPU  --------------------------------
-void *atender_conexion_CPU(void *socket_desc){
-
-	int nuevaConexion, *socket_nuevo; //socket donde va a estar nueva conexion
-	struct sockaddr_in direccionEntrante;
-	int socket_local = (int)socket_desc; //*(int*)socket_desc;
-	aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
-	while(nuevaConexion){
-		log_debug(logger, "Se ha conectado una CPU");
-
-		pthread_t thread_cpu_con;
-		socket_nuevo = malloc(sizeof(int));
-		*socket_nuevo = nuevaConexion;
-
-		if( pthread_create( &thread_cpu_con , NULL , atender_CPU, (void*) socket_nuevo) < 0)
-		{
-			log_debug(logger, "No fue posible crear thread p/ CPU");
-			exit(EXIT_FAILURE);
-		}
-		log_debug(logger, "CPU %d atendido", *socket_nuevo);
-
-
-	// agrego CPU a la lista de disponibles
-		list_add(cpus_dispo, socket_nuevo);
-		socket_local = (int)socket_desc; //*(int*)socket_desc;
-		aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
-		if (nuevaConexion < 0)	{
-				log_debug(logger, "accept failed");
-			//	exit(EXIT_FAILURE);
-			}
-	}
-
-	if (nuevaConexion < 0)	{
-		log_debug(logger, "accept failed");
-		exit(EXIT_FAILURE);
-	}
-	return NULL;
-}
-
-//------------------------------------------------------------------------------------------
-// ---------------------------------- atender_consola---------------------------------------
-void *atender_consola(void *socket_desc){
-	  //Get the socket descriptor
-		int socket_co = *(int*)socket_desc;
-//		int read_size;
-//		t_head_mje header;
-
-		char * mensajeHandShake = hacerHandShake_server(socket_co, SOY_NUCLEO);
-//liberar mensajeHandShake
-		// Recibir Mensaje de consola.
-		int tamanio_mje = 256;
-		char * mje_recibido = recibirMensaje_tamanio(socket_co, &tamanio_mje);
-
-		if(!strcmp("Se desconecto",mje_recibido)){
-			log_debug(logger, "Se cerro la conexion");
-			free((void *) mje_recibido);
-			free(socket_desc);
-	        close(socket_co);
-	        exit(0);
-		}
-		log_debug(logger, "Mensaje recibido de consola %d : %s", socket_co, mje_recibido);
-
-
-		int i = 0;
-		// me fijo si hay Cpu disponible
-
-		while (list_is_empty(cpus_dispo)){
-			sleep(5);
-			log_debug(logger, "No hay CPU disponoble, reintentando...");
-						}
-		//Envio mensaje a todas las CPU disponibles. verr
-
-		int fin_list = list_size(cpus_dispo);
-
-		int* cpu_destino;
-		i = 0;
-		while (i<fin_list){
-			cpu_destino = list_get(cpus_dispo, i);
-
-			enviarMensaje(*cpu_destino, mje_recibido);
-			i++;
-		}
-
-		free((void *) mje_recibido);
-		free(socket_desc);
-		close(socket_co);
-		return NULL;
-}
-
-
-
-//------------------------------------------------------------------------------------------
-// ---------------------------------- atender_CPU  -----------------------------------------
-void *atender_CPU(void *socket_desc){
-//Get the socket descriptor
-//	int socket_co = *(int*)socket_desc;
-//		int read_size;
-//		t_head_mje header;
-
-//	char * mensajeHandShake = hacerHandShake_server(socket_co, SOY_NUCLEO); por ahora se saca
-
-/*	// Recibir Mensaje de cpu.
-	int tamanio_mje = 256;
-	char * mje_recibido = recibirMensaje_tamanio(socket_co, &tamanio_mje);
-
-	if(!strcmp("Se desconecto",mje_recibido)){
-		perror("Se cerro la conexion");
-		free((void *) mje_recibido);
-      close(socket_co);
-      exit(0);
-	}
-	printf ("Mensaje recibido de consola %d : %s \n", socket_co, mje_recibido);
-
-	int i = 0;
-	// me fijo si hay Cpu disponible o espero un ratito, si no hay se retorna error
-	while (list_is_empty(cpus_dispo)&&(i<=10000)) i++;
-	if (i>10000){
-		perror("No hay CPU disponible");
-					free((void *) mje_recibido);
-			        close(socket_co);
-			        exit(0);
-	}
-
-	//Envio mensaje a todas las CPU disponibles.
-	int fin_list = list_size(cpus_dispo);
-	int cpu_destino;
-	i = 1;
-
-	while (i<=fin_list){
-		cpu_destino = list_get(cpus_dispo, i);
-		enviarMensaje(cpu_destino, mje_recibido);
-		i++;
-	}
-
-	free((void *) mje_recibido);*/
-//	close(socket_co);
-	return NULL;
-}
 /*
 
 \void roundRobin( int quantum){

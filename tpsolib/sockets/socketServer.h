@@ -20,5 +20,6 @@ struct server crearServer();
 void enviarMensajeACliente(char* mensaje, int socket);
 void ponerServerEscuchaSelect(struct server procesosServer);
 char* hacerHandShake_server(int socketDestino, char * mensaje);
+void ponerServerEscucha(struct server procesosServer);
 
 #endif /* SRC_SOCKETSERVER_H_ */

@@ -38,9 +38,9 @@ void escucharConexiones(int socket, int colamax){
 }
 
 void aceptarConexion(int* socketnuevo, int socketescuchador,struct sockaddr_in* other_adress){
-	int sin_size;
+	unsigned int sin_size;
 	sin_size = sizeof(struct sockaddr_in);
-	if((*socketnuevo = accept(socketescuchador,(struct sockaddr *) other_adress,&sin_size)) == -1){
+	if((*socketnuevo = accept(socketescuchador,(struct sockaddr *) other_adress, &sin_size)) == -1){
 		perror("No se pudo establecer la conexion");
 		exit(EXIT_FAILURE);
 	}
