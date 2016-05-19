@@ -133,29 +133,29 @@ int main(int argc, char **argv) {
 	reg_config = get_config_params();
 
 
-	log_debug(logger, "Conexion con UMC");
-// Me conecto con la UMC ------------------------------
-//	struct cliente clienteNucleo;
-//	clienteNucleo = crearCliente(9999, "127.0.0.1");
-//	conectarConServidor(clienteNucleo);
-//	char * mensajeHandShake = hacerHandShake_cliente(clienteNucleo.socketServer, SOY_NUCLEO);
+//	log_debug(logger, "Conexion con UMC");
 
-//	log_debug(logger, "Creacion Thread para procesos con UMC");
+/*	struct cliente clienteNucleo;
+	clienteNucleo = crearCliente(9999, "127.0.0.1");
+	conectarConServidor(clienteNucleo);
+	char * mensajeHandShake = hacerHandShake_cliente(clienteNucleo.socketServer, SOY_NUCLEO);*/
+
+/*	log_debug(logger, "Creacion Thread para procesos con UMC");
 // Crear thread para atender procesos con UMC
-//		pthread_t thread_UMC;
-//		if( pthread_create( &thread_UMC, NULL , procesos_UMC, (void*) clienteNucleo.socketServer) < 0)
-//		{
-//			log_debug(logger, "No fue posible crear thread para UMC");
-//			exit(EXIT_FAILURE);
-//		}
+		pthread_t thread_UMC;
+	if( pthread_create( &thread_UMC, NULL , procesos_UMC, (void*) clienteNucleo.socketServer) < 0)
+		{
+			log_debug(logger, "No fue posible crear thread para UMC");
+			exit(EXIT_FAILURE);
+		}
 
 
 	// Me conecto con la UMC
 
 	//EJEMPLO DE COMO MANDA A LA UMC
 
-	struct cliente clienteNucleo;
-	clienteNucleo = crearCliente(9999, "127.0.0.1");
+//	struct cliente clienteNucleo;
+//	clienteNucleo = crearCliente(9999, "127.0.0.1");
 	conectarseConUmc(clienteNucleo);
 	t_list* instruccionAUMC = list_create();
 	tamanioPaginaUMC = 50;
@@ -164,9 +164,9 @@ int main(int argc, char **argv) {
 	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,list_size(instruccionAUMC),clienteNucleo.socketCliente);
 
 
-	log_debug(logger, "Crear socket para CPUs");
+	log_debug(logger, "Crear socket para CPUs");*/
 // Crear socket para CPU  ------------------------------
-	/*struct server serverPaCPU;
+	struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
 	ponerServerEscucha(serverPaCPU);
 	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
 	}
 
 	log_debug(logger, "Crear socket para CONSOLAS");
-// Crear socket para procesos (CONSOLA) ------------------------------
+//  Crear socket para procesos (CONSOLA) ------------------------------
 	struct server serverPaConsolas;
 	serverPaConsolas = crearServer(reg_config.puerto_prog);
 	ponerServerEscucha(serverPaConsolas);
@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
 	pthread_join(thread_CPU, NULL);
 	pthread_join(thread_consola, NULL);
 
-	log_destroy(logger);*/
+	log_destroy(logger);
 	return 0;
 
 }
@@ -259,7 +259,7 @@ int count,j,n,tiempo,restante,flag=0;
 }
 */
 
-void conectarseConUmc(struct cliente clienteNucleo){
+/*void conectarseConUmc(struct cliente clienteNucleo){
 	conectarConServidor(clienteNucleo);
 	int nucleoID = NUCLEO;
 	//Empieza handshake
@@ -293,4 +293,4 @@ void conectarseConUmc(struct cliente clienteNucleo){
 
 	//TErmina
 }
-
+*/

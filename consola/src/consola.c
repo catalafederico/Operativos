@@ -33,12 +33,12 @@ int main(int argc, char **argv) {
 	char* buffer;
 	int size;
 	char* buff;
-	char* rutaArchivo;
-	rutaArchivo=argv[1];
+//	char* rutaArchivo;
+//	rutaArchivo=argv[1];
 	FILE *archivoAnsisop;
-//	archivoAnsisop =fopen("/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/consola/facil.ansisop","r");
+	archivoAnsisop =fopen("/home/utnso/workspace/tp-2016-1c-Explosive-code/consola/facil.ansisop","r");
 //hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
-	archivoAnsisop =fopen(rutaArchivo,"r");
+//	archivoAnsisop =fopen(rutaArchivo,"r");
 	if (archivoAnsisop == NULL) {
 		perror("Error al tratar de leer archivo");
 		exit(EXIT_FAILURE);
@@ -95,7 +95,9 @@ int main(int argc, char **argv) {
 
 
 	}
+	fclose(archivoAnsisop);
 	close(clienteConsola.socketCliente);
+
 	return 0;
 }
 
