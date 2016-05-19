@@ -9,6 +9,6 @@
 #define SRC_UMCNUCLEO_H_
 #include "archivoConf.h"
 
-void* conexionNucleo(tempStruct socketNucleo);
+void* conexionNucleo(int socketNucleo);
 
 #endif /* SRC_UMCNUCLEO_H_ */

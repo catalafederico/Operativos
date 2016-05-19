@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "estructurasUMC.h"
 
 #define ayuda "help"
 #define retardo "delay"
@@ -15,6 +16,8 @@
 #define flushTlb "ftlb"
 #define flushMry "fmry"
 #define cerrar "close"
+
+extern umcNucleo umcConfg;
 
 void consolaUMC(){
 	char* comando = malloc(30);

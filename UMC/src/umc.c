@@ -20,12 +20,14 @@
 #include "estructurasUMC.h"
 #include "umcCliente.h"
 #include <commons/log.h>
-
+umcNucleo umcConfg;
 void sockets();
 
 
+
+
 int main(void) {
-	umcNucleo umcConfg;
+
 	umcConfg.loguer = log_create("logUMC.txt","UMC", false,LOG_LEVEL_INFO);
 
 	log_info(umcConfg.loguer, "Cargando parametros");
@@ -36,14 +38,14 @@ int main(void) {
 	umcConfg.memoriaPrincipal = inicializarMemoria(&(umcConfg.configuracionUMC));
 	log_info(umcConfg.loguer, "Memoria Inicializada");
 
-	struct cliente aSwap;
+	/*struct cliente aSwap;
 	aSwap = crearCliente(umcConfg.configuracionUMC.PUERTO_SWAP,"127.0.0.1");
 	log_info(umcConfg.loguer, "Conectando a Swap Puerto: %d Direc: %s",umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
 	conectarConServidor(aSwap);
 	log_info(umcConfg.loguer, "Conectado a Swap socket: %d", aSwap.socketCliente);
-	inicializarSwap(&umcConfg.socketSwap);
+	inicializarSwap(&umcConfg.socketSwap);*/
 
-	umcConfg.socketSwap = aSwap.socketCliente;
+	//umcConfg.socketSwap = aSwap.socketCliente;
 
 	pthread_t consola;
 	pthread_t socket;
@@ -60,10 +62,10 @@ int main(void) {
 	return 0;
 }
 
-void sockets(umcNucleo* umcConfg){
+void sockets(){
 	struct server serverUMC;
-	serverUMC = crearServer(umcConfg->configuracionUMC.PUERTO);
-	ponerUmcAEscuchar(serverUMC,umcConfg);
+	serverUMC = crearServer(umcConfg.configuracionUMC.PUERTO);
+	ponerUmcAEscuchar(serverUMC);
 }
 
 

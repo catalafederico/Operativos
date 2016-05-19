@@ -8,6 +8,6 @@
 #ifndef SRC_UMCCPU_H_
 #define SRC_UMCCPU_H_
 
-void* conexionCpu(tempStruct* socketNucleo);
+void* conexionCpu(int socketNucleo);
 
 #endif /* SRC_UMCCPU_H_ */

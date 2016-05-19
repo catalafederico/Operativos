@@ -26,15 +26,16 @@
 #include "umcCliente.h"
 
 t_list* programasEjecucion;
-tempStruct* todoUMC;
+extern umcNucleo umcConfg;
+
 
 void* solicitar_Bytes(int socket){
-	int* pagina = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	int* offset = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	int* tamanio = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	log_info(todoUMC->umcConfig->loguer, "Obtener bytes iniciado");
+	int* pagina = (int*) recibirStream(socket, sizeof(int));
+	int* offset = (int*) recibirStream(socket, sizeof(int));
+	int* tamanio = (int*) recibirStream(socket, sizeof(int));
+	log_info(umcConfg.loguer, "Obtener bytes iniciado");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
-	log_info(todoUMC->umcConfig->loguer, "Obtener bytes terminado");
+	log_info(umcConfg.loguer, "Obtener bytes terminado");
 	free(pagina);
 	free(offset);
 	free(tamanio);
@@ -46,9 +47,9 @@ void almacenar_Byte(int socket){
 	int* offset = (int*) recibirStream(socket, sizeof(int));
 	int* tamanio =(int*) recibirStream(socket, sizeof(int));
 	void* aAlmacenar = recibirStream(socket, *tamanio);
-	log_info(todoUMC->umcConfig->loguer, "Almacenar byte comenzado");
+	log_info(umcConfg.loguer, "Almacenar byte comenzado");
 	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
-	log_info(todoUMC->umcConfig->loguer, "Almacenar byte terminado");
+	log_info(umcConfg.loguer, "Almacenar byte terminado");
 	free(pagina);
 	free(offset);
 	free(tamanio);
@@ -56,21 +57,20 @@ void almacenar_Byte(int socket){
 	return;
 }
 
-void* conexionCpu(tempStruct* socketNucleo){
-	todoUMC = socketNucleo;
+void* conexionCpu(int socketEscuchaCpu){
 	int seguir = 1;
 	while(seguir){
-		int* header = leerHeader(socketNucleo->socket);
+		int* header = leerHeader(socketEscuchaCpu);
 		switch (*header) {
 			case 52://SOLICITAR
-				solicitar_Bytes(socketNucleo->umcConfig->socketSwap);
+				solicitar_Bytes(socketEscuchaCpu);
 				break;
 			case 53://ALMACENAR
-				almacenar_Byte(socketNucleo->umcConfig->socketSwap);
+				almacenar_Byte(socketEscuchaCpu);
 				break;
 			case -1:
 				printf("Perdida la conexion con cpu\n");
-				close(socketNucleo->socket);
+				close(socketEscuchaCpu);
 				seguir = 0;
 				break;
 			default:

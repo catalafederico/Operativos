@@ -26,6 +26,7 @@
 #include "archivoConf.h"
 #include "umcCpu.h"
 
+extern umcNucleo umcConfg;
 
 struct server{
 	int socketServer;
@@ -33,18 +34,15 @@ struct server{
 	t_list* listaSockets;
 };
 
-
-umcNucleo *umcConfg;
 void atenderNucleo(pthread_attr_t atributo,int socketNucleo);
 void atenderCpu(pthread_attr_t atributo,int socketCPU);
 int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero);
 void enviarConfirmacion(int socket);
 
-void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
+void ponerUmcAEscuchar(struct server procesosServer){
 
-	umcConfg = umcTodo;
 	//Atributo para no hacer join de los thread
-	log_info(umcTodo->loguer, "iniciando escucha de la umc");
+	log_info(umcConfg.loguer, "iniciando escucha de la umc");
 	pthread_attr_t noJoin;
 	pthread_attr_init(&noJoin);
 	pthread_attr_setdetachstate(&noJoin,PTHREAD_CREATE_DETACHED);
@@ -62,19 +60,19 @@ void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
 	maxFichero = procesosServer.socketServer;
 	while(1){
 		descriptor_temporal = descriptor_maestro;
-		log_info(umcTodo->loguer, "umc escuchando");
+		log_info(umcConfg.loguer, "umc escuchando");
         if (select(maxFichero+1, &descriptor_temporal, NULL, NULL, NULL) == -1) {
             perror("Error en select, Check it");
             exit(1);
         }
-    	log_info(umcTodo->loguer, "se escucha algo");
+    	log_info(umcConfg.loguer, "se escucha algo");
         	for(nroSocket=0;nroSocket <= maxFichero;nroSocket++){
         		if(FD_ISSET(nroSocket,&descriptor_temporal)){
         		if(nroSocket==procesosServer.socketServer){
         			int* tempMF = &maxFichero;
         			int nuevaconexion = atenderConexionNuevaSelect(procesosServer,tempMF);
         			FD_SET(nuevaconexion,&descriptor_maestro);
-        			log_info(umcTodo->loguer, "se conecto alguien");
+        			log_info(umcConfg.loguer, "se conecto alguien");
         		}
         		else {
         			int* header = (int*)leerHeader(nroSocket);
@@ -83,16 +81,16 @@ void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
 							enviarError(nroSocket);
 							break;
 						case NUCLEO:
-							log_info(umcTodo->loguer, "handshake cpu");
+							log_info(umcConfg.loguer, "handshake cpu");
 							atenderNucleo(noJoin,nroSocket);
 							enviarConfirmacion(nroSocket);
-							log_info(umcTodo->loguer, "handshake cpu terminado");
+							log_info(umcConfg.loguer, "handshake cpu terminado");
 							break;
 						case CPU:
-							log_info(umcTodo->loguer, "handshake cpu");
+							log_info(umcConfg.loguer, "handshake cpu");
 							atenderCpu(noJoin, nroSocket);
 							enviarConfirmacion(nroSocket);
-							log_info(umcTodo->loguer, "handshake cpu terminado");
+							log_info(umcConfg.loguer, "handshake cpu terminado");
 							break;
 							//VA A RECIBIR MAS INFO DE CPU, HACER OTRO RCV
 						case SWAP:
@@ -114,22 +112,16 @@ void ponerUmcAEscuchar(struct server procesosServer,umcNucleo* umcTodo){
 
 void atenderNucleo(pthread_attr_t atributo,int socketNucleo){
 	pthread_t nucleo;
-	tempStruct* aMandar = malloc(sizeof(tempStruct));
-	aMandar->umcConfig = umcConfg;
-	aMandar->socket = socketNucleo;
-	log_info(umcConfg->loguer, "creando proceso nucleo");
-	pthread_create(&nucleo,&atributo,conexionNucleo,aMandar);
-	log_info(umcConfg->loguer, "creado proceso nucleo");
+	log_info(umcConfg.loguer, "creando proceso nucleo");
+	pthread_create(&nucleo,&atributo,conexionNucleo,&socketNucleo);
+	log_info(umcConfg.loguer, "creado proceso nucleo");
 }
 
 void atenderCpu(pthread_attr_t atributo,int socketCPU){
 	pthread_t cpu;
-	tempStruct* aMandar = malloc(sizeof(tempStruct));
-	aMandar->umcConfig = umcConfg;
-	aMandar->socket = socketCPU;
-	log_info(umcConfg->loguer, "creando proceso cpu");
-	pthread_create(&cpu,&atributo,conexionCpu,aMandar);
-	log_info(umcConfg->loguer, "creano proceso cpu");
+	log_info(umcConfg.loguer, "creando proceso cpu");
+	pthread_create(&cpu,&atributo,conexionCpu,&socketCPU);
+	log_info(umcConfg.loguer, "creano proceso cpu");
 }
 
 int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){

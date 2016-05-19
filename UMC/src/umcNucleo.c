@@ -26,56 +26,56 @@
 #include "umcCliente.h"
 
 t_list* programasEjecucion;
-tempStruct* todoUMC;
+extern umcNucleo umcConfg;
+int socketNucleo;
 
-
-void inicializar_programa(int socket) {
-	int* id = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	int* cantPag = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	log_info(todoUMC->umcConfig->loguer, "Alocar Programa empesado");
+void inicializar_programa() {
+	int* id = (int*) recibirStream(socketNucleo, sizeof(int));
+	int* cantPag = (int*) recibirStream(socketNucleo, sizeof(int));
+	log_info(umcConfg.loguer, "Alocar Programa empesado");
 	alocarPrograma(*cantPag,*id);
-	log_info(todoUMC->umcConfig->loguer, "Programa Alocado correctamente");
+	log_info(umcConfg.loguer, "Programa Alocado correctamente");
 	free(id);
 	free(cantPag);
 }
 
-void finalizar_programa(int socket){
-	int* id = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	log_info(todoUMC->umcConfig->loguer, "Desalojar programa empesado");
+void finalizar_programa(){
+	int* id = (int*) recibirStream(socketNucleo, sizeof(int));
+	log_info(umcConfg.loguer, "Desalojar programa empesado");
 	desalojarPrograma(*id);
-	log_info(todoUMC->umcConfig->loguer, "Proceso desalojado");
+	log_info(umcConfg.loguer, "Proceso desalojado");
 	free(id);
 	return;
 }
 
-void* solicitar_Bytes_NL(int socket){
-	int* pagina = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	int* offset = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	int* tamanio = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	log_info(todoUMC->umcConfig->loguer, "Obtener bytes iniciado");
+void* solicitar_Bytes_NL(){
+	int* pagina = (int*) recibirStream(socketNucleo, sizeof(int));
+	int* offset = (int*) recibirStream(socketNucleo, sizeof(int));
+	int* tamanio = (int*) recibirStream(socketNucleo, sizeof(int));
+	log_info(umcConfg.loguer, "Obtener bytes iniciado");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
-	log_info(todoUMC->umcConfig->loguer, "Obtener bytes terminado");
+	log_info(umcConfg.loguer, "Obtener bytes terminado");
 	free(pagina);
 	free(offset);
 	free(tamanio);
 	return obtenido;
 }
 
-void change_Proceso(int socket){
-	int* idProceso = (int*) recibirStream(todoUMC->socket, sizeof(int));
+void change_Proceso(){
+	int* idProceso = (int*) recibirStream(socketNucleo, sizeof(int));
 	cambiarProceso(*idProceso);
-	log_info(todoUMC->umcConfig->loguer, "Tabla cambiada");
+	log_info(umcConfg.loguer, "Tabla cambiada");
 	free(idProceso);
 }
 
-void almacenar_Byte_NL(int socket){
-	int* pagina = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	int* offset = (int*) recibirStream(todoUMC->socket, sizeof(int));
-	int* tamanio =(int*) recibirStream(todoUMC->socket, sizeof(int));
-	void* aAlmacenar = recibirStream(todoUMC->socket, *tamanio);
-	log_info(todoUMC->umcConfig->loguer, "Almacenar byte comenzado");
+void almacenar_Byte_NL(){
+	int* pagina = (int*) recibirStream(socketNucleo, sizeof(int));
+	int* offset = (int*) recibirStream(socketNucleo, sizeof(int));
+	int* tamanio =(int*) recibirStream(socketNucleo, sizeof(int));
+	void* aAlmacenar = recibirStream(socketNucleo, *tamanio);
+	log_info(umcConfg.loguer, "Almacenar byte comenzado");
 	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
-	log_info(todoUMC->umcConfig->loguer, "Almacenar byte terminado");
+	log_info(umcConfg.loguer, "Almacenar byte terminado");
 	free(pagina);
 	free(offset);
 	free(tamanio);
@@ -89,25 +89,34 @@ void almacenar_Byte_NL(int socket){
 
 
 
-void* conexionNucleo(tempStruct* socketNucleo){
-	todoUMC = socketNucleo;
-	while(1){
-		int* header =leerHeader(socketNucleo->socket);
+void* conexionNucleo(int  socketEscuchaNucleo){
+	socketNucleo = socketEscuchaNucleo;
+	int seguir = 1;
+	int tamanioPag = umcConfg.configuracionUMC.MARCO_SIZE;
+	while(seguir){
+		int* header =leerHeader(socketEscuchaNucleo);
 		switch (*header) {
 			case FINALIZACIONPROGRAMA:
-				finalizar_programa(socketNucleo->umcConfig->socketSwap);
+				finalizar_programa();
 				break;
 			case NUEVOPROGRAMA:
-				inicializar_programa(socketNucleo->umcConfig->socketSwap);
+				inicializar_programa();
 				break;
 			case CAMBIOPROCESO:
-				change_Proceso(socketNucleo->umcConfig->socketSwap);
+				change_Proceso();
 				break;
 			case SOLICITAR:
-				solicitar_Bytes_NL(socketNucleo->umcConfig->socketSwap);
+				solicitar_Bytes_NL();
 				break;
 			case ALMACENAR:
-				almacenar_Byte_NL(socketNucleo->umcConfig->socketSwap);
+				almacenar_Byte_NL();
+				break;
+			case 666:
+				enviarStream(socketEscuchaNucleo,666,sizeof(int),&tamanioPag);
+				break;
+			case -1:
+				printf("Se desconecto Nucleo, terminado thread\n");
+				seguir = 0;
 				break;
 			default:
 				break;
