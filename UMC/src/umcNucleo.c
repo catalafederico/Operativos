@@ -74,7 +74,12 @@ void almacenar_Byte_NL(){
 	int* tamanio =(int*) recibirStream(socketNucleo, sizeof(int));
 	void* aAlmacenar = recibirStream(socketNucleo, *tamanio);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
-	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
+	//almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
+	printf("Nucleo me pidio q almacene\n:");
+	printf("pagina:%d\n",*pagina);
+	printf("offset:%d\n",*offset);
+	printf("tamanio:%d\n",*tamanio);
+	printf("mensaje:%s\n",(char*)aAlmacenar);
 	log_info(umcConfg.loguer, "Almacenar byte terminado");
 	free(pagina);
 	free(offset);

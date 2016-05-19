@@ -88,6 +88,9 @@ int main(int argc, char **argv) {
 
 
 	// Me conecto con la UMC
+
+	//EJEMPLO DE COMO MANDA A LA UMC
+
 	struct cliente clienteNucleo;
 	clienteNucleo = crearCliente(9999, "127.0.0.1");
 	conectarseConUmc(clienteNucleo);
@@ -95,7 +98,7 @@ int main(int argc, char **argv) {
 	tamanioPaginaUMC = 50;
 	indiceCodigo* icNuevo = nuevoPrograma("variables a,b\n variables c\n",instruccionAUMC);
 	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
-	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,2,clienteNucleo.socketCliente);
+	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,list_size(instruccionAUMC),clienteNucleo.socketCliente);
 
 // Crear socket para CPU  ------------------------------
 	/*struct server serverPaCPU;

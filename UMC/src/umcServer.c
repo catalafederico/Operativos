@@ -113,14 +113,14 @@ void ponerUmcAEscuchar(struct server procesosServer){
 void atenderNucleo(pthread_attr_t atributo,int socketNucleo){
 	pthread_t nucleo;
 	log_info(umcConfg.loguer, "creando proceso nucleo");
-	pthread_create(&nucleo,&atributo,conexionNucleo,&socketNucleo);
+	pthread_create(&nucleo,&atributo,conexionNucleo,socketNucleo);
 	log_info(umcConfg.loguer, "creado proceso nucleo");
 }
 
 void atenderCpu(pthread_attr_t atributo,int socketCPU){
 	pthread_t cpu;
 	log_info(umcConfg.loguer, "creando proceso cpu");
-	pthread_create(&cpu,&atributo,conexionCpu,&socketCPU);
+	pthread_create(&cpu,&atributo,conexionCpu,socketCPU);
 	log_info(umcConfg.loguer, "creano proceso cpu");
 }
 
