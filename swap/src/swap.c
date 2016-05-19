@@ -91,7 +91,16 @@ void escribirPagina(int paginaAEscribir,char* texto);
 
 char* leerPagina(int pagina);
 
+void finalizar(void);
+
+void eliminarProceso(int pid);
+
+char* recibirCadena(void);
+
+void mandarCadena(char* cadena);
+
 void dormir(void);
+
 
 //Variables globales
 
@@ -247,7 +256,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		int numeroPagina;
 		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
 		recv(socketAdministradorDeMemoria, &numeroPagina, sizeof(int), 0);
-		char* texto = recibirCadena(socketAdministradorDeMemoria);
+		char* texto = recibirCadena();
 		if(procesoSeEncuentraEnSwap(pid)){
 			proceso proceso = obtenerProceso(pid);
 			if(numeroPagina >= proceso.cantidadDePaginas){
@@ -262,6 +271,41 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		} else {
 			printf("Proceso %d no se encuentra en Swap y no puede ser escrito\n",pid);
 			//Avisar que fallo a UMC
+		}
+	}
+
+	void finalizar(void){
+		int pid;
+		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
+		if (procesoSeEncuentraEnSwap(pid)){
+			eliminarProceso(pid);
+			//Avisar a la UMC que se borro el proceso con exito
+			//send(socketAdministradorDeMemoria,&exito, sizeof(), 0);
+		} else{
+			printf("El proceso %d a finalizar no se encuentra en Swap\n",pid);
+			//Avisar a la UMC que se fracaso en el borrado del proceso
+			//send(socketAdministradorDeMemoria,&fracaso, sizeof(), 0);
+		}
+	}
+
+	void eliminarProceso(int pid){
+		proceso* auxiliar1 = listaSwap->procesoSiguiente;
+		proceso* auxiliar2 = listaSwap;
+
+		while(auxiliar1 != NULL){
+			if(listaSwap->pid == pid){
+				eliminarDelBitMapLasPaginasDelProceso(listaSwap);
+				listaSwap = listaSwap->procesoSiguiente;
+			} else {
+				if(auxiliar1->pid == pid){
+					auxiliar2->procesoSiguiente = auxiliar1->procesoSiguiente;
+					eliminarDelBitMapLasPaginasDelProceso(auxiliar1);
+				} else {
+					auxiliar2 = auxiliar1;
+					auxiliar1 = auxiliar2->procesoSiguiente;
+				}
+
+			}
 		}
 	}
 
