@@ -42,5 +42,11 @@ typedef struct{
 	int SP;
 }PCB;
 
+typedef struct{
+	int pagina;
+	int offset;
+	int tamanio;
+}__attribute__((packed))
+direccionMemoria;
 
 #endif /* ESTRUCTURAS_H_ */

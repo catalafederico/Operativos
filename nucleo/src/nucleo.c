@@ -28,20 +28,6 @@
 #include <sockets/header.h>
 #include "configuracionesNucleo.h"
 
-AnSISOP_funciones functions = {
-	.AnSISOP_definirVariable	= vardef,
-	.AnSISOP_obtenerPosicionVariable= getvarpos,
-	.AnSISOP_dereferenciar	= derf,
-	.AnSISOP_asignar	= asignar,
-	.AnSISOP_imprimir	= imprimir,
-	.AnSISOP_imprimirTexto= imptxt,
-	.AnSISOP_irAlLabel = goint,
-	.AnSISOP_asignarValorCompartida = setglobalvar,
-	.AnSISOP_obtenerValorCompartida = getglobalvar,
-	.AnSISOP_entradaSalida = ionotif,
-	.AnSISOP_retornar = retornar
-};
-AnSISOP_kernel kernel_functions = { };
 
 // Variables compartidas ---------------------------------------------
 
@@ -74,8 +60,6 @@ void *atender_CPU(void *socket_desc);
 
 void conectarseConUmc(struct cliente clienteNucleo);
 
-void nuevoPrograma(char* instrucciones);
-
 //void roundRobin( int quantum);
 
 // ****************************************** FIN FUNCIONES.h ***************************************
@@ -107,9 +91,10 @@ int main(int argc, char **argv) {
 	/*struct cliente clienteNucleo;
 	clienteNucleo = crearCliente(9999, "127.0.0.1");
 	conectarseConUmc(clienteNucleo);*/
-
-	nuevoPrograma("variables a,b\nvariables c\0");
-
+	t_list* instruccionAUMC = list_create();
+	tamanioPaginaUMC = 50;
+	indiceCodigo* icNuevo = nuevoPrograma("variables a,b\n variables c\n",instruccionAUMC);
+	paginarIC(icNuevo->inst_tamanio);
 
 // Crear socket para CPU  ------------------------------
 	/*struct server serverPaCPU;
@@ -421,43 +406,4 @@ void conectarseConUmc(struct cliente clienteNucleo){
 }
 
 
-void nuevoPrograma(char* instrucciones){
-	indiceCodigo ic;
-	char* tempInstruccion = strdup(instrucciones);
-	char* newInst = strtok(tempInstruccion,"\n");
-	inicialzarPrograma();// es instruccion en 0 (false)
-	ic.inst_tamanio = dictionary_create(); //inicializo indice de codigo
-	int i = 0; //numero de instrucciones
-	int* esInstruccion;
-	do{
-		analizadorLinea(newInst,&functions,&kernel_functions);
-		esInstruccion = obtenerEsVariable();
-		//analiso si es intruccion
-		if(*esInstruccion){
-			//tamanio llama un maloc para q perdure ya q es un puntero
-			int* tamanio = malloc(sizeof(int));
-			*tamanio = strlen(newInst)+1;
-			//tamanio llama un maloc para q perdure ya q es un puntero
-			int* nroInst = malloc(sizeof(int));
-			//la cantidad es el tamnio del dicc
-			/*0 elementos so instruccion 0
-			 *1 elemento so instruccion 1
-			 */
-			*nroInst = dictionary_size(ic.inst_tamanio);
 
-			// la coloco
-			dictionary_put(ic.inst_tamanio,nroInst,tamanio);
-
-			// pongo es instruccion en falso
-			*esInstruccion = 0;
-			}
-		newInst =strtok(NULL,"\n");
-		}
-	while(newInst != NULL);
-	int tamanioDicc = dictionary_size(ic.inst_tamanio);
-	for(i=0;i<tamanioDicc;i++){
-		printf("En la instruccion: %d\n",i);
-		int* temp = dictionary_get(ic.inst_tamanio,&i);
-		printf("Hay un tamanio de: %d\n",*temp);
-	}
-}
