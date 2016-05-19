@@ -13,6 +13,7 @@
 #include "funcionesparsernuevas.h"
 #include <commons/collections/dictionary.h>
 #include <commons/collections/list.h>
+#include <sockets/header.h>
 
 extern int tamanioPaginaUMC;
 
@@ -127,4 +128,28 @@ t_dictionary* paginarIC(t_dictionary* codigoSinPaginar) {
 		printf("offset:%d\n",temp->offset);
 	}
 	return diccionariConMemoria;
+}
+
+int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNecesarias,int socetUMC){
+	/*int solcPag = SOLICITARPAGINAS;
+	enviarStream(socetUMC,solcPag,sizeof(int),&pagNecesarias);//Solicito paginas a la umc
+	int* header = recibirStream(socetUMC,sizeof(int));
+	if(*header==ERROR){
+		return -1;//No hay paginas disponibles
+	}*/
+
+	int mensajesAEnviar = list_size(instrucciones);
+	int i;
+	for(i=0;i<mensajesAEnviar;i++){
+		//Agarro la direccion de la instruccion y se la envia para informarle donde almacenar la instruccion
+		//No cambiar orden ya q umc recibe asi
+		direccionMemoria* aAlmacenar = dictionary_get(codigoPaginado,&i);
+		enviarStream(socetUMC,ALMACENAR,sizeof(direccionMemoria),aAlmacenar);
+		//puntero a la instruccion a enviar
+		char* instruccionAENviar = list_get(instrucciones,i);
+		if(send(socetUMC,instruccionAENviar,aAlmacenar->tamanio,0)==-1){
+			perror("error al enviar instruccion");
+		}
+	}
+	return 0;
 }

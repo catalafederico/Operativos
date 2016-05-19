@@ -88,13 +88,14 @@ int main(int argc, char **argv) {
 
 
 	// Me conecto con la UMC
-	/*struct cliente clienteNucleo;
+	struct cliente clienteNucleo;
 	clienteNucleo = crearCliente(9999, "127.0.0.1");
-	conectarseConUmc(clienteNucleo);*/
+	conectarseConUmc(clienteNucleo);
 	t_list* instruccionAUMC = list_create();
 	tamanioPaginaUMC = 50;
 	indiceCodigo* icNuevo = nuevoPrograma("variables a,b\n variables c\n",instruccionAUMC);
-	paginarIC(icNuevo->inst_tamanio);
+	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
+	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,2,clienteNucleo.socketCliente);
 
 // Crear socket para CPU  ------------------------------
 	/*struct server serverPaCPU;
@@ -404,6 +405,4 @@ void conectarseConUmc(struct cliente clienteNucleo){
 
 	//TErmina
 }
-
-
 
