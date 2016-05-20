@@ -8,8 +8,8 @@
 #ifndef PROCESOSCONSOLA_H_
 #define PROCESOSCONSOLA_H_
 
-void *atender_conexion_consolas(void *socket_desc);
-void *atender_consola(void *socket_desc);
+void *atender_conexion_consolas();
+void *atender_consola(int *socket_desc);
 
 
 

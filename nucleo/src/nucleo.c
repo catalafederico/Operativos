@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
 	pthread_t thread_UMC;
 	pthread_t thread_CPU;
 
-	sem_init(semaforoProgramasACargar,0,0);
+	//sem_init(semaforoProgramasACargar,0,0);
 
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
@@ -105,14 +105,14 @@ int main(int argc, char **argv) {
 
 
 	//Me conecto con la UMC ------------------------------
-	clienteNucleoUMC = crearCliente(reg_config.puerto_umc, reg_config.ip_umc);
+	/*clienteNucleoUMC = crearCliente(reg_config.puerto_umc, reg_config.ip_umc);
 	log_debug(logger, "Conexion con UMC");
 	if( pthread_create( &thread_UMC, NULL , procesos_UMC, NULL) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread para UMC");
 			exit(EXIT_FAILURE);
 		}
-	log_debug(logger, "Creacion Thread para procesos con UMC");
+	log_debug(logger, "Creacion Thread para procesos con UMC");*/
 
 
 
@@ -141,7 +141,6 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
-	//pthread_join(thread_UMC, NULL);
 	pthread_join(thread_CPU, NULL);
 	log_destroy(logger);
 	return 0;

@@ -61,7 +61,7 @@ extern pthread_mutex_t sem_log;
 void *atender_conexion_consolas(void *socket_desc){
 
 	//Pongo el server a escuchar.
-	ponerServerEscucha(serverPaCPU);
+	ponerServerEscucha(serverPaConsolas);
 	log_debug(logger, "Se han empezado a escuchar consolas.");
 	int seguir = 1;
 
@@ -73,7 +73,7 @@ void *atender_conexion_consolas(void *socket_desc){
 	while(seguir){
 		int *socket_nuevo = malloc(sizeof(int)); //socket donde va a estar nueva conexion
 		struct sockaddr_in direccionEntrante;
-		aceptarConexion(socket_nuevo, serverPaConsolas, &direccionEntrante); //No hace falta chekear si es -1, aceptarConexiones lo hace ya
+		aceptarConexion(socket_nuevo, serverPaConsolas.socketServer, &direccionEntrante); //No hace falta chekear si es -1, aceptarConexiones lo hace ya
 		log_debug(logger, "Se ha conectado una Consola");
 
 		if( pthread_create( &thread_consola_con , &attr , atender_consola, socket_nuevo) < 0)
@@ -91,16 +91,16 @@ void *atender_conexion_consolas(void *socket_desc){
 
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_consola---------------------------------------
-void *atender_consola(void *socket_desc){
-	  //Get the socket descriptor
+void *atender_consola(int* socket_desc){
+	  	//Get the socket descriptor
 		int socket_co = *(int*)socket_desc;
-//		int read_size;
-//		t_head_mje header;
+		//int read_size;
+		//t_head_mje header;
 
 		//char * mensajeHandShake =
 				hacerHandShake_server(socket_co, SOY_NUCLEO);
 
-//liberar mensajeHandShake
+		//liberar mensajeHandShake
 		// Recibir Mensaje de consola.
 		int* tamanio_mje = leerHeader(socket_co);
 		char * mje_recibido = recibirMensaje_tamanio(socket_co, tamanio_mje);
@@ -115,29 +115,9 @@ void *atender_consola(void *socket_desc){
 		log_debug(logger, "Mensaje recibido de consola %d : %s", socket_co, mje_recibido);
 
 
-		int i = 0;
-		// me fijo si hay Cpu disponible
-
-		while (list_is_empty(cpus_dispo)){
-			sleep(5);
-			log_debug(logger, "No hay CPU disponoble, reintentando...");
-						}
-		//Envio mensaje a todas las CPU disponibles. verr
-
-		int fin_list = list_size(cpus_dispo);
-
-		int* cpu_destino;
-		i = 0;
-		while (i<fin_list){
-			cpu_destino = list_get(cpus_dispo, i);
-
-			enviarMensaje(*cpu_destino, mje_recibido);
-			i++;
-		}
 
 		free((void *) mje_recibido);
 		free(socket_desc);
-		close(socket_co);
 		return NULL;
 }
 
