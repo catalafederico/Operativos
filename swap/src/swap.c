@@ -101,6 +101,10 @@ void mandarCadena(char* cadena);
 
 void dormir(void);
 
+void testEscribirEnPaginas(void);
+
+void testLeerPagina();
+
 
 //Variables globales
 
@@ -153,6 +157,9 @@ int main(void) {
     	listaSwap = listaSwap->procesoSiguiente;
     }
 
+    testEscribirEnPaginas();
+    testLeerPagina();
+
     /*listaSwap = listaSwap->procesoSiguiente;
     compactar();
     listarBitMap();*/
@@ -165,7 +172,7 @@ int main(void) {
 
     //Conexion
 
-    manejarConexionesConUMC();
+    //manejarConexionesConUMC();
 
     	free(bitMap);
 		return 0;
@@ -242,7 +249,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 				int paginaALeer = proceso.comienzo + numeroPagina;
 				char* texto = leerPagina(paginaALeer);
 				//printf("%s\n",texto);
-				//send(socketAdministradorDeMemoria,&texto, sizeof(texto), 0);
+				mandarCadena(texto);
 				free(texto);
 			}
 		} else {
@@ -325,7 +332,8 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			string_append(&texto0,texto2);
 			char* texto1 = string_substring_until(texto0,tamanioPagina);
 			fseek(archivo,tamanioPagina*paginaAEscribir,SEEK_SET);
-			fwrite(texto1,sizeof(char),sizeof(texto1), archivo );
+			//fwrite(texto1,sizeof(char),sizeof(texto1), archivo );
+			fprintf(archivo,"%s",texto1);
 			fclose(archivo);
 			free(texto2);
 	}
@@ -337,7 +345,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
 			fseek(archivo,tamanioPagina*pagina,SEEK_SET);
 			char* texto = malloc(tamanioPagina+1);
-			//texto[tamanioPagina] = NULL;
+			texto[tamanioPagina] = NULL;
 			fread(texto,tamanioPagina,1,archivo);
 			fclose(archivo);
 			//printf("%s\n",texto);
@@ -564,13 +572,14 @@ void crearArchivo(){
 }
 
 void inicializarArchivo(){
-	FILE* archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
-		fseek(archivo,0,SEEK_END);
+		FILE* archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
+		fseek(archivo,0,SEEK_SET);
 		char* texto = malloc(swap_configuracion.CANTIDAD_PAGINAS*swap_configuracion.TAMANIO_PAGINA);
-		memset(texto,'\0',swap_configuracion.CANTIDAD_PAGINAS*swap_configuracion.TAMANIO_PAGINA);
-		fwrite(texto,sizeof(char),sizeof(texto), archivo );
-		free(texto);
+		memset(texto,' ',swap_configuracion.CANTIDAD_PAGINAS*swap_configuracion.TAMANIO_PAGINA);
+		//fwrite(texto,sizeof(char),sizeof(texto), archivo );
+		fprintf(archivo,"%s",texto);
 		fclose(archivo);
+		free(texto);
 
 }
  //---------Funcion para extraer los datos del archivo de configuracion
@@ -680,24 +689,22 @@ t_reg_config get_config_params(void){
 
 					switch(header){
 
-					        case '60':
+					        case '50':
 								iniciar();
 								return 1;
-
-							/*case '':
+							case '51':
 								finalizar();
 								return 1;
-							case '':
+							case '52':
 								leer();
 								return 1;
-							case '':
+							case '53':
 								escribir();
 								return 1;
 							break;
-							}*/
+							}
 					return 0;
 			}
-	}
 
 	int recibirHeader(void){
 		int header;
@@ -718,4 +725,26 @@ t_reg_config get_config_params(void){
 		cadena = malloc(long_cadena);
 		recv(socketAdministradorDeMemoria, cadena, long_cadena, 0);
 		return cadena;
+	}
+
+	//---Tests
+
+	void testEscribirEnPaginas() {
+		escribirPagina(2,"1234567890");
+		escribirPagina(3,"dadadadada");
+		escribirPagina(0,"12345678910111213");
+		escribirPagina(1,"dsnaudsabifbasifasifhasufausbfasupfdhusafphsdauensayfgesyafo");
+		escribirPagina(0,"hola                                                                                                                                                                                                                                                           F");
+		escribirPagina(1,"como andas");
+	}
+
+	void testLeerPagina() {
+		char* texto = leerPagina(0);
+		char* texto2 = leerPagina(1);
+		char* texto3 = leerPagina(2);
+		char* texto4 = leerPagina(3);
+		printf("%s\n", texto);
+		printf("%s\n", texto2);
+		printf("%s\n", texto3);
+		printf("%s\n", texto4);
 	}
