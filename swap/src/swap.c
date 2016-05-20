@@ -175,7 +175,7 @@ int main(void) {
 
     //Conexion
 
-    //manejarConexionesConUMC();
+    manejarConexionesConUMC();
 
     	free(bitMap);
 		return 0;
