@@ -25,8 +25,8 @@
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
-#include "procesosCPU.h"
 #include "estructurasNUCLEO.h"
+#include "procesosCPU.h"
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -35,20 +35,40 @@
 #define SOY_NUCLEO  "Te_conectaste_con_NUCLEO_"
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
+#define FIN_PROC 	1
+#define FIN_QUANTUM	2
+#define FIN_IO		3
+#define SOLIC_IO 	4
+#define FIN_CPU 	5
 // Variables compartidas ---------------------------------------------
-
+extern t_reg_config reg_config;
 extern t_list* cpus_dispo;
 extern t_list* consolas_dispo;
 extern t_list* proc_New;
 extern t_list* proc_Ready;
+extern t_list* proc_Exec;
 extern t_list* proc_Block;
 extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
 
+// semaforos Compartidos
+extern sem_t* sem_NEW_dispo;
 
+extern pthread_mutex_t sem_l_cpus_dispo;
+
+extern pthread_mutex_t sem_l_New;
+extern pthread_mutex_t sem_l_Ready;
+extern pthread_mutex_t sem_l_Exec;
+extern pthread_mutex_t sem_l_Block;
+extern pthread_mutex_t sem_l_Exit;
+extern pthread_mutex_t sem_l_Reject;
+//extern pthread_mutex_t sem_log;
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_CPU  --------------------------------
+// Funcion que correra en un unico thread encargado de aceptar conexiones entrantes y generara
+// un thread por cada CPU conectado y liberaran recursos automaticamente cuando dejen de ser utiles.
+//------------------------------------------------------------------------------------------
 void *atender_conexion_CPU(void *socket_desc){
 
 	int nuevaConexion, *socket_nuevo; //socket donde va a estar nueva conexion
@@ -58,20 +78,29 @@ void *atender_conexion_CPU(void *socket_desc){
 	while(nuevaConexion){
 		log_debug(logger, "Se ha conectado una CPU");
 
+		pthread_attr_t attr;
 		pthread_t thread_cpu_con;
+		pthread_attr_init(&attr);
+		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
 		socket_nuevo = malloc(sizeof(int));
 		*socket_nuevo = nuevaConexion;
 
-		if( pthread_create( &thread_cpu_con , NULL , atender_CPU, (void*) socket_nuevo) < 0)
+		if( pthread_create( &thread_cpu_con , &attr , atender_CPU, (void*) socket_nuevo) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ CPU");
 			exit(EXIT_FAILURE);
 		}
+		pthread_attr_destroy(&attr);
+
 		log_debug(logger, "CPU %d atendido", *socket_nuevo);
 
 
 	// agrego CPU a la lista de disponibles
+		pthread_mutex_lock(&sem_l_cpus_dispo);
 		list_add(cpus_dispo, socket_nuevo);
+		pthread_mutex_unlock(&sem_l_cpus_dispo);
+
 		socket_local = (int)socket_desc; //*(int*)socket_desc;
 		aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
 		if (nuevaConexion < 0)	{
@@ -91,7 +120,65 @@ void *atender_conexion_CPU(void *socket_desc){
 
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_CPU  -----------------------------------------
+//Esta funcion representa un thread que trabaja con un CPU conectado por socket
+//------------------------------------------------------------------------------------------
 void *atender_CPU(void *socket_desc){
+	int socket_local = (int)socket_desc;
+	int seguir = 1;
+	pcb_t* pcb_elegido;
+	int pid_local = 0;
+	int estado_proceso;
+	while(seguir){
+		sem_wait(sem_NEW_dispo); // espero que haya un proceso en EXEC disponible
+		pthread_mutex_lock(&sem_l_Exec);
+	//	pcb_elegido = list_get(proc_New, 0);
+		pcb_elegido = list_remove(proc_Exec, 0);
+		pid_local = pcb_elegido->PID;
+		pthread_mutex_unlock(&sem_l_Exec);
+
+		enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
+		pcb_elegido = recibirPCB(socket_local);
+		estado_proceso = recibirEstadoProceso(socket_local);
+		switch (estado_proceso) {
+			case FIN_QUANTUM:
+				pthread_mutex_lock(&sem_l_Ready);
+				list_add(proc_Ready, pcb_elegido);
+				pthread_mutex_unlock(&sem_l_Ready);
+				break;
+
+			case FIN_IO:// VER SI ESTO SE MANEJA DESDE OTRO LADO,
+				pthread_mutex_lock(&sem_l_Block); // lo quito de bloqueados
+				list_remove_by_condition(proc_Block, (void *)(pcb_elegido->PID = pid_local) );
+				pthread_mutex_unlock(&sem_l_Block);
+
+				pthread_mutex_lock(&sem_l_Ready); // lo agrego a listos
+				list_add(proc_Ready, pcb_elegido);
+				pthread_mutex_unlock(&sem_l_Ready);
+				break;
+
+			case SOLIC_IO://VER SI ESTO SE MANEJA DESDE OTRO LADO
+				pthread_mutex_lock(&sem_l_Block); // se bloquea
+				list_add(proc_Block, pcb_elegido);
+				pthread_mutex_unlock(&sem_l_Block);
+				break;
+
+			case FIN_PROC:
+				pthread_mutex_lock(&sem_l_Exit);
+				list_add(proc_Exit, pcb_elegido);
+				pthread_mutex_unlock(&sem_l_Exit);
+				break;
+
+			case FIN_CPU:
+				pthread_mutex_lock(&sem_l_Ready); // lo agrego al principio de listos
+				list_add_in_index(proc_Ready, pcb_elegido, 0);
+				pthread_mutex_unlock(&sem_l_Ready);
+				break;
+
+			default:
+				break;
+		}
+	}
+
 //Get the socket descriptor
 //	int socket_co = *(int*)socket_desc;
 //		int read_size;
@@ -139,7 +226,7 @@ void *atender_CPU(void *socket_desc){
 
 
 
-void enviarPCB(PCB* pcb,socket cpu){
+void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	serializablePCB aMandaCPU;
 	aMandaCPU.id = pcb->id;
 	aMandaCPU.ip = pcb->PC;
@@ -155,5 +242,8 @@ void enviarPCB(PCB* pcb,socket cpu){
 		direccionMemoria* aMandar = dictionary_get(pcb->indicie_codigo,&i);
 		send(cpu,aMandar,sizeof(direccionMemoria),0);
 	}
+// enviar quantum
+	send(cpu,quantum,sizeof(int),0);
+	send(cpu,quantum_sleep,sizeof(int),0);
 	return;
 }

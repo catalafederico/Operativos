@@ -45,6 +45,16 @@ extern t_list* proc_Block;
 extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
+
+// semaforos Compartidos
+extern pthread_mutex_t sem_l_cpus_dispo;
+extern pthread_mutex_t sem_l_Ready;
+extern pthread_mutex_t sem_l_New;
+extern pthread_mutex_t sem_l_Exec;
+extern pthread_mutex_t sem_l_Block;
+extern pthread_mutex_t sem_l_Reject;
+extern pthread_mutex_t sem_l_Exit;
+extern pthread_mutex_t sem_log;
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_consolas  ---------------------------
 void *atender_conexion_consolas(void *socket_desc){
@@ -64,7 +74,7 @@ void *atender_conexion_consolas(void *socket_desc){
 
 		socket_nuevo = malloc(sizeof(int));
 		*socket_nuevo = nuevaConexion;
-		if( pthread_create( &thread_consola_con , NULL /*&attr*/ , atender_consola, (void*) socket_nuevo) < 0)
+		if( pthread_create( &thread_consola_con , &attr , atender_consola, (void*) socket_nuevo) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ consolas");
 			exit(EXIT_FAILURE);

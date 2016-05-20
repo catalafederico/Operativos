@@ -25,16 +25,17 @@
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
 #include <sockets/header.h>
-#include "configuracionesNucleo.h"
+
 #include <semaphore.h>
 
 #include "estructurasNUCLEO.h"
+#include "configuracionesNucleo.h"
 #include "procesosConsola.h"
 #include "procesosCPU.h"
 #include "procesosUMC.h"
 
 // Variables compartidas ---------------------------------------------
-
+t_reg_config reg_config;
 t_list* cpus_dispo;
 t_list* consolas_dispo;
 t_list* proc_New;
@@ -48,9 +49,10 @@ struct cliente clienteNucleoUMC;
 
 // Semaforos
 sem_t* semaforoProgramasACargar; //semaforo contador
+sem_t* sem_NEW_dispo; //semaforo contador
 //info: http://man7.org/linux/man-pages/man3/sem_init.3.html
 pthread_mutex_t sem_l_cpus_dispo = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t sem_l_ready = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_l_Ready = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_New = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Exec = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Block = PTHREAD_MUTEX_INITIALIZER;
@@ -69,11 +71,6 @@ int tamanioPaginaUMC;
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
 
-// ****************************************** FUNCIONES.h  ******************************************
-
-//void roundRobin(int quantum);
-
-// ****************************************** FIN FUNCIONES.h ***************************************
 
 // **************************************************************************************************
 // ******************************************    MAIN     ***************************************
@@ -97,17 +94,23 @@ int main(int argc, char **argv) {
 		proc_Exit = list_create();
 
 	//Leo archivo de configuracion ------------------------------
-	t_reg_config reg_config;
 	reg_config = get_config_params();
 
-	/*log_debug(logger, "Creacion Thread para procesos con UMC");
-	//Crear thread para atender procesos con UMC
+	log_debug(logger, "Conexion con UMC");
+// Me conecto con la UMC ------------------------------
+	clienteNucleoUMC = crearCliente(reg_config.puerto_umc, reg_config.ip_umc);
+	conectarseConUmc(clienteNucleoUMC);
+
+	log_debug(logger, "Creacion Thread para procesos con UMC");
+//Crear thread para atender procesos con UMC
 	pthread_t thread_UMC;
-	if( pthread_create( &thread_UMC, NULL , procesos_UMC, &clienteNucleo.socketCliente) < 0)
+
+
+	if( pthread_create( &thread_UMC, NULL , procesos_UMC, &clienteNucleoUMC.socketCliente) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread para UMC");
 			exit(EXIT_FAILURE);
-		}*/
+		}
 
 
 	// Me conecto con la UMC
@@ -115,17 +118,17 @@ int main(int argc, char **argv) {
 	//EJEMPLO DE COMO MANDA A LA UMC
 
 
-	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
+/*	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
 	conectarseConUmc(clienteNucleoUMC);
 	t_list* instruccionAUMC = list_create();
 	indiceCodigo* icNuevo = nuevoPrograma("variables a,b\n variables c\n",instruccionAUMC);
 	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
 	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,list_size(instruccionAUMC),clienteNucleoUMC.socketCliente);
-
+*/
 
 	log_debug(logger, "Crear socket para CPUs");
 	// Crear socket para CPU  ------------------------------
-	/*struct server serverPaCPU;
+	struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
 	ponerServerEscucha(serverPaCPU);
 	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
@@ -161,7 +164,7 @@ int main(int argc, char **argv) {
 	pthread_join(thread_consola, NULL);
 
 	log_destroy(logger);
-	return 0;*/
+	return 0;
 
 }
 

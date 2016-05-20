@@ -48,7 +48,7 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
 	do{
 		analizadorLinea(newInst,&functions,&kernel_functions);
 		esInstruccion = obtenerEsVariable();
-		//analiso si es intruccion
+		//analizo si es intruccion
 		if(*esInstruccion){
 
 			//tamanio llama un maloc para q perdure ya q es un puntero

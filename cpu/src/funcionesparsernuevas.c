@@ -20,7 +20,7 @@ almUMC calculoDeDedireccionAlmalcenar();
 extern int tamanioPaginaUMC;
 int socketMemoria;
 int socketNucleo;
-extern pcb* pcb_actual;
+extern pcb_t* pcb_actual;
 direccionMemoria* ultimaDireccion;//Tenporal hasta q tengamos stack
 
 void inicialzarParser(int socketMem ,int socketNuc) {

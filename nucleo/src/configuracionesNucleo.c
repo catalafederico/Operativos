@@ -6,8 +6,10 @@
 #include <commons/log.h>
 #include "estructurasNUCLEO.h"
 
+extern t_log *logger;
+
 t_reg_config get_config_params(void){
-	t_log* logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
+//	t_log* logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
 	t_config * archivo_config = NULL;
 	char * archivo_config_nombre = "archivo_configuracion.cfg";
 	t_reg_config reg_config;
@@ -88,7 +90,31 @@ t_reg_config get_config_params(void){
 		log_debug(logger, "No se encontro SHARED_VARS");
 	}
 
+	// 10 get STACK_SIZE
+	if (config_has_property(archivo_config,"STACK_SIZE")){
+		reg_config.shared_vars = config_get_int_value(archivo_config,"STACK_SIZE");
+	}
+	else{
+		log_debug(logger, "No se encontro STACK_SIZE");
+	}
+
+	// 11 get IP_UMC
+	if (config_has_property(archivo_config,"IP_UMC")){
+		reg_config.shared_vars = config_get_string_value(archivo_config,"IP_UMC");
+	}
+	else{
+		log_debug(logger, "No se encontro IP_UMC");
+	}
+
+	// 12 get PUERTO_UMC
+	if (config_has_property(archivo_config,"PUERTO_UMC")){
+		reg_config.shared_vars = config_get_int_value(archivo_config,"PUERTO_UMC");
+	}
+	else{
+		log_debug(logger, "No se encontro PUERTO_UMC");
+	}
+
 	config_destroy(archivo_config);
-	log_destroy(logger);
+//	log_destroy(logger);
 	return reg_config;
 }

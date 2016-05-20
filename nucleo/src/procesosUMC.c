@@ -50,11 +50,22 @@ extern int tamanioPaginaUMC;
 extern struct cliente clienteNucleoUMC;
 extern sem_t* semaforoProgramasACargar;
 
+// semaforos Compartidos
+extern pthread_mutex_t sem_l_cpus_dispo = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t sem_l_Ready = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t sem_l_New = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t sem_l_Exec = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t sem_l_Block = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t sem_l_Reject = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t sem_l_Exit = PTHREAD_MUTEX_INITIALIZER;
+extern pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
+
 void *procesos_UMC(){
-	conectarseConUmc(clienteNucleoUMC);
+//	conectarseConUmc(clienteNucleoUMC);
 	int seguir = 1;
 	while(seguir){
-		sem_wait(semaforoProgramasACargar);//Espera a q halla programas a cargar
+		sem_wait(semaforoProgramasACargar);//Espera a q haya programas a cargar
+
 	}
 }
 

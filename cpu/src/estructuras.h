@@ -23,7 +23,7 @@ typedef struct{
 	int sp;
 	int paginasDisponible;
 	t_dictionary* indiceDeCodigo;
-}pcb;
+}pcb_t;
 
 
 typedef struct{

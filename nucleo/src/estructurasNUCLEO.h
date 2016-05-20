@@ -20,6 +20,9 @@ typedef struct {
 	char ** sem_id;
 	int * sem_init;
 	char ** shared_vars;
+	unsigned int stack_size;
+	char * ip_umc;
+	int puerto_umc;
 } t_reg_config;
 
 //Pcb
@@ -46,7 +49,7 @@ typedef struct{
 	int SP;
 	int paginasDisponibles;
 	t_dictionary* indicie_codigo;
-}PCB;
+}pcb_t;
 
 typedef struct{
 	int id;

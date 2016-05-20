@@ -44,7 +44,7 @@ AnSISOP_kernel kernel_functions = { };
 struct cliente clienteCpuUmc;
 struct cliente clienteCpuNucleo;
 int tamanioPaginaUMC;
-pcb* pcb_actual;
+pcb_t* pcb_actual;
 #define  SERVERUMC 9999 //puerto de la umc
 #define  SERVERNUCLEO 5001 // puerto del nucleo
 
@@ -132,7 +132,7 @@ void procesarInstruccion(char* instruccion){
 
 
 void recibirPCB(){
-	pcb* pcb_Recibido = malloc(sizeof(pcb));
+	pcb_t* pcb_Recibido = malloc(sizeof(pcb_t));
 	pcb_Recibido->id = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
 	pcb_Recibido->ip = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
 	pcb_Recibido->sp = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
