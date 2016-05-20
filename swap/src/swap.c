@@ -730,16 +730,16 @@ t_reg_config get_config_params(void){
 	}
 
 	void mandarCadena(char* cadena) {
-		int long_cadena = strlen(cadena)+1;
-		send(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
-		send(socketAdministradorDeMemoria, cadena, long_cadena, 0);
+		//int long_cadena = strlen(cadena)+1;
+		//send(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
+		send(socketAdministradorDeMemoria, cadena, sizeof(cadena), 0);
 	}
 
 	char* recibirCadena() {
 		char* cadena;
-		int long_cadena;
-		recv(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
-		cadena = malloc(long_cadena);
+		int long_cadena = swap_configuracion.TAMANIO_PAGINA;
+		//recv(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
+		cadena = malloc(cadena);
 		recv(socketAdministradorDeMemoria, cadena, long_cadena, 0);
 		return cadena;
 	}
