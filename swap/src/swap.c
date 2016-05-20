@@ -508,7 +508,8 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			char* texto = malloc(tamanioPagina* (procesoAJuntar->cantidadDePaginas));
 			fread(texto,tamanioPagina,procesoAJuntar->cantidadDePaginas,archivo);
 			fseek(archivo,tamanioPagina*nuevoComienzo,SEEK_SET);
-			fwrite(texto,sizeof(char),sizeof(texto), archivo );
+			//fwrite(texto,sizeof(char),sizeof(texto), archivo );
+			fprintf(archivo,"%s",texto);
 			fclose(archivo);
 			free(texto);
 
