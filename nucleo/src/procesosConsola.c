@@ -45,6 +45,7 @@ extern t_list* proc_Block;
 extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
+extern struct server serverPaConsolas;
 
 // semaforos Compartidos
 extern pthread_mutex_t sem_l_cpus_dispo;
@@ -59,41 +60,31 @@ extern pthread_mutex_t sem_log;
 // ---------------------------------- atender_conexion_consolas  ---------------------------
 void *atender_conexion_consolas(void *socket_desc){
 
-	int nuevaConexion, *socket_nuevo; //socket donde va a estar nueva conexion
-	struct sockaddr_in direccionEntrante;
-	int socket_local = (int)socket_desc;
-	aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
-	while(nuevaConexion){
+	//Pongo el server a escuchar.
+	ponerServerEscucha(serverPaCPU);
+	log_debug(logger, "Se han empezado a escuchar consolas.");
+	int seguir = 1;
 
+	pthread_attr_t attr;
+	pthread_t thread_consola_con;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+	while(seguir){
+		int *socket_nuevo = malloc(sizeof(int)); //socket donde va a estar nueva conexion
+		struct sockaddr_in direccionEntrante;
+		aceptarConexion(socket_nuevo, serverPaConsolas, &direccionEntrante); //No hace falta chekear si es -1, aceptarConexiones lo hace ya
 		log_debug(logger, "Se ha conectado una Consola");
 
-		pthread_attr_t attr;
-		pthread_t thread_consola_con;
-		pthread_attr_init(&attr);
-		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-
-		socket_nuevo = malloc(sizeof(int));
-		*socket_nuevo = nuevaConexion;
-		if( pthread_create( &thread_consola_con , &attr , atender_consola, (void*) socket_nuevo) < 0)
+		if( pthread_create( &thread_consola_con , &attr , atender_consola, socket_nuevo) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ consolas");
 			exit(EXIT_FAILURE);
 		}
-		pthread_attr_destroy(&attr);
+		//No lo destruyo total todos usan el mismo atributo asi no lo creo todo el tiempo
+		//pthread_attr_destroy(&attr);
 
 		log_debug(logger, "Consola %d atendida", *socket_nuevo);
-
-		socket_local = (int)socket_desc;
-		aceptarConexion(&nuevaConexion, socket_local, &direccionEntrante);
-		if (nuevaConexion < 0)	{
-			log_debug(logger, "accept failed");
-			//	exit(EXIT_FAILURE);
-			}
-	}
-
-	if (nuevaConexion < 0)	{
-		log_debug(logger, "Accept failed");
-		exit(EXIT_FAILURE);
 	}
 	return NULL;
 }

@@ -45,7 +45,11 @@ t_list* proc_Block;
 t_list* proc_Reject;
 t_list* proc_Exit;
 t_log *logger;
+
+//sockets escuchas
 struct cliente clienteNucleoUMC;
+struct server serverPaCPU;
+struct server serverPaConsolas;
 
 // Semaforos
 sem_t* semaforoProgramasACargar; //semaforo contador
@@ -62,7 +66,6 @@ pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
 
 int tamanioPaginaUMC;
 
-
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
 #define SOY_UMC 	"Te_conectaste_con_UMC____"
@@ -77,6 +80,10 @@ int tamanioPaginaUMC;
 // **************************************************************************************************
 int main(int argc, char **argv) {
 
+	//Threads
+	pthread_t thread_UMC;
+	pthread_t thread_CPU;
+
 	sem_init(semaforoProgramasACargar,0,0);
 
 	//declaro indice etiquetas
@@ -85,75 +92,50 @@ int main(int argc, char **argv) {
 	// Inicializa el log.
 	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
 
-		//crear listas
-		cpus_dispo = list_create();
-		proc_New = list_create();
-		proc_Ready = list_create();
-		proc_Block = list_create();
-		proc_Reject = list_create();
-		proc_Exit = list_create();
+	//crear listas
+	cpus_dispo = list_create();
+	proc_New = list_create();
+	proc_Ready = list_create();
+	proc_Block = list_create();
+	proc_Reject = list_create();
+	proc_Exit = list_create();
 
 	//Leo archivo de configuracion ------------------------------
 	reg_config = get_config_params();
 
-	log_debug(logger, "Conexion con UMC");
-// Me conecto con la UMC ------------------------------
+
+	//Me conecto con la UMC ------------------------------
 	clienteNucleoUMC = crearCliente(reg_config.puerto_umc, reg_config.ip_umc);
-	conectarseConUmc(clienteNucleoUMC);
-
-	log_debug(logger, "Creacion Thread para procesos con UMC");
-//Crear thread para atender procesos con UMC
-	pthread_t thread_UMC;
-
-
-	if( pthread_create( &thread_UMC, NULL , procesos_UMC, &clienteNucleoUMC.socketCliente) < 0)
+	log_debug(logger, "Conexion con UMC");
+	if( pthread_create( &thread_UMC, NULL , procesos_UMC, NULL) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread para UMC");
 			exit(EXIT_FAILURE);
 		}
+	log_debug(logger, "Creacion Thread para procesos con UMC");
 
 
-	// Me conecto con la UMC
-
-	//EJEMPLO DE COMO MANDA A LA UMC
-
-
-/*	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
-	conectarseConUmc(clienteNucleoUMC);
-	t_list* instruccionAUMC = list_create();
-	indiceCodigo* icNuevo = nuevoPrograma("variables a,b\n variables c\n",instruccionAUMC);
-	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
-	cargarEnUMC(icNuevo->inst_tamanio,instruccionAUMC,list_size(instruccionAUMC),clienteNucleoUMC.socketCliente);
-*/
 
 	log_debug(logger, "Crear socket para CPUs");
 	// Crear socket para CPU  ------------------------------
-	struct server serverPaCPU;
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
-	ponerServerEscucha(serverPaCPU);
-	log_debug(logger, "Escuchando Cpus en socket %d", serverPaCPU.socketServer);
-
 
 	// Crear thread para atender los procesos CPU
-	pthread_t thread_CPU;
-	if( pthread_create( &thread_CPU, NULL , atender_conexion_CPU, (void*) serverPaCPU.socketServer) < 0)
+	if( pthread_create( &thread_CPU, NULL , atender_conexion_CPU, NULL) < 0)
 	{
 		log_debug(logger, "No fue posible crear thread para CPU");
 		exit(EXIT_FAILURE);
 	}
 
-	log_debug(logger, "Crear socket para CONSOLAS");
 
+	log_debug(logger, "Crear socket para CONSOLAS");
 	//Crear socket para procesos (CONSOLA) ------------------------------
-	struct server serverPaConsolas;
 	serverPaConsolas = crearServer(reg_config.puerto_prog);
-	ponerServerEscucha(serverPaConsolas);
-	log_debug(logger, "Escuchando Consolas en socket %d", serverPaConsolas.socketServer);
 
 
 	//Crear thread para atender los procesos consola
 	pthread_t thread_consola;
-	if( pthread_create( &thread_consola , NULL , atender_conexion_consolas, (void*) serverPaConsolas.socketServer) < 0)
+	if( pthread_create( &thread_consola , NULL , atender_conexion_consolas, NULL) < 0)
 	{
 		log_debug(logger, "No fue posible crear thread p/ consolas");
 		exit(EXIT_FAILURE);
@@ -161,8 +143,6 @@ int main(int argc, char **argv) {
 
 	//pthread_join(thread_UMC, NULL);
 	pthread_join(thread_CPU, NULL);
-	pthread_join(thread_consola, NULL);
-
 	log_destroy(logger);
 	return 0;
 
