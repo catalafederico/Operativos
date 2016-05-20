@@ -1,9 +1,10 @@
 //#include "funcionesparsernuevas.h"
-#include "estructuras.h"
 #include <sockets/header.h>
 #include <sockets/basicFunciones.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include "estructurasCPU.h"
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
 typedef direccionMemoria* t_puntero;
@@ -147,11 +148,11 @@ almUMC calculoDeDedireccionAlmalcenar(){
 	almUMC aAlmacenar;
 	int paginasDisponibles = pcb_actual->paginasDisponible;
 	if(ultimaDireccion==NULL){
-		int tamanioIC = dictionary_size(pcb_actual->indiceDeCodigo);
+		int tamanioIC = dictionary_size(pcb_actual->indice_codigo);
 		//primero hay q hacer un stack empty, xq en estack estaria la ultima posicion
 		//como no hay stack, me fijo primero donde se almaceno la ultima linea de codigo
 		int ultimoElemento = tamanioIC-1;
-		direccionMemoria* ultimaDireccionUtil = dictionary_get(pcb_actual->indiceDeCodigo,ultimoElemento);
+		direccionMemoria* ultimaDireccionUtil = dictionary_get(pcb_actual->indice_codigo,ultimoElemento);
 		//DA = direccion anterior
 		int paginaDA = ultimaDireccionUtil->pagina;
 		int offsetDA = ultimaDireccionUtil->offset;

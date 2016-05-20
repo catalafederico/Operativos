@@ -5,8 +5,8 @@
  *      Author: utnso
  */
 
-#ifndef ESTRUCTURAS_H_
-#define ESTRUCTURAS_H_
+#ifndef ESTRUCTURASCPU_H_
+#define ESTRUCTURASCPU_H_
 #include <commons/collections/dictionary.h>
 
 typedef struct {
@@ -18,11 +18,11 @@ typedef struct {
 almUMC;
 
 typedef struct{
-	int id;
-	int ip;
-	int sp;
-	int paginasDisponible;
-	t_dictionary* indiceDeCodigo;
+	int* PID;
+	int* PC;
+	int* SP;
+	int* paginasDisponible;
+	t_dictionary* indice_codigo;
 }pcb_t;
 
 
@@ -33,6 +33,14 @@ typedef struct{
 }__attribute__((packed))
 direccionMemoria;
 
+typedef struct{
+	int PID;
+	int PC;
+	int SP;
+	int paginasDisponible;
+	int tamanioIC;
+}__attribute__((packed))
+serializablePCB;
 
 
-#endif /* ESTRUCTURAS_H_ */
+#endif /* ESTRUCTURASCPU_H_ */

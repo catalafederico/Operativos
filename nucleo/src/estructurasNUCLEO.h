@@ -43,7 +43,6 @@ typedef struct{
 //creo PCB
 //No cambiar orden, si se cambia el orden, cambiar el recive de cpu
 typedef struct{
-	int* id;
 	int* PID;
 	int* PC;
 	int* SP;
@@ -52,13 +51,14 @@ typedef struct{
 }pcb_t;
 
 typedef struct{
-	int id;
-	int ip;
-	int sp;
+	int PID;
+	int PC;
+	int SP;
 	int paginasDisponible;
 	int tamanioIC;
 }__attribute__((packed))
 serializablePCB;
+
 
 typedef struct{
 	int pagina;

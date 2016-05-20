@@ -23,7 +23,8 @@
 #include "funcionesparsernuevas.h"
 #include <sockets/socketCliente.h>
 #include <parser/parser.h>
-#include "estructuras.h"
+
+#include "estructurasCPU.h"
 
 
 AnSISOP_funciones functions = {
@@ -133,32 +134,49 @@ void procesarInstruccion(char* instruccion){
 
 void recibirPCB(){
 	pcb_t* pcb_Recibido = malloc(sizeof(pcb_t));
-	pcb_Recibido->id = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
-	pcb_Recibido->ip = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
-	pcb_Recibido->sp = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	//Recibo un void* lo casteo a un int* y obtengo valor, asi en todos
+	pcb_Recibido->PID = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	pcb_Recibido->PC = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	pcb_Recibido->SP = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
 	pcb_Recibido->paginasDisponible = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
-	int tamanioIC = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));
-	pcb_Recibido->indiceDeCodigo = dictionary_create();
+	int* tamanioIC = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));
+	pcb_Recibido->indice_codigo = dictionary_create();
 	int i;
-	for(i=0;i<tamanioIC;i++){
+	for(i=0;i<*tamanioIC;i++){
 		int* nuevaPagina = malloc(sizeof(int));
 		*nuevaPagina = i;
 		direccionMemoria* nuevaDireccionMemoria = recibirStream(clienteCpuNucleo.socketCliente,sizeof(direccionMemoria));
-		dictionary_put(pcb_Recibido->indiceDeCodigo,nuevaPagina,nuevaDireccionMemoria);
+		dictionary_put(pcb_Recibido->indice_codigo,nuevaPagina,nuevaDireccionMemoria);
 	}
+	free(tamanioIC);
 	pcb_actual = pcb_Recibido;
 }
 
 void enviarPCB(){
-
+	serializablePCB aMandaNucleo;
+	aMandaNucleo.PID = *(pcb_actual->PID);
+	aMandaNucleo.PC= *(pcb_actual->PC);
+	aMandaNucleo.SP = *(pcb_actual->SP);
+	aMandaNucleo.paginasDisponible = *(pcb_actual->paginasDisponible);
+	aMandaNucleo.tamanioIC = dictionary_size(pcb_actual->indice_codigo);
+	int enviaPCB = 163;
+	enviarStream(clienteCpuNucleo.socketCliente,enviaPCB,sizeof(serializablePCB),&aMandaNucleo);
+	//serializo diccionario y lo mando
+	int tamanioIndiceCode =  dictionary_size(pcb_actual->indice_codigo);
+	int i;
+	for(i=0;i<tamanioIndiceCode;i++){
+		direccionMemoria* aMandar = dictionary_get(pcb_actual->indice_codigo,&i);
+		send(clienteCpuNucleo.socketCliente,aMandar,sizeof(direccionMemoria),0);
+	}
+	return;
 }
 
 
 void tratarPCB(){
 	//Leo la direccion de la proxima instruccion
-	direccionMemoria* direcProxIntruccion = dictionary_get(pcb_actual->indiceDeCodigo,pcb_actual->ip);
+	direccionMemoria* direcProxIntruccion = dictionary_get(pcb_actual->indice_codigo,pcb_actual->PC);
 	//Aumento ip
-	pcb_actual->ip = pcb_actual->ip+1;
+	pcb_actual->PC = pcb_actual->PC+1;
 	//Solicito insturccion
 	int solicitar = SOLICITAR;
 	enviarStream(clienteCpuUmc.socketCliente,&solicitar,sizeof(direccionMemoria),direcProxIntruccion);

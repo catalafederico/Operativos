@@ -236,9 +236,9 @@ void *atender_CPU(int socket_desc){
 
 void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	serializablePCB aMandaCPU;
-	aMandaCPU.id = *(pcb->id);
-	aMandaCPU.ip = *(pcb->PC);
-	aMandaCPU.sp = *(pcb->SP);
+	aMandaCPU.PID = *(pcb->PID);
+	aMandaCPU.PC = *(pcb->PC);
+	aMandaCPU.SP = *(pcb->SP);
 	aMandaCPU.paginasDisponible = *(pcb->paginasDisponibles);
 	aMandaCPU.tamanioIC = dictionary_size(pcb->indicie_codigo);
 	int enviaPCB = 163;
@@ -259,14 +259,14 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 
 pcb_t* recibirPCB(int socketCpu){
 	pcb_t* pcb_Recibido;
-	pcb_Recibido->id = recibirStream(socketCpu,sizeof(int));
 	pcb_Recibido->PID = recibirStream(socketCpu,sizeof(int));
+	pcb_Recibido->PC = recibirStream(socketCpu,sizeof(int));
 	pcb_Recibido->SP = recibirStream(socketCpu,sizeof(int));
 	pcb_Recibido->paginasDisponibles = recibirStream(socketCpu,sizeof(int));
 	int* tamanioIC = recibirStream(socketCpu, sizeof(int));
 	pcb_Recibido->indicie_codigo = dictionary_create();
 	int i;
-	for(i=0;i<tamanioIC;i++){
+	for(i=0;i<*tamanioIC;i++){
 		int* nuevaPagina = malloc(sizeof(int));
 		*nuevaPagina = i;
 		direccionMemoria* nuevaDireccionMemoria = recibirStream(socketCpu,sizeof(direccionMemoria));
