@@ -21,6 +21,7 @@
 #include <commons/collections/list.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <string.h>
 
 
 
@@ -78,6 +79,8 @@ int hayHuecoDondeCabeProceso(proceso* proceso);
 void agregarProcesoAListaSwap(proceso* proceso);
 
 void compactar(void);
+
+void moverAPrimeraPosicionProceso(void);
 
 void unirProcesos(proceso* procesoAnterior, proceso* procesoAJuntar);
 
@@ -228,9 +231,13 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			pthread_mutex_lock(&mutex);
 			insertarProceso(&proceso);
 			pthread_mutex_unlock(&mutex);
+			int exito = 6;
+			send(socketAdministradorDeMemoria,&exito, sizeof(int), 0);
 		} else {
 			//El proceso no entra, avisar rechazo
-			//send
+			printf("No hay cantidad de paginas suficientes para alojar el proceso %d", proceso.pid);
+			int fracaso = 7;
+			send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
 	}
 }
 
@@ -243,9 +250,11 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			proceso proceso = obtenerProceso(pid);
 			if(numeroPagina >= proceso.cantidadDePaginas){
 				printf("La pagina %d no se encuentra en el proceso %d y no puede ser leida\n",numeroPagina,pid);
-				//Avisar que no se encuentra la pagina
+				int fracaso = 7;
+				send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
 			} else {
-
+				int exito = 6;
+				send(socketAdministradorDeMemoria,&exito, sizeof(int), 0);
 				int paginaALeer = proceso.comienzo + numeroPagina;
 				char* texto = leerPagina(paginaALeer);
 				//printf("%s\n",texto);
@@ -254,7 +263,8 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			}
 		} else {
 			printf("Proceso %d no se encuentra en Swap y no puede ser leido\n",pid);
-			//Enviar que fallo
+			int fracaso = 7;
+			send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
 		}
 	}
 
@@ -268,16 +278,19 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			proceso proceso = obtenerProceso(pid);
 			if(numeroPagina >= proceso.cantidadDePaginas){
 				printf("La pagina %d no se encuentra en el proceso %d y no puede ser escrita\n",numeroPagina,pid);
-				//Avisar que fallo a UMC
+				int fracaso = 7;
+				send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
 			} else {
 				int paginaAEscribir = proceso.comienzo + numeroPagina;
 				escribirPagina(paginaAEscribir,texto);
-				//Avisar que se escribio con exitoa UMC
+				int exito = 6;
+				send(socketAdministradorDeMemoria,&exito, sizeof(int), 0);
 
 			}
 		} else {
 			printf("Proceso %d no se encuentra en Swap y no puede ser escrito\n",pid);
-			//Avisar que fallo a UMC
+			int fracaso = 7;
+			send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
 		}
 	}
 
@@ -287,11 +300,13 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		if (procesoSeEncuentraEnSwap(pid)){
 			eliminarProceso(pid);
 			//Avisar a la UMC que se borro el proceso con exito
-			//send(socketAdministradorDeMemoria,&exito, sizeof(), 0);
+			int exito = 6;
+			send(socketAdministradorDeMemoria,&exito, sizeof(int), 0);
 		} else{
 			printf("El proceso %d a finalizar no se encuentra en Swap\n",pid);
 			//Avisar a la UMC que se fracaso en el borrado del proceso
-			//send(socketAdministradorDeMemoria,&fracaso, sizeof(), 0);
+			int fracaso = 7;
+			send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
 		}
 	}
 
