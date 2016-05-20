@@ -68,11 +68,22 @@ void *procesos_UMC(){
 		t_list* instruccionesPaUMC = list_create();
 		icNuevo = nuevoPrograma(instrucciones,instruccionesPaUMC);
 		icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
-		direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,dictionary_size(icNuevo->inst_tamanio)-1);
+		int posicion = (dictionary_size(icNuevo->inst_tamanio)-1);
+		direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,&posicion);
 		int ultimaPaginaDeCodigo = lastInt->pagina;
-		if(cargarEnUMC(icNuevo,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente)==-1){
+		if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente)==-1){
 			//no se pudo cargar notificar a la consola determinda
 		}
+		pcb_t* pcbNuevo;
+		pcbNuevo->PC = malloc(sizeof(int));
+		pcbNuevo->PID= malloc(sizeof(int));
+		pcbNuevo->SP= malloc(sizeof(int));
+		pcbNuevo->paginasDisponibles= malloc(sizeof(int));
+		*(pcbNuevo->PC) = 0;
+		*(pcbNuevo->PID) = progParaCargar->PID;
+		*(pcbNuevo->SP) = 0;
+		*(pcbNuevo->paginasDisponibles) = ultimaPaginaDeCodigo+reg_config.stack_size;
+		pcbNuevo->indicie_codigo = icNuevo->inst_tamanio;
 	}
 }
 

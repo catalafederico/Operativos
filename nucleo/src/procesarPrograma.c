@@ -14,6 +14,7 @@
 #include <commons/collections/list.h>
 #include <sockets/header.h>
 #include "estructurasNUCLEO.h"
+#include <commons/string.h>
 
 extern int tamanioPaginaUMC;
 
@@ -46,14 +47,27 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
 	int i = 0; //numero de instrucciones
 	int* esInstruccion;
 	do{
-		analizadorLinea(newInst,&functions,&kernel_functions);
+		char *aAnalizar = strdup(newInst); //tuve q poner esto asi sino me tiraba error el strtrim
+		string_trim(&aAnalizar);
+		//En eso 4 pasos verifico si es valido la instruccion
+		if(!strcmp(aAnalizar,"begin"))
+			continue;
+		if(!strcmp(aAnalizar,"end"))
+			break;
+		if(string_is_empty(aAnalizar))
+			continue;
+		if(string_starts_with(aAnalizar,"#"))
+			continue;
+
+		analizadorLinea(aAnalizar,&functions,&kernel_functions);
 		esInstruccion = obtenerEsVariable();
 		//analizo si es intruccion
+
 		if(*esInstruccion){
 
 			//tamanio llama un maloc para q perdure ya q es un puntero
 			int* tamanio = malloc(sizeof(int));
-			*tamanio = strlen(newInst)+1;
+			*tamanio = strlen(aAnalizar)+1;
 			//tamanio llama un maloc para q perdure ya q es un puntero
 			int* nroInst = malloc(sizeof(int));
 			//la cantidad es el tamnio del dicc
@@ -67,8 +81,9 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
 
 			// pongo es instruccion en falso
 			*esInstruccion = 0;
-			list_add(instrucc,strdup(strcat(newInst,"\0")));
+			list_add(instrucc,strdup(strcat(aAnalizar,"\0")));
 			}
+		free(aAnalizar);
 		newInst =strtok(NULL,"\n");
 		}
 	while(newInst != NULL);
@@ -81,7 +96,7 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
 		printf("%s\n",tempS);
 	}
 	free(tempInstruccion);
-	free(newInst);
+	//free(newInst);
 	return ic;
 }
 

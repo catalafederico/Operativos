@@ -74,6 +74,7 @@ int alocarPrograma(int paginasRequeridas, int id_proceso){
 			dictionary_put(pag_frame,pagina,nroMarco);
 		}
 		tabla_actual = pag_frame;
+		*idProcesoActual = id_proceso;
 		//pthread_mutex_unlock(semaforoMemoria);
 		dictionary_put(programas_ejecucion,idProceso,pag_frame);
 		log_trace(log_memoria,"Alocado programa id: %d", id_proceso);

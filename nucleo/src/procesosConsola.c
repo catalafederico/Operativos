@@ -108,6 +108,7 @@ void *atender_consola(int* socket_desc){
 		// Recibir Mensaje de consola.
 		int* tamanio_mje = leerHeader(socket_co);
 		char * mje_recibido = recibirMensaje_tamanio(socket_co, tamanio_mje);
+		strcat(mje_recibido,"\0");//agrego por las dudas
 
 		if(!strcmp("Se desconecto",mje_recibido)){
 			log_debug(logger, "Se cerro la conexion");
