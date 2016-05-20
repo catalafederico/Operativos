@@ -43,11 +43,11 @@ typedef struct{
 //creo PCB
 //No cambiar orden, si se cambia el orden, cambiar el recive de cpu
 typedef struct{
-	int id;
-	int PID;
-	int PC;
-	int SP;
-	int paginasDisponibles;
+	int* id;
+	int* PID;
+	int* PC;
+	int* SP;
+	int* paginasDisponibles;
 	t_dictionary* indicie_codigo;
 }pcb_t;
 

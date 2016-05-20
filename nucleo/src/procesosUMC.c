@@ -51,14 +51,15 @@ extern struct cliente clienteNucleoUMC;
 extern sem_t* semaforoProgramasACargar;
 
 // semaforos Compartidos
-extern pthread_mutex_t sem_l_cpus_dispo = PTHREAD_MUTEX_INITIALIZER;
-extern pthread_mutex_t sem_l_Ready = PTHREAD_MUTEX_INITIALIZER;
-extern pthread_mutex_t sem_l_New = PTHREAD_MUTEX_INITIALIZER;
-extern pthread_mutex_t sem_l_Exec = PTHREAD_MUTEX_INITIALIZER;
-extern pthread_mutex_t sem_l_Block = PTHREAD_MUTEX_INITIALIZER;
-extern pthread_mutex_t sem_l_Reject = PTHREAD_MUTEX_INITIALIZER;
-extern pthread_mutex_t sem_l_Exit = PTHREAD_MUTEX_INITIALIZER;
-extern pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
+
+extern pthread_mutex_t sem_l_cpus_dispo;
+extern pthread_mutex_t sem_l_Ready;
+extern pthread_mutex_t sem_l_New;
+extern pthread_mutex_t sem_l_Exec;
+extern pthread_mutex_t sem_l_Block;
+extern pthread_mutex_t sem_l_Reject;
+extern pthread_mutex_t sem_l_Exit;
+extern pthread_mutex_t sem_log;
 
 void *procesos_UMC(){
 //	conectarseConUmc(clienteNucleoUMC);

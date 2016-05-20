@@ -10,7 +10,7 @@
 
 void *atender_conexion_CPU(void *socket_desc);
 
-void *atender_CPU(void *socket_desc);
+void *atender_CPU(int socket_desc);
 
 void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep);
 

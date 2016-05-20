@@ -27,6 +27,13 @@
 #include <sockets/basicFunciones.h>
 #include "estructurasNUCLEO.h"
 #include "procesosCPU.h"
+#include "semaphore.h"
+
+//FUNCIONES
+
+pcb_t* recibirPCB(int socketCpu);
+int* recibirEstadoProceso(int socket_local);
+
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -86,7 +93,7 @@ void *atender_conexion_CPU(void *socket_desc){
 		socket_nuevo = malloc(sizeof(int));
 		*socket_nuevo = nuevaConexion;
 
-		if( pthread_create( &thread_cpu_con , &attr , atender_CPU, (void*) socket_nuevo) < 0)
+		if( pthread_create( &thread_cpu_con , &attr , atender_CPU, socket_nuevo) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ CPU");
 			exit(EXIT_FAILURE);
@@ -122,12 +129,12 @@ void *atender_conexion_CPU(void *socket_desc){
 // ---------------------------------- atender_CPU  -----------------------------------------
 //Esta funcion representa un thread que trabaja con un CPU conectado por socket
 //------------------------------------------------------------------------------------------
-void *atender_CPU(void *socket_desc){
-	int socket_local = (int)socket_desc;
+void *atender_CPU(int socket_desc){
+	int socket_local = socket_desc;
 	int seguir = 1;
 	pcb_t* pcb_elegido;
 	int pid_local = 0;
-	int estado_proceso;
+	int* estado_proceso;
 	while(seguir){
 		sem_wait(sem_NEW_dispo); // espero que haya un proceso en EXEC disponible
 		pthread_mutex_lock(&sem_l_Exec);
@@ -139,7 +146,7 @@ void *atender_CPU(void *socket_desc){
 		enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
 		pcb_elegido = recibirPCB(socket_local);
 		estado_proceso = recibirEstadoProceso(socket_local);
-		switch (estado_proceso) {
+		switch (*estado_proceso) {
 			case FIN_QUANTUM:
 				pthread_mutex_lock(&sem_l_Ready);
 				list_add(proc_Ready, pcb_elegido);
@@ -177,6 +184,7 @@ void *atender_CPU(void *socket_desc){
 			default:
 				break;
 		}
+		free(estado_proceso);
 	}
 
 //Get the socket descriptor
@@ -228,12 +236,12 @@ void *atender_CPU(void *socket_desc){
 
 void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	serializablePCB aMandaCPU;
-	aMandaCPU.id = pcb->id;
-	aMandaCPU.ip = pcb->PC;
-	aMandaCPU.sp = pcb->SP;
-	aMandaCPU.paginasDisponible = pcb->paginasDisponibles;
+	aMandaCPU.id = *(pcb->id);
+	aMandaCPU.ip = *(pcb->PC);
+	aMandaCPU.sp = *(pcb->SP);
+	aMandaCPU.paginasDisponible = *(pcb->paginasDisponibles);
 	aMandaCPU.tamanioIC = dictionary_size(pcb->indicie_codigo);
-	int enviaPCB = ENVIOPCB;
+	int enviaPCB = 163;
 	enviarStream(cpu,enviaPCB,sizeof(serializablePCB),&aMandaCPU);
 	//serializo diccionario y lo mando
 	int tamanioIndiceCode =  dictionary_size(pcb->indicie_codigo);
@@ -243,7 +251,35 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 		send(cpu,aMandar,sizeof(direccionMemoria),0);
 	}
 // enviar quantum
-	send(cpu,quantum,sizeof(int),0);
-	send(cpu,quantum_sleep,sizeof(int),0);
+	send(cpu,&quantum,sizeof(int),0);
+	send(cpu,&quantum_sleep,sizeof(int),0);
 	return;
 }
+
+
+pcb_t* recibirPCB(int socketCpu){
+	pcb_t* pcb_Recibido;
+	pcb_Recibido->id = recibirStream(socketCpu,sizeof(int));
+	pcb_Recibido->PID = recibirStream(socketCpu,sizeof(int));
+	pcb_Recibido->SP = recibirStream(socketCpu,sizeof(int));
+	pcb_Recibido->paginasDisponibles = recibirStream(socketCpu,sizeof(int));
+	int* tamanioIC = recibirStream(socketCpu, sizeof(int));
+	pcb_Recibido->indicie_codigo = dictionary_create();
+	int i;
+	for(i=0;i<tamanioIC;i++){
+		int* nuevaPagina = malloc(sizeof(int));
+		*nuevaPagina = i;
+		direccionMemoria* nuevaDireccionMemoria = recibirStream(socketCpu,sizeof(direccionMemoria));
+		dictionary_put(pcb_Recibido->indicie_codigo,nuevaPagina,nuevaDireccionMemoria);
+	}
+	free(tamanioIC);
+	return pcb_Recibido;
+}
+
+
+int* recibirEstadoProceso(int socket_local){
+	//se libera estado al final del while, por eso lo cambie a puntero
+	int* estado = recibirStream(socket_local,sizeof(int));
+	return estado;
+}
+
