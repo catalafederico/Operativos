@@ -28,6 +28,7 @@
 #include "estructurasNUCLEO.h"
 #include "procesosCPU.h"
 #include "semaphore.h"
+#include <sockets/header.h>
 
 //FUNCIONES
 
@@ -60,7 +61,7 @@ extern t_list* proc_Exit;
 extern t_log *logger;
 extern struct server serverPaCPU;
 // semaforos Compartidos
-extern sem_t* sem_NEW_dispo;
+extern sem_t sem_NEW_dispo;
 
 extern pthread_mutex_t sem_l_cpus_dispo;
 
@@ -120,6 +121,11 @@ void *atender_conexion_CPU(){
 //------------------------------------------------------------------------------------------
 void *atender_CPU(int* socket_desc){
 	int socket_local = *socket_desc;
+	//Confirmo conexio a cpu
+	int ok = OK;
+	send(socket_local,&ok,sizeof(int),0);
+
+
 	//Lo libero ya q era un malloc de atender_conexion_CPU
 	free(socket_desc);
 	int seguir = 1;
@@ -127,7 +133,7 @@ void *atender_CPU(int* socket_desc){
 	int pid_local = 0;
 	int* estado_proceso;
 	while(seguir){
-		sem_wait(sem_NEW_dispo); // espero que haya un proceso en EXEC disponible
+		sem_wait(&sem_NEW_dispo); // espero que haya un proceso en EXEC disponible
 		pthread_mutex_lock(&sem_l_Exec);
 		//pcb_elegido = list_get(proc_New, 0);
 		pcb_elegido = list_remove(proc_Exec, 0);//Agarro el pcb

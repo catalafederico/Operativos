@@ -38,6 +38,7 @@
 t_reg_config reg_config;
 t_list* cpus_dispo;
 t_list* consolas_dispo;
+t_list* programas_para_procesar;
 t_list* proc_New;
 t_list* proc_Ready;
 t_list* proc_Exec;
@@ -52,8 +53,8 @@ struct server serverPaCPU;
 struct server serverPaConsolas;
 
 // Semaforos
-sem_t* semaforoProgramasACargar; //semaforo contador
-sem_t* sem_NEW_dispo; //semaforo contador
+sem_t semaforoProgramasACargar; //semaforo contador
+sem_t sem_NEW_dispo; //semaforo contador
 //info: http://man7.org/linux/man-pages/man3/sem_init.3.html
 pthread_mutex_t sem_l_cpus_dispo = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Ready = PTHREAD_MUTEX_INITIALIZER;
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
 	pthread_t thread_UMC;
 	pthread_t thread_CPU;
 
-	//sem_init(semaforoProgramasACargar,0,0);
+	sem_init(&semaforoProgramasACargar,0,0);
 
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
@@ -99,20 +100,20 @@ int main(int argc, char **argv) {
 	proc_Block = list_create();
 	proc_Reject = list_create();
 	proc_Exit = list_create();
+	programas_para_procesar = list_create();
 
 	//Leo archivo de configuracion ------------------------------
 	reg_config = get_config_params();
 
-
 	//Me conecto con la UMC ------------------------------
-	/*clienteNucleoUMC = crearCliente(reg_config.puerto_umc, reg_config.ip_umc);
+	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
 	log_debug(logger, "Conexion con UMC");
-	if( pthread_create( &thread_UMC, NULL , procesos_UMC, NULL) < 0)
+	if(pthread_create( &thread_UMC, NULL , procesos_UMC, NULL) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread para UMC");
 			exit(EXIT_FAILURE);
 		}
-	log_debug(logger, "Creacion Thread para procesos con UMC");*/
+	log_debug(logger, "Creacion Thread para procesos con UMC");
 
 
 

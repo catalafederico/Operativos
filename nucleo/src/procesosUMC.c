@@ -26,8 +26,9 @@
 #include <sockets/basicFunciones.h>
 #include <sockets/header.h>
 #include <semaphore.h>
-
+#include "procesarPrograma.h"
 #include "procesosUMC.h"
+#include "estructurasNUCLEO.h"
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -38,48 +39,42 @@
 
 // Variables compartidas ---------------------------------------------
 
+extern t_list* programas_para_procesar;
 extern t_list* cpus_dispo;
 extern t_list* consolas_dispo;
 extern t_list* proc_New;
-extern t_list* proc_Ready;
-extern t_list* proc_Block;
-extern t_list* proc_Reject;
-extern t_list* proc_Exit;
 extern t_log *logger;
 extern int tamanioPaginaUMC;
+extern t_reg_config reg_config;
 extern struct cliente clienteNucleoUMC;
-extern sem_t* semaforoProgramasACargar;
+
 
 // semaforos Compartidos
 
 extern pthread_mutex_t sem_l_cpus_dispo;
-extern pthread_mutex_t sem_l_Ready;
 extern pthread_mutex_t sem_l_New;
-extern pthread_mutex_t sem_l_Exec;
-extern pthread_mutex_t sem_l_Block;
-extern pthread_mutex_t sem_l_Reject;
-extern pthread_mutex_t sem_l_Exit;
 extern pthread_mutex_t sem_log;
+extern sem_t semaforoProgramasACargar;
+
 
 void *procesos_UMC(){
-//	conectarseConUmc(clienteNucleoUMC);
+	conectarseConUmc(clienteNucleoUMC);
 	int seguir = 1;
 	while(seguir){
-		sem_wait(semaforoProgramasACargar);//Espera a q haya programas a cargar
-
+		sem_wait(&semaforoProgramasACargar);//Espera a q haya programas a cargar
+		programaNoCargado* progParaCargar = list_remove(programas_para_procesar,0);
+		char* instrucciones = progParaCargar->instrucciones;
+		indiceCodigo* icNuevo;
+		t_list* instruccionesPaUMC = list_create();
+		icNuevo = nuevoPrograma(instrucciones,instruccionesPaUMC);
+		icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
+		direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,dictionary_size(icNuevo->inst_tamanio)-1);
+		int ultimaPaginaDeCodigo = lastInt->pagina;
+		if(cargarEnUMC(icNuevo,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente)==-1){
+			//no se pudo cargar notificar a la consola determinda
+		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 void conectarseConUmc(struct cliente clienteNucleo){
 	conectarConServidor(clienteNucleo);
@@ -113,7 +108,7 @@ void conectarseConUmc(struct cliente clienteNucleo){
 	}
 	free(recibido);
 
-	//TErmina
+	//Termina
 }
 
 

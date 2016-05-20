@@ -25,8 +25,9 @@
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
-
+#include <semaphore.h>
 #include "procesosConsola.h"
+#include "estructurasNUCLEO.h"
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -45,7 +46,9 @@ extern t_list* proc_Block;
 extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
+extern t_list* programas_para_procesar;
 extern struct server serverPaConsolas;
+int PIDAsignar;
 
 // semaforos Compartidos
 extern pthread_mutex_t sem_l_cpus_dispo;
@@ -56,6 +59,7 @@ extern pthread_mutex_t sem_l_Block;
 extern pthread_mutex_t sem_l_Reject;
 extern pthread_mutex_t sem_l_Exit;
 extern pthread_mutex_t sem_log;
+extern sem_t semaforoProgramasACargar;
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_consolas  ---------------------------
 void *atender_conexion_consolas(void *socket_desc){
@@ -64,7 +68,7 @@ void *atender_conexion_consolas(void *socket_desc){
 	ponerServerEscucha(serverPaConsolas);
 	log_debug(logger, "Se han empezado a escuchar consolas.");
 	int seguir = 1;
-
+	PIDAsignar = 1;
 	pthread_attr_t attr;
 	pthread_t thread_consola_con;
 	pthread_attr_init(&attr);
@@ -93,7 +97,7 @@ void *atender_conexion_consolas(void *socket_desc){
 // ---------------------------------- atender_consola---------------------------------------
 void *atender_consola(int* socket_desc){
 	  	//Get the socket descriptor
-		int socket_co = *(int*)socket_desc;
+		int socket_co = *socket_desc;
 		//int read_size;
 		//t_head_mje header;
 
@@ -113,10 +117,30 @@ void *atender_consola(int* socket_desc){
 	        exit(0);
 		}
 		log_debug(logger, "Mensaje recibido de consola %d : %s", socket_co, mje_recibido);
+		//hay q poner semaforo x si dos consolas agregan al mismo tiempo
+
+		programaNoCargado* promCargar = malloc(sizeof(programaNoCargado));
+		//ak otro semaforo para q no asigne el mismo PID
+		promCargar->PID = PIDAsignar;
+		PIDAsignar++;
+
+		promCargar->instrucciones = mje_recibido;
+		list_add(programas_para_procesar,promCargar);
 
 
 
-		free((void *) mje_recibido);
+
+		sem_post(&semaforoProgramasACargar);
+
+		//hay q hacer algo para q la consola pueda recinir mensajes
+		//yo pense en un diccionario q tega el pid y un semaforo de consola asi signal de consola paa q se active
+
+		while(1){
+			sleep(60);
+		}
+
+		//no hago free del mensaje ya q lo necesita la lista
+		//free((void *) mje_recibido);
 		free(socket_desc);
 		return NULL;
 }

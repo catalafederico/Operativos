@@ -73,4 +73,9 @@ typedef struct{
 }__attribute__((packed))
 programa_id;
 
+typedef struct{
+	int PID;
+	char* instrucciones;
+}programaNoCargado;
+
 #endif /* ESTRUCTURASNUCLEO_H_ */
