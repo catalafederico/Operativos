@@ -145,10 +145,10 @@ t_dictionary* paginarIC(t_dictionary* codigoSinPaginar) {
 	return diccionariConMemoria;
 }
 
-int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNecesarias,int socetUMC){
+int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNecesarias,int socetUMC,int id){
 	int newProgram = NUEVOPROGRAMA;
 	programa_id prog;
-	prog.id = 1;
+	prog.id = id;
 	prog.pagnias = pagNecesarias;
 	enviarStream(socetUMC,newProgram,sizeof(programa_id),&prog);//Solicito paginas a la umc
 	int* header = recibirStream(socetUMC,sizeof(int));

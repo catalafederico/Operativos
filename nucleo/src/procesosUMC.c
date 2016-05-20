@@ -71,7 +71,7 @@ void *procesos_UMC(){
 		int posicion = (dictionary_size(icNuevo->inst_tamanio)-1);
 		direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,&posicion);
 		int ultimaPaginaDeCodigo = lastInt->pagina;
-		if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente)==-1){
+		if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente,progParaCargar->PID)==-1){
 			//no se pudo cargar notificar a la consola determinda
 		}
 		pcb_t* pcbNuevo;

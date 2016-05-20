@@ -92,7 +92,7 @@ t_reg_config get_config_params(void){
 
 	// 10 get STACK_SIZE
 	if (config_has_property(archivo_config,"STACK_SIZE")){
-		reg_config.shared_vars = config_get_int_value(archivo_config,"STACK_SIZE");
+		reg_config.stack_size = config_get_int_value(archivo_config,"STACK_SIZE");
 	}
 	else{
 		log_debug(logger, "No se encontro STACK_SIZE");
@@ -100,7 +100,7 @@ t_reg_config get_config_params(void){
 
 	// 11 get IP_UMC
 	if (config_has_property(archivo_config,"IP_UMC")){
-		reg_config.shared_vars = config_get_string_value(archivo_config,"IP_UMC");
+		reg_config.ip_umc = config_get_string_value(archivo_config,"IP_UMC");
 	}
 	else{
 		log_debug(logger, "No se encontro IP_UMC");
@@ -108,7 +108,7 @@ t_reg_config get_config_params(void){
 
 	// 12 get PUERTO_UMC
 	if (config_has_property(archivo_config,"PUERTO_UMC")){
-		reg_config.shared_vars = config_get_int_value(archivo_config,"PUERTO_UMC");
+		reg_config.puerto_umc = config_get_int_value(archivo_config,"PUERTO_UMC");
 	}
 	else{
 		log_debug(logger, "No se encontro PUERTO_UMC");

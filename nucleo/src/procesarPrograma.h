@@ -12,6 +12,6 @@
 
 indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc);
 t_dictionary* paginarIC(t_dictionary* codigoSinPaginar);
-int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNecesarias, int socketUMC);
+int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNecesarias, int socketUMC,int id);
 
 #endif /* PROCESARPROGRAMA_H_ */
