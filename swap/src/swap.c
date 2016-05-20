@@ -706,16 +706,16 @@ t_reg_config get_config_params(void){
 
 					switch(header){
 
-					        case '50':
+					        case 50:
 								iniciar();
 								return 1;
-							case '51':
+							case 51:
 								finalizar();
 								return 1;
-							case '52':
+							case 52:
 								leer();
 								return 1;
-							case '53':
+							case 53:
 								escribir();
 								return 1;
 							break;
