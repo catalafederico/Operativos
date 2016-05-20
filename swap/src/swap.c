@@ -138,12 +138,12 @@ int main(void) {
     crearArchivo();
     inicializarArchivo();
 
-
+/*
     proceso proceso2 = crearProceso(1,23);
-    /*int comienzaHueco = hayHuecoDondeCabeProceso(proceso2);
+    int comienzaHueco = hayHuecoDondeCabeProceso(proceso2);
     printf("Hueco comienza en:%d \n",comienzaHueco);
     actualizarBitMap(proceso2,comienzaHueco);
-    listarBitMap();*/
+    listarBitMap();
     insertarProceso(&proceso2);
     //printf("Pid: %d \n", listaSwap->pid);
 
@@ -163,15 +163,16 @@ int main(void) {
     testEscribirEnPaginas();
     testLeerPagina();
 
-    /*listaSwap = listaSwap->procesoSiguiente;
+    listaSwap = listaSwap->procesoSiguiente;
     compactar();
-    listarBitMap();*/
+    listarBitMap();
 
-    /*int comienzaHueco1 = hayHuecoDondeCabeProceso(proceso1);
+    int comienzaHueco1 = hayHuecoDondeCabeProceso(proceso1);
     printf("Hueco comienza en:%d \n",comienzaHueco1);
     actualizarBitMap(proceso1,comienzaHueco1);
     listarBitMap();
-     */
+
+  */
 
     //Conexion
 
