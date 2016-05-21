@@ -12,7 +12,7 @@
 void inicializarSwap(int* socket);
 void notificarASwapPrograma(int id,int paginas);
 void notificarASwapFinPrograma(int id);
-void almacenarEnSwap(int id, int pagina, int offset, int tamanio, void* buffer);
-void* solicitarEnSwap(int id, int pagina, int offset, int tamanio);
+void almacenarEnSwap(int id, int pagina, void* buffer);
+void* solicitarEnSwap(int id, int pagina);
 
 #endif /* SRC_UMCCLIENTE_H_ */
