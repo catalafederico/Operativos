@@ -122,7 +122,7 @@ void conectarseConNucleo(struct cliente clienteCpuNucleo){
 	}
 	int* recibido = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
 	if(*recibido==OK){
-		printf("Se ha conectado correctamente con UMC.\n");
+		printf("Se ha conectado correctamente con Nucleo.\n");
 	}
 	//Termina Handshake
 }

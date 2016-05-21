@@ -68,6 +68,9 @@ void* conexionCpu(int socketEscuchaCpu){
 			case 53://ALMACENAR
 				almacenar_Byte(socketEscuchaCpu);
 				break;
+			case 666:
+				enviarStream(socketEscuchaCpu,666,sizeof(int),&umcConfg.configuracionUMC.MARCO_SIZE);
+				break;
 			case -1:
 				printf("Perdida la conexion con cpu\n");
 				close(socketEscuchaCpu);

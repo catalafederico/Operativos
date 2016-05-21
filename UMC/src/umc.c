@@ -35,23 +35,28 @@ int main(void) {
 	umcConfg.configuracionUMC = *get_config_params();
 	log_info(umcConfg.loguer, "Cargado parametros");
 
-	/*log_info(umcConfg.loguer, "Inicializando memoria");
+	log_info(umcConfg.loguer, "Inicializando memoria");
 	umcConfg.memoriaPrincipal = inicializarMemoria(&(umcConfg.configuracionUMC));
-	log_info(umcConfg.loguer, "Memoria Inicializada");*/
+	log_info(umcConfg.loguer, "Memoria Inicializada");
+
 	struct cliente aSwap;
 	aSwap = crearCliente(6000,"127.0.0.1");
 	log_info(umcConfg.loguer, "Conectando a Swap Puerto: %d Direc: %s",umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
 	conectarConServidor(aSwap);
 	log_info(umcConfg.loguer, "Conectado a Swap socket: %d", aSwap.socketCliente);
 	umcConfg.socketSwap = aSwap.socketCliente;
-	int a = 5;
+
+
+	/*int a = 123;
 	notificarASwapPrograma(5,5);
 	almacenarEnSwap(5,1,&a);
-	int* ab = solicitarEnSwap(5,1);
-	printf("%d\n",*ab);
-	notificarASwapFinPrograma(5);
+	char* ab = solicitarEnSwap(5,1);
+	printf("%d\n",(int)ab);*/
 
-	/*pthread_t consola;
+	//ROmpe
+	//notificarASwapFinPrograma(5);
+
+	pthread_t consola;
 	pthread_t socket;
 
 	log_info(umcConfg.loguer, "Creando proceso consola");
@@ -62,7 +67,7 @@ int main(void) {
 	pthread_create(&socket,NULL,(void*)sockets,&umcConfg);
 	log_info(umcConfg.loguer, "Proceso Creado");
 
-	pthread_join(consola,NULL);*/
+	pthread_join(consola,NULL);
 	return 0;
 }
 
