@@ -90,15 +90,15 @@ int procesoSeEncuentraEnSwap(int pid);
 
 proceso obtenerProceso(int pid);
 
-void escribirPagina(int paginaAEscribir,char* texto);
+void escribirPagina(int paginaAEscribir,void* texto);
 
-char* leerPagina(int pagina);
+void* leerPagina(int pagina);
 
 void finalizar(void);
 
 void eliminarProceso(int pid);
 
-char* recibirCadena(void);
+void* recibirCadena(void);
 
 void mandarCadena(char* cadena);
 
@@ -257,7 +257,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 				int exito = 6;
 				send(socketAdministradorDeMemoria,&exito, sizeof(int), 0);
 				int paginaALeer = proceso.comienzo + numeroPagina;
-				char* texto = leerPagina(paginaALeer);
+				void* texto = leerPagina(paginaALeer);
 				//printf("%s\n",texto);
 				mandarCadena(texto);
 				free(texto);
@@ -274,7 +274,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		int numeroPagina;
 		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
 		recv(socketAdministradorDeMemoria, &numeroPagina, sizeof(int), 0);
-		char* texto = recibirCadena();
+		void* texto = recibirCadena();
 		if(procesoSeEncuentraEnSwap(pid)){
 			proceso proceso = obtenerProceso(pid);
 			if(numeroPagina >= proceso.cantidadDePaginas){
@@ -332,36 +332,37 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		}
 	}
 
-	void escribirPagina(int paginaAEscribir,char* texto){
+	void escribirPagina(int paginaAEscribir,void* texto){
 		int tamanioPagina = swap_configuracion.TAMANIO_PAGINA;
-		if(strlen(texto)>tamanioPagina){
+		/*if(strlen(texto)>tamanioPagina){
 				printf("El texto es mas grande que el tamaño de pagina entonces se corta\n");
-			}
+			}*/
 			FILE* archivo;
-			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
+			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"rb+");
 			//printf("%s\n",texto);
 			//printf("%d\n",strlen(texto));
-			char* texto2 = malloc(tamanioPagina);
+			/*char* texto2 = malloc(tamanioPagina);
 			memset(texto2,' ',tamanioPagina);
 			char* texto0 = string_new();
 			string_append(&texto0,texto);
 			string_append(&texto0,texto2);
-			char* texto1 = string_substring_until(texto0,tamanioPagina);
+			char* texto1 = string_substring_until(texto0,tamanioPagina);*/
 			fseek(archivo,tamanioPagina*paginaAEscribir,SEEK_SET);
-			//fwrite(texto1,sizeof(char),sizeof(texto1), archivo );
-			fprintf(archivo,"%s",texto1);
+			fwrite(texto,sizeof(char),tamanioPagina, archivo );
+			//fprintf(archivo,"%s",texto1);
 			fclose(archivo);
-			free(texto2);
+			//free(texto2);
+			free(texto);
 	}
 
-	char* leerPagina(int pagina){
+	void* leerPagina(int pagina){
 			FILE* archivo;
 			int tamanioPagina = swap_configuracion.TAMANIO_PAGINA;
 			//printf("%d\n",pagina);
-			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
+			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"rb+");
 			fseek(archivo,tamanioPagina*pagina,SEEK_SET);
-			char* texto = malloc(tamanioPagina+1);
-			texto[tamanioPagina] = NULL;
+			void* texto = malloc(tamanioPagina);
+			//texto[tamanioPagina] = NULL;
 			fread(texto,tamanioPagina,1,archivo);
 			fclose(archivo);
 			//printf("%s\n",texto);
@@ -518,14 +519,14 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 
 	void moverPaginas(proceso* procesoAJuntar,int nuevoComienzo){
 			FILE* archivo;
-			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"r+");
+			archivo = fopen(swap_configuracion.NOMBRE_SWAP,"rb+");
 			int tamanioPagina = swap_configuracion.TAMANIO_PAGINA;
 			fseek(archivo,tamanioPagina*(procesoAJuntar->comienzo),SEEK_SET);
-			char* texto = malloc(tamanioPagina* (procesoAJuntar->cantidadDePaginas));
+			void* texto = malloc(tamanioPagina* (procesoAJuntar->cantidadDePaginas));
 			fread(texto,tamanioPagina,procesoAJuntar->cantidadDePaginas,archivo);
 			fseek(archivo,tamanioPagina*nuevoComienzo,SEEK_SET);
-			//fwrite(texto,sizeof(char),sizeof(texto), archivo );
-			fprintf(archivo,"%s",texto);
+			fwrite(texto,sizeof(char),tamanioPagina, archivo );
+			//fprintf(archivo,"%s",texto);
 			fclose(archivo);
 			free(texto);
 
@@ -735,8 +736,8 @@ t_reg_config get_config_params(void){
 		send(socketAdministradorDeMemoria, cadena, sizeof(cadena), 0);
 	}
 
-	char* recibirCadena() {
-		char* cadena;
+	void* recibirCadena() {
+		void* cadena;
 		int long_cadena = swap_configuracion.TAMANIO_PAGINA;
 		//recv(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
 		cadena = malloc(long_cadena);
