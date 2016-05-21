@@ -31,11 +31,11 @@ int main(void) {
 	umcConfg.loguer = log_create("logs/logUMC.txt","UMC", false,LOG_LEVEL_INFO);
 	logConexiones = log_create("logs/conexiones.txt","UMC",false,LOG_LEVEL_TRACE);
 
-	/*log_info(umcConfg.loguer, "Cargando parametros");
+	log_info(umcConfg.loguer, "Cargando parametros");
 	umcConfg.configuracionUMC = *get_config_params();
 	log_info(umcConfg.loguer, "Cargado parametros");
 
-	log_info(umcConfg.loguer, "Inicializando memoria");
+	/*log_info(umcConfg.loguer, "Inicializando memoria");
 	umcConfg.memoriaPrincipal = inicializarMemoria(&(umcConfg.configuracionUMC));
 	log_info(umcConfg.loguer, "Memoria Inicializada");*/
 	struct cliente aSwap;

@@ -63,8 +63,8 @@ void almacenarEnSwap(int id, int pagina, void* buffer){
 	int almc = ALMACENAR;
 	enviarStream(umcConfg.socketSwap,almc,sizeof(almcPag),&almcenarSwap);
 	if(send(umcConfg.socketSwap,buffer,umcConfg.configuracionUMC.MARCO_SIZE, 0)==-1){
-		perror("error al enviar");
-	};
+		perror("error al enviar\n");
+	}
 	log_trace(logConexiones,"Notificar almacen en swap.");
 	int* conf = leerHeader(umcConfg.socketSwap);
 	if(*conf==OK){
