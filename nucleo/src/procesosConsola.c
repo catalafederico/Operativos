@@ -6,7 +6,7 @@
  */
 
 #include <stdio.h>
-//#include <string.h>
+#include <string.h>
 #include <stdlib.h>
 #include<pthread.h>
 
@@ -37,7 +37,7 @@
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
 // Variables compartidas ---------------------------------------------
-
+extern t_reg_config reg_config;
 extern t_list* cpus_dispo;
 extern t_list* consolas_dispo;
 extern t_list* proc_New;
@@ -63,6 +63,9 @@ extern sem_t semaforoProgramasACargar;
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_consolas  ---------------------------
 void *atender_conexion_consolas(void *socket_desc){
+	log_debug(logger, "Crear socket para CONSOLAS");
+	//Crear socket para procesos (CONSOLA) ------------------------------
+	serverPaConsolas = crearServer(reg_config.puerto_prog);
 
 	//Pongo el server a escuchar.
 	ponerServerEscucha(serverPaConsolas);
@@ -80,7 +83,7 @@ void *atender_conexion_consolas(void *socket_desc){
 		aceptarConexion(socket_nuevo, serverPaConsolas.socketServer, &direccionEntrante); //No hace falta chekear si es -1, aceptarConexiones lo hace ya
 		log_debug(logger, "Se ha conectado una Consola");
 
-		if( pthread_create( &thread_consola_con , &attr , atender_consola, socket_nuevo) < 0)
+		if( pthread_create( &thread_consola_con , &attr ,(void*) atender_consola, socket_nuevo) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ consolas");
 			exit(EXIT_FAILURE);
@@ -133,7 +136,7 @@ void *atender_consola(int* socket_desc){
 
 		sem_post(&semaforoProgramasACargar);
 
-		//hay q hacer algo para q la consola pueda recinir mensajes
+		//hay q hacer algo para q la consola pueda reciir mensajes
 		//yo pense en un diccionario q tega el pid y un semaforo de consola asi signal de consola paa q se active
 
 		while(1){

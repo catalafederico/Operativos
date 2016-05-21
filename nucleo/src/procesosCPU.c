@@ -43,11 +43,17 @@ int* recibirEstadoProceso(int socket_local);
 #define SOY_NUCLEO  "Te_conectaste_con_NUCLEO_"
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
-#define FIN_PROC 	1
-#define FIN_QUANTUM	2
-#define FIN_IO		3
-#define SOLIC_IO 	4
-#define FIN_CPU 	5
+#define FIN_PROC 	 1
+#define FIN_QUANTUM	 2
+//#define FIN_IO		 3 VA EN OTRO LADO
+#define SOLIC_IO 	 3
+#define FIN_CPU 	 4
+#define OBT_VALOR 	 5
+#define GRABA_VALOR  6
+#define WAIT_SEM 	 7
+#define SIGNAL_SEM 	 8
+
+
 // Variables compartidas ---------------------------------------------
 extern t_reg_config reg_config;
 extern t_list* cpus_dispo;
@@ -78,6 +84,9 @@ extern pthread_mutex_t sem_l_Reject;
 // un thread por cada CPU conectado y liberaran recursos automaticamente cuando dejen de ser utiles.
 //------------------------------------------------------------------------------------------
 void *atender_conexion_CPU(){
+	log_debug(logger, "Crear socket para CPUs");
+	// Crear socket para CPU  ------------------------------
+	serverPaCPU = crearServer(reg_config.puerto_cpu);
 
 	//Pongo el server a escuchar.
 	ponerServerEscucha(serverPaCPU);
@@ -95,7 +104,7 @@ void *atender_conexion_CPU(){
 		aceptarConexion(socket_nuevo, serverPaCPU.socketServer, &direccionEntrante); //No hace falta chekear si es -1, aceptarConexiones lo hace ya
 		log_debug(logger, "Se ha conectado una CPU");
 
-		if(pthread_create(&thread_cpu_con , &attr , atender_CPU, socket_nuevo) < 0)
+		if(pthread_create(&thread_cpu_con , &attr , (void*) atender_CPU, socket_nuevo) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ CPU");
 			exit(EXIT_FAILURE);
@@ -125,7 +134,6 @@ void *atender_CPU(int* socket_desc){
 	int ok = OK;
 	send(socket_local,&ok,sizeof(int),0);
 
-
 	//Lo libero ya q era un malloc de atender_conexion_CPU
 	free(socket_desc);
 	int seguir = 1;
@@ -135,9 +143,8 @@ void *atender_CPU(int* socket_desc){
 	while(seguir){
 		sem_wait(&sem_NEW_dispo); // espero que haya un proceso en EXEC disponible
 		pthread_mutex_lock(&sem_l_Exec);
-		//pcb_elegido = list_get(proc_New, 0);
-		pcb_elegido = list_remove(proc_Exec, 0);//Agarro el pcb
-		pid_local = *(pcb_elegido->PID);
+			pcb_elegido = list_remove(proc_Exec, 0);//Agarro el pcb
+			pid_local = *(pcb_elegido->PID);
 		pthread_mutex_unlock(&sem_l_Exec);
 
 		enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
@@ -146,41 +153,64 @@ void *atender_CPU(int* socket_desc){
 		switch (*estado_proceso) {
 			case FIN_QUANTUM:
 				pthread_mutex_lock(&sem_l_Ready);
-				list_add(proc_Ready, pcb_elegido);
+					list_add(proc_Ready, pcb_elegido);
 				pthread_mutex_unlock(&sem_l_Ready);
+				log_debug(logger, "El proceso %d de la Consola %d pasa a READY", *pcb_elegido->PID, 0 /**pcb_elegido->con_id*/);
 				break;
 
-			case FIN_IO:// VER SI ESTO SE MANEJA DESDE OTRO LADO,
-				pthread_mutex_lock(&sem_l_Block); // lo quito de bloqueados
-				list_remove_by_condition(proc_Block, (void *)(pcb_elegido->PID = pid_local) );
-				pthread_mutex_unlock(&sem_l_Block);
-
-				pthread_mutex_lock(&sem_l_Ready); // lo agrego a listos
-				list_add(proc_Ready, pcb_elegido);
-				pthread_mutex_unlock(&sem_l_Ready);
-				break;
-
-			case SOLIC_IO://VER SI ESTO SE MANEJA DESDE OTRO LADO
-				pthread_mutex_lock(&sem_l_Block); // se bloquea
-				list_add(proc_Block, pcb_elegido);
-				pthread_mutex_unlock(&sem_l_Block);
-				break;
+//			case FIN_IO:// VER SI ESTO SE MANEJA DESDE OTRO LADO,
+//				pthread_mutex_lock(&sem_l_Block); // lo quito de bloqueados
+//				list_remove_by_condition(proc_Block, (void *) (*pcb_elegido->PID == pid_local) );
+//				pthread_mutex_unlock(&sem_l_Block);
+//
+//				pthread_mutex_lock(&sem_l_Ready); // lo agrego a listos
+//				list_add(proc_Ready, pcb_elegido);
+//				pthread_mutex_unlock(&sem_l_Ready);
+//				log_debug(logger, "El proceso %d de la Consola %d pasa a READY", *pcb_elegido->PID, *pcb_elegido->con_id);
+//				break;
 
 			case FIN_PROC:
 				pthread_mutex_lock(&sem_l_Exit);
 				list_add(proc_Exit, pcb_elegido);
 				pthread_mutex_unlock(&sem_l_Exit);
+				log_debug(logger, "El proceso %d de la Consola %d pasa a EXIT", *pcb_elegido->PID, 0 /**pcb_elegido->con_id*/);
 				break;
 
 			case FIN_CPU:
 				pthread_mutex_lock(&sem_l_Ready); // lo agrego al principio de listos
-				list_add_in_index(proc_Ready, pcb_elegido, 0);
+				list_add_in_index(proc_Ready, 0, pcb_elegido);
 				pthread_mutex_unlock(&sem_l_Ready);
+				log_debug(logger, "El proceso %d de la Consola %d pasa a READY 0", *pcb_elegido->PID,0 /* *pcb_elegido->con_id*/);
 				break;
 
+//      Las siguientes son operaciones privilegiadas
+			case SOLIC_IO:
+//              priv_entrada_salida ();
+//				pthread_mutex_lock(&sem_l_Block); // se bloquea
+//				list_add(proc_Block, pcb_elegido);
+//				pthread_mutex_unlock(&sem_l_Block);
+//				log_debug(logger, "El proceso %d de la Consola %d pasa a BLOCK", *pcb_elegido->PID, *pcb_elegido->con_id);
+				break;
+
+			case OBT_VALOR:
+//              priv_obtener_valor ();
+				break;
+
+			case GRABA_VALOR:
+//              priv_grabar_valor ();
+				break;
+
+			case WAIT_SEM:
+//              priv_wait ();
+				break;
+
+			case SIGNAL_SEM:
+//              priv_signal ();
+				break;
 			default:
 				break;
 		}
+
 		free(estado_proceso);
 	}
 	return NULL;

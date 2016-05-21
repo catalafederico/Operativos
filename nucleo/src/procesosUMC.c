@@ -24,11 +24,11 @@
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
 #include <sockets/basicFunciones.h>
-#include <sockets/header.h>
 #include <semaphore.h>
 #include "procesarPrograma.h"
 #include "procesosUMC.h"
 #include "estructurasNUCLEO.h"
+#include <sockets/header.h>
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -51,13 +51,19 @@ extern struct cliente clienteNucleoUMC;
 
 // semaforos Compartidos
 
-extern pthread_mutex_t sem_l_cpus_dispo;
 extern pthread_mutex_t sem_l_New;
-extern pthread_mutex_t sem_log;
+extern pthread_mutex_t sem_l_Ready;
+extern pthread_mutex_t sem_l_Exec;
+extern pthread_mutex_t sem_l_Block;
+extern pthread_mutex_t sem_l_Exit;
+extern pthread_mutex_t sem_l_Reject;
 extern sem_t semaforoProgramasACargar;
 
 
 void *procesos_UMC(){
+//	clienteNucleoUMC = crearCliente(reg_config.puerto_umc,reg_config.ip_umc);
+	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
+	log_debug(logger, "Conexion con UMC");
 	conectarseConUmc(clienteNucleoUMC);
 	int seguir = 1;
 	while(seguir){
@@ -84,7 +90,12 @@ void *procesos_UMC(){
 		*(pcbNuevo->SP) = 0;
 		*(pcbNuevo->paginasDisponibles) = ultimaPaginaDeCodigo+reg_config.stack_size;
 		pcbNuevo->indicie_codigo = icNuevo->inst_tamanio;
+
+		pthread_mutex_lock(&sem_l_New);
+			list_add(proc_New, pcbNuevo);
+		pthread_mutex_unlock(&sem_l_New);
 	}
+	return NULL;
 }
 
 void conectarseConUmc(struct cliente clienteNucleo){
