@@ -47,7 +47,7 @@ void notificarASwapPrograma(int id,int paginas){
 void notificarASwapFinPrograma(int id){
 	int finalid = FINALIZACIONPROGRAMA;
 	log_trace(logConexiones,"Notificar swap fin programa id: %d.",id);
-	enviarStream(umcConfg.socketSwap,finalid,sizeof(int),id);
+	enviarStream(umcConfg.socketSwap,finalid,sizeof(int),&id);
 	int* conf = leerHeader(umcConfg.socketSwap);
 	if(*conf==OK){
 		printf("OK\n");
@@ -81,12 +81,13 @@ void* solicitarEnSwap(int id, int pagina){
 	int solc = SOLICITAR;
 	log_trace(logConexiones,"Solicitar en swap.");
 	enviarStream(umcConfg.socketSwap,solc,sizeof(solcPag),&solicitarSwap);
-	void* recibido = recibirStream(umcConfg.socketSwap,umcConfg.configuracionUMC.MARCO_SIZE);
 	int* conf = leerHeader(umcConfg.socketSwap);
 	if(*conf==OK){
 		printf("OK\n");
+		void* recibido = recibirStream(umcConfg.socketSwap,umcConfg.configuracionUMC.MARCO_SIZE);
+		return recibido;
 	}else if(*conf==ERROR){
 		printf("ERROR\n");
+		return NULL;
 	}
-	return recibido;
 }
