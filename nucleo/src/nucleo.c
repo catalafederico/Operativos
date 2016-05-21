@@ -86,6 +86,7 @@ int main(int argc, char **argv) {
 	pthread_t thread_CPU;
 
 	sem_init(&semaforoProgramasACargar,0,0);
+	sem_init(&sem_NEW_dispo,0,0);
 
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
@@ -105,9 +106,7 @@ int main(int argc, char **argv) {
 	//Leo archivo de configuracion ------------------------------
 	reg_config = get_config_params();
 
-	//Me conecto con la UMC ------------------------------
-	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
-	log_debug(logger, "Conexion con UMC");
+//Administrador de UMC----------------------
 	if(pthread_create( &thread_UMC, NULL , procesos_UMC, NULL) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread para UMC");
@@ -117,22 +116,13 @@ int main(int argc, char **argv) {
 
 
 
-	log_debug(logger, "Crear socket para CPUs");
-	// Crear socket para CPU  ------------------------------
-	serverPaCPU = crearServer(reg_config.puerto_cpu);
 
-	// Crear thread para atender los procesos CPU
+// Crear thread para atender los procesos CPU
 	if( pthread_create( &thread_CPU, NULL , atender_conexion_CPU, NULL) < 0)
 	{
 		log_debug(logger, "No fue posible crear thread para CPU");
 		exit(EXIT_FAILURE);
 	}
-
-
-	log_debug(logger, "Crear socket para CONSOLAS");
-	//Crear socket para procesos (CONSOLA) ------------------------------
-	serverPaConsolas = crearServer(reg_config.puerto_prog);
-
 
 	//Crear thread para atender los procesos consola
 	pthread_t thread_consola;
@@ -141,6 +131,22 @@ int main(int argc, char **argv) {
 		log_debug(logger, "No fue posible crear thread p/ consolas");
 		exit(EXIT_FAILURE);
 	}
+
+//Crear thread Administrador de cola EXIT
+//	pthread_t thread_EXIT_admin;
+//	if( pthread_create( &thread_consola , NULL , administrar_cola_Exit, NULL) < 0)
+//	{
+//		log_debug(logger, "No fue posible crear thread Admin de EXIT");
+//		exit(EXIT_FAILURE);
+//	}
+
+//Crear thread Administrador de cola BLOCK
+//	pthread_t thread_BLOCK_admin;
+//	if( pthread_create( &thread_consola , NULL , administrar_cola_Block, NULL) < 0)
+//	{
+//		log_debug(logger, "No fue posible crear thread Admin de EXIT");
+//		exit(EXIT_FAILURE);
+//	}
 
 	pthread_join(thread_CPU, NULL);
 	log_destroy(logger);
