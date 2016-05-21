@@ -404,7 +404,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 
 	int entraProceso(proceso proceso){
 
-			int paginasLibres;
+			int paginasLibres = 0;
 			int pag = 0;
 			for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
 				if(bitMap[pag]==0) paginasLibres++;
