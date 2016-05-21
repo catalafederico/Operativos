@@ -739,7 +739,7 @@ t_reg_config get_config_params(void){
 		char* cadena;
 		int long_cadena = swap_configuracion.TAMANIO_PAGINA;
 		//recv(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
-		cadena = malloc(cadena);
+		cadena = malloc(long_cadena);
 		recv(socketAdministradorDeMemoria, cadena, long_cadena, 0);
 		return cadena;
 	}
