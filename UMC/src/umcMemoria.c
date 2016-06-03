@@ -136,6 +136,10 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 	pthread_mutex_unlock(&semaforoMemoria);
 	void* bufferALLPAGE = obtenerBytesMemoria(pagina,0,umcConfg.configuracionUMC.MARCO_SIZE);
 	almacenarEnSwap(*idProcesoActual,pagina,bufferALLPAGE);
+	//Probar CPU
+	/*int a = 5;
+	void* asd = &a;
+	almacenarEnSwap(*idProcesoActual,pagina,asd);*/
 	return;
 }
 

@@ -84,7 +84,7 @@ void* solicitarEnSwap(int id, int pagina){
 	int* conf = leerHeader(umcConfg.socketSwap);
 	if(*conf==OK){
 		printf("OK\n");
-		char* llegado = recibirStream(umcConfg.socketSwap,umcConfg.configuracionUMC.MARCO_SIZE);
+		void* llegado = recibirStream(umcConfg.socketSwap,umcConfg.configuracionUMC.MARCO_SIZE);
 		return llegado;
 	}else if(*conf==ERROR){
 		printf("ERROR\n");

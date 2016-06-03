@@ -27,11 +27,14 @@ direccionMemoria* ultimaDireccion;//Tenporal hasta q tengamos stack
 void inicialzarParser(int socketMem ,int socketNuc) {
 	socketMemoria = socketMem;
 	socketNucleo = socketNuc;
-	ultimaDireccion = NULL;
+	ultimaDireccion = malloc(sizeof(direccionMemoria));
+	ultimaDireccion->pagina = 0;
+	ultimaDireccion->offset = 0;
+	ultimaDireccion->tamanio = 0;
 }
 //DefinirVariable
 t_puntero vardef(t_nombre_variable var) {
-	printf("Se difinio variable: %s\n", var);
+	//printf("Se difinio variable: %s\n", var);
 	direccionMemoria* temp = malloc(sizeof(direccionMemoria));
 	almUMC aAlmacenar = calculoDeDedireccionAlmalcenar();
 	aAlmacenar.valor = 0;
@@ -146,7 +149,7 @@ int signal(t_nombre_semaforo semf) {
 
 almUMC calculoDeDedireccionAlmalcenar(){
 	almUMC aAlmacenar;
-	int paginasDisponibles = pcb_actual->paginasDisponible;
+	int paginasDisponibles = 5;//pcb_actual->paginasDisponible;
 	if(ultimaDireccion==NULL){
 		int tamanioIC = dictionary_size(pcb_actual->indice_codigo);
 		//primero hay q hacer un stack empty, xq en estack estaria la ultima posicion

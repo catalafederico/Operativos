@@ -50,8 +50,8 @@ int main(void) {
 	/*int a = 123;
 	notificarASwapPrograma(5,5);
 	almacenarEnSwap(5,1,&a);
-	char* ab = solicitarEnSwap(5,1);
-	printf("%d\n",(int)ab);*/
+	int* ab = solicitarEnSwap(5,1);
+	printf("%d\n",*(ab));*/
 
 	//ROmpe
 	//notificarASwapFinPrograma(5);

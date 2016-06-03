@@ -80,18 +80,22 @@ void *procesos_UMC(){
 		if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente,progParaCargar->PID)==-1){
 			//no se pudo cargar notificar a la consola determinda
 		}
-		pcb_t* pcbNuevo;
-		pcbNuevo->PC = malloc(sizeof(int));
-		pcbNuevo->PID= malloc(sizeof(int));
-		pcbNuevo->SP= malloc(sizeof(int));
-		pcbNuevo->paginasDisponibles= malloc(sizeof(int));
-		*(pcbNuevo->PC) = 0;
-		*(pcbNuevo->PID) = progParaCargar->PID;
-		*(pcbNuevo->SP) = 0;
-		*(pcbNuevo->paginasDisponibles) = ultimaPaginaDeCodigo+reg_config.stack_size;
+		pcb_t* pcbNuevo = malloc(sizeof(pcb_t));
+		int* pc = pcbNuevo->PC;
+		int* pid = pcbNuevo->PID;
+		int* sp = pcbNuevo->SP;
+		int* pD = pcbNuevo->paginasDisponibles;
+		pc = malloc(sizeof(int));
+		pid= malloc(sizeof(int));
+		sp= malloc(sizeof(int));
+		pD = malloc(sizeof(int));
+		*pc = 0;
+		*pid = progParaCargar->PID;
+		*sp = 0;
+		*pD = ultimaPaginaDeCodigo+reg_config.stack_size;
 		pcbNuevo->indicie_codigo = icNuevo->inst_tamanio;
-
 		pthread_mutex_lock(&sem_l_New);
+			printf("pcb creado y agregado\n");
 			list_add(proc_New, pcbNuevo);
 		pthread_mutex_unlock(&sem_l_New);
 	}

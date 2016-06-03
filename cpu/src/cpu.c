@@ -69,7 +69,17 @@ int main(void) {
 
 	//Empieza la escucha de nucleo
 	int seguir = 1;
-	while(seguir){
+	/*int b = 5;
+	pcb_t* asd ;
+		asd->PC = &seguir;
+		asd->PID = &seguir;
+		asd->paginasDisponible = &b;
+		pcb_actual = asd;*/
+	procesarInstruccion("variables a,b,c,d\n");
+
+
+
+	/*while(seguir){
 		int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 		switch (*header) {
 			case 163://Recibir PCB
@@ -80,7 +90,7 @@ int main(void) {
 				break;
 		}
 		free(header);
-	}
+	}*/
 	return 0;
 }
 
