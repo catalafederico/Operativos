@@ -8,6 +8,7 @@
 #ifndef ESTRUCTURASCPU_H_
 #define ESTRUCTURASCPU_H_
 #include <commons/collections/dictionary.h>
+#include <commons/collections/list.h>
 
 typedef struct {
 	int pagina;
@@ -23,8 +24,14 @@ typedef struct{
 	int* SP;
 	int* paginasDisponible;
 	t_dictionary* indice_codigo;
+	t_list* indice_funciones;
+	t_dictionary* indice_stack;
 }pcb_t;
 
+typedef struct{
+ char* funcion;
+ int* posicion_codigo;
+}funcion_sisop;
 
 typedef struct{
 	int pagina;
@@ -34,11 +41,29 @@ typedef struct{
 direccionMemoria;
 
 typedef struct{
+	t_list* args; //tiene direcciones de memoria
+	t_list* vars; //tiene direcciones de stack
+	int* pos_ret;
+	direccionMemoria* memoriaRetorno;
+}stack;
+
+
+
+
+typedef struct{
+	char id;
+	direccionMemoria lugarUMC;
+}__attribute__((packed))
+direccionStack;
+
+typedef struct{
 	int PID;
 	int PC;
 	int SP;
 	int paginasDisponible;
-	int tamanioIC;
+	int tamanioIndiceCodigo;
+	int tamanioStack;
+	int tamanioIndiceDeFunciones;
 }__attribute__((packed))
 serializablePCB;
 
