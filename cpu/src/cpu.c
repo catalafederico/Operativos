@@ -7,6 +7,7 @@
  Description : Hello World in C, Ansi-style
  ============================================================================
  */
+#include <sockets/header.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -20,7 +21,6 @@
 #include <signal.h>
 #include <commons/collections/list.h>
 #include <commons/log.h>
-#include <sockets/header.h>
 #include "funcionesparsernuevas.h"
 #include <sockets/socketCliente.h>
 #include <parser/parser.h>
@@ -65,12 +65,16 @@ int main(void) {
 
 	//Empieza conexion UMC
 	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
+	log_info(logCpu,"Conectando a UMC Puerto : %d",SERVERUMC);
 	conectarseConUMC(clienteCpuUmc);
+	log_info(logCpu,"Conectado a UMC socket: %d",clienteCpuUmc.socketCliente);
 	//Termina conexion UMC
 
 	//Empieza conexion Nucleo
 	clienteCpuNucleo = crearCliente(SERVERNUCLEO, "127.0.0.1");
+	log_info(logCpu,"Conectando a Nucleo Puerto : %d",SERVERNUCLEO);
 	conectarseConNucleo(clienteCpuNucleo);
+	log_info(logCpu,"Conectado a Nucleo socket: %d",clienteCpuNucleo.socketCliente);
 	//Termina conexion Nucleo
 
 	//Le paso el socket de la umc, para no pasarlo x cada pedido
