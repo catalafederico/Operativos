@@ -54,8 +54,11 @@ struct server serverPaConsolas;
 
 // Semaforos
 sem_t semaforoProgramasACargar; //semaforo contador
-sem_t sem_NEW_dispo; //semaforo contador
+sem_t sem_READY_dispo; //semaforo contador
+sem_t sem_EXIT_dispo; //semaforo contador
+sem_t sem_BLOCK_dispo; //semaforo contador
 //info: http://man7.org/linux/man-pages/man3/sem_init.3.html
+
 pthread_mutex_t sem_l_cpus_dispo = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Ready = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_New = PTHREAD_MUTEX_INITIALIZER;
@@ -64,8 +67,13 @@ pthread_mutex_t sem_l_Block = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Reject = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_l_Exit = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t semProgramasAProcesar = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_pid_consola = PTHREAD_MUTEX_INITIALIZER;
 
 int tamanioPaginaUMC;
+
+// indice de consolas que asocia un PID a la consola que lo envio
+t_dictionary* pid_consola;
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -74,7 +82,9 @@ int tamanioPaginaUMC;
 #define SOY_NUCLEO  "Te_conectaste_con_NUCLEO_"
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
-
+// FUNCIONES
+void *administrar_cola_Exit();
+void *administrar_cola_Block();
 
 // **************************************************************************************************
 // ******************************************    MAIN     ***************************************
@@ -86,10 +96,14 @@ int main(int argc, char **argv) {
 	pthread_t thread_CPU;
 
 	sem_init(&semaforoProgramasACargar,0,0);
-	sem_init(&sem_NEW_dispo,0,0);
+	sem_init(&sem_READY_dispo,0,0);
+	sem_init(&sem_EXIT_dispo,0,0);
+	sem_init(&sem_BLOCK_dispo,0,0);
 
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
+
+	pid_consola = dictionary_create();
 
 	// Inicializa el log.
 	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
@@ -133,20 +147,20 @@ int main(int argc, char **argv) {
 	}
 
 //Crear thread Administrador de cola EXIT
-//	pthread_t thread_EXIT_admin;
-//	if( pthread_create( &thread_consola , NULL , administrar_cola_Exit, NULL) < 0)
-//	{
-//		log_debug(logger, "No fue posible crear thread Admin de EXIT");
-//		exit(EXIT_FAILURE);
-//	}
+	pthread_t thread_EXIT_admin;
+	if( pthread_create( &thread_EXIT_admin, NULL , administrar_cola_Exit, NULL) < 0)
+	{
+		log_debug(logger, "No fue posible crear thread Admin de EXIT");
+		exit(EXIT_FAILURE);
+	}
 
 //Crear thread Administrador de cola BLOCK
-//	pthread_t thread_BLOCK_admin;
-//	if( pthread_create( &thread_consola , NULL , administrar_cola_Block, NULL) < 0)
-//	{
-//		log_debug(logger, "No fue posible crear thread Admin de EXIT");
-//		exit(EXIT_FAILURE);
-//	}
+	pthread_t thread_BLOCK_admin;
+	if( pthread_create( &thread_BLOCK_admin, NULL , administrar_cola_Block, NULL) < 0)
+	{
+		log_debug(logger, "No fue posible crear thread Admin de EXIT");
+		exit(EXIT_FAILURE);
+	}
 
 	pthread_join(thread_CPU, NULL);
 	log_destroy(logger);
@@ -154,59 +168,18 @@ int main(int argc, char **argv) {
 
 }
 
-/*
-
-\void roundRobin( int quantum){
-int count,j,n,tiempo,restante,flag=0;
-  int tiempo_espera=0,tiempo_cambio=0,at[10],bt[10],rt[10];
-  printf("Enter Total Process:\t ");
-  scanf("%d",&n);
-  restante=n;
-  for(count=0;count<n;count++)
-  {
-    printf("Enter Arrival Time and Burst Time for Process Process Number %d :",count+1);
-    scanf("%d",&at[count]);
-    scanf("%d",&bt[count]);
-    rt[count]=bt[count];
-  }
-  printf("Enter Time Quantum:\t");
-  scanf("%d",&quantum);
-  printf("\n\nProcess\t|Turnaround Time|Waiting Time\n\n");
-
-  for(tiempo=0,count=0;restante!=0;)
-  {
-    if(rt[count]<=quantum && rt[count]>0)
-    {
-      tiempo+=rt[count];
-      rt[count]=0;
-      flag=1;
-    }
-    else if(rt[count]>0)
-    {
-      rt[count]-=quantum;
-      tiempo+=quantum;
-    }
-    if(rt[count]==0 && flag==1)
-    {
-      restante--;
-      printf("P[%d]\t|\t%d\t|\t%d\n",count+1,tiempo-at[count],tiempo-at[count]-bt[count]);
-      tiempo_espera+=tiempo-at[count]-bt[count];
-      tiempo_cambio+=tiempo-at[count];
-      flag=0;
-    }
-    if(count==n-1)
-      count=0;
-    else if(at[count+1]<=tiempo)
-      count++;
-    else
-      count=0;
-  }
-  printf("\nAverage Waiting Time= %f\n",tiempo_espera*1.0/n);
-  printf("Avg Turnaround Time = %f",tiempo_cambio*1.0/n);
-
-  return;
+/*administrar_cola_Exit toma los PCB cargados en Exit, Retorna mensaje a la consola,  */
+void *administrar_cola_Exit(){
+	while (1){
+		sem_wait(&sem_EXIT_dispo); // espero que haya un proceso en EXIT disponible
+		pthread_mutex_lock(&sem_l_Exit);
+			list_remove_by_condition(proc_Exec, (void *) (*pcb_elegido->PID == pid_local) );
+			log_debug(logger, "PCB con PID %d sacado de EXEC xfin Quantum",pid_local);
+		pthread_mutex_unlock(&sem_l_Exit);
+	}
 
 }
-*/
 
+void *administrar_cola_Block(){
 
+}

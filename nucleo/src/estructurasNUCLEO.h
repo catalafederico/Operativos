@@ -78,4 +78,9 @@ typedef struct{
 	char* instrucciones;
 }programaNoCargado;
 
+typedef struct {
+    int socket_dest;
+    char mensaje[256];
+}sock_mje;
+
 #endif /* ESTRUCTURASNUCLEO_H_ */

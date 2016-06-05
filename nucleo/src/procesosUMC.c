@@ -58,17 +58,20 @@ extern pthread_mutex_t sem_l_Block;
 extern pthread_mutex_t sem_l_Exit;
 extern pthread_mutex_t sem_l_Reject;
 extern sem_t semaforoProgramasACargar;
-
+extern pthread_mutex_t semProgramasAProcesar;
 
 void *procesos_UMC(){
-//	clienteNucleoUMC = crearCliente(reg_config.puerto_umc,reg_config.ip_umc);
-	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
+	clienteNucleoUMC = crearCliente(reg_config.puerto_umc,reg_config.ip_umc);
+//	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
 	log_debug(logger, "Conexion con UMC");
 	conectarseConUmc(clienteNucleoUMC);
 	int seguir = 1;
 	while(seguir){
 		sem_wait(&semaforoProgramasACargar);//Espera a q haya programas a cargar
-		programaNoCargado* progParaCargar = list_remove(programas_para_procesar,0);
+		pthread_mutex_lock(&semProgramasAProcesar);
+			programaNoCargado* progParaCargar = list_remove(programas_para_procesar,0);
+		pthread_mutex_unlock(&semProgramasAProcesar);
+
 		char* instrucciones = progParaCargar->instrucciones;
 		indiceCodigo* icNuevo;
 		t_list* instruccionesPaUMC = list_create();
@@ -95,9 +98,19 @@ void *procesos_UMC(){
 		*pD = ultimaPaginaDeCodigo+reg_config.stack_size;
 		pcbNuevo->indicie_codigo = icNuevo->inst_tamanio;
 		pthread_mutex_lock(&sem_l_New);
-			printf("pcb creado y agregado\n");
 			list_add(proc_New, pcbNuevo);
+			log_debug(logger, "PCB con PID %d creado y agregado a NEW",*progParaCargar->PID);
+			list_remove(proc_New, 0);
+			log_debug(logger, "PCB con PID %d sacado de NEW",*progParaCargar->PID);
 		pthread_mutex_unlock(&sem_l_New);
+
+
+		pthread_mutex_lock(&sem_l_Ready);
+			list_add(proc_Ready, pcbNuevo);
+			log_debug(logger, "PCB con PID %d pasado a READY",*progParaCargar->PID);
+		pthread_mutex_unlock(&sem_l_Ready);
+		sem_post(&sem_READY_dispo);
+
 	}
 	return NULL;
 }
@@ -107,14 +120,14 @@ void conectarseConUmc(struct cliente clienteNucleo){
 	int nucleoID = NUCLEO;
 	//Empieza handshake
 	if(send(clienteNucleo.socketCliente,&nucleoID,sizeof(int),0)==-1){
-		printf("no se ha podido conectar con UMC.\n");
+		log_debug(logger, "no se ha podido conectar con UMC. ");
 		perror("no anda:\0");
 	}
 	int* recibido = recibirStream(clienteNucleo.socketCliente,sizeof(int));
 	if(*recibido==OK){
-		printf("Se ha conectado correctamente con UMC.\n");
+		log_debug(logger, "Se ha conectado correctamente con UMC.");
 	}else{
-		printf("No se ha podido conectar con UMC\n");
+		log_debug(logger, "No se ha podido conectar con UMC");
 		exit(-1);
 	}
 	free(recibido);
@@ -123,14 +136,14 @@ void conectarseConUmc(struct cliente clienteNucleo){
 	//Solicito tamanio de pagina, asi calculo las paginas por proceso
 	int tamanioPagina = TAMANIOPAGINA;
 	if(send(clienteNucleo.socketCliente,&tamanioPagina,sizeof(int),0)==-1){
-		printf("no se ha podido solicitar tamanio de pag a la UMC.\n");
+		log_debug(logger, "no se ha podido solicitar tamanio de pag a la UMC.");
 		perror("no anda:\n");
 	}
 	recibido = leerHeader(clienteNucleo.socketCliente);
 	if(*recibido==TAMANIOPAGINA){
 		int* recibirTamanioDePag = recibirStream(clienteNucleo.socketCliente,sizeof(int));
 		tamanioPaginaUMC = *recibirTamanioDePag;
-		printf("Tamanio de pagina configurado en: %d \n", tamanioPaginaUMC);
+		log_debug(logger, "Tamanio de pagina configurado en: %d ", tamanioPaginaUMC);
 	}
 	free(recibido);
 

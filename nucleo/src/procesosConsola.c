@@ -49,6 +49,7 @@ extern t_log *logger;
 extern t_list* programas_para_procesar;
 extern struct server serverPaConsolas;
 int PIDAsignar;
+extern t_dictionary* pid_consola;
 
 // semaforos Compartidos
 extern pthread_mutex_t sem_l_cpus_dispo;
@@ -60,6 +61,10 @@ extern pthread_mutex_t sem_l_Reject;
 extern pthread_mutex_t sem_l_Exit;
 extern pthread_mutex_t sem_log;
 extern sem_t semaforoProgramasACargar;
+extern pthread_mutex_t sem_pid_consola;
+pthread_mutex_t sem_pid = PTHREAD_MUTEX_INITIALIZER;
+
+extern pthread_mutex_t semProgramasAProcesar;
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_consolas  ---------------------------
 void *atender_conexion_consolas(void *socket_desc){
@@ -124,15 +129,24 @@ void *atender_consola(int* socket_desc){
 		//hay q poner semaforo x si dos consolas agregan al mismo tiempo
 
 		programaNoCargado* promCargar = malloc(sizeof(programaNoCargado));
-		//ak otro semaforo para q no asigne el mismo PID
-		promCargar->PID = PIDAsignar;
-		PIDAsignar++;
+
+		pthread_mutex_lock(&sem_pid);
+			promCargar->PID = PIDAsignar;
+			PIDAsignar++;
+		pthread_mutex_unlock(&sem_pid);
 
 		promCargar->instrucciones = mje_recibido;
-		list_add(programas_para_procesar,promCargar);
+		pthread_mutex_lock(&semProgramasAProcesar);
+			list_add(programas_para_procesar,promCargar);
+		pthread_mutex_unlock(&semProgramasAProcesar);
 
+		sock_mje* datos_a_consola = malloc(sizeof(sock_mje));
+		datos_a_consola.socket_dest = socket_co;
+		datos_a_consola.mensaje = string_repeat(" ",256);
 
-
+		pthread_mutex_lock(&sem_pid_consola);
+			dictionary_put(pid_consola,promCargar->PID,datos_a_consola);
+		pthread_mutex_unlock(&sem_pid_consola);
 
 		sem_post(&semaforoProgramasACargar);
 
