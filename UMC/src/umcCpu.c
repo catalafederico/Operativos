@@ -35,10 +35,11 @@ typedef struct{
 	int pag;
 	int marco;
 }tlb;
-tlb tablaPag[10];
+ tlb tablaPag[10];
 //hay que inicializar las paginas en -1
 int tablaEstaLlena(){
-	for(int i=0;i<=9;i++){
+	int i;
+	for( i=0;i<=9;i++){
 		if (tablaPag[i].pag==-1){
 			return 1;
 		}
@@ -46,17 +47,18 @@ int tablaEstaLlena(){
 	return 0;
 }
 void correrUnoAbajo(int pos){
-	tlb* aux;
-	aux= tablaPag[pos-1];
-				tablaPag[pos]=&aux;
-				pos--;
+	tlb aux;
+	aux = tablaPag[pos-1];
+	tablaPag[pos]=aux;
+	pos--;
 }
 void actualizarTablaPqEncontre(int i){
-	tlb* ptr;
-	ptr=tablaPag[i];
+	tlb ptr;
+	//me guardo el contenido de la posicion en donde esta lo que necesito
+	ptr = tablaPag[i];
 	while(i>=0){
 		if(i==0){
-			tablaPag[0]=&ptr;
+			tablaPag[0]=ptr;
 		}
 		else{
 		correrUnoAbajo(i);
@@ -65,46 +67,49 @@ void actualizarTablaPqEncontre(int i){
 
 }
 
-void actualizarTablaPqElimineUlt(int posEliminada){
+void actualizarTablaPqElimineUlt(int* pagina){
 	tlb* aux;
+	int posEliminada=9;
 	while(posEliminada>=0){
 			if(posEliminada==0){
-
-			//aca la pos 0 de la pag tiene basura se podria recibir lo que se quiere agregar y asignarlo
-				tablaPag[0]=&aux;
+			//faltaria el marco
+				tablaPag[0].pag=&pagina;
+				tablaPag[0].idProg=idProcesoActual;
 			}
 			else{
 			correrUnoAbajo(posEliminada);
 			}
 
 }
-void actualizarPqNoEncontreYTablaNoLlena(){
+void actualizarPqNoEncontreYTablaNoLlena(int* pagina){
 	int i=0;
 	while(tablaPag[i].pag != -1){
 				i++;
 	}
 			correrUnoAbajo(i);
-			//a la primer posicion le asigno lo que deberia recibir
-			//tablaPag[0]=
+			//a la primer posicion le asigno lo que deberia recibir, faltaria marco
+			tablaPag[0].pag=&pagina;
+			tablaPag[0].idProg=idProcesoActual;
 }
-	//podria recibir lo que quiero agregar
-void actualizarTablaPqNoEncontre(){
+
+	//podria recibir lo que quiero agregar faltaria marco
+void actualizarTablaPqNoEncontre(int* pagina){
 	if(tablaEstaLlena()){
-		eliminarUltimo();
+
 		//le paso la posicion que elimine y podria pasar lo que quiero actualizar corro todos uno hacia abajo
-		actualizarTablaPqElimineUlt(9);
+		actualizarTablaPqElimineUlt(pagina);
 	}
 	else{
 
-		actualizarPqNoEncontreYTablaNoLlena();
+		actualizarPqNoEncontreYTablaNoLlena(pagina);
 	}
 }
 
 int buscarPagina(int* pagina){
-
-	for(int i=0;tablaPag[i].pag != pagina & tablaPag[i].idProg !=idProcesoActual & i<=9;i++)
+int i;
+	for( i=0;&tablaPag[i].pag != pagina & &tablaPag[i].idProg !=idProcesoActual & i<=9;i++)
 	{
-		if (tablaPag[i].pag == pagina & tablaPag[i].idProg ==idProcesoActual)
+		if (&tablaPag[i].pag == pagina & &tablaPag[i].idProg ==idProcesoActual)
 		{
 			actualizarTablaPqEncontre(i);
 			return tablaPag[i].marco;
