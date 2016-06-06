@@ -25,6 +25,97 @@ t_dictionary* programas_ejecucion;
 pthread_mutex_t semaforoMemoria;
 
 
+//-------- comienzo
+typedef struct{
+	int idProg;
+	int pag;
+	int marco;
+}tlb;
+ tlb tablaPag[10];
+//hay que inicializar las paginas en -1
+int tablaEstaLlena(){
+	int i;
+	for( i=0;i<=9;i++){
+		if (tablaPag[i].pag==-1){
+			return 1;
+		}
+	}
+	return 0;
+}
+void correrUnoAbajo(int pos){
+	tlb aux;
+	aux = tablaPag[pos-1];
+	tablaPag[pos]=aux;
+	pos--;
+}
+void actualizarTablaPqEncontre(int i){
+	tlb ptr;
+	//me guardo el contenido de la posicion en donde esta lo que necesito
+	ptr = tablaPag[i];
+	while(i>=0){
+		if(i==0){
+			tablaPag[0]=ptr;
+		}
+		else{
+		correrUnoAbajo(i);
+		}
+	}
+
+}
+
+void actualizarTablaPqElimineUlt(int* pagina){
+	tlb* aux;
+	int posEliminada=9;
+	while(posEliminada>=0){
+			if(posEliminada==0){
+			//faltaria el marco
+				tablaPag[0].pag=&pagina;
+				tablaPag[0].idProg=idProcesoActual;
+			}
+			else{
+			correrUnoAbajo(posEliminada);
+			}
+
+}
+void actualizarPqNoEncontreYTablaNoLlena(int* pagina){
+	int i=0;
+	while(tablaPag[i].pag != -1){
+				i++;
+	}
+			correrUnoAbajo(i);
+			//a la primer posicion le asigno lo que deberia recibir, faltaria marco
+			tablaPag[0].pag=&pagina;
+			tablaPag[0].idProg=idProcesoActual;
+}
+
+	//podria recibir lo que quiero agregar faltaria marco
+void actualizarTablaPqNoEncontre(int* pagina){
+	if(tablaEstaLlena()){
+
+		//le paso la posicion que elimine y podria pasar lo que quiero actualizar corro todos uno hacia abajo
+		actualizarTablaPqElimineUlt(pagina);
+	}
+	else{
+
+		actualizarPqNoEncontreYTablaNoLlena(pagina);
+	}
+}
+
+int buscarPagina(int* pagina){
+int i;
+	for( i=0;(tablaPag[i].pag != &pagina) & (tablaPag[i].idProg != &idProcesoActual) & (i<=9);i++)
+	{
+		if ((tablaPag[i].pag == &pagina) & (tablaPag[i].idProg == &idProcesoActual))
+		{
+			actualizarTablaPqEncontre(i);
+			return tablaPag[i].marco;
+		}
+	}
+	return -1;
+}
+
+//-------------------- fin
+
 void* inicializarMemoria(t_reg_config* configuracionUMC){
 	log_memoria = log_create("logs/logUmcMemoria.txt","UMC",0,LOG_LEVEL_TRACE);
 	pthread_mutex_init(&semaforoMemoria,NULL);
