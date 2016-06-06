@@ -108,6 +108,16 @@ void testEscribirEnPaginas(void);
 
 void testLeerPagina();
 
+void loguear(char *stringAlogear);
+
+void logIniciar(proceso proceso);
+
+void logFinalizar(proceso proceso);
+
+void logRechazar(proceso proceso);
+
+void logCompactacionIniciada();
+
 
 //Variables globales
 
@@ -131,38 +141,46 @@ int main(void) {
 
 	inicializarBitMap();
 
-	//Creo el archivo de log
-	t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
-
 	//Archivo swap
+
     crearArchivo();
-    inicializarArchivo();
+    //inicializarArchivo();
 
 /*
-    proceso proceso2 = crearProceso(1,23);
-    int comienzaHueco = hayHuecoDondeCabeProceso(proceso2);
-    printf("Hueco comienza en:%d \n",comienzaHueco);
-    actualizarBitMap(proceso2,comienzaHueco);
-    listarBitMap();
+    proceso proceso2 = crearProceso(1,2);
     insertarProceso(&proceso2);
-    //printf("Pid: %d \n", listaSwap->pid);
+    escribirPagina(0, "Hola soy la pagina del proceso 1");
 
-    proceso proceso1 = crearProceso(2,47);
+    proceso proceso1 = crearProceso(2,2);
     insertarProceso(&proceso1);
+    escribirPagina(2, "Hola soy la pagina del proceso 2!!");
+
     listarBitMap();
-    listaSwap = listaSwap->procesoSiguiente;
+
+    char* texto = leerPagina(0);
+    char* texto1 = leerPagina(2);
+    printf("%s\n", texto);
+    printf("%s\n", texto1);
+    eliminarProceso(1);
     compactar();
+    printf("%s\n", "Compactado");
     listarBitMap();
+    char* texto3 = leerPagina(0);
+    char* texto4 = leerPagina(2);
+    printf("%s\n", texto3);
+    //printf("%s\n", texto4);
+*/
+ /*   listarBitMap();
     proceso proceso123 = obtenerProceso(2);
     printf("Cantidad de paginas del proceso 2: %d \n",proceso123.cantidadDePaginas);
     while(listaSwap != NULL){
     	printf("Pid: %d \n Comienzo: %d\n", listaSwap->pid, listaSwap->comienzo);
     	listaSwap = listaSwap->procesoSiguiente;
     }
-
+*/
     testEscribirEnPaginas();
     testLeerPagina();
-
+/*
     listaSwap = listaSwap->procesoSiguiente;
     compactar();
     listarBitMap();
@@ -232,10 +250,12 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			pthread_mutex_lock(&mutex);
 			insertarProceso(&proceso);
 			pthread_mutex_unlock(&mutex);
+			logIniciar(proceso);
 			int exito = 6;
 			send(socketAdministradorDeMemoria,&exito, sizeof(int), 0);
 		} else {
 			//El proceso no entra, avisar rechazo
+			logRechazar(proceso);
 			printf("No hay cantidad de paginas suficientes para alojar el proceso %d", proceso.pid);
 			int fracaso = 7;
 			send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
@@ -299,6 +319,8 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		int pid;
 		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
 		if (procesoSeEncuentraEnSwap(pid)){
+			proceso procesoAEliminar = obtenerProceso(pid);
+			logFinalizar(procesoAEliminar);
 			eliminarProceso(pid);
 			//Avisar a la UMC que se borro el proceso con exito
 			int exito = 6;
@@ -352,7 +374,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			//fprintf(archivo,"%s",texto1);
 			fclose(archivo);
 			//free(texto2);
-			free(texto);
+			//free(texto);
 	}
 
 	void* leerPagina(int pagina){
@@ -428,6 +450,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			actualizarBitMap(proceso,comienzoDelHueco);
 			agregarProcesoAListaSwap(proceso);
 		} else {
+			logCompactacionIniciada();
 			compactar();
 			comienzoDelHueco = hayHuecoDondeCabeProceso(proceso);
 			proceso->comienzo = comienzoDelHueco;
@@ -676,9 +699,10 @@ t_reg_config get_config_params(void){
 
 					perror("Falló el accept.");
 					printf("No se conecto.\n");
+					loguear("No se pudo conectar con la UMC.");
 
 				} else {
-
+					loguear("Se conecto con la UMC.");
 					printf("Se conecto con la UMC.\n");
 					return cliente;
 
@@ -689,14 +713,16 @@ t_reg_config get_config_params(void){
 				int status = 1;
 				struct server servidor;
 				servidor = crearServer(swap_configuracion.PUERTO_ESCUCHA);
+				loguear("Se crea el socket correctamente.");
 				ponerServerEscucha(servidor);
 				printf("Escuchando UMC en socket %d \n", servidor.socketServer);
+				loguear("Escuchando conexiones.");
 				socketAdministradorDeMemoria = conectarseConUMC(servidor);
 
 				    	while(status){
 				    		status = recibirMensajes();
 				    	}
-
+				    	loguear("Se desconecto la UMC.");
 				    	printf("Desconectado.\n");
 
 			}
@@ -745,6 +771,38 @@ t_reg_config get_config_params(void){
 		return cadena;
 	}
 
+	//--Log
+
+	void loguear(char *stringAlogear){
+		t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
+		log_info(log_swap, stringAlogear, "INFO");
+		log_destroy(log_swap);
+	}
+
+	void logIniciar(proceso proceso){
+		char stringAlogear[200];
+		sprintf(stringAlogear,"Proceso asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+		loguear(stringAlogear);
+	}
+
+	void logFinalizar(proceso proceso){
+		char stringAlogear[200];
+		sprintf(stringAlogear,"Proceso liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+		loguear(stringAlogear);
+	}
+
+	void logRechazar(proceso proceso){
+		char stringAlogear[200];
+		sprintf(stringAlogear,"Proceso rechazado - PID: %d - Falta de espacio .",proceso.pid);
+		loguear(stringAlogear);
+	}
+
+	void logCompactacionIniciada(){
+		char stringAlogear[100];
+		sprintf(stringAlogear,"Compactacion iniciada");
+		loguear(stringAlogear);
+	}
+
 	//---Tests
 
 	void testEscribirEnPaginas() {
@@ -753,6 +811,7 @@ t_reg_config get_config_params(void){
 		escribirPagina(0,"12345678910111213");
 		escribirPagina(1,"dsnaudsabifbasifasifhasufausbfasupfdhusafphsdauensayfgesyafo");
 		escribirPagina(0,"hola                                                                                                                                                                                                                                                           F");
+		escribirPagina(0,"12345678910111213");
 		escribirPagina(1,"como andas");
 	}
 
