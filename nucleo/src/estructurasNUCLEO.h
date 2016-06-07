@@ -81,6 +81,7 @@ typedef struct{
 typedef struct {
     int socket_dest;
     char mensaje[256];
-}sock_mje;
+}t_sock_mje;
+
 
 #endif /* ESTRUCTURASNUCLEO_H_ */

@@ -50,12 +50,12 @@ t_reg_config get_config_params(void){
 		log_debug(logger, "No se encontro QUANTUM_SLEEP");
 	}
 
-	// 5 get IO_ID
-	if (config_has_property(archivo_config,"IO_ID")){
-		reg_config.io_id = config_get_array_value(archivo_config,"IO_ID");
+	// 5 get IO_IDS
+	if (config_has_property(archivo_config,"IO_IDS")){
+		reg_config.io_id = config_get_array_value(archivo_config,"IO_IDS");
 	}
 	else{
-		log_debug(logger, "No se encontro IO_ID");
+		log_debug(logger, "No se encontro IO_IDS");
 	}
 
 	// 6 get IO_SLEEP
@@ -66,12 +66,12 @@ t_reg_config get_config_params(void){
 		log_debug(logger, "No se encontro IO_SLEEP");
 	}
 
-	// 7 get SEM_ID
-	if (config_has_property(archivo_config,"SEM_ID")){
-		reg_config.sem_id = config_get_array_value(archivo_config,"SEM_ID");
+	// 7 get SEM_IDS
+	if (config_has_property(archivo_config,"SEM_IDS")){
+		reg_config.sem_id = config_get_array_value(archivo_config,"SEM_IDS");
 	}
 	else{
-		log_debug(logger, "No se encontro SEM_ID");
+		log_debug(logger, "No se encontro SEM_IDS");
 	}
 
 	// 8 get SEM_INIT

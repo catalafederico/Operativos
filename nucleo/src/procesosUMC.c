@@ -38,7 +38,7 @@
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
 // Variables compartidas ---------------------------------------------
-
+extern t_list* proc_Ready;
 extern t_list* programas_para_procesar;
 extern t_list* cpus_dispo;
 extern t_list* consolas_dispo;
@@ -59,6 +59,7 @@ extern pthread_mutex_t sem_l_Exit;
 extern pthread_mutex_t sem_l_Reject;
 extern sem_t semaforoProgramasACargar;
 extern pthread_mutex_t semProgramasAProcesar;
+extern sem_t sem_READY_dispo;
 
 void *procesos_UMC(){
 	clienteNucleoUMC = crearCliente(reg_config.puerto_umc,reg_config.ip_umc);
@@ -99,15 +100,15 @@ void *procesos_UMC(){
 		pcbNuevo->indicie_codigo = icNuevo->inst_tamanio;
 		pthread_mutex_lock(&sem_l_New);
 			list_add(proc_New, pcbNuevo);
-			log_debug(logger, "PCB con PID %d creado y agregado a NEW",*progParaCargar->PID);
+			log_debug(logger, "PCB con PID %d creado y agregado a NEW",progParaCargar->PID);
 			list_remove(proc_New, 0);
-			log_debug(logger, "PCB con PID %d sacado de NEW",*progParaCargar->PID);
+			log_debug(logger, "PCB con PID %d sacado de NEW",progParaCargar->PID);
 		pthread_mutex_unlock(&sem_l_New);
 
 
 		pthread_mutex_lock(&sem_l_Ready);
 			list_add(proc_Ready, pcbNuevo);
-			log_debug(logger, "PCB con PID %d pasado a READY",*progParaCargar->PID);
+			log_debug(logger, "PCB con PID %d pasado a READY",progParaCargar->PID);
 		pthread_mutex_unlock(&sem_l_Ready);
 		sem_post(&sem_READY_dispo);
 

@@ -47,6 +47,10 @@ t_list* proc_Reject;
 t_list* proc_Exit;
 t_log *logger;
 
+// logs para pruebas
+t_log * log_procesador_Exit;
+//t_log * log_procesador_Block;
+
 //sockets escuchas
 struct cliente clienteNucleoUMC;
 struct server serverPaCPU;
@@ -73,7 +77,7 @@ pthread_mutex_t sem_pid_consola = PTHREAD_MUTEX_INITIALIZER;
 int tamanioPaginaUMC;
 
 // indice de consolas que asocia un PID a la consola que lo envio
-t_dictionary* pid_consola;
+t_dictionary* dict_pid_consola;
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -84,7 +88,7 @@ t_dictionary* pid_consola;
 
 // FUNCIONES
 void *administrar_cola_Exit();
-void *administrar_cola_Block();
+//void *administrar_cola_Block();
 
 // **************************************************************************************************
 // ******************************************    MAIN     ***************************************
@@ -103,10 +107,14 @@ int main(int argc, char **argv) {
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
 
-	pid_consola = dictionary_create();
+	dict_pid_consola = dictionary_create();
 
 	// Inicializa el log.
 	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
+
+	//inizializa logs de prueba
+	log_procesador_Exit = log_create("procesador_EXIT.log", "procesador_EXIT", 1, LOG_LEVEL_TRACE);
+//	log_procesador_Block = log_create("procesador_BLOCK.log", "procesador_BLOCK", 1, LOG_LEVEL_TRACE);
 
 	//crear listas
 	cpus_dispo = list_create();
@@ -116,7 +124,7 @@ int main(int argc, char **argv) {
 	proc_Reject = list_create();
 	proc_Exit = list_create();
 	programas_para_procesar = list_create();
-
+//	EXIT
 	//Leo archivo de configuracion ------------------------------
 	reg_config = get_config_params();
 
@@ -154,13 +162,13 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 
-//Crear thread Administrador de cola BLOCK
+/*/Crear thread Administrador de cola BLOCK
 	pthread_t thread_BLOCK_admin;
 	if( pthread_create( &thread_BLOCK_admin, NULL , administrar_cola_Block, NULL) < 0)
 	{
 		log_debug(logger, "No fue posible crear thread Admin de EXIT");
 		exit(EXIT_FAILURE);
-	}
+	} */
 
 	pthread_join(thread_CPU, NULL);
 	log_destroy(logger);
@@ -168,18 +176,55 @@ int main(int argc, char **argv) {
 
 }
 
-/*administrar_cola_Exit toma los PCB cargados en Exit, Retorna mensaje a la consola,  */
+/* administrar_cola_Exit toma los PCB cargados en Exit, Retorna mensaje a la consola  */
 void *administrar_cola_Exit(){
+	log_debug(log_procesador_Exit, "administrar_cola_Exit esta corriendo");
+
+	pcb_t* pcb_elegido;
+	int pid_local = 0;
 	while (1){
 		sem_wait(&sem_EXIT_dispo); // espero que haya un proceso en EXIT disponible
+		log_debug(log_procesador_Exit, "Se empezo a procesar un PCB de EXIT");
+		// quito el proceso de la cola EXIT
 		pthread_mutex_lock(&sem_l_Exit);
-			list_remove_by_condition(proc_Exec, (void *) (*pcb_elegido->PID == pid_local) );
-			log_debug(logger, "PCB con PID %d sacado de EXEC xfin Quantum",pid_local);
+			pcb_elegido = list_remove(proc_Exit, 0);//Agarro el pcb
+			pid_local = *(pcb_elegido->PID);
 		pthread_mutex_unlock(&sem_l_Exit);
+
+		log_debug(log_procesador_Exit, "Se removio el PCB de EXIT: %d", pid_local);
+		// quito el proceso del Diccionario, obtengo Consola_Id y mensaje de respuesta
+		t_sock_mje* datos_a_consola;
+		pthread_mutex_lock(&sem_pid_consola);
+			datos_a_consola = dictionary_get(dict_pid_consola,string_itoa(pid_local));
+			dictionary_remove(dict_pid_consola,string_itoa(pid_local));
+		pthread_mutex_unlock(&sem_pid_consola);
+		log_debug(log_procesador_Exit, "Se removio el PID ( %d ) del dicc y se envio el mje ( %s ) a consola: %d", pid_local, datos_a_consola->mensaje, datos_a_consola->socket_dest);
+		log_debug(logger, "PCB con PID %d sacado de EXIT y se respondio a la consola %d",pid_local, datos_a_consola->socket_dest);
+		log_debug(logger, "Se envio a consola: %d el mensaje: %s", datos_a_consola->socket_dest,datos_a_consola->mensaje);
+	    if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, 256, 0) == -1){
+	    	log_debug(logger, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
+	    	log_debug(log_procesador_Exit, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
+	    }
+	    log_debug(log_procesador_Exit, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
+
 	}
 
 }
 
-void *administrar_cola_Block(){
+/* administrar_cola_Block toma los procesos que se encuentran bloqueados y procesa su bloqueo*/
+/*void *administrar_cola_Block(){
+	log_debug(log_procesador_Block, "administrar_cola_Block esta corriendo");
+
+	pcb_t* pcb_elegido;
+	int pid_local = 0;
+	while (1){
+		sem_wait(&sem_BLOCK_dispo); // espero que haya un proceso en BLOCK disponible
+		log_debug(log_procesador_Block, "Se empezo a procesar un PCB de BLOCK");
+
+		// quito el proceso de la cola Block
+
+
+	}
 
 }
+*/
