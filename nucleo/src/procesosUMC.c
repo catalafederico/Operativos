@@ -37,6 +37,7 @@
 #define SOY_NUCLEO  "Te_conectaste_con_NUCLEO_"
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
 
+#define TAMANIOPAGINA 666
 // Variables compartidas ---------------------------------------------
 extern t_list* proc_Ready;
 extern t_list* programas_para_procesar;

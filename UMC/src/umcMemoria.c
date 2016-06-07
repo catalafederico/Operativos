@@ -72,8 +72,9 @@ void actualizarTablaPqElimineUlt(tlb tablaPag[],int cantEntradas,int* pagina){
 			else{
 			correrUnoAbajo(tablaPag,posEliminada);
 			}
-
+	}
 }
+
 void actualizarPqNoEncontreYTablaNoLlena(tlb tablaPag[],int* pagina){
 	int i=0;
 	while(tablaPag[i].pag != -1){
