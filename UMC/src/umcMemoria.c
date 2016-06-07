@@ -11,6 +11,7 @@
 #include <commons/collections/list.h>
 #include "estructurasUMC.h"
 #include "umcCliente.h"
+#include "umcMemoria.h"
 #include <pthread.h>
 
 void* memoriaPrincipal;
@@ -25,7 +26,96 @@ t_dictionary* programas_ejecucion;
 pthread_mutex_t semaforoMemoria;
 
 
+//-------- comienzo
+
+ //tlb tablaPag[10];//seria la tlb con la cant de entradas del arch configuracion
+//hay que inicializar las paginas en -1
+int tablaEstaLlena(tlb tablaPag[],int cantEntradas){
+	int i;
+	for( i=0;i<=cantEntradas;i++){
+		if (tablaPag[i].pag==-1){
+			return 1;
+		}
+	}
+	return 0;
+}
+void correrUnoAbajo(tlb tablaPag[],int pos){
+	tlb aux;
+	aux = tablaPag[pos-1];
+	tablaPag[pos]=aux;
+	pos--;
+}
+void actualizarTablaPqEncontre(tlb tablaPag[],int i){
+	tlb ptr;
+	//me guardo el contenido de la posicion en donde esta lo que necesito
+	ptr = tablaPag[i];
+	while(i>=0){
+		if(i==0){
+			tablaPag[0]=ptr;
+		}
+		else{
+		correrUnoAbajo(tablaPag,i);
+		}
+	}
+
+}
+
+void actualizarTablaPqElimineUlt(tlb tablaPag[],int cantEntradas,int* pagina){
+	tlb* aux;
+	int posEliminada=cantEntradas;
+	while(posEliminada>=0){
+			if(posEliminada==0){
+			//faltaria el marco
+				tablaPag[0].pag=&pagina;
+				tablaPag[0].idProg=&idProcesoActual;
+			}
+			else{
+			correrUnoAbajo(tablaPag,posEliminada);
+			}
+
+}
+void actualizarPqNoEncontreYTablaNoLlena(tlb tablaPag[],int* pagina){
+	int i=0;
+	while(tablaPag[i].pag != -1){
+				i++;
+	}
+			correrUnoAbajo(tablaPag,i);
+			//a la primer posicion le asigno lo que deberia recibir, faltaria marco
+			tablaPag[0].pag=&pagina;
+			tablaPag[0].idProg=&idProcesoActual;
+}
+
+	//podria recibir lo que quiero agregar faltaria marco
+void actualizarTablaPqNoEncontre(tlb tablaPag[],int cantEntradas,int* pagina){
+	if(tablaEstaLlena(tablaPag,cantEntradas)){
+
+		//le paso la posicion que elimine y podria pasar lo que quiero actualizar corro todos uno hacia abajo
+		actualizarTablaPqElimineUlt(tablaPag,cantEntradas,pagina);
+	}
+	else{
+
+		actualizarPqNoEncontreYTablaNoLlena(tablaPag,pagina);
+	}
+}
+
+int buscarPagina(tlb tablaPag[],int cantEntradas,int* pagina){
+int i;
+	for( i=0;(tablaPag[i].pag != &pagina) & (tablaPag[i].idProg != &idProcesoActual) & (i<=cantEntradas);i++)
+	{
+		if ((tablaPag[i].pag == &pagina) & (tablaPag[i].idProg == &idProcesoActual))
+		{
+			actualizarTablaPqEncontre(tablaPag,i);
+			return tablaPag[i].marco;
+		}
+	}
+	return -1;
+}
+
+//-------------------- fin
+
 void* inicializarMemoria(t_reg_config* configuracionUMC){
+
+//    int cantEntradas= umcConfg.configuracionUMC.ENTRADAS_TLB;
 	log_memoria = log_create("logs/logUmcMemoria.txt","UMC",0,LOG_LEVEL_TRACE);
 	pthread_mutex_init(&semaforoMemoria,NULL);
 	log_trace(log_memoria,"Creando memoria");
@@ -145,11 +235,12 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 
 void cambiarProceso(int idProceso){
 	//Esto es de la entrega 2
-	*idProcesoActual = idProceso;
-	log_trace(log_memoria,"CambiarProceso - idAnterior: %d , idNuevo: %d",*idProcesoActual,idProceso);
-	//Esto es mas de la entrega 3
-	/*pthread_mutex_lock(semaforoMemoria);
-	tabla_actual = dictionary_get(programas_ejecucion,(char*)&idProceso);
-	*idProcesoActual = idProceso;
-	pthread_mutex_unlock(semaforoMemoria);*/
+		*idProcesoActual = idProceso;
+		log_trace(log_memoria,"CambiarProceso - idAnterior: %d , idNuevo: %d",*idProcesoActual,idProceso);
+		//Esto es mas de la entrega 3
+		/*pthread_mutex_lock(semaforoMemoria);
+		tabla_actual = dictionary_get(programas_ejecucion,(char*)&idProceso);
+		*idProcesoActual = idProceso;
+		pthread_mutex_unlock(semaforoMemoria);*/
 }
+
