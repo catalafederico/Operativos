@@ -49,7 +49,7 @@ extern t_log *logger;
 extern t_list* programas_para_procesar;
 extern struct server serverPaConsolas;
 int PIDAsignar;
-extern t_dictionary* pid_consola;
+extern t_dictionary* dict_pid_consola;
 
 // semaforos Compartidos
 extern pthread_mutex_t sem_l_cpus_dispo;
@@ -140,12 +140,12 @@ void *atender_consola(int* socket_desc){
 			list_add(programas_para_procesar,promCargar);
 		pthread_mutex_unlock(&semProgramasAProcesar);
 
-		sock_mje* datos_a_consola = malloc(sizeof(sock_mje));
-		datos_a_consola.socket_dest = socket_co;
-		datos_a_consola.mensaje = string_repeat(" ",256);
+		t_sock_mje* datos_a_consola = malloc(sizeof(t_sock_mje));
+		datos_a_consola->socket_dest = socket_co;
+		strcpy(datos_a_consola->mensaje,string_repeat(" ",256));
 
 		pthread_mutex_lock(&sem_pid_consola);
-			dictionary_put(pid_consola,promCargar->PID,datos_a_consola);
+			dictionary_put(dict_pid_consola,promCargar->PID,(void*) datos_a_consola);
 		pthread_mutex_unlock(&sem_pid_consola);
 
 		sem_post(&semaforoProgramasACargar);
