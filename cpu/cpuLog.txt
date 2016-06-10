@@ -1,1 +1,4 @@
 [INFO] 00:06:51:25 cpu/(4022:4022): Conectando a CPU
+[INFO] 01:12:37:822 cpu/(4365:4365): Conectando a UMC Puerto : 9999
+[INFO] 01:20:53:622 cpu/(4830:4830): Conectando a UMC Puerto : 9999
+[INFO] 01:21:45:570 cpu/(4891:4891): Conectando a UMC Puerto : 9999

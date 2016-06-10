@@ -7,7 +7,7 @@
  Description : Hello World in C, Ansi-style
  ============================================================================
  */
-#include <sockets/header.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -24,9 +24,26 @@
 #include "funcionesparsernuevas.h"
 #include <sockets/socketCliente.h>
 #include <parser/parser.h>
-
+#include <sockets/header.h>
 #include "estructurasCPU.h"
+#define  SERVERUMC 9999 //puerto de la umc
+#define  SERVERNUCLEO 5001 // puerto del nucleo
 
+
+void conectarseConUMC(struct cliente clienteCpuUmc);
+void conectarseConNucleo(struct cliente clienteCpuNucleo);
+void procesarInstruccion(char* instruccion);
+void tratarPCB();
+void recibirPCB();
+void enviarPCB();
+
+struct cliente clienteCpuUmc;
+struct cliente clienteCpuNucleo;
+int tamanioPaginaUMC;
+pcb_t* pcb_actual;
+t_log* logCpu;
+int quantum;
+int quantumSleep;
 typedef struct {
 	int tamanioNombreFuncion;
 	int posicionPID;
@@ -47,17 +64,6 @@ AnSISOP_funciones functions = {
 	.AnSISOP_retornar = retornar
 };
 AnSISOP_kernel kernel_functions = { };
-
-struct cliente clienteCpuUmc;
-struct cliente clienteCpuNucleo;
-int tamanioPaginaUMC;
-pcb_t* pcb_actual;
-t_log* logCpu;
-#define  SERVERUMC 9999 //puerto de la umc
-#define  SERVERNUCLEO 5001 // puerto del nucleo
-
-void conectarseConUMC(struct cliente clienteCpuUmc);
-void procesarInstruccion(char* instruccion);
 
 int main(void) {
 
@@ -106,7 +112,6 @@ int main(void) {
 	}*/
 	return 0;
 }
-
 void conectarseConUMC(struct cliente clienteCpuUmc){
 	conectarConServidor(clienteCpuUmc);
 	int cpuid = CPU;
@@ -114,6 +119,7 @@ void conectarseConUMC(struct cliente clienteCpuUmc){
 	if(send(clienteCpuUmc.socketCliente,&cpuid,sizeof(int),0)==-1){
 		printf("no se ha podido conectar con UMC.\n");
 		perror("no anda:\0");
+		log_info(logCpu,"No se pudo Conectar a UMC Puerto : %d",SERVERUMC);
 	}
 	int* recibido = recibirStream(clienteCpuUmc.socketCliente,sizeof(int));
 	if(*recibido==OK){
@@ -124,12 +130,15 @@ void conectarseConUMC(struct cliente clienteCpuUmc){
 	if(send(clienteCpuUmc.socketCliente,&tamanioPagina,sizeof(int),0)==-1){
 		printf("no se ha podido solicitar tamanio de pag a la UMC.\n");
 		perror("no anda:\n");
+		log_info(logCpu,"No se pudo conectar a UMc puerto : %d al pedir tamanio de pagina",SERVERUMC);
 	}
 	recibido = leerHeader(clienteCpuUmc.socketCliente);
 	if(*recibido==TAMANIOPAGINA){
 		int* recibirTamanioDePag = recibirStream(clienteCpuUmc.socketCliente,sizeof(int));
 		tamanioPaginaUMC = *recibirTamanioDePag;
 		printf("Tamanio de pagina configurado en: %d \n", tamanioPaginaUMC);
+		log_info(logCpu,"Tamanio de pagina  configurado en  : %d",tamanioPaginaUMC);
+
 	}
 	free(recibido);
 	//Termina Handshake
@@ -142,6 +151,7 @@ void conectarseConNucleo(struct cliente clienteCpuNucleo){
 	if(send(clienteCpuNucleo.socketCliente,&cpuid,sizeof(int),0)==-1){
 		printf("no se ha podido conectar con UMC.\n");
 		perror("no anda:\0");
+		log_info(logCpu,"No se pudo conectar a Nucleo Puerto : %d",SERVERNUCLEO);
 	}
 	int* recibido = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
 	if(*recibido==OK){
@@ -153,11 +163,6 @@ void conectarseConNucleo(struct cliente clienteCpuNucleo){
 void procesarInstruccion(char* instruccion){
 	analizadorLinea(instruccion,&functions,&kernel_functions);
 }
-
-
-
-
-
 
 void tratarPCB(){
 	//Leo la direccion de la proxima instruccion
@@ -171,14 +176,22 @@ void tratarPCB(){
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,direcProxIntruccion->tamanio);
 	//Analiso Instruccion
 	procesarInstruccion(proximaInstruccion);
+	//Proceso la instruccion si hay quantum y verifico que halla una instruccion siguiente , completar
+//	if(quantum >0 && pcb_actual->indice_codigo != "el limite del indice de codigo"){
+//	procesarInstruccion(proximaInstruccion);
+//	quantum--;
+//	pcb_actual->PC=pcb_actual->PC+1;
+//	sleep(quantumSleep);
+//	}
+//	else{if(pcb_actual->indice-codigo == "el limite del indice de codigo"){
+//			enviarStream(clienteCpuNucleo.socketCliente,FIN_Proc,sizeof(int));
+//
+//	}
+//  enviarStream(clienteCpuNucleo.socketCliente,FIN_QUANTUM	,sizeof(int),nuevoPCB);
+	//recibir el nuevo pcb y  ejecutar las instrucciones q faltan
 
+// }
 }
-
-
-
-
-
-
 
 //Enviar y recibir pcb --------------------------------------------------------
 
@@ -245,13 +258,11 @@ void recibirPCB(){
 		*key = j;
 		dictionary_put(pcb_Recibido->indice_stack,key,stackNuevo);
 	}
+	//recibo quantum y quantumSleep
+	 quantum = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
+	 quantumSleep = recibirStream(clienteCpuNucleo.socketCliente,sizeof(int));
 	pcb_actual = pcb_Recibido;
 }
-
-
-
-
-
 
 void enviarPCB(){
 	//NO TESTEADO
