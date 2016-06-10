@@ -40,12 +40,12 @@ int main(void) {
 	umcConfg.memoriaPrincipal = inicializarMemoria(&(umcConfg.configuracionUMC));
 	log_info(umcConfg.loguer, "Memoria Inicializada");
 
-	struct cliente aSwap;
+	/*struct cliente aSwap;
 	aSwap = crearCliente(6000,"127.0.0.1");
 	log_info(umcConfg.loguer, "Conectando a Swap Puerto: %d Direc: %s",umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
 	conectarConServidor(aSwap);
 	log_info(umcConfg.loguer, "Conectado a Swap socket: %d", aSwap.socketCliente);
-	umcConfg.socketSwap = aSwap.socketCliente;
+	umcConfg.socketSwap = aSwap.socketCliente;*/
 
 
 	/*int a = 123;

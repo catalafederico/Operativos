@@ -11,7 +11,6 @@
 #include <string.h>
 #include <commons/collections/list.h>
 #include <pthread.h>
-#include "umcClock.h"
 #include "estructurasUMC.h"
 //-------comienzo de manejo de lista circular para algoritmo clock
 /* primero busco la pagina que me piden
@@ -73,6 +72,7 @@ t_link_element* buscarPaginaClk(t_list lista, t_link_element* ptr, int cantMaxEl
 		return ptr;	// ya estaba la pagina referenciada debo devolver elmismo puntero que recibi
 
 }
+
 t_link_element* reemplazoMarco( t_list lista,t_link_element* ptr,int cantMaxElementos, frame* pag){//ptr apunta al nodo que debo cambiar
 	t_link_element* puntero;
 	frame* frameActual=ptr->data;
@@ -121,7 +121,7 @@ t_link_element* actualizarLista(t_list lista, t_link_element* ptr,int cantMaxEle
 			recorrerLstActualizandoBits(lista, ptr, cantMaxElementos,pag);
 		}
 }
-
+/*
 t_link_element* reemplazoMarco( t_list lista,t_link_element* ptr,int cantMaxElementos, frame* pag){//ptr apunta al nodo que debo cambiar
 	t_link_element* puntero;
 	frame* frameActual=ptr->data;
@@ -131,7 +131,7 @@ t_link_element* reemplazoMarco( t_list lista,t_link_element* ptr,int cantMaxElem
 	//avanzo el puntero, la funcion avanza el puntero y si es el ult elemento al puntero lo coloca primero
 	 puntero=avanzarPuntero(lista,cantMaxElementos,ptr);
 	 return puntero;
-}
+}*/
 
 
 

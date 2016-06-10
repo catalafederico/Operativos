@@ -39,13 +39,13 @@ void correrUnoAbajo(tlb tablaPag[],int pos){// corro todos los elementos uno hac
 	pos--;
 }
 void actualizarTablaPqEncontre(tlb tablaPag[],int i){
-	tlb* ptr;
+	tlb ptr;
 	//me guardo el contenido de la posicion en donde esta lo que necesito
 	ptr = tablaPag[i];
 	//hasta uqe llego a la posicion 0 que es en donde coloco lo que recibo
 	while(i>=0){
 		if(i==0){
-			tablaPag[0]=&ptr;
+			tablaPag[0]=ptr;
 		}
 		else{
 		correrUnoAbajo(tablaPag,i);
@@ -98,9 +98,9 @@ void actualizarTablaPqNoEncontre(tlb tablaPag[],int cantEntradas,int* pagina){
 //Tuve q cambiar nombre xq estaba lo de clock  tlb con el mismo nombre y tiraba error
 int buscarPaginaTLB(tlb tablaPag[],int cantEntradas,int* pagina){
 	int i;
-	for( i=0;(tablaPag[i].pag != &pagina) & (tablaPag[i].idProg != &idProcesoActual) & (i<=cantEntradas);i++)
+	for( i=0;(tablaPag[i].pag != *pagina) & (tablaPag[i].idProg != *idProcesoActual) & (i<=cantEntradas);i++)
 	{
-		if ((tablaPag[i].pag == &pagina) & (tablaPag[i].idProg == &idProcesoActual))
+		if ((tablaPag[i].pag == *pagina) & (tablaPag[i].idProg == *idProcesoActual))
 		{
 			actualizarTablaPqEncontre(tablaPag,i);
 			return tablaPag[i].marco;

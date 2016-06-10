@@ -59,6 +59,7 @@ typedef struct{
 typedef struct {
 	int nro;
 	int bit_uso;
+	int enUMC;
 }__attribute__((packed))
 frame;
 
