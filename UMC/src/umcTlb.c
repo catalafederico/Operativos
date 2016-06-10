@@ -30,21 +30,22 @@ int tablaEstaLlena(tlb tablaPag[],int cantEntradas){
 			return 1;
 		}
 	}
-	return 0;
+	return 0;// verdadero esta llena
 }
-void correrUnoAbajo(tlb tablaPag[],int pos){
+void correrUnoAbajo(tlb tablaPag[],int pos){// corro todos los elementos uno hacia abajo
 	tlb aux;
 	aux = tablaPag[pos-1];
 	tablaPag[pos]=aux;
 	pos--;
 }
 void actualizarTablaPqEncontre(tlb tablaPag[],int i){
-	tlb ptr;
+	tlb* ptr;
 	//me guardo el contenido de la posicion en donde esta lo que necesito
 	ptr = tablaPag[i];
+	//hasta uqe llego a la posicion 0 que es en donde coloco lo que recibo
 	while(i>=0){
 		if(i==0){
-			tablaPag[0]=ptr;
+			tablaPag[0]=&ptr;
 		}
 		else{
 		correrUnoAbajo(tablaPag,i);
@@ -55,7 +56,9 @@ void actualizarTablaPqEncontre(tlb tablaPag[],int i){
 
 void actualizarTablaPqElimineUlt(tlb tablaPag[],int cantEntradas,int* pagina){
 	tlb* aux;
-	int posEliminada=cantEntradas;
+	int posEliminada=cantEntradas;// voy a eliminar el ultimo posicion del vector para correr todo uno abajo y colocar
+	//el nuevo valor
+	//hasta que llegue a la primer posicion
 	while(posEliminada>=0){
 			if(posEliminada==0){
 			//faltaria el marco
@@ -70,11 +73,12 @@ void actualizarTablaPqElimineUlt(tlb tablaPag[],int cantEntradas,int* pagina){
 
 void actualizarPqNoEncontreYTablaNoLlena(tlb tablaPag[],int* pagina){
 	int i=0;
+	//busco la primer pagina en la tabla con valor -1 esa pagina esta disponible
 	while(tablaPag[i].pag != -1){
 				i++;
 	}
-			correrUnoAbajo(tablaPag,i);
-			//a la primer posicion le asigno lo que deberia recibir, faltaria marco
+			correrUnoAbajo(tablaPag,i);//corro todos uno hacia abajo hasta i pq voy a insertar en la posicion 0
+			//faltaria marco
 			tablaPag[0].pag=&pagina;
 			tablaPag[0].idProg=&idProcesoActual;
 }

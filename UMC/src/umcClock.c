@@ -12,6 +12,7 @@
 #include <commons/collections/list.h>
 #include <pthread.h>
 #include "umcClock.h"
+#include "estructurasUMC.h"
 //-------comienzo de manejo de lista circular para algoritmo clock
 /* primero busco la pagina que me piden
  * buscar la pagina:
@@ -39,7 +40,7 @@ int listaEstaLlena(t_list lista,int cantMaxElementos){
 	return 0;// la lista no esta llena
 }
 t_link_element* avanzarPuntero(t_list lista,int cantMaxElementos,t_link_element* ptr){
-	if(ptr->next == NULL & lista.elements_count==cantMaxElementos){ //estoy en el ultimo elemento
+	if((ptr->next == NULL) & (lista.elements_count==cantMaxElementos)){ //estoy en el ultimo elemento
 		ptr=lista.head;//le asigno el primer elemento de la lista
 	}
 	else{
@@ -47,34 +48,68 @@ t_link_element* avanzarPuntero(t_list lista,int cantMaxElementos,t_link_element*
 	}
 	return ptr;
 }
-t_link_element* buscarPaginaClk(t_list lista, t_link_element* ptr, int cantMaxElementos, int* pag) {
+t_link_element* buscarPaginaClk(t_list lista, t_link_element* ptr, int cantMaxElementos,frame* pag) {
 	// no uso listfind pq retorna el valor que cumple y necesito retornar un puntero
 	//comienzo del principio
 	t_link_element* aux;
 	aux = lista.head; //estoy en el primer elemento de la lista con aux
-	while (aux->next != NULL & aux->next->data != &pag) // si es null deberia preguntar la cant de elementos, y no encuentre la pagina
+	while ((aux->next != NULL) & (aux->next->data != &pag->nro)) // si es null deberia preguntar la cant de elementos, y no encuentre la pagina
 	{
 		aux = aux->next;
 	}
 	//aca no encuentro la pagina
-	if (aux->next == NULL & aux->next->data != &pag) {
+	if ((aux->next == NULL) & (aux->next->data != &pag->nro)) {
 		//pregunto si todavia  lllego a su maxima capacidad la lista
 		if (listaEstaLlena(lista, cantMaxElementos)) {
 			//solo puedo reemplazar el marco pq no tengo mas espacio
 			//reemplazarMarco(lista,ptr,cantMaxElementos,pag);
 			return NULL;			//no encontre
 		}
-		return NULL;
+
 	}
 	// lo encontre
-	else {
-		//deberia checkear el bit de uso
+		frame* actual=ptr->data;
+		actual->bit_uso=1;// deberia haberlo preguntado pero bueno lo pongo en uno de una
 		return ptr;	// ya estaba la pagina referenciada debo devolver elmismo puntero que recibi
-	}
+
+}
+t_link_element* reemplazoMarco( t_list lista,t_link_element* ptr,int cantMaxElementos, frame* pag){//ptr apunta al nodo que debo cambiar
+	t_link_element* puntero;
+	frame* frameActual=ptr->data;
+	//actualizo el frame actual
+	frameActual->bit_uso = 1;//pongo el bit de uso en 1
+	frameActual->nro = pag->nro;//asigno la nueva pagina
+	//avanzo el puntero, la funcion avanza el puntero y si es el ult elemento al puntero lo coloca primero
+	puntero= avanzarPuntero(lista,cantMaxElementos,ptr);
+	return puntero;
 }
 
-t_link_element* actualizarLista(t_list lista, t_link_element* ptr,
-			int cantMaxElementos, int* pag) {
+t_link_element* agregarPagina(t_list lista,t_link_element* ptr,int cantMaxElementos, frame* pag){// la lista no esta llena list add agrega al final
+	//deberia funcionar
+	t_link_element* puntero;
+	t_list* punteroALista;
+	punteroALista=&lista;
+	pag->bit_uso=1;//actualizo el bit de uso del frame antes de insertarlo a la lista
+    list_add(punteroALista,(void *)&pag);
+    puntero=avanzarPuntero(lista,cantMaxElementos,ptr);
+    return puntero;
+
+}
+t_link_element* recorrerLstActualizandoBits(t_list lista, t_link_element* ptr, int cantMaxElementos, frame* pag){
+	t_link_element* puntero;
+	frame* frameActual =ptr->data;// frame en el cual estoy parado
+	while(frameActual->bit_uso != 0){//lo pongo en 0
+		frameActual->bit_uso =0;//actualizo
+		avanzarPuntero(lista,cantMaxElementos,ptr);//avanzo puntero
+		frameActual=ptr->data;//actualizo agarrado al valot que tiene el puntero qeu devolvio avanzarpuntero
+	}
+	//la unica forma de que haya salido es qeu encontre un bit de uso en 0 y tengo apuntado ese elemento con ptr
+    //debo remplazar el marco
+	puntero = reemplazoMarco(lista,ptr,cantMaxElementos,pag);
+	return puntero;
+}
+
+t_link_element* actualizarLista(t_list lista, t_link_element* ptr,int cantMaxElementos, frame* pag) {
 			//si la lista no esta llena
 		if (!listaEstaLlena(lista, cantMaxElementos)) {
 			agregarPagina(lista, ptr, cantMaxElementos ,pag);	// el puntero esta apuntando al ult elemento de la lista pero todavia tiene capacidad la lista
@@ -82,23 +117,23 @@ t_link_element* actualizarLista(t_list lista, t_link_element* ptr,
 		}
 		// aca deberia recorrer desde la pos del puntero buscando el primer bit de uso en 0  y modificando los
 		// que vaya pasando poniendolo  en 1 acordarse que cuando llego al ultimo debo retornar al primero
+		else{
+			recorrerLstActualizandoBits(lista, ptr, cantMaxElementos,pag);
+		}
 }
 
-t_link_element* reemplazoMarco( t_list lista,t_link_element* ptr,int cantMaxElementos, int* pag){//ptr apunta al nodo que debo cambiar
-	ptr->data=&pag;
-	//falta poner bit de estado de uso de pagina en 1
+t_link_element* reemplazoMarco( t_list lista,t_link_element* ptr,int cantMaxElementos, frame* pag){//ptr apunta al nodo que debo cambiar
+	t_link_element* puntero;
+	frame* frameActual=ptr->data;
+	//actualizo el frame actual
+	frameActual->bit_uso = 1;//pongo el bit de uso en 1
+	frameActual->nro = pag->nro;//asigno la nueva pagina
 	//avanzo el puntero, la funcion avanza el puntero y si es el ult elemento al puntero lo coloca primero
-	 avanzarPuntero(lista,cantMaxElementos,ptr);
+	 puntero=avanzarPuntero(lista,cantMaxElementos,ptr);
+	 return puntero;
 }
 
 
-t_link_element* agregarPagina(t_list lista,t_link_element* ptr,int cantMaxElementos, int* pag){// la lista no esta llena list add agrega al final
-	//deberia funcionar
-	t_list* punteroALista;
-	punteroALista=&lista;
-    list_add(punteroALista,(void *)&pag);
-    avanzarPuntero(lista,cantMaxElementos,ptr);
-    return NULL;
-}
+
 
 
