@@ -133,6 +133,8 @@ int main(int argc, char **argv) {
 	//Leo archivo de configuracion ------------------------------
 	reg_config = get_config_params();
 
+
+
 //Administrador de UMC----------------------
 	if(pthread_create( &thread_UMC, NULL , procesos_UMC, NULL) < 0)
 		{

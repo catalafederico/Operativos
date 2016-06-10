@@ -23,6 +23,9 @@
 	int ionotif(t_nombre_dispositivo ioname, int tiempo);
 	void inicialzarPrograma();
 	int* obtenerEsVariable();
+	void fin();
+	void fcallNR(t_nombre_etiqueta nombre);
+
 	//int wait(t_nombre_semaforo semf);
 	//int signal(t_nombre_semaforo semf);
 

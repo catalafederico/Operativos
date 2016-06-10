@@ -17,8 +17,8 @@
 #include <commons/string.h>
 
 extern int tamanioPaginaUMC;
-
-
+extern int esFuncion;
+extern char* nombreFuncion;
 AnSISOP_funciones functions = {
 	.AnSISOP_definirVariable	= vardef,
 	.AnSISOP_obtenerPosicionVariable= getvarpos,
@@ -30,12 +30,16 @@ AnSISOP_funciones functions = {
 	.AnSISOP_asignarValorCompartida = setglobalvar,
 	.AnSISOP_obtenerValorCompartida = getglobalvar,
 	.AnSISOP_entradaSalida = ionotif,
-	.AnSISOP_retornar = retornar
+	.AnSISOP_retornar = retornar,
+	.AnSISOP_llamarConRetorno = fcall,
+	.AnSISOP_finalizar = fin,
+	.AnSISOP_llamarSinRetorno = fcallNR
 };
 AnSISOP_kernel kernel_functions = { };
 
+//Se crea inidice de codigo e indice funciones
 
-indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
+indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_Inst_pcb){
 	indiceCodigo* ic = malloc(sizeof(indiceCodigo));
 	//Copio el char en memoria de este procedimiento
 	//sino no podia modificarla
@@ -52,8 +56,8 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
 		//En eso 4 pasos verifico si es valido la instruccion
 		if(!strcmp(aAnalizar,"begin"))
 			continue;
-		if(!strcmp(aAnalizar,"end"))
-			break;
+		//if(!strcmp(aAnalizar,"end"))
+			//break;
 		if(string_is_empty(aAnalizar))
 			continue;
 		if(string_starts_with(aAnalizar,"#"))
@@ -64,7 +68,6 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
 		//analizo si es intruccion
 
 		if(*esInstruccion){
-
 			//tamanio llama un maloc para q perdure ya q es un puntero
 			int* tamanio = malloc(sizeof(int));
 			*tamanio = strlen(aAnalizar)+1;
@@ -82,6 +85,19 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc){
 			// pongo es instruccion en falso
 			*esInstruccion = 0;
 			list_add(instrucc,strdup(strcat(aAnalizar,"\0")));
+			if(esFuncion){
+
+				char** palabrasaAnalizar = string_split(aAnalizar," ");
+				funcion_sisop* nuevaFc = malloc(sizeof(nuevaFc));
+				char* palabra = strdup(palabrasaAnalizar[1]);
+				string_trim(&palabra);
+				nuevaFc->funcion = palabra;
+				nuevaFc->posicion_codigo = malloc(sizeof(int));
+				*(nuevaFc->posicion_codigo) = i;
+				list_add(lista_Inst_pcb,nuevaFc);
+				esFuncion = 0;
+				}
+			i++;
 			}
 		free(aAnalizar);
 		newInst =strtok(NULL,"\n");

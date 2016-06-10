@@ -63,6 +63,8 @@ extern pthread_mutex_t semProgramasAProcesar;
 extern sem_t sem_READY_dispo;
 //extern sem_t  cpus_dispo;
 
+pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo);
+
 void *procesos_UMC(){
 	clienteNucleoUMC = crearCliente(reg_config.puerto_umc,reg_config.ip_umc);
 //	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
@@ -76,36 +78,10 @@ void *procesos_UMC(){
 		pthread_mutex_unlock(&semProgramasAProcesar);
 
 		char* instrucciones = progParaCargar->instrucciones;
-		indiceCodigo* icNuevo;
-		t_list* instruccionesPaUMC = list_create();
-		icNuevo = nuevoPrograma(instrucciones,instruccionesPaUMC);
-		icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
-		int posicion = (dictionary_size(icNuevo->inst_tamanio)-1);
-		direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,&posicion);
-		int ultimaPaginaDeCodigo = lastInt->pagina;
-		int flag_hay_espacio = 0; // 0 = Hay espacio
-								  // 1 = No Hay espacio
-		if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente,progParaCargar->PID)==-1){
-			//no se pudo cargar notificar a la consola determinda
-			log_debug(logger, "No se pudo cargar el programa %d en UMC", progParaCargar->PID);
-			flag_hay_espacio = 1;
-		}
-		pcb_t* pcbNuevo = malloc(sizeof(pcb_t));
-		int* pc = pcbNuevo->PC;
-		int* pid = pcbNuevo->PID;
-		int* sp = pcbNuevo->SP;
-		int* pD = pcbNuevo->paginasDisponibles;
-		pc = malloc(sizeof(int));
-		pid= malloc(sizeof(int));
-		sp= malloc(sizeof(int));
-		pD = malloc(sizeof(int));
-		*pc = 0;
-		*pid = progParaCargar->PID;
-		*sp = 0;
-		*pD = ultimaPaginaDeCodigo+reg_config.stack_size;
-		pcbNuevo->indicie_codigo = icNuevo->inst_tamanio;
+		pcb_t* pcbNuevo = crearPCBinicial(instrucciones,progParaCargar->PID);
 
-		if (flag_hay_espacio == 0){ //hay espacio y cargo el pcb para procesar
+
+		if (pcbNuevo!=NULL){ //hay espacio y cargo el pcb para procesar
 			pthread_mutex_lock(&sem_l_New);
 				list_add(proc_New, pcbNuevo);
 				log_debug(logger, "PCB con PID %d creado y agregado a NEW",progParaCargar->PID);
@@ -164,5 +140,33 @@ void conectarseConUmc(struct cliente clienteNucleo){
 	//Termina
 }
 
-
+pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo){
+	pcb_t* pcbNuevo = malloc(sizeof(pcb_t));
+	pcbNuevo->PID = malloc(sizeof(int));
+	pcbNuevo->PC = malloc(sizeof(int));
+	pcbNuevo->SP = malloc(sizeof(int));
+	pcbNuevo->paginasDisponible = malloc(sizeof(int));
+	pcbNuevo->indice_funciones = list_create();
+	indiceCodigo* icNuevo;
+	t_list* instruccionesPaUMC = list_create();
+	icNuevo = nuevoPrograma(instrucciones,instruccionesPaUMC,pcbNuevo->indice_funciones);
+	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
+	int posicion = (dictionary_size(icNuevo->inst_tamanio)-1);
+	direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,&posicion);
+	int ultimaPaginaDeCodigo = lastInt->pagina;
+							  // 1 = No Hay espacio
+	if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente,idProgramaNuevo)==-1){
+		//no se pudo cargar notificar a la consola determinda
+		log_debug(logger, "No se pudo cargar el programa %d en UMC", idProgramaNuevo);
+		return NULL;
+	}
+	*(pcbNuevo->PID) = idProgramaNuevo;
+	*(pcbNuevo->PC) = 0;
+	*(pcbNuevo->SP) = 0;
+	*(pcbNuevo->paginasDisponible)=ultimaPaginaDeCodigo+reg_config.stack_size;
+	pcbNuevo->indice_codigo = icNuevo->inst_tamanio;
+	//el indce de funciones ya se creo al usar la funcion nuevoPrograma de arriba
+	pcbNuevo->indice_stack = dictionary_create();
+	return pcbNuevo;
+}
 

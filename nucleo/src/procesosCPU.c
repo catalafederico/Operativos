@@ -32,7 +32,7 @@
 
 //FUNCIONES
 
-pcb_t* recibirPCB(int socketCpu);
+pcb_t* recibirPCBdeCPU(int socket);
 int* recibirEstadoProceso(int socket_local);
 
 
@@ -163,7 +163,7 @@ void *atender_CPU(int* socket_desc){
 			log_debug(logger, "PCB con PID %d pasado a EXEC",pid_local);
 		pthread_mutex_unlock(&sem_l_Exec);
 
-		pcb_elegido = recibirPCB(socket_local);
+		pcb_elegido = recibirPCBdeCPU(socket_local);
 		estado_proceso = recibirEstadoProceso(socket_local);
 
 // se evalua si se solicito una operacion privilegiada de Ansisop
@@ -270,45 +270,156 @@ void *atender_CPU(int* socket_desc){
 
 
 void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
-	serializablePCB aMandaCPU;
-	aMandaCPU.PID = *(pcb->PID);
-	aMandaCPU.PC = *(pcb->PC);
-	aMandaCPU.SP = *(pcb->SP);
-	aMandaCPU.paginasDisponible = *(pcb->paginasDisponibles);
-	aMandaCPU.tamanioIC = dictionary_size(pcb->indicie_codigo);
+	//NO TESTEADO
+	serializablePCB aMandaCpu;
+	aMandaCpu.PID = *(pcb->PID);
+	aMandaCpu.PC= *(pcb->PC);
+	aMandaCpu.SP = *(pcb->SP);
+	aMandaCpu.paginasDisponible = *(pcb->paginasDisponible);
+	aMandaCpu.tamanioIndiceCodigo = dictionary_size(pcb->indice_codigo);
+	aMandaCpu.tamanioStack = dictionary_size(pcb->indice_stack);
+	aMandaCpu.tamanioIndiceDeFunciones = list_size(pcb->indice_funciones);
 	int enviaPCB = 163;
-	enviarStream(cpu,enviaPCB,sizeof(serializablePCB),&aMandaCPU);
-	//serializo diccionario y lo mando
-	int tamanioIndiceCode =  dictionary_size(pcb->indicie_codigo);
+	enviarStream(cpu,enviaPCB,sizeof(serializablePCB),&aMandaCpu);
+	/*
+	 * Orden:
+	 * 	Indice de codigo
+	 * 	Indice de funciones
+	 * 		[int (tamanio nombre funcion)] [int posicion] [char* funcion]
+	 * 	stack
+	 * 		//Tamanio Args
+	 * 		//Tamanio Vars
+	 * 		//PidRetorno, -1 si es el main
+	 *		//direccion de memoria
+	 *		//Lista Args
+	 *		//Lista Vars
+	 *
+	 */
+	//Empieza serializacion de listas y diccionarios
+	//serializo indice de codigo y lo mando
+	int tamanioIndiceCode =  aMandaCpu.tamanioIndiceCodigo;
 	int i;
 	for(i=0;i<tamanioIndiceCode;i++){
-		direccionMemoria* aMandar = dictionary_get(pcb->indicie_codigo,&i);
+		direccionMemoria* aMandar = dictionary_get(pcb->indice_codigo,&i);
 		send(cpu,aMandar,sizeof(direccionMemoria),0);
 	}
-	//enviar quantum
-	send(cpu,&quantum,sizeof(int),0);
-	send(cpu,&quantum_sleep,sizeof(int),0);
+
+
+	//serializo indice de funciones y lo mando
+	int tamanioIndiceFunciones = aMandaCpu.tamanioIndiceDeFunciones;
+	for(i=0;i<tamanioIndiceFunciones;i++){
+		//SS sin serializar
+		//CS con serializado
+		funcion_sisop* funcionAMandarSS = list_get(pcb->indice_funciones,i);
+		funcionTemp func;
+		func.tamanioNombreFuncion = strlen(funcionAMandarSS->funcion)+1;//+1 para garegar el \0
+		func.posicionPID = *(funcionAMandarSS->posicion_codigo);
+		//Envio Tamanio y posicion
+		send(cpu,&func,sizeof(funcionTemp),0);
+		//Envio nombre funcion
+		send(cpu,strcat(funcionAMandarSS->funcion,"\0"),func.tamanioNombreFuncion,0);
+	}
+
+
+	//serializo stack y lo mando
+	//TESTEAR MUCHO YA Q ES UN KILOMBO
+	int tamanioStack = aMandaCpu.tamanioStack;
+	for(i=0;i<tamanioIndiceFunciones;i++){
+		stack* stackAMandar = dictionary_get(pcb->indice_stack,&i);
+		int tamanioArgs = list_size(stackAMandar->args);
+		int tamanioVars = list_size(stackAMandar->vars);
+		int PIDretorno = *(stackAMandar->pos_ret);
+		direccionMemoria direccionRetornoFuncion = *(stackAMandar->memoriaRetorno);
+		send(cpu,&tamanioArgs,sizeof(int),0);
+		send(cpu,&tamanioVars,sizeof(int),0);
+		send(cpu,&PIDretorno,sizeof(int),0);
+		send(cpu,&direccionRetornoFuncion,sizeof(direccionMemoria),0);
+		int j;
+		t_list* args = stackAMandar->args;
+		for(j=0;j<tamanioArgs;j++){
+			direccionMemoria* direccionMemoriaArg = list_get(args,j);
+			send(cpu,direccionMemoriaArg,sizeof(direccionMemoria),0);
+		}
+		t_list* vars = stackAMandar->vars;
+		for(j=0;j<tamanioVars;j++){
+			direccionStack* direccionStackVars = list_get(vars,j);
+			send(cpu,direccionStackVars,sizeof(direccionStack),0);
+		}
+	}
+
+	//!!!!!!!!!!!!!!!!!!!!!!!!!
+	//LIBERAR TODA MEMORIA PCB!
+	//!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	return;
 }
 
 
-pcb_t* recibirPCB(int socketCpu){
-	pcb_t* pcb_Recibido;
-	pcb_Recibido->PID = recibirStream(socketCpu,sizeof(int));
-	pcb_Recibido->PC = recibirStream(socketCpu,sizeof(int));
-	pcb_Recibido->SP = recibirStream(socketCpu,sizeof(int));
-	pcb_Recibido->paginasDisponibles = recibirStream(socketCpu,sizeof(int));
-	int* tamanioIC = recibirStream(socketCpu, sizeof(int));
-	pcb_Recibido->indicie_codigo = dictionary_create();
+pcb_t* recibirPCBdeCPU(int socket){
+	pcb_t* pcb_Recibido = malloc(sizeof(pcb_t));
+	pcb_Recibido->PID = recibirStream(socket,sizeof(int));
+	pcb_Recibido->PC = recibirStream(socket,sizeof(int));
+	pcb_Recibido->SP = recibirStream(socket,sizeof(int));
+	pcb_Recibido->paginasDisponible = recibirStream(socket,sizeof(int));
+
+	pcb_Recibido->indice_codigo = dictionary_create();
+	pcb_Recibido->indice_funciones = list_create();
+	pcb_Recibido->indice_stack = dictionary_create();
+
+
+	int* tamanioIC = recibirStream(socket, sizeof(int));
+	int* tamanioStack = recibirStream(socket, sizeof(int));
+	int* tamanioIF = recibirStream(socket, sizeof(int));
+
 	int i;
+
+	//RECIBO INDICE DE CODIGO
 	for(i=0;i<*tamanioIC;i++){
 		int* nuevaPagina = malloc(sizeof(int));
 		*nuevaPagina = i;
-		direccionMemoria* nuevaDireccionMemoria = recibirStream(socketCpu,sizeof(direccionMemoria));
-		dictionary_put(pcb_Recibido->indicie_codigo,nuevaPagina,nuevaDireccionMemoria);
+		direccionMemoria* nuevaDireccionMemoria = recibirStream(socket,sizeof(direccionMemoria));
+		dictionary_put(pcb_Recibido->indice_codigo,nuevaPagina,nuevaDireccionMemoria);
 	}
 	free(tamanioIC);
-	return pcb_Recibido;
+
+
+	//RECIBO INDICE FUNCIONES
+	for(i=0;i<*tamanioIF;i++){
+		funcionTemp* funcion = recibirStream(socket,sizeof(funcionTemp));
+		char* funcionNombre = recibirStream(socket,funcion->tamanioNombreFuncion);
+		funcion_sisop* new_funcion = malloc(sizeof(new_funcion));
+		new_funcion->funcion = funcionNombre;
+		new_funcion->posicion_codigo = funcion->posicionPID;
+		list_add_in_index(pcb_Recibido->indice_funciones,i,new_funcion);
+	}
+	free(tamanioIF);
+
+
+	//RECIBO STACK
+	for(i=0;i<*tamanioStack;i++){
+		stack* stackNuevo = malloc(sizeof(stack));
+		stackNuevo->args = list_create();
+		stackNuevo->vars = list_create();
+		int* tamArgs = recibirStream(socket, sizeof(int));
+		int* tamVars = recibirStream(socket, sizeof(int));
+		int* RetornoPID = recibirStream(socket, sizeof(int));
+		direccionMemoria* memoriaRetorno = recibirStream(socket, sizeof(direccionMemoria));
+		int j;
+		for(j=0;j<*tamArgs;j++){
+			direccionMemoria* new_direc = recibirStream(socket, sizeof(direccionMemoria));
+			list_add_in_index(stackNuevo->args,j,new_direc);
+		}
+
+		for(j=0;j<*tamVars;j++){
+			direccionStack* new_direc = recibirStream(socket, sizeof(direccionStack));
+			list_add_in_index(stackNuevo->args,j,new_direc);
+		}
+		int* key = malloc(sizeof(int));
+		*key = j;
+		dictionary_put(pcb_Recibido->indice_stack,key,stackNuevo);
+	}
+	//recibo quantum y quantumSleep
+	 return pcb_Recibido;
 }
 
 
