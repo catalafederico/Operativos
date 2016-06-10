@@ -56,7 +56,6 @@ int* recibirEstadoProceso(int socket_local);
 
 // Variables compartidas ---------------------------------------------
 extern t_reg_config reg_config;
-extern t_list* cpus_dispo;
 extern t_list* consolas_dispo;
 extern t_list* proc_New;
 extern t_list* proc_Ready;
@@ -68,8 +67,8 @@ extern t_log *logger;
 extern struct server serverPaCPU;
 // semaforos Compartidos
 extern sem_t sem_READY_dispo;
-
-extern pthread_mutex_t sem_l_cpus_dispo;
+//extern sem_t  sem_cpus_dispo;
+//extern pthread_mutex_t sem_l_cpus_dispo;
 
 extern pthread_mutex_t sem_l_New;
 extern pthread_mutex_t sem_l_Ready;
@@ -115,9 +114,9 @@ void *atender_conexion_CPU(){
 
 
 		//agrego CPU a la lista de disponibles
-		pthread_mutex_lock(&sem_l_cpus_dispo);
-		list_add(cpus_dispo, socket_nuevo);
-		pthread_mutex_unlock(&sem_l_cpus_dispo);
+//		pthread_mutex_lock(&sem_l_cpus_dispo);
+//			sem_post(&sem_cpus_dispo);
+//		pthread_mutex_unlock(&sem_l_cpus_dispo);
 	}
 	return NULL;
 }
@@ -130,9 +129,19 @@ void *atender_conexion_CPU(){
 //------------------------------------------------------------------------------------------
 void *atender_CPU(int* socket_desc){
 	int socket_local = *socket_desc;
+
+	//Empieza handshake
+	int* recibido = recibirStream(socket_local,sizeof(int));
+	if(*recibido==CPU){
+		log_debug(logger, "Se ha conectado correctamente CPU: %d",socket_local);
+	}
+
 	//Confirmo conexio a cpu
 	int ok = OK;
-	send(socket_local,&ok,sizeof(int),0);
+	if(send(socket_local,&ok,sizeof(int),0)==-1){
+		log_debug(logger, "CPU %d se Desconecto",socket_local);
+		close(*socket_desc);
+	}
 
 	//Lo libero ya q era un malloc de atender_conexion_CPU
 	free(socket_desc);
@@ -154,51 +163,18 @@ void *atender_CPU(int* socket_desc){
 			log_debug(logger, "PCB con PID %d pasado a EXEC",pid_local);
 		pthread_mutex_unlock(&sem_l_Exec);
 
-		pcb_elegido = recibirPCB(socket_local); /* cuando se implementen las opera ansisop esto debe ir
-												despues del recibir estado ya que el PCB es necesario solo luego*/
+		pcb_elegido = recibirPCB(socket_local);
 		estado_proceso = recibirEstadoProceso(socket_local);
 
 // se evalua si se solicito una operacion privilegiada de Ansisop
-		while(estado_proc_es_Ansisop(*estado_proceso)){
-			switch (*estado_proceso) {
-	//      Las siguientes son operaciones privilegiadas
-				case SOLIC_IO:	//es la primitiva entradaSalida
-	//              ansisop_entradaSalida ();
-	//				pthread_mutex_lock(&sem_l_Block); // se bloquea
-	//				list_add(proc_Block, pcb_elegido);
-	//				pthread_mutex_unlock(&sem_l_Block);
-	//				log_debug(logger, "El proceso %d de la Consola %d pasa a BLOCK", *pcb_elegido->PID, *pcb_elegido->con_id);
-					break;
-
-				case OBT_VALOR:  //es la primitiva obtenerValorCompartida
-	//              ansisop_obtenerValorCompartida ();
-					break;
-
-				case GRABA_VALOR: //es la primitiva asignarValorCompartida
-	//              ansisop_asignarValorCompartida ();
-					break;
-
-				case WAIT_SEM:	 // es la primitiva wait
-	//              ansisop_wait ();
-					break;
-
-				case SIGNAL_SEM: // es la primitiva signal
-	//              ansisop_signal ();
-					break;
-
-				case IMPRIMIR: // es la primitiva imprimir
-	//              ansisop_imprimir();
-					break;
-
-				case IMPRIMIR_TXT: // es la primitiva imprimirTexto
-	//              ansisop_imprimirTexto ();
-					break;
-
-				default:
-					break;
-			}
-			estado_proceso = recibirEstadoProceso(socket_local);
-		}
+//		while(estado_proc_es_Ansisop(*estado_proceso)){
+//			switch (*estado_proceso) {
+//
+//				default:
+//					break;
+//			}
+//			estado_proceso = recibirEstadoProceso(socket_local);
+//		}
 		switch (*estado_proceso) {
 			case FIN_QUANTUM:
 				pthread_mutex_lock(&sem_l_Exec);
@@ -248,6 +224,38 @@ void *atender_CPU(int* socket_desc){
 				pthread_mutex_unlock(&sem_l_Ready);
 
 				sem_post(&sem_READY_dispo);
+				break;
+//      Las siguientes son operaciones privilegiadas
+			case SOLIC_IO:	//es la primitiva entradaSalida
+//              ansisop_entradaSalida ();
+//				pthread_mutex_lock(&sem_l_Block); // se bloquea
+//				list_add(proc_Block, pcb_elegido);
+//				pthread_mutex_unlock(&sem_l_Block);
+//				log_debug(logger, "El proceso %d de la Consola %d pasa a BLOCK", *pcb_elegido->PID, *pcb_elegido->con_id);
+				break;
+
+			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
+//              ansisop_obtenerValorCompartida ();
+				break;
+
+			case GRABA_VALOR: //es la primitiva asignarValorCompartida
+//              ansisop_asignarValorCompartida ();
+				break;
+
+			case WAIT_SEM:	 // es la primitiva wait
+//              ansisop_wait ();
+				break;
+
+			case SIGNAL_SEM: // es la primitiva signal
+//              ansisop_signal ();
+				break;
+
+			case IMPRIMIR: // es la primitiva imprimir
+//              ansisop_imprimir();
+				break;
+
+			case IMPRIMIR_TXT: // es la primitiva imprimirTexto
+//              ansisop_imprimirTexto ();
 				break;
 
 			default:

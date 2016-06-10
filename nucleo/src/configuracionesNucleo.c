@@ -60,7 +60,7 @@ t_reg_config get_config_params(void){
 
 	// 6 get IO_SLEEP
 	if (config_has_property(archivo_config,"IO_SLEEP")){
-		reg_config.io_sleep = (int *) config_get_array_value(archivo_config,"IO_SLEEP");
+		reg_config.io_sleep =  config_get_array_value(archivo_config,"IO_SLEEP");
 	}
 	else{
 		log_debug(logger, "No se encontro IO_SLEEP");
@@ -76,7 +76,7 @@ t_reg_config get_config_params(void){
 
 	// 8 get SEM_INIT
 	if (config_has_property(archivo_config,"SEM_INIT")){
-		reg_config.sem_init = (int *) config_get_array_value(archivo_config,"SEM_INIT");
+		reg_config.sem_init = config_get_array_value(archivo_config,"SEM_INIT");
 	}
 	else{
 		log_debug(logger, "No se encontro SEM_INIT");
@@ -114,7 +114,7 @@ t_reg_config get_config_params(void){
 		log_debug(logger, "No se encontro PUERTO_UMC");
 	}
 
-	config_destroy(archivo_config);
+//	config_destroy(archivo_config);
 //	log_destroy(logger);
 	return reg_config;
 }

@@ -35,10 +35,10 @@
 #define SOY_SWAP	"Te_conectaste_con_SWAP___"  // 25 de long sin \0
 #define SOY_NUCLEO  "Te_conectaste_con_NUCLEO_"
 #define SOY_CONSOLA	"Te_conectaste_con_CONSOLA"
+#define MJE_RTA	256       // tamanio fijo para los mensajes de retorno a consola
 
 // Variables compartidas ---------------------------------------------
 extern t_reg_config reg_config;
-extern t_list* cpus_dispo;
 extern t_list* consolas_dispo;
 extern t_list* proc_New;
 extern t_list* proc_Ready;
@@ -52,7 +52,7 @@ int PIDAsignar;
 extern t_dictionary* dict_pid_consola;
 
 // semaforos Compartidos
-extern pthread_mutex_t sem_l_cpus_dispo;
+//extern pthread_mutex_t sem_l_cpus_dispo;
 extern pthread_mutex_t sem_l_Ready;
 extern pthread_mutex_t sem_l_New;
 extern pthread_mutex_t sem_l_Exec;
@@ -62,9 +62,12 @@ extern pthread_mutex_t sem_l_Exit;
 extern pthread_mutex_t sem_log;
 extern sem_t semaforoProgramasACargar;
 extern pthread_mutex_t sem_pid_consola;
+
 pthread_mutex_t sem_pid = PTHREAD_MUTEX_INITIALIZER;
 
 extern pthread_mutex_t semProgramasAProcesar;
+//extern sem_t sem_cpus_dispo;
+
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_consolas  ---------------------------
 void *atender_conexion_consolas(void *socket_desc){
@@ -116,7 +119,7 @@ void *atender_consola(int* socket_desc){
 		// Recibir Mensaje de consola.
 		int* tamanio_mje = leerHeader(socket_co);
 		char * mje_recibido = recibirMensaje_tamanio(socket_co, tamanio_mje);
-		strcat(mje_recibido,"\0");//agrego por las dudas
+//		strcat(mje_recibido,"\0");//agrego por las dudas
 
 		if(!strcmp("Se desconecto",mje_recibido)){
 			log_debug(logger, "Se cerro la conexion");
@@ -142,7 +145,7 @@ void *atender_consola(int* socket_desc){
 
 		t_sock_mje* datos_a_consola = malloc(sizeof(t_sock_mje));
 		datos_a_consola->socket_dest = socket_co;
-		strcpy(datos_a_consola->mensaje,string_repeat(" ",256));
+		strcpy(datos_a_consola->mensaje,string_repeat(" ",MJE_RTA));
 
 		pthread_mutex_lock(&sem_pid_consola);
 			dictionary_put(dict_pid_consola,promCargar->PID,(void*) datos_a_consola);

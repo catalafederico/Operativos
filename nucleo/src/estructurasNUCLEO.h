@@ -16,9 +16,9 @@ typedef struct {
 	int quantum;
 	int quantum_sleep;			// Estructura del archivo de configuracion
 	char ** io_id;
-	int * io_sleep;
+	char ** io_sleep;
 	char ** sem_id;
-	int * sem_init;
+	char ** sem_init;
 	char ** shared_vars;
 	unsigned int stack_size;
 	char * ip_umc;
