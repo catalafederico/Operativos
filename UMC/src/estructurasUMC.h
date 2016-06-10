@@ -13,6 +13,9 @@
 #include <commons/collections/list.h>
 #include <netinet/in.h>
 
+#define USADO 1;
+#define NOUSADO 0;
+
 typedef struct {
 	int PUERTO;
 	char* IP_SWAP;
@@ -47,6 +50,16 @@ typedef struct {
 }__attribute__((packed))
 id_programa;
 
+typedef struct{
+	int idProg;
+	int pag;
+	int marco;
+}tlb;
 
+typedef struct {
+	int nro;
+	int bit_uso;
+}__attribute__((packed))
+frame;
 
 #endif /* SRC_ESTRUCTURASUMC_H_ */

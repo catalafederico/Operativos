@@ -104,6 +104,8 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 	int tamanioPag = umcConfg.configuracionUMC.MARCO_SIZE;
 	while(seguir){
 		int* header =leerHeader(socketEscuchaNucleo);
+		int* id = leerHeader(socketEscuchaNucleo);
+		cambiarProceso(*id);
 		log_trace(logConexiones,"Header recibido en Nucleo: %d\n", *header);
 		switch (*header) {
 			case FINALIZACIONPROGRAMA:
@@ -133,6 +135,7 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 				break;
 		}
 		free(header);
+		free(id);
 	}
 }
 
