@@ -26,7 +26,7 @@ t_dictionary* programas_ejecucion;
 pthread_mutex_t semaforoMemoria;
 
 
-//-------- comienzo
+//-------- comienzo esto es para el algoritmo lru de la tlb
 
  //tlb tablaPag[10];//seria la tlb con la cant de entradas del arch configuracion
 //hay que inicializar las paginas en -1
@@ -112,7 +112,7 @@ int i;
 	return -1;
 }
 
-//-------------------- fin
+//-------------------- fin del algoritmo lru para tlb
 
 void* inicializarMemoria(t_reg_config* configuracionUMC){
 
@@ -163,7 +163,9 @@ int alocarPrograma(int paginasRequeridas, int id_proceso){
 		tabla_actual = pag_frame;
 		*idProcesoActual = id_proceso;
 		pthread_mutex_unlock(&semaforoMemoria);
-		dictionary_put(programas_ejecucion,idProceso,pag_frame);
+		dictionary_put(programas_ejecucion,idProceso,pag_frame);//habria que poner en 1 a los marcos de las pag asignadas
+		// faltaria saber si ya no se pueden asignar mas paginas si esto no se puede hay que desalojar con el algoritmo clock
+		//habria que dejar un puntero marcando la ultima pagina que se asigno para poder realizar el algoritmo
 		log_trace(log_memoria,"Alocado programa id: %d", id_proceso);
 		notificarASwapPrograma(id_proceso,paginasRequeridas);
 		//Esto es para la entrega 3
@@ -239,9 +241,89 @@ void cambiarProceso(int idProceso){
 		*idProcesoActual = idProceso;
 		log_trace(log_memoria,"CambiarProceso - idAnterior: %d , idNuevo: %d",*idProcesoActual,idProceso);
 		//Esto es mas de la entrega 3
-		/*pthread_mutex_lock(semaforoMemoria);
+		/*
+		 * pthread_mutex_lock(semaforoMemoria);
 		tabla_actual = dictionary_get(programas_ejecucion,(char*)&idProceso);
 		*idProcesoActual = idProceso;
-		pthread_mutex_unlock(semaforoMemoria);*/
+		pthread_mutex_unlock(semaforoMemoria);
+		*/
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

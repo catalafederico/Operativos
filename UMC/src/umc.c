@@ -27,7 +27,7 @@ t_log* logConexiones;
 
 
 int main(void) {
-//	tlb tablaPag[umcConfg.configuracionUMC.ENTRADAS_TLB];
+//	tlb tablaPag[umcConfg.configuracionUMC.ENTRADAS_TLB]; creo la tabla para poder manejarla con lru , falta iniciar los amrcos y paginas
 
 	umcConfg.loguer = log_create("logs/logUMC.txt","UMC", false,LOG_LEVEL_INFO);
 	logConexiones = log_create("logs/conexiones.txt","UMC",false,LOG_LEVEL_TRACE);
