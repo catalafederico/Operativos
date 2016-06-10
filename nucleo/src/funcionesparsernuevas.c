@@ -4,6 +4,7 @@
 #include <string.h>
 #include <commons/collections/dictionary.h>
 #include <parser/parser.h>
+#include <commons/collections/list.h>
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
 typedef u_int32_t t_puntero;
@@ -18,8 +19,12 @@ typedef t_nombre_variable* t_nombre_dispositivo;
 
 t_dictionary* nroInst_offset;
 int esVariable;
+int esFuncion;
+char *nombreFuncion;
 void inicialzarPrograma() {
+	nombreFuncion = NULL;
 	esVariable = 0;
+	esFuncion = 0;
 }
 
 //DefinirVariable
@@ -66,7 +71,6 @@ t_puntero_instruccion goint(t_nombre_etiqueta etiqueta) {
 //LlamarFuncion
 t_puntero_instruccion fcall(t_nombre_etiqueta etiqueta, t_puntero funcion,
 		t_puntero_instruccion pinst) {
-
 	esVariable = 1;
 	return POSICION_MEMORIA;
 }
@@ -106,6 +110,15 @@ int wait(t_nombre_semaforo semf) {
 int signal(t_nombre_semaforo semf) {
 	esVariable = 1;
 	return CONTENIDO_VARIABLE;
+}
+
+//Funciones agreagadas 10/06/2016
+void fin(){
+	esVariable = 1;
+}
+
+void fcallNR(t_nombre_etiqueta nombre){
+	esFuncion = 1;
 }
 
 int* obtenerEsVariable(){

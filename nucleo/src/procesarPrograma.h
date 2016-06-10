@@ -10,7 +10,7 @@
 #define PROCESARPROGRAMA_H_
 
 
-indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc);
+indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_Inst_pcb);
 t_dictionary* paginarIC(t_dictionary* codigoSinPaginar);
 int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNecesarias, int socketUMC,int id);
 

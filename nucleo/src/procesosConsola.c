@@ -148,7 +148,8 @@ void *atender_consola(int* socket_desc){
 		strcpy(datos_a_consola->mensaje,string_repeat(" ",MJE_RTA));
 
 		pthread_mutex_lock(&sem_pid_consola);
-			dictionary_put(dict_pid_consola,promCargar->PID,(void*) datos_a_consola);
+			int* tempId = malloc(sizeof(int));//no hacer free sino se borsa la clave
+			dictionary_put(dict_pid_consola,tempId, datos_a_consola);
 		pthread_mutex_unlock(&sem_pid_consola);
 
 		sem_post(&semaforoProgramasACargar);
@@ -156,13 +157,13 @@ void *atender_consola(int* socket_desc){
 		//hay q hacer algo para q la consola pueda reciir mensajes
 		//yo pense en un diccionario q tega el pid y un semaforo de consola asi signal de consola paa q se active
 
-		while(1){
+		/*while(1){
 			sleep(60);
-		}
+		}*/
 
 		//no hago free del mensaje ya q lo necesita la lista
 		//free((void *) mje_recibido);
-		free(socket_desc);
-		return NULL;
+		//free(socket_desc);
+		//return NULL;
 }
 
