@@ -7,8 +7,11 @@
 #include "estructurasCPU.h"
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
+int finPrograma;
+
 almUMC calculoDeDedireccionAlmalcenar();
 void agregarVariableStack(almUMC aAlmacenar,char var);
+
 direccionMemoria* obtenerPosicionStack(char var);
 //Tipos de datos
 typedef u_int32_t t_puntero;
@@ -128,6 +131,11 @@ int imprimir(t_valor_variable var) {
 int imptxt(char* aimpprimir) {
 	printf("nucleo manda a imprimir");
 	return CONTENIDO_VARIABLE;
+}
+
+void fin(){
+
+	finPrograma=1;
 }
 
 //EntradaSalida
