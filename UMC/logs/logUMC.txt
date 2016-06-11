@@ -1,0 +1,1575 @@
+[INFO] 16:03:04:253 UMC/(9134:9134): Cargando parametros
+[INFO] 16:03:04:254 UMC/(9134:9134): Cargado parametros
+[INFO] 16:03:04:254 UMC/(9134:9134): Inicializando memoria
+[INFO] 16:03:04:255 UMC/(9134:9134): Memoria Inicializada
+[INFO] 16:03:04:255 UMC/(9134:9134): Creando proceso consola
+[INFO] 16:03:04:255 UMC/(9134:9134): Proceso consola creado
+[INFO] 16:03:04:255 UMC/(9134:9134): Creando proceso umcServer
+[INFO] 16:03:04:255 UMC/(9134:9134): Proceso Creado
+[INFO] 16:03:04:263 UMC/(9134:9136): Umc escuchando
+[INFO] 16:04:51:27 UMC/(9134:9136): Umc escuchando
+[INFO] 16:04:51:27 UMC/(9134:9136): Creando proceso nucleo.
+[INFO] 16:04:51:28 UMC/(9134:9136): Creado proceso nucleo.
+[INFO] 16:04:51:28 UMC/(9134:9136): Umc escuchando
+[INFO] 16:10:05:13 UMC/(9706:9706): Cargando parametros
+[INFO] 16:10:05:14 UMC/(9706:9706): Cargado parametros
+[INFO] 16:10:05:14 UMC/(9706:9706): Inicializando memoria
+[INFO] 16:10:05:15 UMC/(9706:9706): Memoria Inicializada
+[INFO] 16:10:05:15 UMC/(9706:9706): Creando proceso consola
+[INFO] 16:10:05:15 UMC/(9706:9706): Proceso consola creado
+[INFO] 16:10:05:15 UMC/(9706:9706): Creando proceso umcServer
+[INFO] 16:10:05:15 UMC/(9706:9706): Proceso Creado
+[INFO] 16:10:05:16 UMC/(9706:9710): Umc escuchando
+[INFO] 16:10:08:899 UMC/(9706:9710): Umc escuchando
+[INFO] 16:10:08:899 UMC/(9706:9710): Creando proceso nucleo.
+[INFO] 16:10:08:899 UMC/(9706:9710): Creado proceso nucleo.
+[INFO] 16:10:08:899 UMC/(9706:9710): Umc escuchando
+[INFO] 16:28:39:649 UMC/(10910:10910): Cargando parametros
+[INFO] 16:28:39:650 UMC/(10910:10910): Cargado parametros
+[INFO] 16:28:39:650 UMC/(10910:10910): Inicializando memoria
+[INFO] 16:28:39:650 UMC/(10910:10910): Memoria Inicializada
+[INFO] 16:28:39:650 UMC/(10910:10910): Creando proceso consola
+[INFO] 16:28:39:650 UMC/(10910:10910): Proceso consola creado
+[INFO] 16:28:39:650 UMC/(10910:10910): Creando proceso umcServer
+[INFO] 16:28:39:650 UMC/(10910:10910): Proceso Creado
+[INFO] 16:28:39:655 UMC/(10910:10912): Umc escuchando
+[INFO] 16:28:51:52 UMC/(10910:10912): Umc escuchando
+[INFO] 16:28:51:52 UMC/(10910:10912): Creando proceso nucleo.
+[INFO] 16:28:51:52 UMC/(10910:10912): Creado proceso nucleo.
+[INFO] 16:28:51:52 UMC/(10910:10912): Umc escuchando
+[INFO] 16:30:58:51 UMC/(10910:10912): Umc escuchando
+[INFO] 16:30:58:51 UMC/(10910:10912): Creando proceso nucleo.
+[INFO] 16:30:58:51 UMC/(10910:10912): Creado proceso nucleo.
+[INFO] 16:30:58:51 UMC/(10910:10912): Umc escuchando
+[INFO] 16:33:54:965 UMC/(10910:10912): Umc escuchando
+[INFO] 16:33:54:965 UMC/(10910:10912): Creando proceso nucleo.
+[INFO] 16:33:54:965 UMC/(10910:10912): Creado proceso nucleo.
+[INFO] 16:33:54:965 UMC/(10910:10912): Umc escuchando
+[INFO] 16:37:10:634 UMC/(10910:10912): Umc escuchando
+[INFO] 16:37:10:634 UMC/(10910:10912): Creando proceso nucleo.
+[INFO] 16:37:10:634 UMC/(10910:10912): Creado proceso nucleo.
+[INFO] 16:37:10:634 UMC/(10910:10912): Umc escuchando
+[INFO] 16:39:18:326 UMC/(10910:10912): Umc escuchando
+[INFO] 16:39:18:326 UMC/(10910:10912): Creando proceso nucleo.
+[INFO] 16:39:18:326 UMC/(10910:10912): Creado proceso nucleo.
+[INFO] 16:39:18:327 UMC/(10910:10912): Umc escuchando
+[INFO] 16:41:35:803 UMC/(10910:10912): Umc escuchando
+[INFO] 16:41:35:803 UMC/(10910:10912): Creando proceso nucleo.
+[INFO] 16:41:35:803 UMC/(10910:10912): Creado proceso nucleo.
+[INFO] 16:41:35:803 UMC/(10910:10912): Umc escuchando
+[INFO] 16:44:55:322 UMC/(10910:10912): Umc escuchando
+[INFO] 16:44:55:322 UMC/(10910:10912): Creando proceso nucleo.
+[INFO] 16:44:55:322 UMC/(10910:10912): Creado proceso nucleo.
+[INFO] 16:44:55:322 UMC/(10910:10912): Umc escuchando
+[INFO] 16:48:40:570 UMC/(12639:12639): Cargando parametros
+[INFO] 16:48:40:570 UMC/(12639:12639): Cargado parametros
+[INFO] 16:48:40:570 UMC/(12639:12639): Inicializando memoria
+[INFO] 16:48:40:570 UMC/(12639:12639): Memoria Inicializada
+[INFO] 16:48:40:570 UMC/(12639:12639): Creando proceso consola
+[INFO] 16:48:40:570 UMC/(12639:12639): Proceso consola creado
+[INFO] 16:48:40:570 UMC/(12639:12639): Creando proceso umcServer
+[INFO] 16:48:40:570 UMC/(12639:12639): Proceso Creado
+[INFO] 16:48:40:571 UMC/(12639:12643): Umc escuchando
+[INFO] 16:48:47:5 UMC/(12639:12643): Umc escuchando
+[INFO] 16:48:47:5 UMC/(12639:12643): Creando proceso nucleo.
+[INFO] 16:48:47:5 UMC/(12639:12643): Creado proceso nucleo.
+[INFO] 16:48:47:5 UMC/(12639:12643): Umc escuchando
+[INFO] 16:49:23:91 UMC/(12639:12734): Alocar Programa empezado
+[INFO] 16:49:23:91 UMC/(12639:12734): Programa alocado correctamente
+[INFO] 16:51:00:625 UMC/(12950:12950): Cargando parametros
+[INFO] 16:51:00:625 UMC/(12950:12950): Cargado parametros
+[INFO] 16:51:00:625 UMC/(12950:12950): Inicializando memoria
+[INFO] 16:51:00:625 UMC/(12950:12950): Memoria Inicializada
+[INFO] 16:51:00:625 UMC/(12950:12950): Creando proceso consola
+[INFO] 16:51:00:625 UMC/(12950:12950): Proceso consola creado
+[INFO] 16:51:00:625 UMC/(12950:12950): Creando proceso umcServer
+[INFO] 16:51:00:625 UMC/(12950:12950): Proceso Creado
+[INFO] 16:51:00:627 UMC/(12950:12952): Umc escuchando
+[INFO] 16:51:08:319 UMC/(12950:12952): Umc escuchando
+[INFO] 16:51:08:319 UMC/(12950:12952): Creando proceso nucleo.
+[INFO] 16:51:08:320 UMC/(12950:12952): Creado proceso nucleo.
+[INFO] 16:51:08:320 UMC/(12950:12952): Umc escuchando
+[INFO] 16:51:34:187 UMC/(12950:13044): Alocar Programa empezado
+[INFO] 16:51:34:187 UMC/(12950:13044): Programa alocado correctamente
+[INFO] 16:52:12:98 UMC/(12950:13044): Almacenar byte comenzado.
+
+[INFO] 17:34:59:589 UMC/(13610:13610): Cargando parametros
+[INFO] 17:34:59:589 UMC/(13610:13610): Cargado parametros
+[INFO] 17:34:59:589 UMC/(13610:13610): Inicializando memoria
+[INFO] 17:34:59:589 UMC/(13610:13610): Memoria Inicializada
+[INFO] 17:34:59:589 UMC/(13610:13610): Creando proceso consola
+[INFO] 17:34:59:589 UMC/(13610:13610): Proceso consola creado
+[INFO] 17:34:59:589 UMC/(13610:13610): Creando proceso umcServer
+[INFO] 17:34:59:589 UMC/(13610:13610): Proceso Creado
+[INFO] 17:34:59:589 UMC/(13610:13614): Umc escuchando
+[INFO] 17:35:07:453 UMC/(13610:13614): Umc escuchando
+[INFO] 17:35:07:453 UMC/(13610:13614): Creando proceso nucleo.
+[INFO] 17:35:07:454 UMC/(13610:13614): Creado proceso nucleo.
+[INFO] 17:35:07:454 UMC/(13610:13614): Umc escuchando
+[INFO] 17:35:29:155 UMC/(13610:13657): Alocar Programa empezado
+[INFO] 17:35:29:155 UMC/(13610:13657): Programa alocado correctamente
+[INFO] 17:35:32:611 UMC/(13610:13657): Almacenar byte comenzado.
+
+[INFO] 17:36:35:280 UMC/(13841:13841): Cargando parametros
+[INFO] 17:36:35:280 UMC/(13841:13841): Cargado parametros
+[INFO] 17:36:35:280 UMC/(13841:13841): Inicializando memoria
+[INFO] 17:36:35:281 UMC/(13841:13841): Memoria Inicializada
+[INFO] 17:36:35:281 UMC/(13841:13841): Creando proceso consola
+[INFO] 17:36:35:316 UMC/(13841:13841): Proceso consola creado
+[INFO] 17:36:35:316 UMC/(13841:13841): Creando proceso umcServer
+[INFO] 17:36:35:319 UMC/(13841:13841): Proceso Creado
+[INFO] 17:36:35:319 UMC/(13841:13850): Umc escuchando
+[INFO] 17:36:43:800 UMC/(13841:13850): Umc escuchando
+[INFO] 17:36:43:800 UMC/(13841:13850): Creando proceso nucleo.
+[INFO] 17:36:43:802 UMC/(13841:13850): Creado proceso nucleo.
+[INFO] 17:36:43:802 UMC/(13841:13850): Umc escuchando
+[INFO] 17:36:59:979 UMC/(13841:13850): Umc escuchando
+[INFO] 17:36:59:980 UMC/(13841:13850): Creando proceso nucleo.
+[INFO] 17:36:59:981 UMC/(13841:13850): Creado proceso nucleo.
+[INFO] 17:36:59:981 UMC/(13841:13850): Umc escuchando
+[INFO] 17:37:25:486 UMC/(13841:14100): Alocar Programa empezado
+[INFO] 17:37:44:944 UMC/(13841:14100): Programa alocado correctamente
+[INFO] 17:38:38:946 UMC/(13841:14100): Almacenar byte comenzado.
+
+[INFO] 17:39:39:633 UMC/(14326:14326): Cargando parametros
+[INFO] 17:39:39:633 UMC/(14326:14326): Cargado parametros
+[INFO] 17:39:39:633 UMC/(14326:14326): Inicializando memoria
+[INFO] 17:39:39:634 UMC/(14326:14326): Memoria Inicializada
+[INFO] 17:39:39:634 UMC/(14326:14326): Creando proceso consola
+[INFO] 17:39:39:647 UMC/(14326:14326): Proceso consola creado
+[INFO] 17:39:39:648 UMC/(14326:14326): Creando proceso umcServer
+[INFO] 17:39:39:653 UMC/(14326:14326): Proceso Creado
+[INFO] 17:39:39:653 UMC/(14326:14334): Umc escuchando
+[INFO] 17:39:46:295 UMC/(14326:14334): Umc escuchando
+[INFO] 17:39:46:295 UMC/(14326:14334): Creando proceso nucleo.
+[INFO] 17:39:46:297 UMC/(14326:14334): Creado proceso nucleo.
+[INFO] 17:39:46:297 UMC/(14326:14334): Umc escuchando
+[INFO] 17:40:05:79 UMC/(14326:14414): Alocar Programa empezado
+[INFO] 17:40:05:79 UMC/(14326:14414): Programa alocado correctamente
+[INFO] 17:40:14:316 UMC/(14326:14414): Almacenar byte comenzado.
+
+[INFO] 19:24:16:8 UMC/(14806:14806): Cargando parametros
+[INFO] 19:24:16:8 UMC/(14806:14806): Cargado parametros
+[INFO] 19:24:16:8 UMC/(14806:14806): Inicializando memoria
+[INFO] 19:24:16:9 UMC/(14806:14806): Memoria Inicializada
+[INFO] 19:24:16:9 UMC/(14806:14806): Creando proceso consola
+[INFO] 19:24:16:25 UMC/(14806:14806): Proceso consola creado
+[INFO] 19:24:16:25 UMC/(14806:14806): Creando proceso umcServer
+[INFO] 19:24:16:34 UMC/(14806:14806): Proceso Creado
+[INFO] 19:24:16:34 UMC/(14806:14814): Umc escuchando
+[INFO] 19:24:30:377 UMC/(14806:14814): Umc escuchando
+[INFO] 19:24:30:378 UMC/(14806:14814): Creando proceso nucleo.
+[INFO] 19:24:30:387 UMC/(14806:14814): Creado proceso nucleo.
+[INFO] 19:24:30:387 UMC/(14806:14814): Umc escuchando
+[INFO] 19:25:07:887 UMC/(14806:14893): Alocar Programa empezado
+[INFO] 19:30:09:499 UMC/(15116:15116): Cargando parametros
+[INFO] 19:30:09:499 UMC/(15116:15116): Cargado parametros
+[INFO] 19:30:09:499 UMC/(15116:15116): Inicializando memoria
+[INFO] 19:30:09:499 UMC/(15116:15116): Memoria Inicializada
+[INFO] 19:30:09:499 UMC/(15116:15116): Creando proceso consola
+[INFO] 19:30:09:506 UMC/(15116:15116): Proceso consola creado
+[INFO] 19:30:09:506 UMC/(15116:15116): Creando proceso umcServer
+[INFO] 19:30:09:509 UMC/(15116:15116): Proceso Creado
+[INFO] 19:30:09:509 UMC/(15116:15125): Umc escuchando
+[INFO] 19:30:50:396 UMC/(15116:15125): Umc escuchando
+[INFO] 19:30:50:397 UMC/(15116:15125): Creando proceso nucleo.
+[INFO] 19:30:50:402 UMC/(15116:15125): Creado proceso nucleo.
+[INFO] 19:30:50:402 UMC/(15116:15125): Umc escuchando
+[INFO] 19:32:07:994 UMC/(15116:15125): Umc escuchando
+[INFO] 19:32:07:994 UMC/(15116:15125): Creando proceso nucleo.
+[INFO] 19:32:07:996 UMC/(15116:15125): Creado proceso nucleo.
+[INFO] 19:32:07:996 UMC/(15116:15125): Umc escuchando
+[INFO] 19:37:26:976 UMC/(15116:15125): Umc escuchando
+[INFO] 19:37:26:977 UMC/(15116:15125): Creando proceso nucleo.
+[INFO] 19:37:26:977 UMC/(15116:15125): Creado proceso nucleo.
+[INFO] 19:37:26:978 UMC/(15116:15125): Umc escuchando
+[INFO] 19:40:45:949 UMC/(15116:15125): Umc escuchando
+[INFO] 19:40:45:950 UMC/(15116:15125): Creando proceso nucleo.
+[INFO] 19:40:45:954 UMC/(15116:15125): Creado proceso nucleo.
+[INFO] 19:40:45:954 UMC/(15116:15125): Umc escuchando
+[INFO] 19:41:21:458 UMC/(15116:15849): Alocar Programa empezado
+[INFO] 19:41:51:598 UMC/(15116:15849): Programa alocado correctamente
+[INFO] 19:42:32:471 UMC/(15116:15849): Almacenar byte comenzado.
+
+[INFO] 19:42:41:244 UMC/(15116:15849): Almacenar byte terminado.
+
+[INFO] 19:42:44:338 UMC/(15116:15849): Almacenar byte comenzado.
+
+[INFO] 19:42:47:84 UMC/(15116:15849): Almacenar byte terminado.
+
+[INFO] 19:42:49:569 UMC/(15116:15849): Almacenar byte comenzado.
+
+[INFO] 19:42:50:570 UMC/(15116:15849): Almacenar byte terminado.
+
+[INFO] 19:42:53:161 UMC/(15116:15849): Almacenar byte comenzado.
+
+[INFO] 19:42:55:178 UMC/(15116:15849): Almacenar byte terminado.
+
+[INFO] 20:17:55:119 UMC/(17143:17143): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:19:09:749 UMC/(17192:17192): Conectando a Swap Puerto: 600 Direc: (null)
+[INFO] 20:19:09:750 UMC/(17192:17192): Conectado a Swap socket: 5
+[INFO] 20:20:50:143 UMC/(17266:17266): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:21:13:373 UMC/(17266:17266): Conectado a Swap socket: 5
+[INFO] 20:23:01:296 UMC/(17510:17510): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:23:14:798 UMC/(17510:17510): Conectado a Swap socket: 5
+[INFO] 20:24:46:273 UMC/(17695:17695): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:24:54:157 UMC/(17695:17695): Conectado a Swap socket: 5
+[INFO] 20:26:25:828 UMC/(17889:17889): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:26:26:663 UMC/(17889:17889): Conectado a Swap socket: 5
+[INFO] 20:28:36:456 UMC/(18008:18008): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:28:53:762 UMC/(18159:18159): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:28:56:27 UMC/(18159:18159): Conectado a Swap socket: 5
+[INFO] 20:37:32:517 UMC/(18406:18406): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:37:46:649 UMC/(18406:18406): Conectado a Swap socket: 5
+[INFO] 20:43:17:577 UMC/(18696:18696): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:43:18:299 UMC/(18696:18696): Conectado a Swap socket: 5
+[INFO] 20:44:40:364 UMC/(18759:18759): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:44:56:263 UMC/(18919:18919): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:44:56:917 UMC/(18919:18919): Conectado a Swap socket: 5
+[INFO] 20:47:06:71 UMC/(19107:19107): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:47:06:463 UMC/(19107:19107): Conectado a Swap socket: 5
+[INFO] 20:53:06:147 UMC/(19362:19362): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:53:07:141 UMC/(19362:19362): Conectado a Swap socket: 5
+[INFO] 20:54:47:460 UMC/(19605:19605): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 20:54:48:430 UMC/(19605:19605): Conectado a Swap socket: 5
+[INFO] 21:28:19:787 UMC/(19914:19914): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 21:28:20:524 UMC/(19914:19914): Conectado a Swap socket: 5
+[INFO] 21:40:45:11 UMC/(20160:20160): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 21:40:46:214 UMC/(20160:20160): Conectado a Swap socket: 5
+[INFO] 22:14:48:546 UMC/(20329:20329): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:15:31:292 UMC/(20364:20364): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:16:01:753 UMC/(20530:20530): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:16:03:310 UMC/(20530:20530): Conectado a Swap socket: 5
+[INFO] 22:18:13:3 UMC/(20633:20633): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:18:14:995 UMC/(20633:20633): Conectado a Swap socket: 5
+[INFO] 22:20:30:367 UMC/(20892:20892): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:20:31:282 UMC/(20892:20892): Conectado a Swap socket: 5
+[INFO] 22:42:04:784 UMC/(21177:21177): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:42:05:158 UMC/(21177:21177): Conectado a Swap socket: 5
+[INFO] 22:46:11:366 UMC/(21408:21408): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:46:11:992 UMC/(21408:21408): Conectado a Swap socket: 5
+[INFO] 22:51:34:903 UMC/(21644:21644): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:51:46:295 UMC/(21801:21801): Conectando a Swap Puerto: 0 Direc: (null)
+[INFO] 22:51:47:450 UMC/(21801:21801): Conectado a Swap socket: 5
+[INFO] 22:55:28:462 UMC/(22048:22048): Cargando parametros
+[INFO] 22:55:28:861 UMC/(22048:22048): Cargado parametros
+[INFO] 22:55:29:443 UMC/(22048:22048): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 22:55:29:858 UMC/(22048:22048): Conectado a Swap socket: 5
+[INFO] 22:58:02:458 UMC/(22209:22209): Cargando parametros
+[INFO] 23:28:30:592 UMC/(22964:22964): Cargando parametros
+[INFO] 23:28:31:119 UMC/(22964:22964): Cargado parametros
+[INFO] 23:28:32:652 UMC/(22964:22964): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 23:28:36:47 UMC/(22964:22964): Conectado a Swap socket: 5
+[INFO] 23:34:03:221 UMC/(23444:23444): Cargando parametros
+[INFO] 23:34:03:229 UMC/(23444:23444): Cargado parametros
+[INFO] 23:34:03:229 UMC/(23444:23444): Conectando a Swap Puerto: 6000 Direc: ¸XŽADAS_TLB=10
+[INFO] 23:34:24:633 UMC/(23483:23483): Cargando parametros
+[INFO] 23:34:40:497 UMC/(23483:23483): Cargado parametros
+[INFO] 23:34:42:387 UMC/(23483:23483): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 23:34:43:704 UMC/(23483:23483): Conectado a Swap socket: 5
+[INFO] 23:39:47:518 UMC/(23631:23631): Cargando parametros
+[INFO] 23:39:48:164 UMC/(23631:23631): Cargado parametros
+[INFO] 23:39:49:238 UMC/(23631:23631): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 23:39:52:541 UMC/(23631:23631): Conectado a Swap socket: 5
+[INFO] 23:40:59:23 UMC/(23894:23894): Cargando parametros
+[INFO] 23:40:59:25 UMC/(23894:23894): Cargado parametros
+[INFO] 23:40:59:25 UMC/(23894:23894): Conectando a Swap Puerto: 6000 Direc: ¸˜‹	ADAS_TLB=10
+[INFO] 23:41:09:157 UMC/(23989:23989): Cargando parametros
+[INFO] 23:41:09:157 UMC/(23989:23989): Cargado parametros
+[INFO] 23:41:09:157 UMC/(23989:23989): Conectando a Swap Puerto: 6000 Direc: ¸˜Ô	ADAS_TLB=10
+[INFO] 23:41:09:158 UMC/(23989:23989): Conectado a Swap socket: 5
+[INFO] 23:41:40:927 UMC/(24029:24029): Cargando parametros
+[INFO] 23:41:40:928 UMC/(24029:24029): Cargado parametros
+[INFO] 23:41:40:928 UMC/(24029:24029): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 23:41:55:341 UMC/(24198:24198): Cargando parametros
+[INFO] 23:41:55:345 UMC/(24198:24198): Cargado parametros
+[INFO] 23:41:55:345 UMC/(24198:24198): Conectando a Swap Puerto: 6000 Direc: ¸èT	ADAS_TLB=10
+[INFO] 23:41:55:346 UMC/(24198:24198): Conectado a Swap socket: 5
+[INFO] 23:44:25:246 UMC/(24439:24439): Cargando parametros
+[INFO] 23:44:25:246 UMC/(24439:24439): Cargado parametros
+[INFO] 23:44:25:246 UMC/(24439:24439): Conectando a Swap Puerto: 6000 Direc: ¸ADAS_TLB=10
+[INFO] 23:44:25:247 UMC/(24439:24439): Conectado a Swap socket: 5
+[INFO] 23:44:42:573 UMC/(24510:24510): Cargando parametros
+[INFO] 23:44:42:574 UMC/(24510:24510): Cargado parametros
+[INFO] 23:44:42:574 UMC/(24510:24510): Conectando a Swap Puerto: 6000 Direc: ¸(O	ADAS_TLB=10
+[INFO] 23:44:45:244 UMC/(24529:24529): Cargando parametros
+[INFO] 23:44:45:247 UMC/(24529:24529): Cargado parametros
+[INFO] 23:44:45:247 UMC/(24529:24529): Conectando a Swap Puerto: 6000 Direc: ¸HÃ	ADAS_TLB=10
+[INFO] 23:44:56:60 UMC/(24774:24774): Cargando parametros
+[INFO] 23:44:56:61 UMC/(24774:24774): Cargado parametros
+[INFO] 23:44:56:61 UMC/(24774:24774): Conectando a Swap Puerto: 6000 Direc: ¸¸ÔADAS_TLB=10
+[INFO] 23:44:56:61 UMC/(24774:24774): Conectado a Swap socket: 5
+[INFO] 23:46:37:491 UMC/(24960:24960): Cargando parametros
+[INFO] 23:46:37:491 UMC/(24960:24960): Cargado parametros
+[INFO] 23:46:37:491 UMC/(24960:24960): Conectando a Swap Puerto: 6000 Direc: ¸8ùADAS_TLB=10
+[INFO] 23:46:37:491 UMC/(24960:24960): Conectado a Swap socket: 5
+[INFO] 00:03:09:991 UMC/(25314:25314): Cargando parametros
+[INFO] 00:03:09:991 UMC/(25314:25314): Cargado parametros
+[INFO] 00:03:09:991 UMC/(25314:25314): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:03:17:715 UMC/(25351:25351): Cargando parametros
+[INFO] 00:03:17:715 UMC/(25351:25351): Cargado parametros
+[INFO] 00:03:17:715 UMC/(25351:25351): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:03:40:371 UMC/(25505:25505): Cargando parametros
+[INFO] 00:03:40:371 UMC/(25505:25505): Cargado parametros
+[INFO] 00:03:40:371 UMC/(25505:25505): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:03:40:371 UMC/(25505:25505): Conectado a Swap socket: 5
+[INFO] 00:05:19:461 UMC/(25666:25666): Cargando parametros
+[INFO] 00:05:19:461 UMC/(25666:25666): Cargado parametros
+[INFO] 00:05:19:461 UMC/(25666:25666): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:05:35:910 UMC/(25819:25819): Cargando parametros
+[INFO] 00:05:35:910 UMC/(25819:25819): Cargado parametros
+[INFO] 00:05:35:910 UMC/(25819:25819): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:05:35:910 UMC/(25819:25819): Conectado a Swap socket: 5
+[INFO] 00:07:39:882 UMC/(25909:25909): Cargando parametros
+[INFO] 00:07:39:883 UMC/(25909:25909): Cargado parametros
+[INFO] 00:07:39:883 UMC/(25909:25909): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:07:39:883 UMC/(25909:25909): Conectado a Swap socket: 5
+[INFO] 00:12:27:77 UMC/(26326:26326): Cargando parametros
+[INFO] 00:12:27:77 UMC/(26326:26326): Cargado parametros
+[INFO] 00:12:27:77 UMC/(26326:26326): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:12:27:78 UMC/(26326:26326): Conectado a Swap socket: 5
+[INFO] 00:14:53:24 UMC/(26583:26583): Cargando parametros
+[INFO] 00:14:53:25 UMC/(26583:26583): Cargado parametros
+[INFO] 00:14:53:25 UMC/(26583:26583): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:14:53:25 UMC/(26583:26583): Conectado a Swap socket: 5
+[INFO] 00:22:21:968 UMC/(26838:26838): Cargando parametros
+[INFO] 00:22:21:969 UMC/(26838:26838): Cargado parametros
+[INFO] 00:22:21:969 UMC/(26838:26838): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:22:21:969 UMC/(26838:26838): Conectado a Swap socket: 5
+[INFO] 00:26:34:689 UMC/(27294:27294): Cargando parametros
+[INFO] 00:26:34:690 UMC/(27294:27294): Cargado parametros
+[INFO] 00:26:34:690 UMC/(27294:27294): Conectando a Swap Puerto: 6000 Direc: ØèADAS_TLB=10
+[INFO] 00:26:34:690 UMC/(27294:27294): Conectado a Swap socket: 5
+[INFO] 00:27:54:4 UMC/(27384:27384): Cargando parametros
+[INFO] 00:27:54:5 UMC/(27384:27384): Cargado parametros
+[INFO] 00:27:54:5 UMC/(27384:27384): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:28:04:960 UMC/(27539:27539): Cargando parametros
+[INFO] 00:28:04:960 UMC/(27539:27539): Cargado parametros
+[INFO] 00:28:04:960 UMC/(27539:27539): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 00:28:04:960 UMC/(27539:27539): Conectado a Swap socket: 5
+[INFO] 00:32:03:303 UMC/(27691:27691): Cargando parametros
+[INFO] 00:32:03:305 UMC/(27691:27691): Cargado parametros
+[INFO] 00:32:03:305 UMC/(27691:27691): Inicializando memoria
+[INFO] 00:32:03:305 UMC/(27691:27691): Memoria Inicializada
+[INFO] 00:32:03:305 UMC/(27691:27691): Conectando a Swap Puerto: 6000 Direc: ¸H­ADAS_TLB=10
+[INFO] 00:40:32:60 UMC/(27952:27952): Cargando parametros
+[INFO] 00:40:32:61 UMC/(27952:27952): Cargado parametros
+[INFO] 00:40:32:61 UMC/(27952:27952): Inicializando memoria
+[INFO] 00:40:32:61 UMC/(27952:27952): Memoria Inicializada
+[INFO] 00:40:32:61 UMC/(27952:27952): Conectando a Swap Puerto: 6000 Direc: ¸˜,	ADAS_TLB=10
+[INFO] 00:40:40:941 UMC/(28139:28139): Cargando parametros
+[INFO] 00:40:40:948 UMC/(28139:28139): Cargado parametros
+[INFO] 00:40:40:948 UMC/(28139:28139): Inicializando memoria
+[INFO] 00:40:40:948 UMC/(28139:28139): Memoria Inicializada
+[INFO] 00:40:40:948 UMC/(28139:28139): Conectando a Swap Puerto: 6000 Direc: ¸8Ç	ADAS_TLB=10
+[INFO] 00:40:40:948 UMC/(28139:28139): Conectado a Swap socket: 6
+[INFO] 00:40:40:948 UMC/(28139:28139): Creando proceso consola
+[INFO] 00:40:40:948 UMC/(28139:28139): Proceso consola creado
+[INFO] 00:40:40:948 UMC/(28139:28139): Creando proceso umcServer
+[INFO] 00:40:40:948 UMC/(28139:28139): Proceso Creado
+[INFO] 00:40:40:952 UMC/(28139:28143): Umc escuchando
+[INFO] 00:40:48:670 UMC/(28139:28143): Umc escuchando
+[INFO] 00:40:48:670 UMC/(28139:28143): Creando proceso nucleo.
+[INFO] 00:40:48:670 UMC/(28139:28143): Creado proceso nucleo.
+[INFO] 00:40:48:670 UMC/(28139:28143): Umc escuchando
+[INFO] 00:41:40:237 UMC/(28139:28143): Umc escuchando
+[INFO] 00:41:40:239 UMC/(28139:28143): Creando proceso cpu.
+[INFO] 00:41:40:239 UMC/(28139:28143): Creano proceso cpu.
+[INFO] 00:41:40:239 UMC/(28139:28143): Umc escuchando
+[INFO] 00:44:40:444 UMC/(28582:28582): Cargando parametros
+[INFO] 00:44:40:447 UMC/(28582:28582): Cargado parametros
+[INFO] 00:44:40:447 UMC/(28582:28582): Inicializando memoria
+[INFO] 00:44:40:447 UMC/(28582:28582): Memoria Inicializada
+[INFO] 00:44:40:447 UMC/(28582:28582): Conectando a Swap Puerto: 6000 Direc: ¸ˆÓ	ADAS_TLB=10
+[INFO] 00:44:40:449 UMC/(28582:28582): Conectado a Swap socket: 6
+[INFO] 00:44:40:449 UMC/(28582:28582): Creando proceso consola
+[INFO] 00:44:40:449 UMC/(28582:28582): Proceso consola creado
+[INFO] 00:44:40:449 UMC/(28582:28582): Creando proceso umcServer
+[INFO] 00:44:40:450 UMC/(28582:28582): Proceso Creado
+[INFO] 00:44:40:455 UMC/(28582:28586): Umc escuchando
+[INFO] 00:44:45:682 UMC/(28582:28586): Umc escuchando
+[INFO] 00:44:45:682 UMC/(28582:28586): Creando proceso nucleo.
+[INFO] 00:44:45:682 UMC/(28582:28586): Creado proceso nucleo.
+[INFO] 00:44:45:682 UMC/(28582:28586): Umc escuchando
+[INFO] 00:44:51:245 UMC/(28582:28586): Umc escuchando
+[INFO] 00:44:51:254 UMC/(28582:28586): Creando proceso cpu.
+[INFO] 00:44:51:254 UMC/(28582:28586): Creano proceso cpu.
+[INFO] 00:44:51:254 UMC/(28582:28586): Umc escuchando
+[INFO] 00:46:10:292 UMC/(28880:28880): Cargando parametros
+[INFO] 00:46:10:296 UMC/(28880:28880): Cargado parametros
+[INFO] 00:46:10:296 UMC/(28880:28880): Inicializando memoria
+[INFO] 00:46:10:296 UMC/(28880:28880): Memoria Inicializada
+[INFO] 00:46:10:296 UMC/(28880:28880): Conectando a Swap Puerto: 6000 Direc: ¸XÌADAS_TLB=10
+[INFO] 00:46:21:168 UMC/(29064:29064): Cargando parametros
+[INFO] 00:46:21:170 UMC/(29064:29064): Cargado parametros
+[INFO] 00:46:21:170 UMC/(29064:29064): Inicializando memoria
+[INFO] 00:46:21:170 UMC/(29064:29064): Memoria Inicializada
+[INFO] 00:46:21:170 UMC/(29064:29064): Conectando a Swap Puerto: 6000 Direc: ¸Ø¦ADAS_TLB=10
+[INFO] 00:46:21:171 UMC/(29064:29064): Conectado a Swap socket: 6
+[INFO] 00:46:21:171 UMC/(29064:29064): Creando proceso consola
+[INFO] 00:46:21:171 UMC/(29064:29064): Proceso consola creado
+[INFO] 00:46:21:171 UMC/(29064:29064): Creando proceso umcServer
+[INFO] 00:46:21:171 UMC/(29064:29064): Proceso Creado
+[INFO] 00:46:21:171 UMC/(29064:29068): Umc escuchando
+[INFO] 00:46:25:369 UMC/(29064:29068): Umc escuchando
+[INFO] 00:46:25:369 UMC/(29064:29068): Creando proceso nucleo.
+[INFO] 00:46:25:369 UMC/(29064:29068): Creado proceso nucleo.
+[INFO] 00:46:25:369 UMC/(29064:29068): Umc escuchando
+[INFO] 00:46:32:138 UMC/(29064:29164): Alocar Programa empezado
+[INFO] 00:46:32:138 UMC/(29064:29164): Programa alocado correctamente
+[INFO] 00:46:32:178 UMC/(29064:29164): Almacenar byte comenzado.
+
+[INFO] 00:46:32:262 UMC/(29064:29164): Almacenar byte terminado.
+
+[INFO] 00:46:32:262 UMC/(29064:29164): Almacenar byte comenzado.
+
+[INFO] 00:46:32:341 UMC/(29064:29164): Almacenar byte terminado.
+
+[INFO] 00:46:32:341 UMC/(29064:29164): Almacenar byte comenzado.
+
+[INFO] 00:46:32:422 UMC/(29064:29164): Almacenar byte terminado.
+
+[INFO] 00:46:32:422 UMC/(29064:29164): Almacenar byte comenzado.
+
+[INFO] 00:46:32:505 UMC/(29064:29164): Almacenar byte terminado.
+
+[INFO] 00:48:09:980 UMC/(29368:29368): Cargando parametros
+[INFO] 00:48:09:981 UMC/(29368:29368): Cargado parametros
+[INFO] 00:48:09:981 UMC/(29368:29368): Inicializando memoria
+[INFO] 00:48:09:981 UMC/(29368:29368): Memoria Inicializada
+[INFO] 00:48:09:981 UMC/(29368:29368): Conectando a Swap Puerto: 6000 Direc: ¸xÏADAS_TLB=10
+[INFO] 00:48:19:564 UMC/(29553:29553): Cargando parametros
+[INFO] 00:48:19:564 UMC/(29553:29553): Cargado parametros
+[INFO] 00:48:19:564 UMC/(29553:29553): Inicializando memoria
+[INFO] 00:48:19:564 UMC/(29553:29553): Memoria Inicializada
+[INFO] 00:48:19:565 UMC/(29553:29553): Conectando a Swap Puerto: 6000 Direc: ¸ˆàADAS_TLB=10
+[INFO] 00:48:19:565 UMC/(29553:29553): Conectado a Swap socket: 6
+[INFO] 00:48:19:565 UMC/(29553:29553): Creando proceso consola
+[INFO] 00:48:19:565 UMC/(29553:29553): Proceso consola creado
+[INFO] 00:48:19:565 UMC/(29553:29553): Creando proceso umcServer
+[INFO] 00:48:19:565 UMC/(29553:29553): Proceso Creado
+[INFO] 00:48:19:565 UMC/(29553:29557): Umc escuchando
+[INFO] 00:48:27:298 UMC/(29553:29557): Umc escuchando
+[INFO] 00:48:27:298 UMC/(29553:29557): Creando proceso nucleo.
+[INFO] 00:48:27:298 UMC/(29553:29557): Creado proceso nucleo.
+[INFO] 00:48:27:298 UMC/(29553:29557): Umc escuchando
+[INFO] 00:48:57:999 UMC/(29553:29557): Umc escuchando
+[INFO] 00:48:57:999 UMC/(29553:29557): Creando proceso nucleo.
+[INFO] 00:48:57:999 UMC/(29553:29557): Creado proceso nucleo.
+[INFO] 00:48:57:999 UMC/(29553:29557): Umc escuchando
+[INFO] 00:49:04:990 UMC/(29553:29839): Alocar Programa empezado
+[INFO] 00:49:04:990 UMC/(29553:29839): Programa alocado correctamente
+[INFO] 00:49:05:30 UMC/(29553:29839): Almacenar byte comenzado.
+
+[INFO] 00:49:05:109 UMC/(29553:29839): Almacenar byte terminado.
+
+[INFO] 00:49:05:109 UMC/(29553:29839): Almacenar byte comenzado.
+
+[INFO] 00:49:05:230 UMC/(29553:29839): Almacenar byte terminado.
+
+[INFO] 00:49:05:230 UMC/(29553:29839): Almacenar byte comenzado.
+
+[INFO] 00:49:05:350 UMC/(29553:29839): Almacenar byte terminado.
+
+[INFO] 00:49:05:350 UMC/(29553:29839): Almacenar byte comenzado.
+
+[INFO] 00:49:05:470 UMC/(29553:29839): Almacenar byte terminado.
+
+[INFO] 00:52:46:719 UMC/(30311:30311): Cargando parametros
+[INFO] 00:52:46:721 UMC/(30311:30311): Cargado parametros
+[INFO] 00:52:46:721 UMC/(30311:30311): Inicializando memoria
+[INFO] 00:52:46:721 UMC/(30311:30311): Memoria Inicializada
+[INFO] 00:52:46:721 UMC/(30311:30311): Conectando a Swap Puerto: 6000 Direc: ¸˜rADAS_TLB=10
+[INFO] 00:52:46:721 UMC/(30311:30311): Conectado a Swap socket: 6
+[INFO] 00:52:46:721 UMC/(30311:30311): Creando proceso consola
+[INFO] 00:52:46:721 UMC/(30311:30311): Proceso consola creado
+[INFO] 00:52:46:721 UMC/(30311:30311): Creando proceso umcServer
+[INFO] 00:52:46:721 UMC/(30311:30311): Proceso Creado
+[INFO] 00:52:46:727 UMC/(30311:30315): Umc escuchando
+[INFO] 00:52:51:871 UMC/(30311:30315): Umc escuchando
+[INFO] 00:52:51:871 UMC/(30311:30315): Creando proceso nucleo.
+[INFO] 00:52:51:871 UMC/(30311:30315): Creado proceso nucleo.
+[INFO] 00:52:51:871 UMC/(30311:30315): Umc escuchando
+[INFO] 00:53:55:647 UMC/(30311:30413): Alocar Programa empezado
+[INFO] 00:53:55:647 UMC/(30311:30413): Programa alocado correctamente
+[INFO] 00:53:55:685 UMC/(30311:30413): Almacenar byte comenzado.
+
+[INFO] 00:53:55:765 UMC/(30311:30413): Almacenar byte terminado.
+
+[INFO] 00:53:55:765 UMC/(30311:30413): Almacenar byte comenzado.
+
+[INFO] 00:53:55:887 UMC/(30311:30413): Almacenar byte terminado.
+
+[INFO] 00:53:55:887 UMC/(30311:30413): Almacenar byte comenzado.
+
+[INFO] 00:53:56:6 UMC/(30311:30413): Almacenar byte terminado.
+
+[INFO] 00:53:56:6 UMC/(30311:30413): Almacenar byte comenzado.
+
+[INFO] 00:53:56:127 UMC/(30311:30413): Almacenar byte terminado.
+
+[INFO] 10:12:41:82 UMC/(2612:2612): Cargando parametros
+[INFO] 10:12:41:106 UMC/(2612:2612): Cargado parametros
+[INFO] 10:12:41:106 UMC/(2612:2612): Inicializando memoria
+[INFO] 10:12:41:106 UMC/(2612:2612): Memoria Inicializada
+[INFO] 10:12:41:106 UMC/(2612:2612): Conectando a Swap Puerto: 6000 Direc: ¸øU	ADAS_TLB=10
+[INFO] 10:12:52:361 UMC/(2815:2815): Cargando parametros
+[INFO] 10:12:52:364 UMC/(2815:2815): Cargado parametros
+[INFO] 10:12:52:364 UMC/(2815:2815): Inicializando memoria
+[INFO] 10:12:52:364 UMC/(2815:2815): Memoria Inicializada
+[INFO] 10:12:52:364 UMC/(2815:2815): Conectando a Swap Puerto: 6000 Direc: ¸ˆ9ADAS_TLB=10
+[INFO] 10:12:52:366 UMC/(2815:2815): Conectado a Swap socket: 6
+[INFO] 10:12:52:366 UMC/(2815:2815): Creando proceso consola
+[INFO] 10:12:52:366 UMC/(2815:2815): Proceso consola creado
+[INFO] 10:12:52:366 UMC/(2815:2815): Creando proceso umcServer
+[INFO] 10:12:52:366 UMC/(2815:2815): Proceso Creado
+[INFO] 10:12:52:424 UMC/(2815:2817): Umc escuchando
+[INFO] 10:13:00:524 UMC/(2815:2817): Umc escuchando
+[INFO] 10:13:00:524 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:13:00:524 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:13:00:525 UMC/(2815:2817): Umc escuchando
+[INFO] 10:13:27:372 UMC/(2815:2817): Umc escuchando
+[INFO] 10:13:27:372 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:13:27:372 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:13:27:373 UMC/(2815:2817): Umc escuchando
+[INFO] 10:13:53:808 UMC/(2815:2817): Umc escuchando
+[INFO] 10:13:53:808 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:13:53:808 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:13:53:808 UMC/(2815:2817): Umc escuchando
+[INFO] 10:15:43:450 UMC/(2815:2817): Umc escuchando
+[INFO] 10:15:43:450 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:15:43:450 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:15:43:450 UMC/(2815:2817): Umc escuchando
+[INFO] 10:15:58:152 UMC/(2815:2817): Umc escuchando
+[INFO] 10:15:58:152 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:15:58:152 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:15:58:153 UMC/(2815:2817): Umc escuchando
+[INFO] 10:17:08:920 UMC/(2815:2817): Umc escuchando
+[INFO] 10:17:08:921 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:17:08:921 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:17:08:921 UMC/(2815:2817): Umc escuchando
+[INFO] 10:17:35:908 UMC/(2815:2817): Umc escuchando
+[INFO] 10:17:35:908 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:17:35:908 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:17:35:908 UMC/(2815:2817): Umc escuchando
+[INFO] 10:18:14:876 UMC/(2815:2817): Umc escuchando
+[INFO] 10:18:14:876 UMC/(2815:2817): Creando proceso cpu.
+[INFO] 10:18:14:876 UMC/(2815:2817): Creano proceso cpu.
+[INFO] 10:18:14:877 UMC/(2815:2817): Umc escuchando
+[INFO] 10:18:47:698 UMC/(2815:3418): Almacenar byte comenzado
+[INFO] 10:19:18:177 UMC/(3533:3533): Cargando parametros
+[INFO] 10:19:18:177 UMC/(3533:3533): Cargado parametros
+[INFO] 10:19:18:177 UMC/(3533:3533): Inicializando memoria
+[INFO] 10:19:18:177 UMC/(3533:3533): Memoria Inicializada
+[INFO] 10:19:18:177 UMC/(3533:3533): Conectando a Swap Puerto: 6000 Direc: ¸(–ADAS_TLB=10
+[INFO] 10:19:27:732 UMC/(3720:3720): Cargando parametros
+[INFO] 10:19:27:741 UMC/(3720:3720): Cargado parametros
+[INFO] 10:19:27:741 UMC/(3720:3720): Inicializando memoria
+[INFO] 10:19:27:741 UMC/(3720:3720): Memoria Inicializada
+[INFO] 10:19:27:741 UMC/(3720:3720): Conectando a Swap Puerto: 6000 Direc: ¸Hb	ADAS_TLB=10
+[INFO] 10:19:27:742 UMC/(3720:3720): Conectado a Swap socket: 6
+[INFO] 10:19:27:742 UMC/(3720:3720): Creando proceso consola
+[INFO] 10:19:27:742 UMC/(3720:3720): Proceso consola creado
+[INFO] 10:19:27:742 UMC/(3720:3720): Creando proceso umcServer
+[INFO] 10:19:27:742 UMC/(3720:3720): Proceso Creado
+[INFO] 10:19:27:743 UMC/(3720:3722): Umc escuchando
+[INFO] 10:19:33:891 UMC/(3720:3722): Umc escuchando
+[INFO] 10:19:33:891 UMC/(3720:3722): Creando proceso cpu.
+[INFO] 10:19:33:892 UMC/(3720:3722): Creano proceso cpu.
+[INFO] 10:19:33:893 UMC/(3720:3722): Umc escuchando
+[INFO] 10:20:08:970 UMC/(3720:3805): Almacenar byte comenzado
+[INFO] 10:21:59:529 UMC/(3908:3908): Cargando parametros
+[INFO] 10:21:59:530 UMC/(3908:3908): Cargado parametros
+[INFO] 10:21:59:530 UMC/(3908:3908): Inicializando memoria
+[INFO] 10:21:59:530 UMC/(3908:3908): Memoria Inicializada
+[INFO] 10:21:59:530 UMC/(3908:3908): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 10:21:59:530 UMC/(3908:3908): Conectado a Swap socket: 6
+[INFO] 10:21:59:530 UMC/(3908:3908): Creando proceso consola
+[INFO] 10:21:59:558 UMC/(3908:3908): Proceso consola creado
+[INFO] 10:21:59:558 UMC/(3908:3908): Creando proceso umcServer
+[INFO] 10:21:59:563 UMC/(3908:3908): Proceso Creado
+[INFO] 10:21:59:563 UMC/(3908:4021): Umc escuchando
+[INFO] 10:22:06:402 UMC/(3908:4021): Umc escuchando
+[INFO] 10:22:06:402 UMC/(3908:4021): Creando proceso cpu.
+[INFO] 10:22:06:407 UMC/(3908:4021): Creano proceso cpu.
+[INFO] 10:22:06:407 UMC/(3908:4021): Umc escuchando
+[INFO] 10:22:55:546 UMC/(3908:4099): Almacenar byte comenzado
+[INFO] 10:24:13:136 UMC/(4353:4353): Cargando parametros
+[INFO] 10:24:13:150 UMC/(4353:4353): Cargado parametros
+[INFO] 10:24:13:150 UMC/(4353:4353): Inicializando memoria
+[INFO] 10:24:13:150 UMC/(4353:4353): Memoria Inicializada
+[INFO] 10:24:13:150 UMC/(4353:4353): Conectando a Swap Puerto: 6000 Direc: ¸h™ADAS_TLB=10
+[INFO] 10:24:13:150 UMC/(4353:4353): Conectado a Swap socket: 6
+[INFO] 10:24:13:150 UMC/(4353:4353): Creando proceso consola
+[INFO] 10:24:13:150 UMC/(4353:4353): Proceso consola creado
+[INFO] 10:24:13:150 UMC/(4353:4353): Creando proceso umcServer
+[INFO] 10:24:13:150 UMC/(4353:4353): Proceso Creado
+[INFO] 10:24:13:151 UMC/(4353:4358): Umc escuchando
+[INFO] 10:24:19:334 UMC/(4353:4358): Umc escuchando
+[INFO] 10:24:19:334 UMC/(4353:4358): Creando proceso cpu.
+[INFO] 10:24:19:334 UMC/(4353:4358): Creano proceso cpu.
+[INFO] 10:24:19:335 UMC/(4353:4358): Umc escuchando
+[INFO] 10:24:25:477 UMC/(4353:4437): Almacenar byte comenzado
+[INFO] 10:24:44:637 UMC/(4523:4523): Cargando parametros
+[INFO] 10:24:44:637 UMC/(4523:4523): Cargado parametros
+[INFO] 10:24:44:637 UMC/(4523:4523): Inicializando memoria
+[INFO] 10:24:44:637 UMC/(4523:4523): Memoria Inicializada
+[INFO] 10:24:44:638 UMC/(4523:4523): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 10:25:12:338 UMC/(4695:4695): Cargando parametros
+[INFO] 10:25:12:339 UMC/(4695:4695): Cargado parametros
+[INFO] 10:25:12:339 UMC/(4695:4695): Inicializando memoria
+[INFO] 10:25:12:339 UMC/(4695:4695): Memoria Inicializada
+[INFO] 10:25:12:339 UMC/(4695:4695): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 10:25:12:339 UMC/(4695:4695): Conectado a Swap socket: 6
+[INFO] 10:25:12:339 UMC/(4695:4695): Creando proceso consola
+[INFO] 10:25:12:368 UMC/(4695:4695): Proceso consola creado
+[INFO] 10:25:12:368 UMC/(4695:4695): Creando proceso umcServer
+[INFO] 10:25:12:374 UMC/(4695:4695): Proceso Creado
+[INFO] 10:25:12:375 UMC/(4695:4702): Umc escuchando
+[INFO] 10:25:27:759 UMC/(4695:4702): Umc escuchando
+[INFO] 10:25:27:760 UMC/(4695:4702): Creando proceso cpu.
+[INFO] 10:25:27:765 UMC/(4695:4702): Creano proceso cpu.
+[INFO] 10:25:27:765 UMC/(4695:4702): Umc escuchando
+[INFO] 10:26:06:50 UMC/(4695:4778): Almacenar byte comenzado
+[INFO] 10:28:01:153 UMC/(5047:5047): Cargando parametros
+[INFO] 10:28:01:162 UMC/(5047:5047): Cargado parametros
+[INFO] 10:28:01:162 UMC/(5047:5047): Inicializando memoria
+[INFO] 10:28:01:162 UMC/(5047:5047): Memoria Inicializada
+[INFO] 10:28:01:162 UMC/(5047:5047): Conectando a Swap Puerto: 6000 Direc: ¸h–ADAS_TLB=10
+[INFO] 10:28:01:163 UMC/(5047:5047): Conectado a Swap socket: 6
+[INFO] 10:28:01:163 UMC/(5047:5047): Creando proceso consola
+[INFO] 10:28:01:163 UMC/(5047:5047): Proceso consola creado
+[INFO] 10:28:01:163 UMC/(5047:5047): Creando proceso umcServer
+[INFO] 10:28:01:163 UMC/(5047:5047): Proceso Creado
+[INFO] 10:28:01:166 UMC/(5047:5052): Umc escuchando
+[INFO] 10:28:07:85 UMC/(5047:5052): Umc escuchando
+[INFO] 10:28:07:85 UMC/(5047:5052): Creando proceso cpu.
+[INFO] 10:28:07:86 UMC/(5047:5052): Creano proceso cpu.
+[INFO] 10:28:07:86 UMC/(5047:5052): Umc escuchando
+[INFO] 10:28:15:682 UMC/(5047:5130): Almacenar byte comenzado
+[INFO] 10:28:15:682 UMC/(5047:5130): Almacenar byte terminado
+[INFO] 10:28:28:413 UMC/(5047:5130): Almacenar byte comenzado
+[INFO] 10:28:28:450 UMC/(5047:5130): Almacenar byte terminado
+[INFO] 10:28:31:413 UMC/(5047:5130): Almacenar byte comenzado
+[INFO] 10:28:31:450 UMC/(5047:5130): Almacenar byte terminado
+[INFO] 10:28:46:35 UMC/(5047:5130): Almacenar byte comenzado
+[INFO] 10:28:46:74 UMC/(5047:5130): Almacenar byte terminado
+[INFO] 10:30:07:950 UMC/(5409:5409): Cargando parametros
+[INFO] 10:30:07:951 UMC/(5409:5409): Cargado parametros
+[INFO] 10:30:07:951 UMC/(5409:5409): Inicializando memoria
+[INFO] 10:30:07:951 UMC/(5409:5409): Memoria Inicializada
+[INFO] 10:30:07:951 UMC/(5409:5409): Conectando a Swap Puerto: 6000 Direc: ¸¨²	ADAS_TLB=10
+[INFO] 10:30:07:951 UMC/(5409:5409): Conectado a Swap socket: 6
+[INFO] 10:30:07:951 UMC/(5409:5409): Creando proceso consola
+[INFO] 10:30:07:951 UMC/(5409:5409): Proceso consola creado
+[INFO] 10:30:07:951 UMC/(5409:5409): Creando proceso umcServer
+[INFO] 10:30:07:951 UMC/(5409:5409): Proceso Creado
+[INFO] 10:30:07:953 UMC/(5409:5413): Umc escuchando
+[INFO] 10:30:14:578 UMC/(5409:5413): Umc escuchando
+[INFO] 10:30:14:579 UMC/(5409:5413): Creando proceso nucleo.
+[INFO] 10:30:14:579 UMC/(5409:5413): Creado proceso nucleo.
+[INFO] 10:30:14:579 UMC/(5409:5413): Umc escuchando
+[INFO] 10:30:21:477 UMC/(5409:5572): Alocar Programa empezado
+[INFO] 10:30:21:478 UMC/(5409:5572): Programa alocado correctamente
+[INFO] 10:30:21:518 UMC/(5409:5572): Almacenar byte comenzado.
+
+[INFO] 10:30:21:598 UMC/(5409:5572): Almacenar byte terminado.
+
+[INFO] 10:30:21:598 UMC/(5409:5572): Almacenar byte comenzado.
+
+[INFO] 10:30:21:726 UMC/(5409:5572): Almacenar byte terminado.
+
+[INFO] 10:30:21:726 UMC/(5409:5572): Almacenar byte comenzado.
+
+[INFO] 10:30:21:846 UMC/(5409:5572): Almacenar byte terminado.
+
+[INFO] 10:30:21:846 UMC/(5409:5572): Almacenar byte comenzado.
+
+[INFO] 10:30:21:966 UMC/(5409:5572): Almacenar byte terminado.
+
+[INFO] 10:32:41:810 UMC/(5409:5413): Umc escuchando
+[INFO] 10:32:41:810 UMC/(5409:5413): Creando proceso nucleo.
+[INFO] 10:32:41:810 UMC/(5409:5413): Creado proceso nucleo.
+[INFO] 10:32:41:810 UMC/(5409:5413): Umc escuchando
+[INFO] 10:32:48:269 UMC/(5409:5795): Alocar Programa empezado
+[INFO] 10:32:48:451 UMC/(5409:5795): Programa alocado correctamente
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte comenzado.
+
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte terminado.
+
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte comenzado.
+
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte terminado.
+
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte comenzado.
+
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte terminado.
+
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte comenzado.
+
+[INFO] 10:32:48:451 UMC/(5409:5795): Almacenar byte terminado.
+
+[INFO] 10:33:44:863 UMC/(5409:5413): Umc escuchando
+[INFO] 10:33:44:863 UMC/(5409:5413): Creando proceso nucleo.
+[INFO] 10:33:44:863 UMC/(5409:5413): Creado proceso nucleo.
+[INFO] 10:33:44:864 UMC/(5409:5413): Umc escuchando
+[INFO] 10:34:25:912 UMC/(6343:6343): Cargando parametros
+[INFO] 10:34:25:917 UMC/(6343:6343): Cargado parametros
+[INFO] 10:34:25:917 UMC/(6343:6343): Inicializando memoria
+[INFO] 10:34:25:918 UMC/(6343:6343): Memoria Inicializada
+[INFO] 10:34:25:918 UMC/(6343:6343): Conectando a Swap Puerto: 6000 Direc: ¸xC	ADAS_TLB=10
+[INFO] 10:34:25:918 UMC/(6343:6343): Conectado a Swap socket: 6
+[INFO] 10:34:25:918 UMC/(6343:6343): Creando proceso consola
+[INFO] 10:34:25:918 UMC/(6343:6343): Proceso consola creado
+[INFO] 10:34:25:918 UMC/(6343:6343): Creando proceso umcServer
+[INFO] 10:34:25:918 UMC/(6343:6343): Proceso Creado
+[INFO] 10:34:25:918 UMC/(6343:6348): Umc escuchando
+[INFO] 10:34:29:651 UMC/(6343:6348): Umc escuchando
+[INFO] 10:34:29:651 UMC/(6343:6348): Creando proceso nucleo.
+[INFO] 10:34:29:652 UMC/(6343:6348): Creado proceso nucleo.
+[INFO] 10:34:29:652 UMC/(6343:6348): Umc escuchando
+[INFO] 10:35:26:686 UMC/(6712:6712): Cargando parametros
+[INFO] 10:35:26:688 UMC/(6712:6712): Cargado parametros
+[INFO] 10:35:26:688 UMC/(6712:6712): Inicializando memoria
+[INFO] 10:35:26:688 UMC/(6712:6712): Memoria Inicializada
+[INFO] 10:35:26:688 UMC/(6712:6712): Conectando a Swap Puerto: 6000 Direc: ¸Ø
+ADAS_TLB=10
+[INFO] 10:35:26:688 UMC/(6712:6712): Conectado a Swap socket: 6
+[INFO] 10:35:26:688 UMC/(6712:6712): Creando proceso consola
+[INFO] 10:35:26:688 UMC/(6712:6712): Proceso consola creado
+[INFO] 10:35:26:688 UMC/(6712:6712): Creando proceso umcServer
+[INFO] 10:35:26:689 UMC/(6712:6712): Proceso Creado
+[INFO] 10:35:26:691 UMC/(6712:6714): Umc escuchando
+[INFO] 10:35:32:761 UMC/(6712:6714): Umc escuchando
+[INFO] 10:35:32:761 UMC/(6712:6714): Creando proceso nucleo.
+[INFO] 10:35:32:761 UMC/(6712:6714): Creado proceso nucleo.
+[INFO] 10:35:32:762 UMC/(6712:6714): Umc escuchando
+[INFO] 10:35:51:502 UMC/(6712:6796): Alocar Programa empezado
+[INFO] 10:35:51:505 UMC/(6712:6796): Programa alocado correctamente
+[INFO] 10:35:51:542 UMC/(6712:6796): Almacenar byte comenzado.
+
+[INFO] 10:35:51:621 UMC/(6712:6796): Almacenar byte terminado.
+
+[INFO] 10:35:51:621 UMC/(6712:6796): Almacenar byte comenzado.
+
+[INFO] 10:35:51:742 UMC/(6712:6796): Almacenar byte terminado.
+
+[INFO] 10:35:51:742 UMC/(6712:6796): Almacenar byte comenzado.
+
+[INFO] 10:35:51:862 UMC/(6712:6796): Almacenar byte terminado.
+
+[INFO] 10:35:51:862 UMC/(6712:6796): Almacenar byte comenzado.
+
+[INFO] 10:35:51:982 UMC/(6712:6796): Almacenar byte terminado.
+
+[INFO] 13:07:45:406 UMC/(7356:7356): Cargando parametros
+[INFO] 13:07:45:407 UMC/(7356:7356): Cargado parametros
+[INFO] 13:07:45:407 UMC/(7356:7356): Inicializando memoria
+[INFO] 13:07:45:407 UMC/(7356:7356): Memoria Inicializada
+[INFO] 13:07:45:407 UMC/(7356:7356): Conectando a Swap Puerto: 6000 Direc: ¸HÕADAS_TLB=10
+[INFO] 13:07:45:407 UMC/(7356:7356): Conectado a Swap socket: 6
+[INFO] 13:07:45:407 UMC/(7356:7356): Creando proceso consola
+[INFO] 13:07:45:407 UMC/(7356:7356): Proceso consola creado
+[INFO] 13:07:45:407 UMC/(7356:7356): Creando proceso umcServer
+[INFO] 13:07:45:407 UMC/(7356:7356): Proceso Creado
+[INFO] 13:07:45:408 UMC/(7356:7361): Umc escuchando
+[INFO] 13:08:00:724 UMC/(7356:7361): Umc escuchando
+[INFO] 13:08:00:725 UMC/(7356:7361): Creando proceso nucleo.
+[INFO] 13:08:00:725 UMC/(7356:7361): Creado proceso nucleo.
+[INFO] 13:08:00:725 UMC/(7356:7361): Umc escuchando
+[INFO] 13:08:16:339 UMC/(7356:7361): Umc escuchando
+[INFO] 13:08:16:339 UMC/(7356:7361): Creando proceso nucleo.
+[INFO] 13:08:16:340 UMC/(7356:7361): Creado proceso nucleo.
+[INFO] 13:08:16:340 UMC/(7356:7361): Umc escuchando
+[INFO] 13:08:40:605 UMC/(7356:7430): Alocar Programa empezado
+[INFO] 13:08:40:607 UMC/(7356:7430): Programa alocado correctamente
+[INFO] 13:08:40:645 UMC/(7356:7430): Almacenar byte comenzado.
+
+[INFO] 13:08:40:725 UMC/(7356:7430): Almacenar byte terminado.
+
+[INFO] 13:08:40:725 UMC/(7356:7430): Almacenar byte comenzado.
+
+[INFO] 13:08:40:846 UMC/(7356:7430): Almacenar byte terminado.
+
+[INFO] 13:08:40:846 UMC/(7356:7430): Almacenar byte comenzado.
+
+[INFO] 13:08:40:966 UMC/(7356:7430): Almacenar byte terminado.
+
+[INFO] 13:08:40:966 UMC/(7356:7430): Almacenar byte comenzado.
+
+[INFO] 13:08:41:86 UMC/(7356:7430): Almacenar byte terminado.
+
+[INFO] 13:12:02:998 UMC/(7356:7361): Umc escuchando
+[INFO] 13:12:02:998 UMC/(7356:7361): Creando proceso nucleo.
+[INFO] 13:12:02:998 UMC/(7356:7361): Creado proceso nucleo.
+[INFO] 13:12:02:998 UMC/(7356:7361): Umc escuchando
+[INFO] 13:12:10:33 UMC/(7356:7625): Alocar Programa empezado
+[INFO] 13:12:10:283 UMC/(7356:7625): Programa alocado correctamente
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte comenzado.
+
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte terminado.
+
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte comenzado.
+
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte terminado.
+
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte comenzado.
+
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte terminado.
+
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte comenzado.
+
+[INFO] 13:12:10:283 UMC/(7356:7625): Almacenar byte terminado.
+
+[INFO] 13:16:44:503 UMC/(7356:7361): Umc escuchando
+[INFO] 13:16:44:503 UMC/(7356:7361): Creando proceso nucleo.
+[INFO] 13:16:44:503 UMC/(7356:7361): Creado proceso nucleo.
+[INFO] 13:16:44:503 UMC/(7356:7361): Umc escuchando
+[INFO] 13:16:52:934 UMC/(7356:7831): Alocar Programa empezado
+[INFO] 13:16:52:937 UMC/(7356:7831): Programa alocado correctamente
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte comenzado.
+
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte terminado.
+
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte comenzado.
+
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte terminado.
+
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte comenzado.
+
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte terminado.
+
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte comenzado.
+
+[INFO] 13:16:52:974 UMC/(7356:7831): Almacenar byte terminado.
+
+[INFO] 13:17:32:197 UMC/(7922:7922): Cargando parametros
+[INFO] 13:17:32:198 UMC/(7922:7922): Cargado parametros
+[INFO] 13:17:32:198 UMC/(7922:7922): Inicializando memoria
+[INFO] 13:17:32:198 UMC/(7922:7922): Memoria Inicializada
+[INFO] 13:17:32:198 UMC/(7922:7922): Conectando a Swap Puerto: 6000 Direc: ¸„	ADAS_TLB=10
+[INFO] 13:17:32:198 UMC/(7922:7922): Conectado a Swap socket: 6
+[INFO] 13:17:32:198 UMC/(7922:7922): Creando proceso consola
+[INFO] 13:17:32:198 UMC/(7922:7922): Proceso consola creado
+[INFO] 13:17:32:198 UMC/(7922:7922): Creando proceso umcServer
+[INFO] 13:17:32:198 UMC/(7922:7922): Proceso Creado
+[INFO] 13:17:32:201 UMC/(7922:7925): Umc escuchando
+[INFO] 13:17:44:185 UMC/(7922:7925): Umc escuchando
+[INFO] 13:17:44:186 UMC/(7922:7925): Creando proceso nucleo.
+[INFO] 13:17:44:186 UMC/(7922:7925): Creado proceso nucleo.
+[INFO] 13:17:44:187 UMC/(7922:7925): Umc escuchando
+[INFO] 13:17:55:82 UMC/(7922:7970): Alocar Programa empezado
+[INFO] 13:17:55:86 UMC/(7922:7970): Programa alocado correctamente
+[INFO] 13:17:55:121 UMC/(7922:7970): Almacenar byte comenzado.
+
+[INFO] 13:17:55:202 UMC/(7922:7970): Almacenar byte terminado.
+
+[INFO] 13:17:55:202 UMC/(7922:7970): Almacenar byte comenzado.
+
+[INFO] 13:17:55:322 UMC/(7922:7970): Almacenar byte terminado.
+
+[INFO] 13:17:55:322 UMC/(7922:7970): Almacenar byte comenzado.
+
+[INFO] 13:17:55:442 UMC/(7922:7970): Almacenar byte terminado.
+
+[INFO] 13:17:55:442 UMC/(7922:7970): Almacenar byte comenzado.
+
+[INFO] 13:17:55:562 UMC/(7922:7970): Almacenar byte terminado.
+
+[INFO] 13:18:46:816 UMC/(8074:8074): Cargando parametros
+[INFO] 13:18:46:817 UMC/(8074:8074): Cargado parametros
+[INFO] 13:18:46:817 UMC/(8074:8074): Inicializando memoria
+[INFO] 13:18:46:817 UMC/(8074:8074): Memoria Inicializada
+[INFO] 13:18:46:817 UMC/(8074:8074): Conectando a Swap Puerto: 6000 Direc: ¸(	ADAS_TLB=10
+[INFO] 13:18:46:820 UMC/(8074:8074): Conectado a Swap socket: 6
+[INFO] 13:18:46:820 UMC/(8074:8074): Creando proceso consola
+[INFO] 13:18:46:820 UMC/(8074:8074): Proceso consola creado
+[INFO] 13:18:46:820 UMC/(8074:8074): Creando proceso umcServer
+[INFO] 13:18:46:820 UMC/(8074:8074): Proceso Creado
+[INFO] 13:18:46:822 UMC/(8074:8076): Umc escuchando
+[INFO] 13:18:59:611 UMC/(8074:8076): Umc escuchando
+[INFO] 13:18:59:612 UMC/(8074:8076): Creando proceso nucleo.
+[INFO] 13:18:59:613 UMC/(8074:8076): Creado proceso nucleo.
+[INFO] 13:18:59:613 UMC/(8074:8076): Umc escuchando
+[INFO] 13:19:10:993 UMC/(8074:8136): Alocar Programa empezado
+[INFO] 13:19:10:996 UMC/(8074:8136): Programa alocado correctamente
+[INFO] 13:19:11:34 UMC/(8074:8136): Almacenar byte comenzado.
+
+[INFO] 13:19:11:114 UMC/(8074:8136): Almacenar byte terminado.
+
+[INFO] 13:19:11:114 UMC/(8074:8136): Almacenar byte comenzado.
+
+[INFO] 13:19:11:234 UMC/(8074:8136): Almacenar byte terminado.
+
+[INFO] 13:19:11:234 UMC/(8074:8136): Almacenar byte comenzado.
+
+[INFO] 13:19:11:353 UMC/(8074:8136): Almacenar byte terminado.
+
+[INFO] 13:19:11:353 UMC/(8074:8136): Almacenar byte comenzado.
+
+[INFO] 13:19:11:474 UMC/(8074:8136): Almacenar byte terminado.
+
+[INFO] 13:21:59:805 UMC/(8270:8270): Cargando parametros
+[INFO] 13:21:59:805 UMC/(8270:8270): Cargado parametros
+[INFO] 13:21:59:805 UMC/(8270:8270): Inicializando memoria
+[INFO] 13:21:59:805 UMC/(8270:8270): Memoria Inicializada
+[INFO] 13:21:59:805 UMC/(8270:8270): Conectando a Swap Puerto: 6000 Direc: ¸(
+ADAS_TLB=10
+[INFO] 13:21:59:806 UMC/(8270:8270): Conectado a Swap socket: 6
+[INFO] 13:21:59:806 UMC/(8270:8270): Creando proceso consola
+[INFO] 13:21:59:806 UMC/(8270:8270): Proceso consola creado
+[INFO] 13:21:59:806 UMC/(8270:8270): Creando proceso umcServer
+[INFO] 13:21:59:806 UMC/(8270:8270): Proceso Creado
+[INFO] 13:21:59:817 UMC/(8270:8276): Umc escuchando
+[INFO] 13:22:25:126 UMC/(8270:8276): Umc escuchando
+[INFO] 13:22:25:127 UMC/(8270:8276): Creando proceso nucleo.
+[INFO] 13:22:25:128 UMC/(8270:8276): Creado proceso nucleo.
+[INFO] 13:22:25:128 UMC/(8270:8276): Umc escuchando
+[INFO] 13:22:33:582 UMC/(8270:8374): Alocar Programa empezado
+[INFO] 13:22:33:584 UMC/(8270:8374): Programa alocado correctamente
+[INFO] 13:22:33:622 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:22:33:702 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:22:33:702 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:22:33:822 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:22:33:822 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:22:33:942 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:22:33:942 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:22:34:62 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:23:24:946 UMC/(8270:8374): Alocar Programa empezado
+[INFO] 13:23:25:145 UMC/(8270:8374): Programa alocado correctamente
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte comenzado.
+
+[INFO] 13:23:25:146 UMC/(8270:8374): Almacenar byte terminado.
+
+[INFO] 13:31:21:796 UMC/(8659:8659): Cargando parametros
+[INFO] 13:31:22:358 UMC/(8659:8659): Cargado parametros
+[INFO] 13:31:23:271 UMC/(8659:8659): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 13:31:40:491 UMC/(8744:8744): Cargando parametros
+[INFO] 13:31:41:912 UMC/(8744:8744): Cargado parametros
+[INFO] 13:31:43:460 UMC/(8744:8744): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 13:31:44:939 UMC/(8744:8744): Conectado a Swap socket: 5
+[INFO] 13:43:37:210 UMC/(9103:9103): Cargando parametros
+[INFO] 13:43:37:638 UMC/(9103:9103): Cargado parametros
+[INFO] 13:43:38:259 UMC/(9103:9103): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 13:43:38:725 UMC/(9103:9103): Conectado a Swap socket: 5
+[INFO] 13:53:43:691 UMC/(9386:9386): Cargando parametros
+[INFO] 13:53:44:110 UMC/(9386:9386): Cargado parametros
+[INFO] 13:53:44:891 UMC/(9386:9386): Conectando a Swap Puerto: 6000 Direc: ¸èADAS_TLB=10
+[INFO] 13:53:45:721 UMC/(9386:9386): Conectado a Swap socket: 5
+[INFO] 13:56:13:397 UMC/(9386:9386): Creando proceso consola
+[INFO] 13:57:23:757 UMC/(9618:9618): Cargando parametros
+[INFO] 13:57:23:759 UMC/(9618:9618): Cargado parametros
+[INFO] 13:57:23:759 UMC/(9618:9618): Conectando a Swap Puerto: 6000 Direc: ¸xJ	ADAS_TLB=10
+[INFO] 13:57:23:759 UMC/(9618:9618): Conectado a Swap socket: 5
+[INFO] 13:57:23:878 UMC/(9618:9618): Creando proceso consola
+[INFO] 13:57:23:878 UMC/(9618:9618): Proceso consola creado
+[INFO] 13:57:23:878 UMC/(9618:9618): Creando proceso umcServer
+[INFO] 13:57:23:878 UMC/(9618:9618): Proceso Creado
+[INFO] 13:57:23:880 UMC/(9618:9625): Umc escuchando
+[INFO] 14:04:41:905 UMC/(10028:10028): Cargando parametros
+[INFO] 14:04:41:908 UMC/(10028:10028): Cargado parametros
+[INFO] 14:04:41:908 UMC/(10028:10028): Inicializando memoria
+[INFO] 14:04:41:908 UMC/(10028:10028): Memoria Inicializada
+[INFO] 14:04:41:908 UMC/(10028:10028): Conectando a Swap Puerto: 6000 Direc: ¸H{	ADAS_TLB=10
+[INFO] 14:04:41:908 UMC/(10028:10028): Conectado a Swap socket: 6
+[INFO] 14:04:41:908 UMC/(10028:10028): Creando proceso consola
+[INFO] 14:04:41:908 UMC/(10028:10028): Proceso consola creado
+[INFO] 14:04:41:908 UMC/(10028:10028): Creando proceso umcServer
+[INFO] 14:04:41:908 UMC/(10028:10028): Proceso Creado
+[INFO] 14:04:41:909 UMC/(10028:10032): Umc escuchando
+[INFO] 14:04:45:283 UMC/(10028:10032): Umc escuchando
+[INFO] 14:04:45:283 UMC/(10028:10032): Creando proceso nucleo.
+[INFO] 14:04:45:283 UMC/(10028:10032): Creado proceso nucleo.
+[INFO] 14:04:45:283 UMC/(10028:10032): Umc escuchando
+[INFO] 14:04:50:93 UMC/(10028:10057): Alocar Programa empezado
+[INFO] 14:04:50:93 UMC/(10028:10057): Programa alocado correctamente
+[INFO] 14:04:50:133 UMC/(10028:10057): Almacenar byte comenzado.
+
+[INFO] 14:04:50:214 UMC/(10028:10057): Almacenar byte terminado.
+
+[INFO] 14:04:50:214 UMC/(10028:10057): Almacenar byte comenzado.
+
+[INFO] 14:04:50:335 UMC/(10028:10057): Almacenar byte terminado.
+
+[INFO] 14:04:50:335 UMC/(10028:10057): Almacenar byte comenzado.
+
+[INFO] 14:04:50:454 UMC/(10028:10057): Almacenar byte terminado.
+
+[INFO] 14:04:50:454 UMC/(10028:10057): Almacenar byte comenzado.
+
+[INFO] 14:04:50:575 UMC/(10028:10057): Almacenar byte terminado.
+
+[INFO] 15:07:52:55 UMC/(10453:10453): Cargando parametros
+[INFO] 15:07:52:56 UMC/(10453:10453): Cargado parametros
+[INFO] 15:07:52:56 UMC/(10453:10453): Inicializando memoria
+[INFO] 15:07:52:56 UMC/(10453:10453): Memoria Inicializada
+[INFO] 15:07:52:56 UMC/(10453:10453): Conectando a Swap Puerto: 6000 Direc: ¸ø¿	ADAS_TLB=10
+[INFO] 15:07:52:56 UMC/(10453:10453): Conectado a Swap socket: 6
+[INFO] 15:07:52:56 UMC/(10453:10453): Creando proceso consola
+[INFO] 15:07:52:56 UMC/(10453:10453): Proceso consola creado
+[INFO] 15:07:52:56 UMC/(10453:10453): Creando proceso umcServer
+[INFO] 15:07:52:56 UMC/(10453:10453): Proceso Creado
+[INFO] 15:07:52:56 UMC/(10453:10456): Umc escuchando
+[INFO] 15:07:57:101 UMC/(10453:10456): Umc escuchando
+[INFO] 15:07:57:101 UMC/(10453:10456): Creando proceso nucleo.
+[INFO] 15:07:57:101 UMC/(10453:10456): Creado proceso nucleo.
+[INFO] 15:07:57:101 UMC/(10453:10456): Umc escuchando
+[INFO] 15:08:06:591 UMC/(10453:10483): Alocar Programa empezado
+[INFO] 15:08:06:592 UMC/(10453:10483): Programa alocado correctamente
+[INFO] 15:08:06:632 UMC/(10453:10483): Almacenar byte comenzado.
+
+[INFO] 15:08:06:712 UMC/(10453:10483): Almacenar byte terminado.
+
+[INFO] 15:08:06:712 UMC/(10453:10483): Almacenar byte comenzado.
+
+[INFO] 15:08:06:832 UMC/(10453:10483): Almacenar byte terminado.
+
+[INFO] 15:08:06:832 UMC/(10453:10483): Almacenar byte comenzado.
+
+[INFO] 15:08:06:952 UMC/(10453:10483): Almacenar byte terminado.
+
+[INFO] 15:08:06:952 UMC/(10453:10483): Almacenar byte comenzado.
+
+[INFO] 15:08:07:72 UMC/(10453:10483): Almacenar byte terminado.
+
+[INFO] 16:56:53:831 UMC/(6598:6598): Cargando parametros
+[INFO] 16:56:53:843 UMC/(6598:6598): Cargado parametros
+[INFO] 16:56:53:843 UMC/(6598:6598): Inicializando memoria
+[INFO] 16:56:53:862 UMC/(6598:6598): Memoria Inicializada
+[INFO] 16:56:53:862 UMC/(6598:6598): Conectando a Swap Puerto: 6000 Direc: ¸(ô	ADAS_TLB=10
+[INFO] 16:57:29:16 UMC/(6662:6662): Cargando parametros
+[INFO] 16:57:29:17 UMC/(6662:6662): Cargado parametros
+[INFO] 16:57:29:17 UMC/(6662:6662): Inicializando memoria
+[INFO] 16:57:29:17 UMC/(6662:6662): Memoria Inicializada
+[INFO] 16:57:29:17 UMC/(6662:6662): Conectando a Swap Puerto: 6000 Direc: ¸Ù	ADAS_TLB=10
+[INFO] 16:57:29:17 UMC/(6662:6662): Conectado a Swap socket: 6
+[INFO] 16:57:29:17 UMC/(6662:6662): Creando proceso consola
+[INFO] 16:57:29:17 UMC/(6662:6662): Proceso consola creado
+[INFO] 16:57:29:17 UMC/(6662:6662): Creando proceso umcServer
+[INFO] 16:57:29:17 UMC/(6662:6662): Proceso Creado
+[INFO] 16:57:29:42 UMC/(6662:6666): Umc escuchando
+[INFO] 16:58:08:868 UMC/(6662:6666): Umc escuchando
+[INFO] 16:58:08:868 UMC/(6662:6666): Creando proceso nucleo.
+[INFO] 16:58:08:868 UMC/(6662:6666): Creado proceso nucleo.
+[INFO] 16:58:08:868 UMC/(6662:6666): Umc escuchando
+[INFO] 17:01:30:634 UMC/(6662:6666): Umc escuchando
+[INFO] 17:01:30:634 UMC/(6662:6666): Creando proceso nucleo.
+[INFO] 17:01:30:634 UMC/(6662:6666): Creado proceso nucleo.
+[INFO] 17:01:30:634 UMC/(6662:6666): Umc escuchando
+[INFO] 17:07:23:154 UMC/(6662:6666): Umc escuchando
+[INFO] 17:07:23:154 UMC/(6662:6666): Creando proceso nucleo.
+[INFO] 17:07:23:154 UMC/(6662:6666): Creado proceso nucleo.
+[INFO] 17:07:23:154 UMC/(6662:6666): Umc escuchando
+[INFO] 17:09:46:203 UMC/(6662:6666): Umc escuchando
+[INFO] 17:09:46:203 UMC/(6662:6666): Creando proceso nucleo.
+[INFO] 17:09:46:203 UMC/(6662:6666): Creado proceso nucleo.
+[INFO] 17:09:46:203 UMC/(6662:6666): Umc escuchando
+[INFO] 17:11:14:728 UMC/(7310:7310): Cargando parametros
+[INFO] 17:11:14:728 UMC/(7310:7310): Cargado parametros
+[INFO] 17:11:14:728 UMC/(7310:7310): Inicializando memoria
+[INFO] 17:11:14:728 UMC/(7310:7310): Memoria Inicializada
+[INFO] 17:11:14:728 UMC/(7310:7310): Conectando a Swap Puerto: 6000 Direc: ¸øADAS_TLB=10
+[INFO] 17:11:14:728 UMC/(7310:7310): Conectado a Swap socket: 6
+[INFO] 17:11:14:728 UMC/(7310:7310): Creando proceso consola
+[INFO] 17:11:14:730 UMC/(7310:7310): Proceso consola creado
+[INFO] 17:11:14:730 UMC/(7310:7310): Creando proceso umcServer
+[INFO] 17:11:14:730 UMC/(7310:7310): Proceso Creado
+[INFO] 17:11:32:559 UMC/(6662:6666): Umc escuchando
+[INFO] 17:11:32:559 UMC/(6662:6666): Creando proceso nucleo.
+[INFO] 17:11:32:559 UMC/(6662:6666): Creado proceso nucleo.
+[INFO] 17:11:32:559 UMC/(6662:6666): Umc escuchando
+[INFO] 17:12:45:940 UMC/(7416:7416): Cargando parametros
+[INFO] 17:12:45:945 UMC/(7416:7416): Cargado parametros
+[INFO] 17:12:45:945 UMC/(7416:7416): Inicializando memoria
+[INFO] 17:12:45:945 UMC/(7416:7416): Memoria Inicializada
+[INFO] 17:12:45:945 UMC/(7416:7416): Creando proceso consola
+[INFO] 17:12:45:945 UMC/(7416:7416): Proceso consola creado
+[INFO] 17:12:45:945 UMC/(7416:7416): Creando proceso umcServer
+[INFO] 17:12:45:945 UMC/(7416:7416): Proceso Creado
+[INFO] 17:12:45:948 UMC/(7416:7420): Umc escuchando
+[INFO] 17:13:06:270 UMC/(7416:7420): Umc escuchando
+[INFO] 17:13:06:270 UMC/(7416:7420): Creando proceso nucleo.
+[INFO] 17:13:06:270 UMC/(7416:7420): Creado proceso nucleo.
+[INFO] 17:13:06:270 UMC/(7416:7420): Umc escuchando
+[INFO] 17:17:27:344 UMC/(7618:7618): Cargando parametros
+[INFO] 17:17:27:347 UMC/(7618:7618): Cargado parametros
+[INFO] 17:17:27:347 UMC/(7618:7618): Inicializando memoria
+[INFO] 17:17:27:347 UMC/(7618:7618): Memoria Inicializada
+[INFO] 17:17:27:347 UMC/(7618:7618): Creando proceso consola
+[INFO] 17:17:27:347 UMC/(7618:7618): Proceso consola creado
+[INFO] 17:17:27:347 UMC/(7618:7618): Creando proceso umcServer
+[INFO] 17:17:27:347 UMC/(7618:7618): Proceso Creado
+[INFO] 17:17:27:347 UMC/(7618:7622): Umc escuchando
+[INFO] 17:17:35:352 UMC/(7618:7622): Umc escuchando
+[INFO] 17:17:39:383 UMC/(7618:7622): Creando proceso nucleo.
+[INFO] 17:17:39:383 UMC/(7618:7622): Creado proceso nucleo.
+[INFO] 17:17:39:383 UMC/(7618:7622): Umc escuchando
+[INFO] 17:18:54:22 UMC/(7721:7721): Cargando parametros
+[INFO] 17:18:54:22 UMC/(7721:7721): Cargado parametros
+[INFO] 17:18:54:22 UMC/(7721:7721): Inicializando memoria
+[INFO] 17:18:54:22 UMC/(7721:7721): Memoria Inicializada
+[INFO] 17:18:54:22 UMC/(7721:7721): Creando proceso consola
+[INFO] 17:18:54:25 UMC/(7721:7721): Proceso consola creado
+[INFO] 17:18:54:25 UMC/(7721:7721): Creando proceso umcServer
+[INFO] 17:18:54:25 UMC/(7721:7721): Proceso Creado
+[INFO] 17:18:54:25 UMC/(7721:7729): Umc escuchando
+[INFO] 17:18:59:706 UMC/(7721:7729): Umc escuchando
+[INFO] 17:18:59:706 UMC/(7721:7729): Creando proceso cpu.
+[INFO] 17:18:59:707 UMC/(7721:7729): Creano proceso cpu.
+[INFO] 17:18:59:707 UMC/(7721:7729): Umc escuchando
+[INFO] 17:19:15:863 UMC/(7829:7829): Cargando parametros
+[INFO] 17:19:15:863 UMC/(7829:7829): Cargado parametros
+[INFO] 17:19:15:863 UMC/(7829:7829): Inicializando memoria
+[INFO] 17:19:15:863 UMC/(7829:7829): Memoria Inicializada
+[INFO] 17:19:15:863 UMC/(7829:7829): Creando proceso consola
+[INFO] 17:19:15:866 UMC/(7829:7829): Proceso consola creado
+[INFO] 17:19:15:866 UMC/(7829:7829): Creando proceso umcServer
+[INFO] 17:19:15:866 UMC/(7829:7829): Proceso Creado
+[INFO] 17:19:29:784 UMC/(7721:7729): Umc escuchando
+[INFO] 17:19:35:108 UMC/(7721:7729): Creando proceso nucleo.
+[INFO] 17:19:35:109 UMC/(7721:7729): Creado proceso nucleo.
+[INFO] 17:19:35:109 UMC/(7721:7729): Umc escuchando
+[INFO] 17:21:18:819 UMC/(7987:7987): Cargando parametros
+[INFO] 17:21:18:822 UMC/(7987:7987): Cargado parametros
+[INFO] 17:21:18:822 UMC/(7987:7987): Inicializando memoria
+[INFO] 17:21:18:822 UMC/(7987:7987): Memoria Inicializada
+[INFO] 17:21:18:822 UMC/(7987:7987): Creando proceso consola
+[INFO] 17:21:18:822 UMC/(7987:7987): Proceso consola creado
+[INFO] 17:21:18:822 UMC/(7987:7987): Creando proceso umcServer
+[INFO] 17:21:18:822 UMC/(7987:7987): Proceso Creado
+[INFO] 17:21:18:824 UMC/(7987:7990): Umc escuchando
+[INFO] 17:21:29:277 UMC/(7987:7990): Umc escuchando
+[INFO] 17:21:29:277 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 17:21:29:277 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 17:21:29:277 UMC/(7987:7990): Umc escuchando
+[INFO] 17:22:19:234 UMC/(7987:7990): Umc escuchando
+[INFO] 17:22:19:234 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 17:22:19:234 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 17:22:19:234 UMC/(7987:7990): Umc escuchando
+[INFO] 17:24:25:697 UMC/(7987:7990): Umc escuchando
+[INFO] 17:24:25:698 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 17:24:25:698 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 17:24:25:698 UMC/(7987:7990): Umc escuchando
+[INFO] 17:28:21:569 UMC/(7987:7990): Umc escuchando
+[INFO] 17:28:21:569 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 17:28:21:569 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 17:28:21:569 UMC/(7987:7990): Umc escuchando
+[INFO] 17:30:16:380 UMC/(7987:7990): Umc escuchando
+[INFO] 17:30:16:380 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 17:30:16:380 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 17:30:16:380 UMC/(7987:7990): Umc escuchando
+[INFO] 17:41:20:693 UMC/(7987:7990): Umc escuchando
+[INFO] 17:41:20:693 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 17:41:20:693 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 17:41:20:693 UMC/(7987:7990): Umc escuchando
+[INFO] 17:42:07:469 UMC/(7987:7990): Umc escuchando
+[INFO] 17:42:07:469 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 17:42:07:469 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 17:42:07:469 UMC/(7987:7990): Umc escuchando
+[INFO] 18:26:24:308 UMC/(7987:7990): Umc escuchando
+[INFO] 18:26:24:308 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 18:26:24:308 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 18:26:24:308 UMC/(7987:7990): Umc escuchando
+[INFO] 18:30:54:335 UMC/(7987:7990): Umc escuchando
+[INFO] 18:30:54:335 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 18:30:54:335 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 18:30:54:335 UMC/(7987:7990): Umc escuchando
+[INFO] 18:49:49:304 UMC/(7987:7990): Umc escuchando
+[INFO] 18:49:49:304 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 18:49:49:304 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 18:49:49:304 UMC/(7987:7990): Umc escuchando
+[INFO] 18:55:12:272 UMC/(7987:7990): Umc escuchando
+[INFO] 18:55:12:272 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 18:55:12:272 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 18:55:12:272 UMC/(7987:7990): Umc escuchando
+[INFO] 18:55:39:191 UMC/(10766:10766): Cargando parametros
+[INFO] 18:55:39:191 UMC/(10766:10766): Cargado parametros
+[INFO] 18:55:39:191 UMC/(10766:10766): Inicializando memoria
+[INFO] 18:55:39:191 UMC/(10766:10766): Memoria Inicializada
+[INFO] 18:55:39:191 UMC/(10766:10766): Creando proceso consola
+[INFO] 18:55:39:191 UMC/(10766:10766): Proceso consola creado
+[INFO] 18:55:39:191 UMC/(10766:10766): Creando proceso umcServer
+[INFO] 18:55:39:191 UMC/(10766:10766): Proceso Creado
+[INFO] 18:55:41:533 UMC/(10787:10787): Cargando parametros
+[INFO] 18:55:41:533 UMC/(10787:10787): Cargado parametros
+[INFO] 18:55:41:533 UMC/(10787:10787): Inicializando memoria
+[INFO] 18:55:41:533 UMC/(10787:10787): Memoria Inicializada
+[INFO] 18:55:41:533 UMC/(10787:10787): Creando proceso consola
+[INFO] 18:55:41:533 UMC/(10787:10787): Proceso consola creado
+[INFO] 18:55:41:533 UMC/(10787:10787): Creando proceso umcServer
+[INFO] 18:55:41:533 UMC/(10787:10787): Proceso Creado
+[INFO] 18:55:52:13 UMC/(7987:7990): Umc escuchando
+[INFO] 18:55:52:13 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 18:55:52:13 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 18:55:52:13 UMC/(7987:7990): Umc escuchando
+[INFO] 18:56:29:832 UMC/(7987:7990): Umc escuchando
+[INFO] 18:56:29:832 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 18:56:29:832 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 18:56:29:832 UMC/(7987:7990): Umc escuchando
+[INFO] 18:56:42:927 UMC/(7987:7990): Umc escuchando
+[INFO] 18:56:42:927 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 18:56:42:927 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 18:56:42:927 UMC/(7987:7990): Umc escuchando
+[INFO] 19:02:27:817 UMC/(7987:7990): Umc escuchando
+[INFO] 19:02:27:817 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 19:02:27:817 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 19:02:27:817 UMC/(7987:7990): Umc escuchando
+[INFO] 19:02:36:699 UMC/(7987:7990): Umc escuchando
+[INFO] 19:02:36:700 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 19:02:36:700 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 19:02:36:700 UMC/(7987:7990): Umc escuchando
+[INFO] 19:05:55:371 UMC/(7987:7990): Umc escuchando
+[INFO] 19:05:55:371 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 19:05:55:371 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 19:05:55:371 UMC/(7987:7990): Umc escuchando
+[INFO] 19:07:49:709 UMC/(7987:7990): Umc escuchando
+[INFO] 19:07:49:709 UMC/(7987:7990): Creando proceso nucleo.
+[INFO] 19:07:49:709 UMC/(7987:7990): Creado proceso nucleo.
+[INFO] 19:07:49:709 UMC/(7987:7990): Umc escuchando
+[INFO] 19:10:15:781 UMC/(7987:12001): Alocar Programa empezado
+[INFO] 19:10:15:781 UMC/(7987:12001): Programa alocado correctamente
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte comenzado.
+
+[INFO] 19:10:15:824 UMC/(7987:12001): Almacenar byte terminado.
+
+[INFO] 12:02:40:625 UMC/(2719:2719): Cargando parametros
+[INFO] 12:02:40:644 UMC/(2719:2719): Cargado parametros
+[INFO] 12:02:40:644 UMC/(2719:2719): Inicializando memoria
+[INFO] 12:02:40:661 UMC/(2719:2719): Memoria Inicializada
+[INFO] 12:02:40:661 UMC/(2719:2719): Creando proceso consola
+[INFO] 12:02:40:661 UMC/(2719:2719): Proceso consola creado
+[INFO] 12:02:40:661 UMC/(2719:2719): Creando proceso umcServer
+[INFO] 12:02:40:661 UMC/(2719:2719): Proceso Creado
+[INFO] 12:02:40:665 UMC/(2719:2721): Umc escuchando
+[INFO] 12:02:46:323 UMC/(2719:2721): Umc escuchando
+[INFO] 12:02:46:323 UMC/(2719:2721): Creando proceso nucleo.
+[INFO] 12:02:46:323 UMC/(2719:2721): Creado proceso nucleo.
+[INFO] 12:02:46:323 UMC/(2719:2721): Umc escuchando
+[INFO] 12:02:50:113 UMC/(2719:2754): Alocar Programa empezado
+[INFO] 12:02:50:113 UMC/(2719:2754): Programa alocado correctamente
+[INFO] 12:02:50:153 UMC/(2719:2754): Almacenar byte comenzado.
+
+[INFO] 12:05:04:924 UMC/(2844:2844): Cargando parametros
+[INFO] 12:05:04:924 UMC/(2844:2844): Cargado parametros
+[INFO] 12:05:04:924 UMC/(2844:2844): Inicializando memoria
+[INFO] 12:05:04:924 UMC/(2844:2844): Memoria Inicializada
+[INFO] 12:05:04:924 UMC/(2844:2844): Creando proceso consola
+[INFO] 12:05:04:926 UMC/(2844:2844): Proceso consola creado
+[INFO] 12:05:04:926 UMC/(2844:2844): Creando proceso umcServer
+[INFO] 12:05:04:927 UMC/(2844:2844): Proceso Creado
+[INFO] 12:05:04:927 UMC/(2844:2851): Umc escuchando
+[INFO] 12:05:20:841 UMC/(2844:2851): Umc escuchando
+[INFO] 12:05:20:841 UMC/(2844:2851): Creando proceso nucleo.
+[INFO] 12:05:20:845 UMC/(2844:2851): Creado proceso nucleo.
+[INFO] 12:05:20:845 UMC/(2844:2851): Umc escuchando
+[INFO] 12:05:39:329 UMC/(2844:2876): Alocar Programa empezado
+[INFO] 12:05:39:329 UMC/(2844:2876): Programa alocado correctamente
+[INFO] 12:05:45:254 UMC/(2844:2876): Almacenar byte comenzado.
+
+[INFO] 12:06:34:943 UMC/(2952:2952): Cargando parametros
+[INFO] 12:06:34:945 UMC/(2952:2952): Cargado parametros
+[INFO] 12:06:34:945 UMC/(2952:2952): Inicializando memoria
+[INFO] 12:06:34:945 UMC/(2952:2952): Memoria Inicializada
+[INFO] 12:06:34:945 UMC/(2952:2952): Creando proceso consola
+[INFO] 12:06:34:945 UMC/(2952:2952): Proceso consola creado
+[INFO] 12:06:34:945 UMC/(2952:2952): Creando proceso umcServer
+[INFO] 12:06:34:945 UMC/(2952:2952): Proceso Creado
+[INFO] 12:06:34:947 UMC/(2952:2954): Umc escuchando
+[INFO] 12:06:42:593 UMC/(2952:2954): Umc escuchando
+[INFO] 12:06:42:593 UMC/(2952:2954): Creando proceso nucleo.
+[INFO] 12:06:42:593 UMC/(2952:2954): Creado proceso nucleo.
+[INFO] 12:06:42:593 UMC/(2952:2954): Umc escuchando
+[INFO] 12:06:52:483 UMC/(3016:3016): Cargando parametros
+[INFO] 12:06:52:483 UMC/(3016:3016): Cargado parametros
+[INFO] 12:06:52:483 UMC/(3016:3016): Inicializando memoria
+[INFO] 12:06:52:483 UMC/(3016:3016): Memoria Inicializada
+[INFO] 12:06:52:483 UMC/(3016:3016): Creando proceso consola
+[INFO] 12:06:52:485 UMC/(3016:3016): Proceso consola creado
+[INFO] 12:06:52:485 UMC/(3016:3016): Creando proceso umcServer
+[INFO] 12:06:52:485 UMC/(3016:3016): Proceso Creado
+[INFO] 12:06:52:485 UMC/(3016:3024): Umc escuchando
+[INFO] 12:07:00:590 UMC/(3016:3024): Umc escuchando
+[INFO] 12:07:00:590 UMC/(3016:3024): Creando proceso nucleo.
+[INFO] 12:07:00:594 UMC/(3016:3024): Creado proceso nucleo.
+[INFO] 12:07:00:594 UMC/(3016:3024): Umc escuchando
+[INFO] 12:07:08:320 UMC/(3016:3047): Alocar Programa empezado
+[INFO] 12:07:08:320 UMC/(3016:3047): Programa alocado correctamente
+[INFO] 12:07:08:357 UMC/(3016:3047): Almacenar byte comenzado.
+
+[INFO] 12:07:54:89 UMC/(3110:3110): Cargando parametros
+[INFO] 12:07:54:89 UMC/(3110:3110): Cargado parametros
+[INFO] 12:07:54:89 UMC/(3110:3110): Inicializando memoria
+[INFO] 12:07:54:89 UMC/(3110:3110): Memoria Inicializada
+[INFO] 12:07:54:89 UMC/(3110:3110): Creando proceso consola
+[INFO] 12:07:54:94 UMC/(3110:3110): Proceso consola creado
+[INFO] 12:07:54:94 UMC/(3110:3110): Creando proceso umcServer
+[INFO] 12:07:54:96 UMC/(3110:3110): Proceso Creado
+[INFO] 12:07:54:96 UMC/(3110:3116): Umc escuchando
+[INFO] 12:07:58:48 UMC/(3110:3116): Umc escuchando
+[INFO] 12:07:58:48 UMC/(3110:3116): Creando proceso nucleo.
+[INFO] 12:07:58:49 UMC/(3110:3116): Creado proceso nucleo.
+[INFO] 12:07:58:49 UMC/(3110:3116): Umc escuchando
+[INFO] 12:08:32:667 UMC/(3110:3142): Alocar Programa empezado
+[INFO] 12:09:45:854 UMC/(3110:3142): Programa alocado correctamente
+[INFO] 12:10:09:666 UMC/(3110:3142): Almacenar byte comenzado.
+
+[INFO] 12:11:51:818 UMC/(3313:3313): Cargando parametros
+[INFO] 12:11:51:820 UMC/(3313:3313): Cargado parametros
+[INFO] 12:11:51:820 UMC/(3313:3313): Inicializando memoria
+[INFO] 12:11:51:820 UMC/(3313:3313): Memoria Inicializada
+[INFO] 12:11:51:820 UMC/(3313:3313): Creando proceso consola
+[INFO] 12:11:51:820 UMC/(3313:3313): Proceso consola creado
+[INFO] 12:11:51:820 UMC/(3313:3313): Creando proceso umcServer
+[INFO] 12:11:51:820 UMC/(3313:3313): Proceso Creado
+[INFO] 12:11:51:821 UMC/(3313:3315): Umc escuchando
+[INFO] 12:12:03:461 UMC/(3313:3315): Umc escuchando
+[INFO] 12:12:03:463 UMC/(3313:3315): Creando proceso nucleo.
+[INFO] 12:12:03:464 UMC/(3313:3315): Creado proceso nucleo.
+[INFO] 12:12:03:464 UMC/(3313:3315): Umc escuchando
+[INFO] 12:12:06:945 UMC/(3313:3344): Alocar Programa empezado
+[INFO] 12:12:06:945 UMC/(3313:3344): Programa alocado correctamente
+[INFO] 12:12:06:985 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:985 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:985 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:985 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:985 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte comenzado.
+
+[INFO] 12:12:06:986 UMC/(3313:3344): Almacenar byte terminado.
+
+[INFO] 12:13:24:733 UMC/(3449:3449): Cargando parametros
+[INFO] 12:15:00:150 UMC/(3609:3609): Cargando parametros
+[INFO] 12:15:22:285 UMC/(3676:3676): Cargando parametros
+[INFO] 12:16:54:840 UMC/(3753:3753): Cargando parametros
+[INFO] 12:17:11:936 UMC/(3753:3753): Cargado parametros
+[INFO] 12:17:12:406 UMC/(3753:3753): Inicializando memoria
+[INFO] 12:17:12:972 UMC/(3753:3753): Memoria Inicializada
+[INFO] 12:17:13:391 UMC/(3753:3753): Conectando a Swap Puerto: 6000 Direc: ùADAS_TLB=10
+[INFO] 12:19:12:775 UMC/(3898:3898): Cargando parametros
+[INFO] 12:19:12:777 UMC/(3898:3898): Cargado parametros
+[INFO] 12:19:12:777 UMC/(3898:3898): Inicializando memoria
+[INFO] 12:19:12:777 UMC/(3898:3898): Memoria Inicializada
+[INFO] 12:20:43:927 UMC/(3990:3990): Cargando parametros
+[INFO] 12:20:43:927 UMC/(3990:3990): Cargado parametros
+[INFO] 12:20:43:927 UMC/(3990:3990): Inicializando memoria
+[INFO] 12:20:43:927 UMC/(3990:3990): Memoria Inicializada
+[INFO] 12:20:54:221 UMC/(4024:4024): Cargando parametros
+[INFO] 12:22:46:915 UMC/(4134:4134): Cargando parametros
+[INFO] 12:22:46:918 UMC/(4134:4134): Cargado parametros
+[INFO] 12:22:46:918 UMC/(4134:4134): Inicializando memoria
+[INFO] 12:22:46:918 UMC/(4134:4134): Memoria Inicializada
+[INFO] 12:22:51:709 UMC/(4169:4169): Cargando parametros
+[INFO] 12:22:51:709 UMC/(4169:4169): Cargado parametros
+[INFO] 12:22:51:709 UMC/(4169:4169): Inicializando memoria
+[INFO] 12:22:51:709 UMC/(4169:4169): Memoria Inicializada
+[INFO] 12:22:57:11 UMC/(4205:4205): Cargando parametros
+[INFO] 12:24:07:259 UMC/(4300:4300): Cargando parametros
+[INFO] 12:24:07:260 UMC/(4300:4300): Cargado parametros
+[INFO] 12:24:07:260 UMC/(4300:4300): Inicializando memoria
+[INFO] 12:24:07:260 UMC/(4300:4300): Memoria Inicializada
+[INFO] 12:24:07:260 UMC/(4300:4300): Conectando a Swap Puerto: 6000 Direc: 127.0.0.1
+[INFO] 12:24:07:260 UMC/(4300:4300): Conectado a Swap socket: 6
+[INFO] 12:24:07:260 UMC/(4300:4300): Creando proceso consola
+[INFO] 12:24:07:260 UMC/(4300:4300): Proceso consola creado
+[INFO] 12:24:07:260 UMC/(4300:4300): Creando proceso umcServer
+[INFO] 12:24:07:260 UMC/(4300:4300): Proceso Creado
+[INFO] 12:24:07:261 UMC/(4300:4303): Umc escuchando
+[INFO] 12:24:43:551 UMC/(4300:4303): Umc escuchando
+[INFO] 12:24:43:551 UMC/(4300:4303): Creando proceso nucleo.
+[INFO] 12:24:43:551 UMC/(4300:4303): Creado proceso nucleo.
+[INFO] 12:24:43:551 UMC/(4300:4303): Umc escuchando
+[INFO] 12:24:49:451 UMC/(4300:4303): Umc escuchando
+[INFO] 12:24:49:451 UMC/(4300:4303): Creando proceso cpu.
+[INFO] 12:24:49:451 UMC/(4300:4303): Creano proceso cpu.
+[INFO] 12:24:49:451 UMC/(4300:4303): Umc escuchando
+[INFO] 12:24:58:189 UMC/(4300:4340): Alocar Programa empezado
+[INFO] 12:24:58:189 UMC/(4300:4340): Programa alocado correctamente
+[INFO] 12:24:58:229 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:269 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:269 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:309 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:309 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:349 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:349 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:389 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:389 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:429 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:429 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:469 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:469 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:509 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:509 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:549 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:549 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:589 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:24:58:589 UMC/(4300:4340): Almacenar byte comenzado.
+
+[INFO] 12:24:58:629 UMC/(4300:4340): Almacenar byte terminado.
+
+[INFO] 12:27:54:75 UMC/(4506:4506): Cargando parametros
+[INFO] 12:27:54:76 UMC/(4506:4506): Cargado parametros
+[INFO] 12:27:54:76 UMC/(4506:4506): Inicializando memoria
+[INFO] 12:27:54:76 UMC/(4506:4506): Memoria Inicializada
+[INFO] 12:27:54:76 UMC/(4506:4506): Conectando a Swap Puerto: 6000 Direc: 127.0.0.1
+[INFO] 12:28:06:364 UMC/(4546:4546): Cargando parametros
+[INFO] 12:28:06:365 UMC/(4546:4546): Cargado parametros
+[INFO] 12:28:06:365 UMC/(4546:4546): Inicializando memoria
+[INFO] 12:28:06:365 UMC/(4546:4546): Memoria Inicializada
+[INFO] 12:28:06:365 UMC/(4546:4546): Conectando a Swap Puerto: 6000 Direc: 127.0.0.1
+[INFO] 12:28:06:365 UMC/(4546:4546): Conectado a Swap socket: 6
+[INFO] 12:28:06:365 UMC/(4546:4546): Creando proceso consola
+[INFO] 12:28:06:365 UMC/(4546:4546): Proceso consola creado
+[INFO] 12:28:06:365 UMC/(4546:4546): Creando proceso umcServer
+[INFO] 12:28:06:366 UMC/(4546:4546): Proceso Creado
+[INFO] 12:28:06:368 UMC/(4546:4549): Umc escuchando
+[INFO] 12:29:05:558 UMC/(4546:4549): Umc escuchando
+[INFO] 12:29:05:558 UMC/(4546:4549): Creando proceso nucleo.
+[INFO] 12:29:05:558 UMC/(4546:4549): Creado proceso nucleo.
+[INFO] 12:29:05:558 UMC/(4546:4549): Umc escuchando
+[INFO] 12:29:10:17 UMC/(4546:4585): Alocar Programa empezado
+[INFO] 12:29:10:17 UMC/(4546:4585): Programa alocado correctamente
+[INFO] 12:29:10:61 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:101 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:101 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:141 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:141 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:181 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:181 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:221 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:221 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:261 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:261 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:301 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:301 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:341 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:341 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:381 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:381 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:421 UMC/(4546:4585): Almacenar byte terminado.
+
+[INFO] 12:29:10:421 UMC/(4546:4585): Almacenar byte comenzado.
+
+[INFO] 12:29:10:462 UMC/(4546:4585): Almacenar byte terminado.
+

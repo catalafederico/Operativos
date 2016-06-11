@@ -53,6 +53,8 @@ id_programa;
 typedef struct{
 	int idProg;
 	int pag;
+	//Cambiar a frame estructura
+	//frame* marco;
 	int marco;
 }tlb;
 

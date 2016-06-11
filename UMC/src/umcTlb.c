@@ -55,15 +55,14 @@ void actualizarTablaPqEncontre(tlb tablaPag[],int i){
 }
 
 void actualizarTablaPqElimineUlt(tlb tablaPag[],int cantEntradas,int* pagina){
-	tlb* aux;
 	int posEliminada=cantEntradas;// voy a eliminar el ultimo posicion del vector para correr todo uno abajo y colocar
 	//el nuevo valor
 	//hasta que llegue a la primer posicion
 	while(posEliminada>=0){
 			if(posEliminada==0){
 			//faltaria el marco
-				tablaPag[0].pag=&pagina;
-				tablaPag[0].idProg=&idProcesoActual;
+				tablaPag[0].pag=*pagina;
+				tablaPag[0].idProg=*idProcesoActual;
 			}
 			else{
 			correrUnoAbajo(tablaPag,posEliminada);
@@ -79,19 +78,17 @@ void actualizarPqNoEncontreYTablaNoLlena(tlb tablaPag[],int* pagina){
 	}
 			correrUnoAbajo(tablaPag,i);//corro todos uno hacia abajo hasta i pq voy a insertar en la posicion 0
 			//faltaria marco
-			tablaPag[0].pag=&pagina;
-			tablaPag[0].idProg=&idProcesoActual;
+			tablaPag[0].pag=*pagina;
+			tablaPag[0].idProg=*idProcesoActual;
 }
 
 	//podria recibir lo que quiero agregar faltaria marco
 void actualizarTablaPqNoEncontre(tlb tablaPag[],int cantEntradas,int* pagina){
 	if(tablaEstaLlena(tablaPag,cantEntradas)){
-
 		//le paso la posicion que elimine y podria pasar lo que quiero actualizar corro todos uno hacia abajo
 		actualizarTablaPqElimineUlt(tablaPag,cantEntradas,pagina);
 	}
 	else{
-
 		actualizarPqNoEncontreYTablaNoLlena(tablaPag,pagina);
 	}
 }

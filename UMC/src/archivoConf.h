@@ -9,6 +9,6 @@
 #define SRC_ARCHIVOCONF_H_
 #include "estructurasUMC.h"
 
-t_reg_config* get_config_params();
+t_reg_config get_config_params();
 
 #endif /* SRC_ARCHIVOCONF_H_ */

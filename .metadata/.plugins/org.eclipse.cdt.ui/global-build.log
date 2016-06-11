@@ -1,81 +1,19 @@
-15:57:14 **** Clean-only build of configuration Debug for project tpsolib ****
-make clean 
-rm -rf  ./sockets/basicFunciones.o ./sockets/socketCliente.o ./sockets/socketServer.o  ./sockets/basicFunciones.d ./sockets/socketCliente.d ./sockets/socketServer.d  libtpsolib.so
- 
-15:57:14 **** Build of configuration Debug for project tpsolib ****
+13:53:20 **** Incremental Build of configuration Debug for project tpsolib ****
 make all 
-Building file: ../sockets/basicFunciones.c
+make: No se hace nada para «all».
+13:53:20 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+Building file: ../src/configuracionesNucleo.c
 Invoking: GCC C Compiler
-gcc -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"sockets/basicFunciones.d" -MT"sockets/basicFunciones.d" -o "sockets/basicFunciones.o" "../sockets/basicFunciones.c"
-../sockets/basicFunciones.c: In function ‘aceptarConexion’:
-../sockets/basicFunciones.c:43:53: warning: pointer targets in passing argument 3 of ‘accept’ differ in signedness [-Wpointer-sign]
-  if((*socketnuevo = accept(socketescuchador,(struct sockaddr *) other_adress,&sin_size)) == -1){
-                                                     ^
-In file included from ../sockets/basicFunciones.c:8:0:
-/usr/include/i386-linux-gnu/sys/socket.h:243:12: note: expected ‘socklen_t * __restrict__’ but argument is of type ‘int *’
- extern int accept (int __fd, __SOCKADDR_ARG __addr,
-            ^
-Finished building: ../sockets/basicFunciones.c
- 
-Building file: ../sockets/socketCliente.c
-Invoking: GCC C Compiler
-gcc -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"sockets/socketCliente.d" -MT"sockets/socketCliente.d" -o "sockets/socketCliente.o" "../sockets/socketCliente.c"
-../sockets/socketCliente.c: In function ‘conectarConServidor’:
-../sockets/socketCliente.c:47:2: warning: implicit declaration of function ‘conectarConDireccion’ [-Wimplicit-function-declaration]
-  conectarConDireccion(&(procesoCliente.socketCliente),&(procesoCliente.direccionDestino));
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/configuracionesNucleo.d" -MT"src/configuracionesNucleo.d" -o "src/configuracionesNucleo.o" "../src/configuracionesNucleo.c"
+In file included from ../src/configuracionesNucleo.c:7:0:
+../src/estructurasNUCLEO.h:51:2: error: unknown type name ‘t_list’
+  t_list* indice_funciones;
   ^
-Finished building: ../sockets/socketCliente.c
- 
-Building file: ../sockets/socketServer.c
-Invoking: GCC C Compiler
-gcc -O0 -g3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"sockets/socketServer.d" -MT"sockets/socketServer.d" -o "sockets/socketServer.o" "../sockets/socketServer.c"
-Finished building: ../sockets/socketServer.c
- 
-Building target: libtpsolib.so
-Invoking: GCC C Linker
-gcc -shared -o "libtpsolib.so"  ./sockets/basicFunciones.o ./sockets/socketCliente.o ./sockets/socketServer.o   
-Finished building target: libtpsolib.so
- 
-15:57:14 **** Incremental Build of configuration Debug for project tpsolib ****
-make all 
-make: No se hace nada para «all».
-15:57:14 **** Clean-only build of configuration Debug for project UMC ****
-make clean 
-rm -rf  ./src/archivoConf.o ./src/umc.o ./src/umcConsola.o ./src/umcMemoria.o  ./src/archivoConf.d ./src/umc.d ./src/umcConsola.d ./src/umcMemoria.d  UMC
- 
-15:57:15 **** Build of configuration Debug for project UMC ****
-make all 
-Building file: ../src/archivoConf.c
-Invoking: GCC C Compiler
-gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/archivoConf.d" -MT"src/archivoConf.d" -o "src/archivoConf.o" "../src/archivoConf.c"
-Finished building: ../src/archivoConf.c
- 
-Building file: ../src/umc.c
-Invoking: GCC C Compiler
-gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umc.d" -MT"src/umc.d" -o "src/umc.o" "../src/umc.c"
-Finished building: ../src/umc.c
- 
-Building file: ../src/umcConsola.c
-Invoking: GCC C Compiler
-gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcConsola.d" -MT"src/umcConsola.d" -o "src/umcConsola.o" "../src/umcConsola.c"
-Finished building: ../src/umcConsola.c
- 
-Building file: ../src/umcMemoria.c
-Invoking: GCC C Compiler
-gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
-Finished building: ../src/umcMemoria.c
- 
-Building target: UMC
-Invoking: GCC C Linker
-gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcConsola.o ./src/umcMemoria.o   -ltpsolib -lpthread -lcommons
-Finished building target: UMC
- 
-15:58:29 **** Incremental Build of configuration Debug for project tpsolib ****
-make all 
-make: No se hace nada para «all».
-15:58:29 **** Incremental Build of configuration Debug for project tpsolib ****
-make all 
-make: No se hace nada para «all».
-15:58:29 **** Incremental Build of configuration Debug for project UMC ****
-make all 
-make: No se hace nada para «all».
+../src/estructurasNUCLEO.h:86:2: error: unknown type name ‘t_list’
+  t_list* args; //tiene direcciones de memoria
+  ^
+../src/estructurasNUCLEO.h:87:2: error: unknown type name ‘t_list’
+  t_list* vars; //tiene direcciones de stack
+  ^
+make: *** [src/configuracionesNucleo.o] Error 1
