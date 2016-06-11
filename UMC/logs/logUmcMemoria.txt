@@ -1,0 +1,546 @@
+[TRACE] 16:03:04:255 UMC/(9134:9134): Creando memoria
+[TRACE] 16:03:04:255 UMC/(9134:9134): Memoria inicializada con un tamanio: 200
+[TRACE] 16:03:04:255 UMC/(9134:9134): Marcos libres cargados: 10:
+[TRACE] 16:10:05:14 UMC/(9706:9706): Creando memoria
+[TRACE] 16:10:05:14 UMC/(9706:9706): Memoria inicializada con un tamanio: 200
+[TRACE] 16:10:05:15 UMC/(9706:9706): Marcos libres cargados: 10:
+[TRACE] 16:28:39:650 UMC/(10910:10910): Creando memoria
+[TRACE] 16:28:39:650 UMC/(10910:10910): Memoria inicializada con un tamanio: 200
+[TRACE] 16:28:39:650 UMC/(10910:10910): Marcos libres cargados: 10:
+[TRACE] 16:48:40:570 UMC/(12639:12639): Creando memoria
+[TRACE] 16:48:40:570 UMC/(12639:12639): Memoria inicializada con un tamanio: 200
+[TRACE] 16:48:40:570 UMC/(12639:12639): Marcos libres cargados: 10:
+[TRACE] 16:49:23:91 UMC/(12639:12734): Comienza alocacion de programa id: 1
+[TRACE] 16:49:23:91 UMC/(12639:12734): Agregado en tabla de proceso id: 
+[TRACE] 16:49:23:91 UMC/(12639:12734): Alocado programa id: 1
+[TRACE] 16:51:00:625 UMC/(12950:12950): Creando memoria
+[TRACE] 16:51:00:625 UMC/(12950:12950): Memoria inicializada con un tamanio: 200
+[TRACE] 16:51:00:625 UMC/(12950:12950): Marcos libres cargados: 10:
+[TRACE] 16:51:34:187 UMC/(12950:13044): Comienza alocacion de programa id: 1
+[TRACE] 16:51:34:187 UMC/(12950:13044): Agregado en tabla de proceso id: 
+[TRACE] 16:51:34:187 UMC/(12950:13044): Alocado programa id: 1
+[TRACE] 16:52:12:98 UMC/(12950:13044): Almacenar - id: 153057752 pag: 0 offset: 0 tamanio: 15
+[TRACE] 17:34:59:589 UMC/(13610:13610): Creando memoria
+[TRACE] 17:34:59:589 UMC/(13610:13610): Memoria inicializada con un tamanio: 200
+[TRACE] 17:34:59:589 UMC/(13610:13610): Marcos libres cargados: 10:
+[TRACE] 17:35:29:155 UMC/(13610:13657): Comienza alocacion de programa id: 1
+[TRACE] 17:35:29:155 UMC/(13610:13657): Agregado en tabla de proceso id: 
+[TRACE] 17:35:29:155 UMC/(13610:13657): Alocado programa id: 1
+[TRACE] 17:35:32:611 UMC/(13610:13657): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 17:36:35:280 UMC/(13841:13841): Creando memoria
+[TRACE] 17:36:35:281 UMC/(13841:13841): Memoria inicializada con un tamanio: 200
+[TRACE] 17:36:35:281 UMC/(13841:13841): Marcos libres cargados: 10:
+[TRACE] 17:37:25:487 UMC/(13841:14100): Comienza alocacion de programa id: 1
+[TRACE] 17:37:25:487 UMC/(13841:14100): Agregado en tabla de proceso id: 
+[TRACE] 17:37:38:972 UMC/(13841:14100): Alocado programa id: 1
+[TRACE] 17:38:38:946 UMC/(13841:14100): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 17:39:39:633 UMC/(14326:14326): Creando memoria
+[TRACE] 17:39:39:634 UMC/(14326:14326): Memoria inicializada con un tamanio: 200
+[TRACE] 17:39:39:634 UMC/(14326:14326): Marcos libres cargados: 10:
+[TRACE] 17:40:05:79 UMC/(14326:14414): Comienza alocacion de programa id: 1
+[TRACE] 17:40:05:79 UMC/(14326:14414): Agregado en tabla de proceso id: 
+[TRACE] 17:40:05:79 UMC/(14326:14414): Alocado programa id: 1
+[TRACE] 17:40:14:316 UMC/(14326:14414): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 19:24:16:8 UMC/(14806:14806): Creando memoria
+[TRACE] 19:24:16:9 UMC/(14806:14806): Memoria inicializada con un tamanio: 200
+[TRACE] 19:24:16:9 UMC/(14806:14806): Marcos libres cargados: 10:
+[TRACE] 19:25:59:858 UMC/(14806:14893): Comienza alocacion de programa id: 1
+[TRACE] 19:26:06:282 UMC/(14806:14893): Agregado en tabla de proceso id: 
+[TRACE] 19:30:09:499 UMC/(15116:15116): Creando memoria
+[TRACE] 19:30:09:499 UMC/(15116:15116): Memoria inicializada con un tamanio: 200
+[TRACE] 19:30:09:499 UMC/(15116:15116): Marcos libres cargados: 10:
+[TRACE] 19:41:39:13 UMC/(15116:15849): Comienza alocacion de programa id: 1
+[TRACE] 19:41:41:378 UMC/(15116:15849): Agregado en tabla de proceso id: 
+[TRACE] 19:41:42:587 UMC/(15116:15849): Pag: 0 	Marco: 0 
+[TRACE] 19:41:43:601 UMC/(15116:15849): Pag: 1 	Marco: 1 
+[TRACE] 19:41:44:694 UMC/(15116:15849): Pag: 2 	Marco: 2 
+[TRACE] 19:41:45:667 UMC/(15116:15849): Pag: 3 	Marco: 3 
+[TRACE] 19:41:47:934 UMC/(15116:15849): Alocado programa id: 1
+[TRACE] 19:42:32:471 UMC/(15116:15849): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 19:42:44:338 UMC/(15116:15849): Almacenar - id: 1 pag: 1 offset: 0 tamanio: 6
+[TRACE] 19:42:49:569 UMC/(15116:15849): Almacenar - id: 1 pag: 1 offset: 6 tamanio: 6
+[TRACE] 19:42:53:161 UMC/(15116:15849): Almacenar - id: 1 pag: 2 offset: 0 tamanio: 11
+[TRACE] 00:32:03:305 UMC/(27691:27691): Creando memoria
+[TRACE] 00:32:03:305 UMC/(27691:27691): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:32:03:305 UMC/(27691:27691): Marcos libres cargados: 10:
+[TRACE] 00:40:32:61 UMC/(27952:27952): Creando memoria
+[TRACE] 00:40:32:61 UMC/(27952:27952): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:40:32:61 UMC/(27952:27952): Marcos libres cargados: 10:
+[TRACE] 00:40:40:948 UMC/(28139:28139): Creando memoria
+[TRACE] 00:40:40:948 UMC/(28139:28139): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:40:40:948 UMC/(28139:28139): Marcos libres cargados: 10:
+[TRACE] 00:44:40:447 UMC/(28582:28582): Creando memoria
+[TRACE] 00:44:40:447 UMC/(28582:28582): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:44:40:447 UMC/(28582:28582): Marcos libres cargados: 10:
+[TRACE] 00:46:10:296 UMC/(28880:28880): Creando memoria
+[TRACE] 00:46:10:296 UMC/(28880:28880): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:46:10:296 UMC/(28880:28880): Marcos libres cargados: 10:
+[TRACE] 00:46:21:170 UMC/(29064:29064): Creando memoria
+[TRACE] 00:46:21:170 UMC/(29064:29064): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:46:21:170 UMC/(29064:29064): Marcos libres cargados: 10:
+[TRACE] 00:46:32:138 UMC/(29064:29164): Comienza alocacion de programa id: 1
+[TRACE] 00:46:32:138 UMC/(29064:29164): Agregado en tabla de proceso id: 
+[TRACE] 00:46:32:138 UMC/(29064:29164): Pag: 0 	Marco: 0 
+[TRACE] 00:46:32:138 UMC/(29064:29164): Pag: 1 	Marco: 1 
+[TRACE] 00:46:32:138 UMC/(29064:29164): Alocado programa id: 1
+[TRACE] 00:46:32:178 UMC/(29064:29164): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 00:46:32:218 UMC/(29064:29164): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:46:32:262 UMC/(29064:29164): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 00:46:32:302 UMC/(29064:29164): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:46:32:341 UMC/(29064:29164): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 00:46:32:382 UMC/(29064:29164): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:46:32:422 UMC/(29064:29164): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 00:46:32:462 UMC/(29064:29164): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:48:09:981 UMC/(29368:29368): Creando memoria
+[TRACE] 00:48:09:981 UMC/(29368:29368): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:48:09:981 UMC/(29368:29368): Marcos libres cargados: 10:
+[TRACE] 00:48:19:564 UMC/(29553:29553): Creando memoria
+[TRACE] 00:48:19:564 UMC/(29553:29553): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:48:19:564 UMC/(29553:29553): Marcos libres cargados: 10:
+[TRACE] 00:49:04:990 UMC/(29553:29839): Comienza alocacion de programa id: 1
+[TRACE] 00:49:04:990 UMC/(29553:29839): Agregado en tabla de proceso id: 
+[TRACE] 00:49:04:990 UMC/(29553:29839): Pag: 0 	Marco: 0 
+[TRACE] 00:49:04:990 UMC/(29553:29839): Pag: 1 	Marco: 1 
+[TRACE] 00:49:04:990 UMC/(29553:29839): Alocado programa id: 1
+[TRACE] 00:49:05:30 UMC/(29553:29839): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 00:49:05:69 UMC/(29553:29839): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:49:05:109 UMC/(29553:29839): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 00:49:05:190 UMC/(29553:29839): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:49:05:230 UMC/(29553:29839): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 00:49:05:310 UMC/(29553:29839): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:49:05:350 UMC/(29553:29839): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 00:49:05:429 UMC/(29553:29839): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:52:46:721 UMC/(30311:30311): Creando memoria
+[TRACE] 00:52:46:721 UMC/(30311:30311): Memoria inicializada con un tamanio: 2560
+[TRACE] 00:52:46:721 UMC/(30311:30311): Marcos libres cargados: 10:
+[TRACE] 00:53:55:647 UMC/(30311:30413): Comienza alocacion de programa id: 1
+[TRACE] 00:53:55:647 UMC/(30311:30413): Agregado en tabla de proceso id: 
+[TRACE] 00:53:55:647 UMC/(30311:30413): Pag: 0 	Marco: 0 
+[TRACE] 00:53:55:647 UMC/(30311:30413): Pag: 1 	Marco: 1 
+[TRACE] 00:53:55:647 UMC/(30311:30413): Alocado programa id: 1
+[TRACE] 00:53:55:685 UMC/(30311:30413): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 00:53:55:725 UMC/(30311:30413): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:53:55:765 UMC/(30311:30413): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 00:53:55:846 UMC/(30311:30413): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:53:55:887 UMC/(30311:30413): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 00:53:55:966 UMC/(30311:30413): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 00:53:56:6 UMC/(30311:30413): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 00:53:56:85 UMC/(30311:30413): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:12:41:106 UMC/(2612:2612): Creando memoria
+[TRACE] 10:12:41:106 UMC/(2612:2612): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:12:41:106 UMC/(2612:2612): Marcos libres cargados: 10:
+[TRACE] 10:12:52:364 UMC/(2815:2815): Creando memoria
+[TRACE] 10:12:52:364 UMC/(2815:2815): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:12:52:364 UMC/(2815:2815): Marcos libres cargados: 10:
+[TRACE] 10:18:47:698 UMC/(2815:3418): Almacenar - id: 137988568 pag: 0 offset: 0 tamanio: 4
+[TRACE] 10:19:18:177 UMC/(3533:3533): Creando memoria
+[TRACE] 10:19:18:177 UMC/(3533:3533): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:19:18:177 UMC/(3533:3533): Marcos libres cargados: 10:
+[TRACE] 10:19:27:741 UMC/(3720:3720): Creando memoria
+[TRACE] 10:19:27:741 UMC/(3720:3720): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:19:27:741 UMC/(3720:3720): Marcos libres cargados: 10:
+[TRACE] 10:20:08:970 UMC/(3720:3805): Almacenar - id: 157436376 pag: 0 offset: 0 tamanio: 4
+[TRACE] 10:21:59:530 UMC/(3908:3908): Creando memoria
+[TRACE] 10:21:59:530 UMC/(3908:3908): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:21:59:530 UMC/(3908:3908): Marcos libres cargados: 10:
+[TRACE] 10:22:58:97 UMC/(3908:4099): Almacenar - id: 134539736 pag: 0 offset: 0 tamanio: 4
+[TRACE] 10:24:13:150 UMC/(4353:4353): Creando memoria
+[TRACE] 10:24:13:150 UMC/(4353:4353): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:24:13:150 UMC/(4353:4353): Marcos libres cargados: 10:
+[TRACE] 10:24:25:477 UMC/(4353:4437): Almacenar - id: 144271832 pag: 0 offset: 0 tamanio: 4
+[TRACE] 10:24:25:477 UMC/(4353:4437): Solcitud - id: 144271832 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:24:44:637 UMC/(4523:4523): Creando memoria
+[TRACE] 10:24:44:637 UMC/(4523:4523): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:24:44:637 UMC/(4523:4523): Marcos libres cargados: 10:
+[TRACE] 10:25:12:339 UMC/(4695:4695): Creando memoria
+[TRACE] 10:25:12:339 UMC/(4695:4695): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:25:12:339 UMC/(4695:4695): Marcos libres cargados: 10:
+[TRACE] 10:26:14:55 UMC/(4695:4778): Almacenar - id: 134539736 pag: 0 offset: 0 tamanio: 4
+[TRACE] 10:26:14:799 UMC/(4695:4778): Solcitud - id: 134539736 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:28:01:162 UMC/(5047:5047): Creando memoria
+[TRACE] 10:28:01:162 UMC/(5047:5047): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:28:01:162 UMC/(5047:5047): Marcos libres cargados: 10:
+[TRACE] 10:28:15:682 UMC/(5047:5130): Almacenar - id: 144075224 pag: 0 offset: 0 tamanio: 4
+[TRACE] 10:28:28:413 UMC/(5047:5130): Almacenar - id: 144075224 pag: 1 offset: 0 tamanio: 4
+[TRACE] 10:28:31:413 UMC/(5047:5130): Almacenar - id: 144075224 pag: 2 offset: 0 tamanio: 4
+[TRACE] 10:28:46:35 UMC/(5047:5130): Almacenar - id: 144075224 pag: 3 offset: 0 tamanio: 4
+[TRACE] 10:30:07:951 UMC/(5409:5409): Creando memoria
+[TRACE] 10:30:07:951 UMC/(5409:5409): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:30:07:951 UMC/(5409:5409): Marcos libres cargados: 10:
+[TRACE] 10:30:21:477 UMC/(5409:5572): Comienza alocacion de programa id: 1
+[TRACE] 10:30:21:477 UMC/(5409:5572): Agregado en tabla de proceso id: 
+[TRACE] 10:30:21:477 UMC/(5409:5572): Pag: 0 	Marco: 0 
+[TRACE] 10:30:21:477 UMC/(5409:5572): Pag: 1 	Marco: 1 
+[TRACE] 10:30:21:477 UMC/(5409:5572): Alocado programa id: 1
+[TRACE] 10:30:21:518 UMC/(5409:5572): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 10:30:21:558 UMC/(5409:5572): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:30:21:598 UMC/(5409:5572): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 10:30:21:682 UMC/(5409:5572): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:30:21:726 UMC/(5409:5572): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 10:30:21:805 UMC/(5409:5572): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:30:21:846 UMC/(5409:5572): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 10:30:21:926 UMC/(5409:5572): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:32:48:269 UMC/(5409:5795): Comienza alocacion de programa id: 1
+[TRACE] 10:32:48:269 UMC/(5409:5795): Agregado en tabla de proceso id: 
+[TRACE] 10:32:48:269 UMC/(5409:5795): Pag: 0 	Marco: 2 
+[TRACE] 10:32:48:269 UMC/(5409:5795): Pag: 1 	Marco: 3 
+[TRACE] 10:32:48:270 UMC/(5409:5795): Alocado programa id: 1
+[TRACE] 10:32:48:451 UMC/(5409:5795): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 10:32:48:451 UMC/(5409:5795): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:32:48:451 UMC/(5409:5795): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 10:32:48:451 UMC/(5409:5795): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:32:48:451 UMC/(5409:5795): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 10:32:48:451 UMC/(5409:5795): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:32:48:451 UMC/(5409:5795): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 10:32:48:451 UMC/(5409:5795): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:34:25:917 UMC/(6343:6343): Creando memoria
+[TRACE] 10:34:25:918 UMC/(6343:6343): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:34:25:918 UMC/(6343:6343): Marcos libres cargados: 10:
+[TRACE] 10:35:26:688 UMC/(6712:6712): Creando memoria
+[TRACE] 10:35:26:688 UMC/(6712:6712): Memoria inicializada con un tamanio: 2560
+[TRACE] 10:35:26:688 UMC/(6712:6712): Marcos libres cargados: 10:
+[TRACE] 10:35:51:502 UMC/(6712:6796): Comienza alocacion de programa id: 1
+[TRACE] 10:35:51:502 UMC/(6712:6796): Agregado en tabla de proceso id: 
+[TRACE] 10:35:51:502 UMC/(6712:6796): Pag: 0 	Marco: 0 
+[TRACE] 10:35:51:502 UMC/(6712:6796): Pag: 1 	Marco: 1 
+[TRACE] 10:35:51:502 UMC/(6712:6796): Alocado programa id: 1
+[TRACE] 10:35:51:542 UMC/(6712:6796): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 10:35:51:582 UMC/(6712:6796): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:35:51:621 UMC/(6712:6796): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 10:35:51:701 UMC/(6712:6796): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:35:51:742 UMC/(6712:6796): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 10:35:51:821 UMC/(6712:6796): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 10:35:51:862 UMC/(6712:6796): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 10:35:51:942 UMC/(6712:6796): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:07:45:407 UMC/(7356:7356): Creando memoria
+[TRACE] 13:07:45:407 UMC/(7356:7356): Memoria inicializada con un tamanio: 2560
+[TRACE] 13:07:45:407 UMC/(7356:7356): Marcos libres cargados: 10:
+[TRACE] 13:08:40:605 UMC/(7356:7430): Comienza alocacion de programa id: 1
+[TRACE] 13:08:40:605 UMC/(7356:7430): Agregado en tabla de proceso id: 
+[TRACE] 13:08:40:605 UMC/(7356:7430): Pag: 0 	Marco: 0 
+[TRACE] 13:08:40:605 UMC/(7356:7430): Pag: 1 	Marco: 1 
+[TRACE] 13:08:40:605 UMC/(7356:7430): Alocado programa id: 1
+[TRACE] 13:08:40:645 UMC/(7356:7430): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 13:08:40:686 UMC/(7356:7430): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:08:40:726 UMC/(7356:7430): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 13:08:40:806 UMC/(7356:7430): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:08:40:846 UMC/(7356:7430): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 13:08:40:925 UMC/(7356:7430): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:08:40:966 UMC/(7356:7430): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 13:08:41:45 UMC/(7356:7430): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:12:10:33 UMC/(7356:7625): Comienza alocacion de programa id: 1
+[TRACE] 13:12:10:33 UMC/(7356:7625): Agregado en tabla de proceso id: 
+[TRACE] 13:12:10:33 UMC/(7356:7625): Pag: 0 	Marco: 2 
+[TRACE] 13:12:10:33 UMC/(7356:7625): Pag: 1 	Marco: 3 
+[TRACE] 13:12:10:34 UMC/(7356:7625): Alocado programa id: 1
+[TRACE] 13:12:10:283 UMC/(7356:7625): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 13:12:10:283 UMC/(7356:7625): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:12:10:283 UMC/(7356:7625): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 13:12:10:283 UMC/(7356:7625): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:12:10:283 UMC/(7356:7625): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 13:12:10:283 UMC/(7356:7625): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:12:10:283 UMC/(7356:7625): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 13:12:10:283 UMC/(7356:7625): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:16:52:934 UMC/(7356:7831): Comienza alocacion de programa id: 1
+[TRACE] 13:16:52:934 UMC/(7356:7831): Agregado en tabla de proceso id: 
+[TRACE] 13:16:52:934 UMC/(7356:7831): Pag: 0 	Marco: 4 
+[TRACE] 13:16:52:934 UMC/(7356:7831): Pag: 1 	Marco: 5 
+[TRACE] 13:16:52:934 UMC/(7356:7831): Alocado programa id: 1
+[TRACE] 13:16:52:974 UMC/(7356:7831): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 13:16:52:974 UMC/(7356:7831): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:16:52:974 UMC/(7356:7831): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 13:16:52:974 UMC/(7356:7831): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:16:52:974 UMC/(7356:7831): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 13:16:52:974 UMC/(7356:7831): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:16:52:974 UMC/(7356:7831): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 13:16:52:974 UMC/(7356:7831): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:17:32:198 UMC/(7922:7922): Creando memoria
+[TRACE] 13:17:32:198 UMC/(7922:7922): Memoria inicializada con un tamanio: 2560
+[TRACE] 13:17:32:198 UMC/(7922:7922): Marcos libres cargados: 10:
+[TRACE] 13:17:55:82 UMC/(7922:7970): Comienza alocacion de programa id: 1
+[TRACE] 13:17:55:82 UMC/(7922:7970): Agregado en tabla de proceso id: 
+[TRACE] 13:17:55:82 UMC/(7922:7970): Pag: 0 	Marco: 0 
+[TRACE] 13:17:55:82 UMC/(7922:7970): Pag: 1 	Marco: 1 
+[TRACE] 13:17:55:82 UMC/(7922:7970): Alocado programa id: 1
+[TRACE] 13:17:55:121 UMC/(7922:7970): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 13:17:55:162 UMC/(7922:7970): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:17:55:202 UMC/(7922:7970): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 13:17:55:281 UMC/(7922:7970): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:17:55:322 UMC/(7922:7970): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 13:17:55:402 UMC/(7922:7970): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:17:55:442 UMC/(7922:7970): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 13:17:55:521 UMC/(7922:7970): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:18:46:817 UMC/(8074:8074): Creando memoria
+[TRACE] 13:18:46:817 UMC/(8074:8074): Memoria inicializada con un tamanio: 2560
+[TRACE] 13:18:46:817 UMC/(8074:8074): Marcos libres cargados: 10:
+[TRACE] 13:19:10:994 UMC/(8074:8136): Comienza alocacion de programa id: 1
+[TRACE] 13:19:10:994 UMC/(8074:8136): Agregado en tabla de proceso id: 
+[TRACE] 13:19:10:994 UMC/(8074:8136): Pag: 0 	Marco: 0 
+[TRACE] 13:19:10:994 UMC/(8074:8136): Pag: 1 	Marco: 1 
+[TRACE] 13:19:10:994 UMC/(8074:8136): Alocado programa id: 1
+[TRACE] 13:19:11:34 UMC/(8074:8136): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 13:19:11:74 UMC/(8074:8136): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:19:11:114 UMC/(8074:8136): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 13:19:11:193 UMC/(8074:8136): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:19:11:234 UMC/(8074:8136): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 13:19:11:314 UMC/(8074:8136): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:19:11:353 UMC/(8074:8136): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 13:19:11:433 UMC/(8074:8136): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:21:59:805 UMC/(8270:8270): Creando memoria
+[TRACE] 13:21:59:805 UMC/(8270:8270): Memoria inicializada con un tamanio: 2560
+[TRACE] 13:21:59:805 UMC/(8270:8270): Marcos libres cargados: 10:
+[TRACE] 13:22:33:582 UMC/(8270:8374): Comienza alocacion de programa id: 1
+[TRACE] 13:22:33:582 UMC/(8270:8374): Agregado en tabla de proceso id: 
+[TRACE] 13:22:33:582 UMC/(8270:8374): Pag: 0 	Marco: 0 
+[TRACE] 13:22:33:582 UMC/(8270:8374): Pag: 1 	Marco: 1 
+[TRACE] 13:22:33:582 UMC/(8270:8374): Alocado programa id: 1
+[TRACE] 13:22:33:622 UMC/(8270:8374): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 13:22:33:662 UMC/(8270:8374): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:22:33:702 UMC/(8270:8374): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 13:22:33:781 UMC/(8270:8374): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:22:33:822 UMC/(8270:8374): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 13:22:33:902 UMC/(8270:8374): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:22:33:942 UMC/(8270:8374): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 13:22:34:21 UMC/(8270:8374): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:23:24:946 UMC/(8270:8374): Comienza alocacion de programa id: 2
+[TRACE] 13:23:24:946 UMC/(8270:8374): Agregado en tabla de proceso id: 
+[TRACE] 13:23:24:946 UMC/(8270:8374): Pag: 0 	Marco: 2 
+[TRACE] 13:23:24:946 UMC/(8270:8374): Pag: 1 	Marco: 3 
+[TRACE] 13:23:24:946 UMC/(8270:8374): Alocado programa id: 2
+[TRACE] 13:23:25:146 UMC/(8270:8374): Almacenar - id: 2 pag: 0 offset: 0 tamanio: 15
+[TRACE] 13:23:25:146 UMC/(8270:8374): Solcitud - id: 2 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:23:25:146 UMC/(8270:8374): Almacenar - id: 2 pag: 0 offset: 15 tamanio: 6
+[TRACE] 13:23:25:146 UMC/(8270:8374): Solcitud - id: 2 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:23:25:146 UMC/(8270:8374): Almacenar - id: 2 pag: 0 offset: 21 tamanio: 6
+[TRACE] 13:23:25:146 UMC/(8270:8374): Solcitud - id: 2 pag: 0 offset: 0 tamanio: 256
+[TRACE] 13:23:25:146 UMC/(8270:8374): Almacenar - id: 2 pag: 0 offset: 27 tamanio: 11
+[TRACE] 13:23:25:146 UMC/(8270:8374): Solcitud - id: 2 pag: 0 offset: 0 tamanio: 256
+[TRACE] 14:04:41:908 UMC/(10028:10028): Creando memoria
+[TRACE] 14:04:41:908 UMC/(10028:10028): Memoria inicializada con un tamanio: 2560
+[TRACE] 14:04:41:908 UMC/(10028:10028): Marcos libres cargados: 10:
+[TRACE] 14:04:50:93 UMC/(10028:10057): Comienza alocacion de programa id: 1
+[TRACE] 14:04:50:93 UMC/(10028:10057): Agregado en tabla de proceso id: 
+[TRACE] 14:04:50:93 UMC/(10028:10057): Pag: 0 	Marco: 0 
+[TRACE] 14:04:50:93 UMC/(10028:10057): Pag: 1 	Marco: 1 
+[TRACE] 14:04:50:93 UMC/(10028:10057): Alocado programa id: 1
+[TRACE] 14:04:50:133 UMC/(10028:10057): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 14:04:50:174 UMC/(10028:10057): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 14:04:50:214 UMC/(10028:10057): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 14:04:50:294 UMC/(10028:10057): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 14:04:50:335 UMC/(10028:10057): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 14:04:50:413 UMC/(10028:10057): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 14:04:50:455 UMC/(10028:10057): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 14:04:50:533 UMC/(10028:10057): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 15:07:52:56 UMC/(10453:10453): Creando memoria
+[TRACE] 15:07:52:56 UMC/(10453:10453): Memoria inicializada con un tamanio: 2560
+[TRACE] 15:07:52:56 UMC/(10453:10453): Marcos libres cargados: 10:
+[TRACE] 15:08:06:592 UMC/(10453:10483): Comienza alocacion de programa id: 1
+[TRACE] 15:08:06:592 UMC/(10453:10483): Agregado en tabla de proceso id: 
+[TRACE] 15:08:06:592 UMC/(10453:10483): Pag: 0 	Marco: 0 
+[TRACE] 15:08:06:592 UMC/(10453:10483): Pag: 1 	Marco: 1 
+[TRACE] 15:08:06:592 UMC/(10453:10483): Alocado programa id: 1
+[TRACE] 15:08:06:632 UMC/(10453:10483): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 15
+[TRACE] 15:08:06:672 UMC/(10453:10483): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 15:08:06:712 UMC/(10453:10483): Almacenar - id: 1 pag: 0 offset: 15 tamanio: 6
+[TRACE] 15:08:06:792 UMC/(10453:10483): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 15:08:06:832 UMC/(10453:10483): Almacenar - id: 1 pag: 0 offset: 21 tamanio: 6
+[TRACE] 15:08:06:912 UMC/(10453:10483): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 15:08:06:953 UMC/(10453:10483): Almacenar - id: 1 pag: 0 offset: 27 tamanio: 11
+[TRACE] 15:08:07:31 UMC/(10453:10483): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 16:56:53:843 UMC/(6598:6598): Creando memoria
+[TRACE] 16:56:53:862 UMC/(6598:6598): Memoria inicializada con un tamanio: 2560
+[TRACE] 16:56:53:862 UMC/(6598:6598): Marcos libres cargados: 10:
+[TRACE] 16:57:29:17 UMC/(6662:6662): Creando memoria
+[TRACE] 16:57:29:17 UMC/(6662:6662): Memoria inicializada con un tamanio: 2560
+[TRACE] 16:57:29:17 UMC/(6662:6662): Marcos libres cargados: 10:
+[TRACE] 17:00:45:880 UMC/(6662:6727): CambiarProceso - idAnterior: -1 , idNuevo: -1
+[TRACE] 17:11:14:728 UMC/(7310:7310): Creando memoria
+[TRACE] 17:11:14:728 UMC/(7310:7310): Memoria inicializada con un tamanio: 2560
+[TRACE] 17:11:14:728 UMC/(7310:7310): Marcos libres cargados: 10:
+[TRACE] 17:12:45:945 UMC/(7416:7416): Creando memoria
+[TRACE] 17:12:45:945 UMC/(7416:7416): Memoria inicializada con un tamanio: 2560
+[TRACE] 17:12:45:945 UMC/(7416:7416): Marcos libres cargados: 10:
+[TRACE] 17:17:27:347 UMC/(7618:7618): Creando memoria
+[TRACE] 17:17:27:347 UMC/(7618:7618): Memoria inicializada con un tamanio: 2560
+[TRACE] 17:17:27:347 UMC/(7618:7618): Marcos libres cargados: 10:
+[TRACE] 17:18:54:22 UMC/(7721:7721): Creando memoria
+[TRACE] 17:18:54:22 UMC/(7721:7721): Memoria inicializada con un tamanio: 2560
+[TRACE] 17:18:54:22 UMC/(7721:7721): Marcos libres cargados: 10:
+[TRACE] 17:19:15:863 UMC/(7829:7829): Creando memoria
+[TRACE] 17:19:15:863 UMC/(7829:7829): Memoria inicializada con un tamanio: 2560
+[TRACE] 17:19:15:863 UMC/(7829:7829): Marcos libres cargados: 10:
+[TRACE] 17:21:18:822 UMC/(7987:7987): Creando memoria
+[TRACE] 17:21:18:822 UMC/(7987:7987): Memoria inicializada con un tamanio: 2560
+[TRACE] 17:21:18:822 UMC/(7987:7987): Marcos libres cargados: 10:
+[TRACE] 18:55:39:191 UMC/(10766:10766): Creando memoria
+[TRACE] 18:55:39:191 UMC/(10766:10766): Memoria inicializada con un tamanio: 2560
+[TRACE] 18:55:39:191 UMC/(10766:10766): Marcos libres cargados: 10:
+[TRACE] 18:55:41:533 UMC/(10787:10787): Creando memoria
+[TRACE] 18:55:41:533 UMC/(10787:10787): Memoria inicializada con un tamanio: 2560
+[TRACE] 18:55:41:533 UMC/(10787:10787): Marcos libres cargados: 10:
+[TRACE] 19:10:15:781 UMC/(7987:12001): Comienza alocacion de programa id: 1
+[TRACE] 19:10:15:781 UMC/(7987:12001): Agregado en tabla de proceso id: 
+[TRACE] 19:10:15:781 UMC/(7987:12001): Pag: 0 	Marco: 0 
+[TRACE] 19:10:15:781 UMC/(7987:12001): Pag: 1 	Marco: 1 
+[TRACE] 19:10:15:781 UMC/(7987:12001): Alocado programa id: 1
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 14 tamanio: 6
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 20 tamanio: 13
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 33 tamanio: 8
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 41 tamanio: 4
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 45 tamanio: 15
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 60 tamanio: 12
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 72 tamanio: 12
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 84 tamanio: 9
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 19:10:15:824 UMC/(7987:12001): Almacenar - id: 1 pag: 0 offset: 93 tamanio: 4
+[TRACE] 19:10:15:824 UMC/(7987:12001): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:02:40:644 UMC/(2719:2719): Creando memoria
+[TRACE] 12:02:40:661 UMC/(2719:2719): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:02:40:661 UMC/(2719:2719): Marcos libres cargados: 10:
+[TRACE] 12:02:50:113 UMC/(2719:2754): Comienza alocacion de programa id: 1
+[TRACE] 12:02:50:113 UMC/(2719:2754): Agregado en tabla de proceso id: 
+[TRACE] 12:02:50:113 UMC/(2719:2754): Pag: 0 	Marco: 0 
+[TRACE] 12:02:50:113 UMC/(2719:2754): Pag: 1 	Marco: 1 
+[TRACE] 12:02:50:113 UMC/(2719:2754): Alocado programa id: 1
+[TRACE] 12:02:50:153 UMC/(2719:2754): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 12:05:04:924 UMC/(2844:2844): Creando memoria
+[TRACE] 12:05:04:924 UMC/(2844:2844): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:05:04:924 UMC/(2844:2844): Marcos libres cargados: 10:
+[TRACE] 12:05:39:329 UMC/(2844:2876): Comienza alocacion de programa id: 1
+[TRACE] 12:05:39:329 UMC/(2844:2876): Agregado en tabla de proceso id: 
+[TRACE] 12:05:39:329 UMC/(2844:2876): Pag: 0 	Marco: 0 
+[TRACE] 12:05:39:329 UMC/(2844:2876): Pag: 1 	Marco: 1 
+[TRACE] 12:05:39:329 UMC/(2844:2876): Alocado programa id: 1
+[TRACE] 12:05:45:254 UMC/(2844:2876): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 12:06:34:945 UMC/(2952:2952): Creando memoria
+[TRACE] 12:06:34:945 UMC/(2952:2952): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:06:34:945 UMC/(2952:2952): Marcos libres cargados: 10:
+[TRACE] 12:06:52:483 UMC/(3016:3016): Creando memoria
+[TRACE] 12:06:52:483 UMC/(3016:3016): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:06:52:483 UMC/(3016:3016): Marcos libres cargados: 10:
+[TRACE] 12:07:08:320 UMC/(3016:3047): Comienza alocacion de programa id: 1
+[TRACE] 12:07:08:320 UMC/(3016:3047): Agregado en tabla de proceso id: 
+[TRACE] 12:07:08:320 UMC/(3016:3047): Pag: 0 	Marco: 0 
+[TRACE] 12:07:08:320 UMC/(3016:3047): Pag: 1 	Marco: 1 
+[TRACE] 12:07:08:320 UMC/(3016:3047): Alocado programa id: 1
+[TRACE] 12:07:08:357 UMC/(3016:3047): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 12:07:54:89 UMC/(3110:3110): Creando memoria
+[TRACE] 12:07:54:89 UMC/(3110:3110): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:07:54:89 UMC/(3110:3110): Marcos libres cargados: 10:
+[TRACE] 12:08:38:69 UMC/(3110:3142): Comienza alocacion de programa id: 1
+[TRACE] 12:08:45:273 UMC/(3110:3142): Agregado en tabla de proceso id: 
+[TRACE] 12:08:58:976 UMC/(3110:3142): Pag: 0 	Marco: 0 
+[TRACE] 12:09:12:587 UMC/(3110:3142): Pag: 1 	Marco: 1 
+[TRACE] 12:09:29:33 UMC/(3110:3142): Alocado programa id: 1
+[TRACE] 12:10:23:287 UMC/(3110:3142): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 12:11:51:820 UMC/(3313:3313): Creando memoria
+[TRACE] 12:11:51:820 UMC/(3313:3313): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:11:51:820 UMC/(3313:3313): Marcos libres cargados: 10:
+[TRACE] 12:12:06:945 UMC/(3313:3344): Comienza alocacion de programa id: 1
+[TRACE] 12:12:06:945 UMC/(3313:3344): Agregado en tabla de proceso id: 
+[TRACE] 12:12:06:945 UMC/(3313:3344): Pag: 0 	Marco: 0 
+[TRACE] 12:12:06:945 UMC/(3313:3344): Pag: 1 	Marco: 1 
+[TRACE] 12:12:06:945 UMC/(3313:3344): Alocado programa id: 1
+[TRACE] 12:12:06:985 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 12:12:06:985 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:985 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 14 tamanio: 6
+[TRACE] 12:12:06:985 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:985 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 20 tamanio: 13
+[TRACE] 12:12:06:985 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:986 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 33 tamanio: 8
+[TRACE] 12:12:06:986 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:986 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 41 tamanio: 4
+[TRACE] 12:12:06:986 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:986 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 45 tamanio: 15
+[TRACE] 12:12:06:986 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:986 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 60 tamanio: 12
+[TRACE] 12:12:06:986 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:986 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 72 tamanio: 12
+[TRACE] 12:12:06:986 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:986 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 84 tamanio: 9
+[TRACE] 12:12:06:986 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:12:06:986 UMC/(3313:3344): Almacenar - id: 1 pag: 0 offset: 93 tamanio: 4
+[TRACE] 12:12:06:986 UMC/(3313:3344): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:17:12:748 UMC/(3753:3753): Creando memoria
+[TRACE] 12:17:12:748 UMC/(3753:3753): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:17:12:748 UMC/(3753:3753): Marcos libres cargados: 10:
+[TRACE] 12:19:12:777 UMC/(3898:3898): Creando memoria
+[TRACE] 12:19:12:777 UMC/(3898:3898): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:19:12:777 UMC/(3898:3898): Marcos libres cargados: 10:
+[TRACE] 12:20:43:927 UMC/(3990:3990): Creando memoria
+[TRACE] 12:20:43:927 UMC/(3990:3990): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:20:43:927 UMC/(3990:3990): Marcos libres cargados: 10:
+[TRACE] 12:22:46:918 UMC/(4134:4134): Creando memoria
+[TRACE] 12:22:46:918 UMC/(4134:4134): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:22:46:918 UMC/(4134:4134): Marcos libres cargados: 10:
+[TRACE] 12:22:51:709 UMC/(4169:4169): Creando memoria
+[TRACE] 12:22:51:709 UMC/(4169:4169): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:22:51:709 UMC/(4169:4169): Marcos libres cargados: 10:
+[TRACE] 12:24:07:260 UMC/(4300:4300): Creando memoria
+[TRACE] 12:24:07:260 UMC/(4300:4300): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:24:07:260 UMC/(4300:4300): Marcos libres cargados: 10:
+[TRACE] 12:24:58:189 UMC/(4300:4340): Comienza alocacion de programa id: 1
+[TRACE] 12:24:58:189 UMC/(4300:4340): Agregado en tabla de proceso id: 
+[TRACE] 12:24:58:189 UMC/(4300:4340): Pag: 0 	Marco: 0 
+[TRACE] 12:24:58:189 UMC/(4300:4340): Pag: 1 	Marco: 1 
+[TRACE] 12:24:58:189 UMC/(4300:4340): Alocado programa id: 1
+[TRACE] 12:24:58:229 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 12:24:58:229 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:269 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 14 tamanio: 6
+[TRACE] 12:24:58:269 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:309 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 20 tamanio: 13
+[TRACE] 12:24:58:309 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:349 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 33 tamanio: 8
+[TRACE] 12:24:58:349 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:389 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 41 tamanio: 4
+[TRACE] 12:24:58:389 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:429 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 45 tamanio: 15
+[TRACE] 12:24:58:429 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:469 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 60 tamanio: 12
+[TRACE] 12:24:58:469 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:509 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 72 tamanio: 12
+[TRACE] 12:24:58:509 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:549 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 84 tamanio: 9
+[TRACE] 12:24:58:549 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:24:58:589 UMC/(4300:4340): Almacenar - id: 1 pag: 0 offset: 93 tamanio: 4
+[TRACE] 12:24:58:589 UMC/(4300:4340): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:27:54:76 UMC/(4506:4506): Creando memoria
+[TRACE] 12:27:54:76 UMC/(4506:4506): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:27:54:76 UMC/(4506:4506): Marcos libres cargados: 10:
+[TRACE] 12:28:06:365 UMC/(4546:4546): Creando memoria
+[TRACE] 12:28:06:365 UMC/(4546:4546): Memoria inicializada con un tamanio: 2560
+[TRACE] 12:28:06:365 UMC/(4546:4546): Marcos libres cargados: 10:
+[TRACE] 12:29:10:17 UMC/(4546:4585): Comienza alocacion de programa id: 1
+[TRACE] 12:29:10:17 UMC/(4546:4585): Agregado en tabla de proceso id: 
+[TRACE] 12:29:10:17 UMC/(4546:4585): Pag: 0 	Marco: 0 
+[TRACE] 12:29:10:17 UMC/(4546:4585): Pag: 1 	Marco: 1 
+[TRACE] 12:29:10:17 UMC/(4546:4585): Alocado programa id: 1
+[TRACE] 12:29:10:61 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 0 tamanio: 14
+[TRACE] 12:29:10:61 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:101 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 14 tamanio: 6
+[TRACE] 12:29:10:101 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:141 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 20 tamanio: 13
+[TRACE] 12:29:10:141 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:181 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 33 tamanio: 8
+[TRACE] 12:29:10:181 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:221 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 41 tamanio: 4
+[TRACE] 12:29:10:221 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:261 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 45 tamanio: 15
+[TRACE] 12:29:10:261 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:301 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 60 tamanio: 12
+[TRACE] 12:29:10:301 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:341 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 72 tamanio: 12
+[TRACE] 12:29:10:341 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:381 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 84 tamanio: 9
+[TRACE] 12:29:10:381 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256
+[TRACE] 12:29:10:421 UMC/(4546:4585): Almacenar - id: 1 pag: 0 offset: 93 tamanio: 4
+[TRACE] 12:29:10:421 UMC/(4546:4585): Solcitud - id: 1 pag: 0 offset: 0 tamanio: 256

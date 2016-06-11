@@ -1,0 +1,21 @@
+13:48:40 **** Build of configuration Debug for project TestParser ****
+make all 
+Building file: ../.metadata/.plugins/org.eclipse.cdt.managedbuilder.core/spec.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF".metadata/.plugins/org.eclipse.cdt.managedbuilder.core/spec.d" -MT".metadata/.plugins/org.eclipse.cdt.managedbuilder.core/spec.d" -o ".metadata/.plugins/org.eclipse.cdt.managedbuilder.core/spec.o" "../.metadata/.plugins/org.eclipse.cdt.managedbuilder.core/spec.c"
+Finished building: ../.metadata/.plugins/org.eclipse.cdt.managedbuilder.core/spec.c
+ 
+Building file: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -MT".metadata/.plugins/org.eclipse.cdt.make.core/specs.d" -o ".metadata/.plugins/org.eclipse.cdt.make.core/specs.o" "../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c"
+Finished building: ../.metadata/.plugins/org.eclipse.cdt.make.core/specs.c
+ 
+Building target: TestParser
+Invoking: GCC C Linker
+gcc  -o "TestParser"  ./.metadata/.plugins/org.eclipse.cdt.managedbuilder.core/spec.o  ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o   -lbibliotecaC -lparser-ansisop -lcommons
+/usr/bin/ld: no se puede encontrar -lbibliotecaC
+collect2: error: ld returned 1 exit status
+make: *** [TestParser] Error 1
+
+13:48:41 Build Finished (took 582ms)
+

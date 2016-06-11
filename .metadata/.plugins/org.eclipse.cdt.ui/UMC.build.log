@@ -1,6 +1,275 @@
-15:58:29 **** Incremental Build of configuration Debug for project UMC ****
+13:48:44 **** Build of configuration Debug for project UMC ****
 make all 
-make: No se hace nada para «all».
+Building file: ../src/archivoConf.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/archivoConf.d" -MT"src/archivoConf.d" -o "src/archivoConf.o" "../src/archivoConf.c"
+../src/archivoConf.c: In function ‘get_config_params’:
+../src/archivoConf.c:38:2: warning: function returns address of local variable [-Wreturn-local-addr]
+  return &configuracion;
+  ^
+Finished building: ../src/archivoConf.c
+ 
+Building file: ../src/umc.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umc.d" -MT"src/umc.d" -o "src/umc.o" "../src/umc.c"
+Finished building: ../src/umc.c
+ 
+Building file: ../src/umcCliente.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcCliente.d" -MT"src/umcCliente.d" -o "src/umcCliente.o" "../src/umcCliente.c"
+In file included from ../src/umcCliente.c:8:0:
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:19:37: warning: ‘struct sockaddr_in’ declared inside parameter list [enabled by default]
+ void abrirPuerto(int socket, struct sockaddr_in* adress);
+                                     ^
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:19:37: warning: its scope is only this definition or declaration, which is probably not what you want [enabled by default]
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:21:68: warning: ‘struct sockaddr_in’ declared inside parameter list [enabled by default]
+ void aceptarConexion(int* socketnuevo, int socketescuchador,struct sockaddr_in* other_adress);
+                                                                    ^
+../src/umcCliente.c: In function ‘notificarASwapPrograma’:
+../src/umcCliente.c:39:2: warning: passing argument 1 of ‘leerHeader’ makes pointer from integer without a cast [enabled by default]
+  int* conf = leerHeader(umcConfg.socketSwap);
+  ^
+In file included from ../src/umcCliente.c:8:0:
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:44:6: note: expected ‘int (*)()’ but argument is of type ‘int’
+ int* leerHeader(int socketARecibir());
+      ^
+../src/umcCliente.c: In function ‘notificarASwapFinPrograma’:
+../src/umcCliente.c:51:2: warning: passing argument 1 of ‘leerHeader’ makes pointer from integer without a cast [enabled by default]
+  int* conf = leerHeader(umcConfg.socketSwap);
+  ^
+In file included from ../src/umcCliente.c:8:0:
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:44:6: note: expected ‘int (*)()’ but argument is of type ‘int’
+ int* leerHeader(int socketARecibir());
+      ^
+../src/umcCliente.c: In function ‘almacenarEnSwap’:
+../src/umcCliente.c:69:2: warning: passing argument 1 of ‘leerHeader’ makes pointer from integer without a cast [enabled by default]
+  int* conf = leerHeader(umcConfg.socketSwap);
+  ^
+In file included from ../src/umcCliente.c:8:0:
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:44:6: note: expected ‘int (*)()’ but argument is of type ‘int’
+ int* leerHeader(int socketARecibir());
+      ^
+../src/umcCliente.c: In function ‘solicitarEnSwap’:
+../src/umcCliente.c:84:2: warning: passing argument 1 of ‘leerHeader’ makes pointer from integer without a cast [enabled by default]
+  int* conf = leerHeader(umcConfg.socketSwap);
+  ^
+In file included from ../src/umcCliente.c:8:0:
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:44:6: note: expected ‘int (*)()’ but argument is of type ‘int’
+ int* leerHeader(int socketARecibir());
+      ^
+../src/umcCliente.c:93:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../src/umcCliente.c
+ 
+Building file: ../src/umcClock.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcClock.d" -MT"src/umcClock.d" -o "src/umcClock.o" "../src/umcClock.c"
+../src/umcClock.c: In function ‘actualizarLista’:
+../src/umcClock.c:123:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../src/umcClock.c
+ 
+Building file: ../src/umcConsola.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcConsola.d" -MT"src/umcConsola.d" -o "src/umcConsola.o" "../src/umcConsola.c"
+Finished building: ../src/umcConsola.c
+ 
+Building file: ../src/umcCpu.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcCpu.d" -MT"src/umcCpu.d" -o "src/umcCpu.o" "../src/umcCpu.c"
+../src/umcCpu.c: In function ‘conexionCpu’:
+../src/umcCpu.c:63:3: warning: passing argument 1 of ‘leerHeader’ makes pointer from integer without a cast [enabled by default]
+   int* header = leerHeader(socketEscuchaCpu);
+   ^
+In file included from ../src/umcCpu.c:21:0:
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:44:6: note: expected ‘int (*)()’ but argument is of type ‘int’
+ int* leerHeader(int socketARecibir());
+      ^
+../src/umcCpu.c:84:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../src/umcCpu.c
+ 
+Building file: ../src/umcMemoria.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:77:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(pag_frame,pagina,tempFrame);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:81:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion,idProceso,pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:101:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:106:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   frame* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:123:2: warning: implicit declaration of function ‘buscarPaginaTLB’ [-Wimplicit-function-declaration]
+  int marcoTLB = buscarPaginaTLB(tlbCache,entradasTLB,&pagina);
+  ^
+../src/umcMemoria.c:129:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   frame* marco = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:147:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  frame* marco = dictionary_get(tabla_actual,&pagina);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:141:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../src/umcMemoria.c
+ 
+Building file: ../src/umcNucleo.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcNucleo.d" -MT"src/umcNucleo.d" -o "src/umcNucleo.o" "../src/umcNucleo.c"
+../src/umcNucleo.c: In function ‘conexionNucleo’:
+../src/umcNucleo.c:106:3: warning: passing argument 1 of ‘leerHeader’ makes pointer from integer without a cast [enabled by default]
+   int* header = leerHeader(socketEscuchaNucleo);
+   ^
+In file included from ../src/umcNucleo.c:21:0:
+/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/sockets/basicFunciones.h:44:6: note: expected ‘int (*)()’ but argument is of type ‘int’
+ int* leerHeader(int socketARecibir());
+      ^
+../src/umcNucleo.c:140:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+Finished building: ../src/umcNucleo.c
+ 
+Building file: ../src/umcServer.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcServer.d" -MT"src/umcServer.d" -o "src/umcServer.o" "../src/umcServer.c"
+../src/umcServer.c: In function ‘ponerUmcAEscuchar’:
+../src/umcServer.c:58:2: warning: implicit declaration of function ‘ponerServerEscucha’ [-Wimplicit-function-declaration]
+  ponerServerEscucha(procesosServer);
+  ^
+../src/umcServer.c:79:12: warning: implicit declaration of function ‘leerHeader’ [-Wimplicit-function-declaration]
+            int* header = (int*)leerHeader(nroSocket);
+            ^
+../src/umcServer.c:82:8: warning: implicit declaration of function ‘enviarError’ [-Wimplicit-function-declaration]
+        enviarError(nroSocket);
+        ^
+../src/umcServer.c: In function ‘atenderNucleo’:
+../src/umcServer.c:117:2: warning: passing argument 3 of ‘pthread_create’ from incompatible pointer type [enabled by default]
+  pthread_create(&nucleo,&atributo,conexionNucleo,socketNucleo);
+  ^
+In file included from ../src/umcServer.c:23:0:
+/usr/include/pthread.h:244:12: note: expected ‘void * (*)(void *)’ but argument is of type ‘void * (*)(int)’
+ extern int pthread_create (pthread_t *__restrict __newthread,
+            ^
+../src/umcServer.c:117:2: warning: passing argument 4 of ‘pthread_create’ makes pointer from integer without a cast [enabled by default]
+  pthread_create(&nucleo,&atributo,conexionNucleo,socketNucleo);
+  ^
+In file included from ../src/umcServer.c:23:0:
+/usr/include/pthread.h:244:12: note: expected ‘void * __restrict__’ but argument is of type ‘int’
+ extern int pthread_create (pthread_t *__restrict __newthread,
+            ^
+../src/umcServer.c: In function ‘atenderCpu’:
+../src/umcServer.c:124:2: warning: passing argument 3 of ‘pthread_create’ from incompatible pointer type [enabled by default]
+  pthread_create(&cpu,&atributo,conexionCpu,socketCPU);
+  ^
+In file included from ../src/umcServer.c:23:0:
+/usr/include/pthread.h:244:12: note: expected ‘void * (*)(void *)’ but argument is of type ‘void * (*)(int)’
+ extern int pthread_create (pthread_t *__restrict __newthread,
+            ^
+../src/umcServer.c:124:2: warning: passing argument 4 of ‘pthread_create’ makes pointer from integer without a cast [enabled by default]
+  pthread_create(&cpu,&atributo,conexionCpu,socketCPU);
+  ^
+In file included from ../src/umcServer.c:23:0:
+/usr/include/pthread.h:244:12: note: expected ‘void * __restrict__’ but argument is of type ‘int’
+ extern int pthread_create (pthread_t *__restrict __newthread,
+            ^
+../src/umcServer.c: In function ‘atenderConexionNuevaSelect’:
+../src/umcServer.c:132:2: warning: implicit declaration of function ‘aceptarConexion’ [-Wimplicit-function-declaration]
+  aceptarConexion(&nuevaConexion,procesosServer.socketServer, &direccionEntrante);
+  ^
+../src/umcServer.c: At top level:
+../src/umcServer.c:148:6: warning: conflicting types for ‘enviarError’ [enabled by default]
+ void enviarError(int socket){
+      ^
+../src/umcServer.c:82:8: note: previous implicit declaration of ‘enviarError’ was here
+        enviarError(nroSocket);
+        ^
+Finished building: ../src/umcServer.c
+ 
+Building file: ../src/umcTlb.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcTlb.d" -MT"src/umcTlb.d" -o "src/umcTlb.o" "../src/umcTlb.c"
+../src/umcTlb.c: In function ‘actualizarTablaPqElimineUlt’:
+../src/umcTlb.c:65:20: warning: assignment makes integer from pointer without a cast [enabled by default]
+     tablaPag[0].pag=&pagina;
+                    ^
+../src/umcTlb.c:66:23: warning: assignment makes integer from pointer without a cast [enabled by default]
+     tablaPag[0].idProg=&idProcesoActual;
+                       ^
+../src/umcTlb.c:58:7: warning: unused variable ‘aux’ [-Wunused-variable]
+  tlb* aux;
+       ^
+../src/umcTlb.c: In function ‘actualizarPqNoEncontreYTablaNoLlena’:
+../src/umcTlb.c:82:19: warning: assignment makes integer from pointer without a cast [enabled by default]
+    tablaPag[0].pag=&pagina;
+                   ^
+../src/umcTlb.c:83:22: warning: assignment makes integer from pointer without a cast [enabled by default]
+    tablaPag[0].idProg=&idProcesoActual;
+                      ^
+Finished building: ../src/umcTlb.c
+ 
+Building target: UMC
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcCliente.o ./src/umcClock.o ./src/umcConsola.o ./src/umcCpu.o ./src/umcMemoria.o ./src/umcNucleo.o ./src/umcServer.o ./src/umcTlb.o   -lcommons -ltpsolib -lpthread
+Finished building target: UMC
+ 
 
-15:58:29 Build Finished (took 72ms)
+13:48:45 Build Finished (took 1s.442ms)
 

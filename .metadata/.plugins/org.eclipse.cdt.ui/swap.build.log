@@ -1,0 +1,81 @@
+13:48:42 **** Build of configuration Debug for project swap ****
+make all 
+Building file: ../src/swap.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/swap.d" -MT"src/swap.d" -o "src/swap.o" "../src/swap.c"
+../src/swap.c: In function ‘agregarProcesoAListaSwap’:
+../src/swap.c:210:13: warning: assignment from incompatible pointer type [enabled by default]
+   auxiliar1 = auxiliar2->procesoSiguiente;
+             ^
+../src/swap.c:219:39: warning: assignment from incompatible pointer type [enabled by default]
+    procesoAInsertar->procesoSiguiente = listaSwap;
+                                       ^
+../src/swap.c:224:30: warning: assignment from incompatible pointer type [enabled by default]
+  auxiliar2->procesoSiguiente = procesoAInsertar;
+                              ^
+../src/swap.c:225:37: warning: assignment from incompatible pointer type [enabled by default]
+  procesoAInsertar->procesoSiguiente = auxiliar1;
+                                     ^
+../src/swap.c: In function ‘eliminarProceso’:
+../src/swap.c:337:24: warning: initialization from incompatible pointer type [enabled by default]
+   proceso* auxiliar1 = listaSwap->procesoSiguiente;
+                        ^
+../src/swap.c:343:15: warning: assignment from incompatible pointer type [enabled by default]
+     listaSwap = listaSwap->procesoSiguiente;
+               ^
+../src/swap.c:350:16: warning: assignment from incompatible pointer type [enabled by default]
+      auxiliar1 = auxiliar2->procesoSiguiente;
+                ^
+../src/swap.c: In function ‘procesoSeEncuentraEnSwap’:
+../src/swap.c:403:14: warning: assignment from incompatible pointer type [enabled by default]
+     auxiliar = auxiliar->procesoSiguiente;
+              ^
+../src/swap.c: In function ‘obtenerProceso’:
+../src/swap.c:422:14: warning: assignment from incompatible pointer type [enabled by default]
+     auxiliar = auxiliar->procesoSiguiente;
+              ^
+../src/swap.c: In function ‘compactar’:
+../src/swap.c:495:14: warning: assignment from incompatible pointer type [enabled by default]
+    auxiliar1 = auxiliar2->procesoSiguiente;
+              ^
+../src/swap.c:500:15: warning: assignment from incompatible pointer type [enabled by default]
+     auxiliar1 = auxiliar2->procesoSiguiente;
+               ^
+../src/swap.c:504:15: warning: assignment from incompatible pointer type [enabled by default]
+     auxiliar1 = auxiliar2->procesoSiguiente;
+               ^
+../src/swap.c:510:14: warning: assignment from incompatible pointer type [enabled by default]
+    auxiliar1 = auxiliar2->procesoSiguiente;
+              ^
+../src/swap.c:515:18: warning: assignment from incompatible pointer type [enabled by default]
+        auxiliar1 = auxiliar2->procesoSiguiente;
+                  ^
+../src/swap.c:519:18: warning: assignment from incompatible pointer type [enabled by default]
+        auxiliar1 = auxiliar2->procesoSiguiente;
+                  ^
+../src/swap.c: In function ‘procesoSeEncuentraEnSwap’:
+../src/swap.c:408:2: warning: control reaches end of non-void function [-Wreturn-type]
+  }
+  ^
+../src/swap.c: In function ‘obtenerProceso’:
+../src/swap.c:426:2: warning: control reaches end of non-void function [-Wreturn-type]
+  }
+  ^
+../src/swap.c: In function ‘hayHuecoDondeCabeProceso’:
+../src/swap.c:488:2: warning: control reaches end of non-void function [-Wreturn-type]
+  }
+  ^
+../src/swap.c: In function ‘conectarseConUMC’:
+../src/swap.c:710:2: warning: control reaches end of non-void function [-Wreturn-type]
+  }
+  ^
+Finished building: ../src/swap.c
+ 
+Building target: swap
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "swap"  ./src/swap.o   -ltpsolib -lcommons
+Finished building target: swap
+ 
+
+13:48:42 Build Finished (took 369ms)
+

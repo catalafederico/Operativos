@@ -33,19 +33,19 @@ int main(void) {
 	logConexiones = log_create("logs/conexiones.txt","UMC",false,LOG_LEVEL_TRACE);
 
 	log_info(umcConfg.loguer, "Cargando parametros");
-	umcConfg.configuracionUMC = *get_config_params();
+	umcConfg.configuracionUMC = get_config_params();
 	log_info(umcConfg.loguer, "Cargado parametros");
 
 	log_info(umcConfg.loguer, "Inicializando memoria");
 	umcConfg.memoriaPrincipal = inicializarMemoria(&(umcConfg.configuracionUMC));
 	log_info(umcConfg.loguer, "Memoria Inicializada");
 
-	/*struct cliente aSwap;
-	aSwap = crearCliente(6000,"127.0.0.1");
+	struct cliente aSwap;
+	aSwap = crearCliente(umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
 	log_info(umcConfg.loguer, "Conectando a Swap Puerto: %d Direc: %s",umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
 	conectarConServidor(aSwap);
 	log_info(umcConfg.loguer, "Conectado a Swap socket: %d", aSwap.socketCliente);
-	umcConfg.socketSwap = aSwap.socketCliente;*/
+	umcConfg.socketSwap = aSwap.socketCliente;
 
 
 	/*int a = 123;
