@@ -8,6 +8,7 @@
 #ifndef ESTRUCTURASNUCLEO_H_
 #define ESTRUCTURASNUCLEO_H_
 
+#include <commons/collections/list.h>
 #include <commons/collections/dictionary.h>
 
 typedef struct {
