@@ -240,7 +240,7 @@ void recibirPCB() {
 	int i;
 
 //RECIBO INDICE DE CODIGO
-	for (i = 0; i < *tamanioIC; i++) {
+	for (i = 0; i < *tamanioIC && *tamanioIC != 0; i++) {
 		int* nuevaPagina = malloc(sizeof(int));
 		*nuevaPagina = i;
 		direccionMemoria* nuevaDireccionMemoria = recibirStream(
@@ -251,20 +251,21 @@ void recibirPCB() {
 	free(tamanioIC);
 
 //RECIBO INDICE FUNCIONES
-	for (i = 0; i < *tamanioIF; i++) {
+	for (i = 0; i < *tamanioIF && *tamanioIF!=0; i++) {
 		funcionTemp* funcion = recibirStream(clienteCpuNucleo.socketCliente,
 				sizeof(funcionTemp));
 		char* funcionNombre = recibirStream(clienteCpuNucleo.socketCliente,
 				funcion->tamanioNombreFuncion);
 		funcion_sisop* new_funcion = malloc(sizeof(new_funcion));
 		new_funcion->funcion = funcionNombre;
-		new_funcion->posicion_codigo = funcion->posicionPID;
+		new_funcion->posicion_codigo = malloc(sizeof(int));
+		*(new_funcion->posicion_codigo) = funcion->posicionPID;
 		list_add_in_index(pcb_Recibido->indice_funciones, i, new_funcion);
 	}
 	free(tamanioIF);
 
 //RECIBO STACK
-	for (i = 0; i < *tamanioStack; i++) {
+	for (i = 0; i < *tamanioStack && *tamanioStack!=0; i++) {
 		stack* stackNuevo = malloc(sizeof(stack));
 		stackNuevo->args = list_create();
 		stackNuevo->vars = list_create();
@@ -293,8 +294,12 @@ void recibirPCB() {
 		dictionary_put(pcb_Recibido->indice_stack, key, stackNuevo);
 	}
 //recibo quantum y quantumSleep
-	quantum = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));
-	quantumSleep = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));
+	int * temp_quantum = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));
+	int * temp_quantumSleep = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));
+	quantum = *temp_quantum;
+	free(temp_quantum);
+	quantumSleep = *temp_quantumSleep;
+	free(temp_quantumSleep);
 	pcb_actual = pcb_Recibido;
 }
 
@@ -331,7 +336,7 @@ void enviarPCB() {
 //serializo indice de codigo y lo mando
 	int tamanioIndiceCode = aMandaNucleo.tamanioIndiceCodigo;
 	int i;
-	for (i = 0; i < tamanioIndiceCode; i++) {
+	for (i = 0; i < tamanioIndiceCode && tamanioIndiceCode !=0; i++) {
 		direccionMemoria* aMandar = dictionary_get(pcb_actual->indice_codigo,
 				&i);
 		send(clienteCpuNucleo.socketCliente, aMandar, sizeof(direccionMemoria),
@@ -340,7 +345,7 @@ void enviarPCB() {
 
 //serializo indice de funciones y lo mando
 	int tamanioIndiceFunciones = aMandaNucleo.tamanioIndiceDeFunciones;
-	for (i = 0; i < tamanioIndiceFunciones; i++) {
+	for (i = 0; i < tamanioIndiceFunciones && tamanioIndiceFunciones != 0; i++) {
 		//SS sin serializar
 		//CS con serializado
 		funcion_sisop* funcionAMandarSS = list_get(pcb_actual->indice_funciones,
@@ -359,7 +364,7 @@ void enviarPCB() {
 //serializo stack y lo mando
 //TESTEAR MUCHO YA Q ES UN KILOMBO
 	int tamanioStack = aMandaNucleo.tamanioStack;
-	for (i = 0; i < tamanioIndiceFunciones; i++) {
+	for (i = 0; i < tamanioStack && tamanioStack!= 0; i++) {
 		stack* stackAMandar = dictionary_get(pcb_actual->indice_stack, &i);
 		int tamanioArgs = list_size(stackAMandar->args);
 		int tamanioVars = list_size(stackAMandar->vars);
