@@ -34,8 +34,8 @@ struct cliente crearCliente(int puerto,char* ip){
 }
 
 
-void conectarConServidor(struct cliente procesoCliente){
-	conectarConDireccion(&(procesoCliente.socketCliente),&(procesoCliente.direccionDestino));
+int conectarConServidor(struct cliente procesoCliente){
+	return conectarConDireccion(&(procesoCliente.socketCliente),&(procesoCliente.direccionDestino));
 }
 
 void enviarMensajeServidor(int servidorDestino,char* mensaje){

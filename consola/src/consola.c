@@ -52,9 +52,13 @@ int main(int argc, char **argv) {
 
 	struct cliente clienteConsola;
 	clienteConsola = crearCliente(8080, "127.0.0.1");
-	conectarConServidor(clienteConsola);
-
-
+	int a = 1;
+	while(conectarConServidor(clienteConsola)==-1)
+	{
+		printf("CONSOLA: No se pudo conectar con Nucleo reintentando de 5 segundos, intento nro: %d\n", a );
+		sleep(5);
+		a++;
+	}
 	ch = fgetc(archivoAnsisop);
 	while ((ch) != EOF) {
 		//Le paso la direccion de ch xq strcat recibe dos punteros char

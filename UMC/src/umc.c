@@ -43,7 +43,13 @@ int main(void) {
 	struct cliente aSwap;
 	aSwap = crearCliente(umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
 	log_info(umcConfg.loguer, "Conectando a Swap Puerto: %d Direc: %s",umcConfg.configuracionUMC.PUERTO_SWAP,umcConfg.configuracionUMC.IP_SWAP);
-	conectarConServidor(aSwap);
+	int a = 1;
+	while(conectarConServidor(aSwap)==-1)
+	{
+		printf("UMC: No se pudo conectar con swap reintentando de 5 segundos, intento nro: %d\n", a );
+		sleep(5);
+		a++;
+	}
 	log_info(umcConfg.loguer, "Conectado a Swap socket: %d", aSwap.socketCliente);
 	umcConfg.socketSwap = aSwap.socketCliente;
 

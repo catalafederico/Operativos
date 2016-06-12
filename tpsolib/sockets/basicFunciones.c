@@ -120,11 +120,12 @@ char* recibirMensaje_tamanio(int socketCliente, int * long_mje){
 	return buf;
 }
 
-void conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){
+int conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){
 	if (connect(*socketMio, (struct sockaddr*)direccionDestino, sizeof(struct sockaddr)) != 0) {
-		perror("No se pudo conectar");
-		exit(EXIT_FAILURE);
+		//perror("No se pudo conectar");
+		return -1;
 	}
+	return 0;
 }
 
 int* leerHeader(int socketARecibir){

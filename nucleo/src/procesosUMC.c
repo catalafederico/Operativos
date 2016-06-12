@@ -106,7 +106,13 @@ void *procesos_UMC(){
 }
 
 void conectarseConUmc(struct cliente clienteNucleo){
-	conectarConServidor(clienteNucleo);
+	int a = 1;
+	while(conectarConServidor(clienteNucleo)==-1)
+	{
+		printf("CPU: No se pudo conectar con NUCLEO reintentando de 5 segundos, intento nro: %d\n", a );
+		sleep(5);
+		a++;
+	}
 	int nucleoID = NUCLEO;
 	//Empieza handshake
 	if(send(clienteNucleo.socketCliente,&nucleoID,sizeof(int),0)==-1){

@@ -56,7 +56,9 @@ AnSISOP_funciones functions = { .AnSISOP_definirVariable = vardef,
 		.AnSISOP_imprimirTexto = imptxt, .AnSISOP_irAlLabel = goint,
 		.AnSISOP_asignarValorCompartida = setglobalvar,
 		.AnSISOP_obtenerValorCompartida = getglobalvar, .AnSISOP_entradaSalida =
-				ionotif, .AnSISOP_retornar = retornar };
+				ionotif, .AnSISOP_retornar = retornar ,
+
+};
 AnSISOP_kernel kernel_functions = { };
 
 int main(void) {
@@ -66,7 +68,13 @@ int main(void) {
 	//Empieza conexion UMC
 	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
 	log_info(logCpu, "Conectando a UMC Puerto : %d", SERVERUMC);
-	conectarseConUMC(clienteCpuUmc);
+	int a = 1;
+	while(conectarConServidor(clienteCpuUmc)==-1)
+	{
+		printf("CPU: No se pudo conectar con UMC reintentando de 5 segundos, intento nro: %d\n", a );
+		sleep(5);
+		a++;
+	}
 	log_info(logCpu, "Conectado a UMC socket: %d", clienteCpuUmc.socketCliente);
 	//Termina conexion UMC
 
@@ -74,6 +82,13 @@ int main(void) {
 	clienteCpuNucleo = crearCliente(SERVERNUCLEO, "127.0.0.1");
 	log_info(logCpu, "Conectando a Nucleo Puerto : %d", SERVERNUCLEO);
 	conectarseConNucleo(clienteCpuNucleo);
+	a = 1;
+	while(conectarConServidor(clienteCpuNucleo)==-1)
+	{
+		printf("CPU: No se pudo conectar con NUCLEO reintentando de 5 segundos, intento nro: %d\n", a );
+		sleep(5);
+		a++;
+	}
 	log_info(logCpu, "Conectado a Nucleo socket: %d",
 			clienteCpuNucleo.socketCliente);
 	//Termina conexion Nucleo
@@ -81,7 +96,6 @@ int main(void) {
 	//Le paso el socket de la umc, para no pasarlo x cada pedido
 	inicialzarParser(clienteCpuUmc.socketCliente,
 			clienteCpuNucleo.socketCliente);
-
 	//Empieza la escucha de nucleo
 	/*int b = 5;
 	 pcb_t* asd ;
