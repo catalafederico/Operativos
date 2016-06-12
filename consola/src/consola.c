@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 	size = ftell (archivoAnsisop);
 	rewind (archivoAnsisop);
 
-	buffer = malloc(size+5);
+	buffer = malloc(size);
 
 	struct cliente clienteConsola;
 	clienteConsola = crearCliente(8080, "127.0.0.1");
@@ -65,9 +65,11 @@ int main(int argc, char **argv) {
 		strcat(buffer, (char*) &ch);
 		ch = fgetc(archivoAnsisop);
 	}
-
+	buffer = strcat(buffer,"\0");
+	int tamanioBuffer = strlen(buffer)+1;
 	int consola = CONSOLA;
-	enviarStream(clienteConsola.socketCliente,consola,strlen(buffer),buffer);
+	enviarStream(clienteConsola.socketCliente,consola,sizeof(int),&tamanioBuffer);
+	send(clienteConsola.socketCliente,buffer,tamanioBuffer,0);
 	free(buffer);
 	int seguir = 1;
 	int* tamanio;

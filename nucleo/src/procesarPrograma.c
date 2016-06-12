@@ -52,6 +52,7 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 	int* esInstruccion;
 	do{
 		char *aAnalizar = strdup(newInst); //tuve q poner esto asi sino me tiraba error el strtrim
+		newInst =strtok(NULL,"\n");
 		string_trim(&aAnalizar);
 		//En eso 4 pasos verifico si es valido la instruccion
 		if(!strcmp(aAnalizar,"begin"))
@@ -100,7 +101,6 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 			i++;
 			}
 		free(aAnalizar);
-		newInst =strtok(NULL,"\n");
 		}
 	while(newInst != NULL);
 	int tamanioDicc = dictionary_size(ic->inst_tamanio);

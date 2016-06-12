@@ -113,12 +113,14 @@ void *atender_consola(int* socket_desc){
 		//t_head_mje header;
 
 		//char * mensajeHandShake =
-				hacerHandShake_server(socket_co, SOY_NUCLEO);
-
+				//hacerHandShake_server(socket_co, SOY_NUCLEO);
+		int* esConsola = leerHeader(socket_co);
+		if(*esConsola != 1)
+			return NULL;
 		//liberar mensajeHandShake
 		// Recibir Mensaje de consola.
 		int* tamanio_mje = leerHeader(socket_co);
-		char * mje_recibido = recibirMensaje_tamanio(socket_co, tamanio_mje);
+		char * mje_recibido = recibirStream(socket_co, *tamanio_mje);
 //		strcat(mje_recibido,"\0");//agrego por las dudas
 
 		if(!strcmp("Se desconecto",mje_recibido)){
