@@ -68,13 +68,7 @@ int main(void) {
 	//Empieza conexion UMC
 	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
 	log_info(logCpu, "Conectando a UMC Puerto : %d", SERVERUMC);
-	int a = 1;
-	while(conectarConServidor(clienteCpuUmc)==-1)
-	{
-		printf("CPU: No se pudo conectar con UMC reintentando de 5 segundos, intento nro: %d\n", a );
-		sleep(5);
-		a++;
-	}
+	conectarseConUMC(clienteCpuUmc);
 	log_info(logCpu, "Conectado a UMC socket: %d", clienteCpuUmc.socketCliente);
 	//Termina conexion UMC
 
@@ -82,13 +76,6 @@ int main(void) {
 	clienteCpuNucleo = crearCliente(SERVERNUCLEO, "127.0.0.1");
 	log_info(logCpu, "Conectando a Nucleo Puerto : %d", SERVERNUCLEO);
 	conectarseConNucleo(clienteCpuNucleo);
-	a = 1;
-	while(conectarConServidor(clienteCpuNucleo)==-1)
-	{
-		printf("CPU: No se pudo conectar con NUCLEO reintentando de 5 segundos, intento nro: %d\n", a );
-		sleep(5);
-		a++;
-	}
 	log_info(logCpu, "Conectado a Nucleo socket: %d",
 			clienteCpuNucleo.socketCliente);
 	//Termina conexion Nucleo
@@ -121,7 +108,13 @@ int main(void) {
 	return 0;
 }
 void conectarseConUMC(struct cliente clienteCpuUmc) {
-	conectarConServidor(clienteCpuUmc);
+	int a = 1;
+	while(conectarConServidor(clienteCpuUmc)==-1)
+	{
+		printf("CPU: No se pudo conectar con UMC reintentando de 5 segundos, intento nro: %d\n", a );
+		sleep(5);
+		a++;
+	}
 	int cpuid = CPU;
 	//Empieza handshake
 	if (send(clienteCpuUmc.socketCliente, &cpuid, sizeof(int), 0) == -1) {
@@ -158,7 +151,13 @@ void conectarseConUMC(struct cliente clienteCpuUmc) {
 }
 
 void conectarseConNucleo(struct cliente clienteCpuNucleo) {
-	conectarConServidor(clienteCpuNucleo);
+	int a = 1;
+	while(conectarConServidor(clienteCpuNucleo)==-1)
+	{
+		printf("CPU: No se pudo conectar con NUCLEO reintentando de 5 segundos, intento nro: %d\n", a );
+		sleep(5);
+		a++;
+	}
 	int cpuid = CPU;
 	//Empieza handshake
 	if (send(clienteCpuNucleo.socketCliente, &cpuid, sizeof(int), 0) == -1) {
