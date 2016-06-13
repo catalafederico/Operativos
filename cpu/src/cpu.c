@@ -188,7 +188,7 @@ char* proximaInstruccion() {
 	send(clienteCpuUmc.socketCliente,pcb_actual->PID,sizeof(int),0);
 	//Espero instruccion
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
-			direcProxIntruccion->tamanio);
+			(direcProxIntruccion->tamanio));
 	return proximaInstruccion;
 }
 
@@ -197,7 +197,7 @@ void tratarPCB() {
 		char* proxInstruccion = proximaInstruccion();
 		procesarInstruccion(proxInstruccion);
 		quantum--;
-		pcb_actual->PC = pcb_actual->PC + 1;
+		*(pcb_actual->PC) = *pcb_actual->PC + 1;
 		sleep(/*quantumSleep*/3);//Cambio para testear
 	} while (quantum > 0 && !finPrograma);
 

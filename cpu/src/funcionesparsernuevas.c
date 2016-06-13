@@ -82,7 +82,7 @@ t_puntero vardef(t_nombre_variable var) {
 
 //ObtenerPosicionVariable
 t_puntero getvarpos(t_nombre_variable var) {
-	log_trace(logCpu, "Se llama obtener posicion variable : %s\n", var);
+	log_trace(logCpu, "Se llama obtener posicion variable : %c\n", var);
 	//Obtengo posicion de memoria de la umc
 	direccionMemoria* solicitarUMC = malloc(sizeof(direccionMemoria));
 	solicitarUMC = obtenerPosicionStack(var);
@@ -95,9 +95,7 @@ t_valor_variable derf(t_puntero puntero_var) {
 	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), puntero_var);
 	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
 	int* valorRecibido;
-	if (*leerHeader(socketMemoria) == 200) {
-		valorRecibido = recibirStream(socketMemoria, sizeof(int));
-	}
+	valorRecibido = recibirStream(socketMemoria, sizeof(int));
 	return *valorRecibido;
 }
 
@@ -107,12 +105,11 @@ void asignar(t_puntero puntero_var, t_valor_variable valor) {
 	direccionMemoria* direcMemory = puntero_var;
 	temp.pagina = direcMemory->pagina;
 	temp.offset = direcMemory->offset;
-	temp.tamanio = direcMemory->pagina;
+	temp.tamanio = direcMemory->tamanio;
 	temp.valor = valor;
 	log_trace(logCpu, "Almacenar en UMC nuevo valor");
 	enviarStream(socketMemoria, 53, sizeof(almUMC), &temp);
 	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
-	free(puntero_var);
 	return;
 }
 
@@ -255,7 +252,7 @@ direccionMemoria* obtenerPosicionStack(char var) {
 	//Obtengo lista variables de la posicion del stack
 	//Obtego stack
 	stack* stackActual = dictionary_get(pcb_actual->indice_stack,
-			*(pcb_actual->SP));
+			(pcb_actual->SP));
 	//Obtengo lista de variables
 	t_list* listaStackActual = stackActual->vars;
 	int encontrado = 0;
@@ -265,6 +262,7 @@ direccionMemoria* obtenerPosicionStack(char var) {
 		if (tempDirec->id == var) {
 			return &(tempDirec->lugarUMC);
 		}
+		i++;
 	}
 	return NULL;
 }

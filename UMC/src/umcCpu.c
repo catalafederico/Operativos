@@ -39,7 +39,7 @@ void solicitar_Bytes(int socket){
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
 	log_info(umcConfg.loguer, "Obtener bytes terminado");
 	//le envio lo obtenido a cpu
-	send(socket,obtenido,tamanio,0);
+	send(socket,obtenido,*tamanio,0);
 	free(pagina);
 	free(offset);
 	free(tamanio);
