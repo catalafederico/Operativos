@@ -128,6 +128,7 @@ int main(int argc, char **argv) {
 	proc_Block = list_create();
 	proc_Reject = list_create();
 	proc_Exit = list_create();
+	proc_Exec = list_create();
 	programas_para_procesar = list_create();
 //	EXIT
 	//Leo archivo de configuracion ------------------------------

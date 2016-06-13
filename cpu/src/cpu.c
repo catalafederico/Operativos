@@ -180,12 +180,11 @@ char* proximaInstruccion() {
 	//Leo la direccion de la proxima instruccion
 	direccionMemoria* direcProxIntruccion = dictionary_get(
 			pcb_actual->indice_codigo, pcb_actual->PC);
-	//Aumento ip
-	pcb_actual->PC = pcb_actual->PC + 1;
 	//Solicito insturccion
 	int solicitar = SOLICITAR;
-	enviarStream(clienteCpuUmc.socketCliente, &solicitar,
+	enviarStream(clienteCpuUmc.socketCliente, solicitar,
 			sizeof(direccionMemoria), direcProxIntruccion);
+	send(clienteCpuUmc.socketCliente,pcb_actual->PID,sizeof(int),0);
 	//Espero instruccion
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
 			direcProxIntruccion->tamanio);
@@ -194,7 +193,8 @@ char* proximaInstruccion() {
 
 void tratarPCB() {
 	do {
-		procesarInstruccion(proximaInstruccion());
+		char* proxInstruccion = proximaInstruccion();
+		procesarInstruccion(proxInstruccion);
 		quantum--;
 		pcb_actual->PC = pcb_actual->PC + 1;
 		sleep(quantumSleep);
