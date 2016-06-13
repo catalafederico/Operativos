@@ -42,6 +42,9 @@ pcb_t* pcb_actual;
 t_log* logCpu;
 int quantum;
 int quantumSleep;
+extern t_list* lista_argumentos_temporales;
+extern int esFuncion;
+
 typedef struct {
 	int tamanioNombreFuncion;
 	int posicionPID;
@@ -50,14 +53,21 @@ funcionTemp;
 
 extern int finPrograma;
 
-AnSISOP_funciones functions = { .AnSISOP_definirVariable = vardef,
-		.AnSISOP_obtenerPosicionVariable = getvarpos, .AnSISOP_dereferenciar =
-				derf, .AnSISOP_asignar = asignar, .AnSISOP_imprimir = imprimir,
-		.AnSISOP_imprimirTexto = imptxt, .AnSISOP_irAlLabel = goint,
-		.AnSISOP_asignarValorCompartida = setglobalvar,
-		.AnSISOP_obtenerValorCompartida = getglobalvar, .AnSISOP_entradaSalida =
-				ionotif, .AnSISOP_retornar = retornar ,
-
+AnSISOP_funciones functions = {
+				.AnSISOP_definirVariable = vardef,
+				.AnSISOP_obtenerPosicionVariable = getvarpos,
+				.AnSISOP_dereferenciar = derf,
+				.AnSISOP_asignar = asignar,
+				.AnSISOP_imprimir = imprimir,
+				.AnSISOP_imprimirTexto = imptxt,
+				.AnSISOP_irAlLabel = goint,
+				.AnSISOP_asignarValorCompartida = setglobalvar,
+				.AnSISOP_obtenerValorCompartida = getglobalvar,
+				.AnSISOP_entradaSalida =	ionotif,
+				.AnSISOP_retornar = retornar,
+				.AnSISOP_llamarConRetorno = fcall,
+				.AnSISOP_finalizar = fin,
+				.AnSISOP_llamarSinRetorno = fcallNR
 };
 AnSISOP_kernel kernel_functions = { };
 
@@ -189,6 +199,12 @@ char* proximaInstruccion() {
 	//Espero instruccion
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
 			(direcProxIntruccion->tamanio));
+	//Me fijo si es una funcion, como todas las funciones tienen retorno entonces todas van
+	// a tener ->, por lo tanto me fijo si la linea tiene ese char*, si lo tiene
+	//es funcion
+	if(strstr(proximaInstruccion,"<-")!=NULL){
+		esFuncion = 1;
+	}
 	return proximaInstruccion;
 }
 
@@ -199,7 +215,9 @@ void tratarPCB() {
 		quantum--;
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
 		sleep(/*quantumSleep*/3);//Cambio para testear
-	} while (quantum > 0 && !finPrograma);
+		list_clean(lista_argumentos_temporales);
+		esFuncion = 0;
+	} while (/*quantum > 0 && !finPrograma*/1);
 
 	if (finPrograma == 1) {
 		int FIN_Proc = 1;

@@ -32,6 +32,8 @@ int socketMemoria;
 int socketNucleo;
 extern pcb_t* pcb_actual;
 direccionMemoria* ultimaDireccion; //Tenporal hasta q tengamos stack
+t_list* lista_argumentos_temporales;
+int esFuncion;
 
 //Prototipos
 
@@ -45,7 +47,7 @@ void asignar(t_puntero puntero_var, t_valor_variable valor);
 t_valor_variable getglobalvar(t_nombre_compartida var);
 t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor);
 t_puntero_instruccion goint(t_nombre_etiqueta etiqueta);
-t_puntero_instruccion fcall(t_nombre_etiqueta etiqueta, t_puntero funcion,t_puntero_instruccion pinst);
+void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion);
 t_puntero_instruccion retornar(t_valor_variable retorno);
 int imprimir(t_valor_variable var);
 int imptxt(char* aimpprimir);
@@ -64,33 +66,50 @@ void inicialzarParser(int socketMem, int socketNuc) {
 	ultimaDireccion->pagina = 0;
 	ultimaDireccion->offset = 0;
 	ultimaDireccion->tamanio = 0;
+	esFuncion = 0;
+	lista_argumentos_temporales = list_create();
 }
 //DefinirVariable
 t_puntero vardef(t_nombre_variable var) {
-	log_trace(logCpu, "Crear variable id: %d nombre: %c.", pcb_actual->PID,
-			var);
-	direccionMemoria* temp = malloc(sizeof(direccionMemoria));
-	almUMC aAlmacenar = calculoDeDedireccionAlmalcenar();
-	aAlmacenar.valor = 0;
-	aAlmacenar.tamanio = sizeof(int);
-	enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
-	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
-	//Actualizo stack
-	agregarVariableStack(aAlmacenar, var);
+		log_trace(logCpu, "Crear variable id: %d nombre: %c.", pcb_actual->PID,
+				var);
+		direccionMemoria* temp = malloc(sizeof(direccionMemoria));
+		almUMC aAlmacenar = calculoDeDedireccionAlmalcenar();
+		aAlmacenar.valor = 0;
+		aAlmacenar.tamanio = sizeof(int);
+		enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
+		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
+		//Actualizo stack
+		agregarVariableStack(aAlmacenar, var);
 	return NULL;
 }
 
 //ObtenerPosicionVariable
 t_puntero getvarpos(t_nombre_variable var) {
-	log_trace(logCpu, "Se llama obtener posicion variable : %c\n", var);
-	//Obtengo posicion de memoria de la umc
 	direccionMemoria* solicitarUMC = malloc(sizeof(direccionMemoria));
-	solicitarUMC = obtenerPosicionStack(var);
+	if (var >= '0' && var <= '9') {
+		//si esta entre esos caracteres significa q estamos dentro de una funcion y ya esta declarada
+		//entonces obtenemos variables de la lista de argumentos del stack
+		stack* tempStack = dictionary_get(pcb_actual->indice_stack,pcb_actual->SP);
+		t_list* tempList = tempStack->args;
+		int posicion = var - '0';
+		solicitarUMC = list_get(tempList,posicion);
+	} else {
+		log_trace(logCpu, "Se llama obtener posicion variable : %c\n", var);
+		//Obtengo posicion de memoria de la umc
+		solicitarUMC = obtenerPosicionStack(var);
+	}
 	return solicitarUMC;
 }
 
 //Dereferenciar , ya esta lista
 t_valor_variable derf(t_puntero puntero_var) {
+	if(esFuncion){
+		list_add(lista_argumentos_temporales,puntero_var);
+		return NULL; // Si es una funcion sgnifica q lo estoy pasando como argumento entonces no lo busco
+		//en la memoria
+		//lo agrego en temp argumentos
+	}
 	log_trace(logCpu, "Solicitar  a memoria comezado");
 	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), puntero_var);
 	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
@@ -101,6 +120,9 @@ t_valor_variable derf(t_puntero puntero_var) {
 
 //Asignar
 void asignar(t_puntero puntero_var, t_valor_variable valor) {
+	if(esFuncion){
+		return;
+	}
 	almUMC temp;
 	direccionMemoria* direcMemory = puntero_var;
 	temp.pagina = direcMemory->pagina;
@@ -133,10 +155,31 @@ t_puntero_instruccion goint(t_nombre_etiqueta etiqueta) {
 }
 
 //LlamarFuncion
-t_puntero_instruccion fcall(t_nombre_etiqueta etiqueta, t_puntero funcion,
-		t_puntero_instruccion pinst) {
-	printf("Se llama a una funcion");
-	return POSICION_MEMORIA;
+void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
+	//SE LLAMA UNA FUNCION
+	//Creo una posicion de stack nueva
+	stack* nuevaPosicion = malloc(sizeof(int));
+	//Creo lista de argumentos
+	nuevaPosicion->args = list_create();
+	//Guardo
+	list_add_all(nuevaPosicion->args,lista_argumentos_temporales);
+	//Creo lista de variables
+	nuevaPosicion->vars = list_create();
+	//Guardo prozima instruccion
+	nuevaPosicion->pos_ret = malloc(sizeof(int));
+	*(nuevaPosicion->pos_ret) = *(pcb_actual->PC)+1;
+	int cantidadDeFunciones = list_size(pcb_actual->indice_funciones);
+	int i = 0;
+	for (i= 0 ; i< cantidadDeFunciones; i++){
+		funcion_sisop* temp = list_get(pcb_actual->indice_funciones,i);
+		if(strcmp(temp->funcion,etiqueta)==0){
+			*(pcb_actual->PC) = *(temp->posicion_codigo)+1;
+			break;
+		}
+	}
+	//
+	nuevaPosicion->memoriaRetorno = funcion;
+	return;
 }
 
 //Retornar
@@ -267,4 +310,8 @@ direccionMemoria* obtenerPosicionStack(char var) {
 	return NULL;
 }
 
+
+void eliminarTempVars(){
+	list_clean(lista_argumentos_temporales);
+}
 
