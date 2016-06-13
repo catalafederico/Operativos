@@ -48,12 +48,12 @@ void solicitar_Bytes(int socket){
 }
 
 void almacenar_Byte(int socket){
-	int* idProceso = (int*) recibirStream(socket,sizeof(int));
-	cambiarProceso(*idProceso);
 	int* pagina = (int*) recibirStream(socket, sizeof(int));
 	int* offset = (int*) recibirStream(socket, sizeof(int));
 	int* tamanio =(int*) recibirStream(socket, sizeof(int));
 	void* aAlmacenar = recibirStream(socket, *tamanio);
+	int* idProceso = (int*) recibirStream(socket,sizeof(int));
+	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
 	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
 	log_info(umcConfg.loguer, "Almacenar byte terminado");

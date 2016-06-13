@@ -97,8 +97,9 @@ int main(void) {
 	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 	 switch (*header) {
 	 case 163://Recibir PCB
-	 recibirPCB();
-	 tratarPCB();
+		 finPrograma = 0;
+		 recibirPCB();
+		 tratarPCB();
 	 break;
 	 default:
 	 break;
@@ -197,9 +198,8 @@ void tratarPCB() {
 		procesarInstruccion(proxInstruccion);
 		quantum--;
 		pcb_actual->PC = pcb_actual->PC + 1;
-		sleep(quantumSleep);
-	} while (quantum > 0 && *(pcb_actual->PC) <= dictionary_size(pcb_actual->indice_codigo)
-			&& finPrograma != 0);
+		sleep(/*quantumSleep*/3);//Cambio para testear
+	} while (quantum > 0 && !finPrograma);
 
 	if (finPrograma == 1) {
 		int FIN_Proc = 1;

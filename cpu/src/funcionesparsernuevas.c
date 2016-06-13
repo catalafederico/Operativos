@@ -74,6 +74,7 @@ t_puntero vardef(t_nombre_variable var) {
 	aAlmacenar.valor = 0;
 	aAlmacenar.tamanio = sizeof(int);
 	enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
+	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
 	//Actualizo stack
 	agregarVariableStack(aAlmacenar, var);
 	return NULL;
@@ -92,6 +93,7 @@ t_puntero getvarpos(t_nombre_variable var) {
 t_valor_variable derf(t_puntero puntero_var) {
 	log_trace(logCpu, "Solicitar  a memoria comezado");
 	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), puntero_var);
+	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
 	int* valorRecibido;
 	if (*leerHeader(socketMemoria) == 200) {
 		valorRecibido = recibirStream(socketMemoria, sizeof(int));
@@ -109,6 +111,7 @@ void asignar(t_puntero puntero_var, t_valor_variable valor) {
 	temp.valor = valor;
 	log_trace(logCpu, "Almacenar en UMC nuevo valor");
 	enviarStream(socketMemoria, 53, sizeof(almUMC), &temp);
+	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
 	free(puntero_var);
 	return;
 }
@@ -195,12 +198,11 @@ almUMC calculoDeDedireccionAlmalcenar() {
 				pcb_actual->indice_codigo) - 1;
 		direccionMemoria* ultimaDireccionCodigo = dictionary_get(
 				pcb_actual->indice_codigo, &nroUltmaDireccionDeCodigo);
-		aAlmacenar.offset = 0;
-		aAlmacenar.pagina = ultimaDireccionCodigo->pagina + 1;
-		return aAlmacenar;
+		ultimaDireccion->offset = 0;
+		ultimaDireccion->pagina = ultimaDireccionCodigo->pagina + 1;
 	} else {
 		stack* stackActual = dictionary_get(pcb_actual->indice_stack,
-				*(pcb_actual->SP));
+				(pcb_actual->SP));
 		//Me fijo si al agregarle el offset a la ultima direccion, aumenta el del tamanio de la pagina
 		//Si aumenta paso a otra pagina
 		if (ultimaDireccion->offset + sizeof(int) > tamanioPaginaUMC) {
@@ -209,10 +211,10 @@ almUMC calculoDeDedireccionAlmalcenar() {
 		} else {
 			ultimaDireccion->offset = ultimaDireccion->offset + sizeof(int); //sino me paso aumeto offset
 		}
-		aAlmacenar.pagina = ultimaDireccion->pagina; // seteo ultima direccion a alamcenar
-		aAlmacenar.offset = ultimaDireccion->offset;
-		return aAlmacenar;
 	}
+	aAlmacenar.pagina = ultimaDireccion->pagina; // seteo ultima direccion a alamcenar
+	aAlmacenar.offset = ultimaDireccion->offset;
+	return aAlmacenar;
 }
 
 void agregarVariableStack(almUMC aAlmacenar, char var) {
@@ -227,11 +229,14 @@ void agregarVariableStack(almUMC aAlmacenar, char var) {
 		nuevoStack->memoriaRetorno = NULL;
 		nuevoStack->pos_ret = NULL;
 		nuevoStack->vars = list_create();
+		int* startPCB = malloc(sizeof(int));
+		startPCB = 0;
+		dictionary_put(pcb_actual->indice_stack,&startPCB,nuevoStack);
 		stackActual = nuevoStack;
 	}
 	else{
 		stackActual = dictionary_get(pcb_actual->indice_stack,
-				*(pcb_actual->SP));
+				(pcb_actual->SP));
 	}
 		//Obtengo lista de variables
 		t_list* listaStackActual = stackActual->vars;
@@ -263,4 +268,5 @@ direccionMemoria* obtenerPosicionStack(char var) {
 	}
 	return NULL;
 }
+
 
