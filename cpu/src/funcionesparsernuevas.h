@@ -17,7 +17,7 @@
 	t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor);
 	t_puntero_instruccion goint(t_nombre_etiqueta etiqueta);
 	void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion);
-	t_puntero_instruccion retornar(t_valor_variable retorno);
+	void retornar(t_valor_variable retorno);
 	int imprimir(t_valor_variable var);
 	int imptxt(char* aimpprimir);
 	int ionotif(t_nombre_dispositivo ioname, int tiempo);

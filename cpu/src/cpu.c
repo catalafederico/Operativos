@@ -203,7 +203,7 @@ char* proximaInstruccion() {
 	// a tener ->, por lo tanto me fijo si la linea tiene ese char*, si lo tiene
 	//es funcion
 	if(strstr(proximaInstruccion,"<-")!=NULL){
-		esFuncion = 1;
+		esFuncion = 1; // NO es necesario
 	}
 	return proximaInstruccion;
 }
@@ -214,7 +214,7 @@ void tratarPCB() {
 		procesarInstruccion(proxInstruccion);
 		quantum--;
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
-		sleep(/*quantumSleep*/3);//Cambio para testear
+		//sleep(/*quantumSleep*/3);//Cambio para testear
 		esFuncion = 0;
 	} while (/*quantum > 0 && !finPrograma*/1);//Cambio para testear
 

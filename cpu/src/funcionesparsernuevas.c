@@ -48,7 +48,7 @@ t_valor_variable getglobalvar(t_nombre_compartida var);
 t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor);
 t_puntero_instruccion goint(t_nombre_etiqueta etiqueta);
 void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion);
-t_puntero_instruccion retornar(t_valor_variable retorno);
+void retornar(t_valor_variable retorno);
 int imprimir(t_valor_variable var);
 int imptxt(char* aimpprimir);
 void fin();
@@ -180,7 +180,7 @@ void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
 	nuevaPosicion->vars = list_create();
 	//Guardo prozima instruccion
 	nuevaPosicion->pos_ret = malloc(sizeof(int));
-	*(nuevaPosicion->pos_ret) = *(pcb_actual->PC)+1;
+	*(nuevaPosicion->pos_ret) = *(pcb_actual->PC);
 	int cantidadDeFunciones = list_size(pcb_actual->indice_funciones);
 	int i = 0;
 	for (i= 0 ; i< cantidadDeFunciones; i++){
@@ -200,9 +200,17 @@ void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
 }
 
 //Retornar
-t_puntero_instruccion retornar(t_valor_variable retorno) {
+void retornar(t_valor_variable retorno) {
 	printf("Se retorna un puntero al contecto anterior");
-	return POSICION_MEMORIA;
+	stack* stackActual = dictionary_get(pcb_actual->indice_stack,(pcb_actual->SP));
+	direccionMemoria* retornoDireccion = stackActual->memoriaRetorno;
+	asignar(retornoDireccion,retorno);
+	*(pcb_actual->PC) = *(stackActual->pos_ret);
+	dictionary_remove(pcb_actual->indice_stack,(pcb_actual->SP));//SACO RENGLON DEL DICCIONARIO STACK
+	*(pcb_actual->SP) = *(pcb_actual->SP) - 1;
+	//BORRAR RENGLON DE MEMORA
+
+	return;
 }
 
 //Imprimir
