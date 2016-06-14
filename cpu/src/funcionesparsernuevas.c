@@ -243,6 +243,7 @@ void fin() {
 
 //EntradaSalida
 void ionotif(t_nombre_dispositivo ioname, int tiempo) {
+	estado = ioSolID;
 	tiempo_dispositivo = tiempo;
 	nombreSemaforoWait = strdup(ioname);
 	return;

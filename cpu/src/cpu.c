@@ -238,7 +238,10 @@ void tratarPCB() {
 	}
 	if (estado == waitID) {
 		int waitSem = 7;
-		send(clienteCpuNucleo.socketCliente, &waitSem, sizeof(int), 0);
+		int tamanio = strlen(nombreSemaforoWait)+1;
+		nombreSemaforoWait = strcat(nombreSemaforoWait,"\0");
+		enviarStream(clienteCpuNucleo.socketCliente,waitSem,sizeof(int),&tamanio);
+		send(clienteCpuNucleo.socketCliente,nombreSemaforoWait,tamanio,0);
 		enviarPCB();
 		free(nombreSemaforoWait);
 		return;
@@ -249,6 +252,7 @@ void tratarPCB() {
 		nombreDispositivo = strcat(nombreDispositivo,"\0");
 		enviarStream(clienteCpuNucleo.socketCliente,solNUCLEOIDIO,sizeof(int),&tamanio);
 		send(clienteCpuNucleo.socketCliente,nombreDispositivo,tamanio,0);
+		send(clienteCpuNucleo.socketCliente,&tiempo_dispositivo,sizeof(int),0);
 		enviarPCB();
 		free(nombreDispositivo);
 		return;

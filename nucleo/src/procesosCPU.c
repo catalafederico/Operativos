@@ -239,28 +239,45 @@ void *atender_CPU(int* socket_desc) {
 
 //      Las siguientes son operaciones privilegiadas
 			case SOLIC_IO:	//es la primitiva entradaSalida
-                ansisop_entradaSalida (socket_local, pcb_elegido, pid_local);
+                //ansisop_entradaSalida (socket_local, pcb_elegido, pid_local);
 				//              ansisop_entradaSalida ();
 				//				pthread_mutex_lock(&sem_l_Block); // se bloquea
 				//				list_add(proc_Block, pcb_elegido);
 				//				pthread_mutex_unlock(&sem_l_Block);
 				//				log_debug(logger, "El proceso %d de la Consola %d pasa a BLOCK", *pcb_elegido->PID, *pcb_elegido->con_id);
+				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
+				char* nombreDispositivo = recibirStream(socket_local,*tamanioNombre);
+				int* tiempoDspositivo = recibirStream(socket_local, sizeof(int));
 				break;
 
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
 				//              ansisop_obtenerValorCompartida ();
+				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
+				char* nombreVaribale = recibirStream(socket_local,*tamanioNombre);
+
+
 				break;
 
 			case GRABA_VALOR: //es la primitiva asignarValorCompartida
 				//              ansisop_asignarValorCompartida ();
+				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
+				int* valorAGrabar = recibirStream(socket_local, sizeof(int));
+				char* nombreVaribale = recibirStream(socket_local,*tamanioNombre);
+
 				break;
 
 			case WAIT_SEM:	 // es la primitiva wait
 				//              ansisop_wait ();
+				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
+				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
+
 				break;
 
 			case SIGNAL_SEM: // es la primitiva signal
 				//              ansisop_signal ();
+				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
+				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
+
 				break;
 
 			case IMPRIMIR: // es la primitiva imprimir
