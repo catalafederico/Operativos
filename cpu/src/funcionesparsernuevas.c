@@ -171,9 +171,16 @@ t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor) {
 }
 
 //IrALabel
-t_puntero_instruccion goint(t_nombre_etiqueta etiqueta) {
-	printf("Se va a una instruccion");
-	return POSICION_MEMORIA;
+void goint(t_nombre_etiqueta etiqueta) {
+	int cantidadDeFunciones = list_size(pcb_actual->indice_funciones);
+	int i = 0;
+	for (i= 0 ; i< cantidadDeFunciones; i++){
+		funcion_sisop* temp = list_get(pcb_actual->indice_funciones,i);
+		if(strcmp(temp->funcion,etiqueta)==0){
+			*(pcb_actual->PC) = *(temp->posicion_codigo);
+			return;
+		}
+	}
 }
 
 //LlamarFuncion
