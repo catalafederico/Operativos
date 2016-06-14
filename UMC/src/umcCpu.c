@@ -29,17 +29,22 @@ t_list* programasEjecucion;
 extern umcNucleo umcConfg;
 
 
-void* solicitar_Bytes(int socket){
+void solicitar_Bytes(int socket){
 	int* pagina = (int*) recibirStream(socket, sizeof(int));
 	int* offset = (int*) recibirStream(socket, sizeof(int));
 	int* tamanio = (int*) recibirStream(socket, sizeof(int));
+	int* idProceso = (int*) recibirStream(socket,sizeof(int));
+	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Obtener bytes iniciado");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
 	log_info(umcConfg.loguer, "Obtener bytes terminado");
+	//le envio lo obtenido a cpu
+	send(socket,obtenido,*tamanio,0);
 	free(pagina);
 	free(offset);
 	free(tamanio);
-	return obtenido;
+	free(obtenido);
+	return;
 }
 
 void almacenar_Byte(int socket){
@@ -47,6 +52,8 @@ void almacenar_Byte(int socket){
 	int* offset = (int*) recibirStream(socket, sizeof(int));
 	int* tamanio =(int*) recibirStream(socket, sizeof(int));
 	void* aAlmacenar = recibirStream(socket, *tamanio);
+	int* idProceso = (int*) recibirStream(socket,sizeof(int));
+	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
 	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
 	log_info(umcConfg.loguer, "Almacenar byte terminado");

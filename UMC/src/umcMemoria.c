@@ -47,6 +47,7 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 		frame* tempFrame = malloc(sizeof(frame));
 		tempFrame->nro = i;
 		tempFrame->bit_uso = NOUSADO;
+		tempFrame->enUMC = 1;
 		list_add(marcosLibres,tempFrame);
 	}
 	log_trace(log_memoria,"Marcos libres cargados: %d:",i);
@@ -84,7 +85,7 @@ int alocarPrograma(int paginasRequeridas, int id_proceso){
 		//faltaria saber si ya no se pueden asignar mas paginas si esto no se puede hay que desalojar con el algoritmo clock
 		//habria que dejar un puntero marcando la ultima pagina que se asigno para poder realizar el algoritmo
 		log_trace(log_memoria,"Alocado programa id: %d", id_proceso);
-		notificarASwapPrograma(id_proceso,paginasRequeridas);
+		//notificarASwapPrograma(id_proceso,paginasRequeridas);
 		//Esto es para la entrega 3
 		return 0;
 	}
@@ -142,8 +143,8 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 	int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
 	marco->bit_uso = USADO;
-	return obtenido;
 	pthread_mutex_unlock(&semaforoMemoria);
+	return obtenido;
 	//Esto es mas de la entrega 3
 }
 
@@ -180,7 +181,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 	marco->bit_uso = USADO;
 	pthread_mutex_unlock(&semaforoMemoria);
 	void* bufferALLPAGE = obtenerBytesMemoria(pagina,0,umcConfg.configuracionUMC.MARCO_SIZE);
-	almacenarEnSwap(*idProcesoActual,pagina,bufferALLPAGE);
+	//almacenarEnSwap(*idProcesoActual,pagina,bufferALLPAGE);
 	//Probar CPU
 	/*int a = 5;
 	void* asd = &a;
@@ -192,14 +193,8 @@ void cambiarProceso(int idProceso){
 	//Esto es de la entrega 2
 		pthread_mutex_lock(&semaforoMemoria);
 		*idProcesoActual = idProceso;
+		tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
 		log_trace(log_memoria,"CambiarProceso - idAnterior: %d , idNuevo: %d",*idProcesoActual,idProceso);
-		//Esto es mas de la entrega 3
-		/*
-		 * pthread_mutex_lock(semaforoMemoria);
-		tabla_actual = dictionary_get(programas_ejecucion,(char*)&idProceso);
-		*idProcesoActual = idProceso;
-		pthread_mutex_unlock(semaforoMemoria);
-		*/
 		return;
 }
 

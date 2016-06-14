@@ -42,6 +42,9 @@ pcb_t* pcb_actual;
 t_log* logCpu;
 int quantum;
 int quantumSleep;
+extern t_list* lista_argumentos_temporales;
+extern int esFuncion;
+
 typedef struct {
 	int tamanioNombreFuncion;
 	int posicionPID;
@@ -50,14 +53,21 @@ funcionTemp;
 
 extern int finPrograma;
 
-AnSISOP_funciones functions = { .AnSISOP_definirVariable = vardef,
-		.AnSISOP_obtenerPosicionVariable = getvarpos, .AnSISOP_dereferenciar =
-				derf, .AnSISOP_asignar = asignar, .AnSISOP_imprimir = imprimir,
-		.AnSISOP_imprimirTexto = imptxt, .AnSISOP_irAlLabel = goint,
-		.AnSISOP_asignarValorCompartida = setglobalvar,
-		.AnSISOP_obtenerValorCompartida = getglobalvar, .AnSISOP_entradaSalida =
-				ionotif, .AnSISOP_retornar = retornar ,
-
+AnSISOP_funciones functions = {
+				.AnSISOP_definirVariable = vardef,
+				.AnSISOP_obtenerPosicionVariable = getvarpos,
+				.AnSISOP_dereferenciar = derf,
+				.AnSISOP_asignar = asignar,
+				.AnSISOP_imprimir = imprimir,
+				.AnSISOP_imprimirTexto = imptxt,
+				.AnSISOP_irAlLabel = goint,
+				.AnSISOP_asignarValorCompartida = setglobalvar,
+				.AnSISOP_obtenerValorCompartida = getglobalvar,
+				.AnSISOP_entradaSalida =	ionotif,
+				.AnSISOP_retornar = retornar,
+				.AnSISOP_llamarConRetorno = fcall,
+				.AnSISOP_finalizar = fin,
+				.AnSISOP_llamarSinRetorno = fcallNR
 };
 AnSISOP_kernel kernel_functions = { };
 
@@ -97,8 +107,9 @@ int main(void) {
 	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 	 switch (*header) {
 	 case 163://Recibir PCB
-	 recibirPCB();
-	 tratarPCB();
+		 finPrograma = 0;
+		 recibirPCB();
+		 tratarPCB();
 	 break;
 	 default:
 	 break;
@@ -180,26 +191,32 @@ char* proximaInstruccion() {
 	//Leo la direccion de la proxima instruccion
 	direccionMemoria* direcProxIntruccion = dictionary_get(
 			pcb_actual->indice_codigo, pcb_actual->PC);
-	//Aumento ip
-	pcb_actual->PC = pcb_actual->PC + 1;
 	//Solicito insturccion
 	int solicitar = SOLICITAR;
-	enviarStream(clienteCpuUmc.socketCliente, &solicitar,
+	enviarStream(clienteCpuUmc.socketCliente, solicitar,
 			sizeof(direccionMemoria), direcProxIntruccion);
+	send(clienteCpuUmc.socketCliente,pcb_actual->PID,sizeof(int),0);
 	//Espero instruccion
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
-			direcProxIntruccion->tamanio);
+			(direcProxIntruccion->tamanio));
+	//Me fijo si es una funcion, como todas las funciones tienen retorno entonces todas van
+	// a tener ->, por lo tanto me fijo si la linea tiene ese char*, si lo tiene
+	//es funcion
+	if(strstr(proximaInstruccion,"<-")!=NULL){
+		esFuncion = 1; // NO es necesario
+	}
 	return proximaInstruccion;
 }
 
 void tratarPCB() {
 	do {
-		procesarInstruccion(proximaInstruccion());
+		char* proxInstruccion = proximaInstruccion();
+		procesarInstruccion(proxInstruccion);
 		quantum--;
-		pcb_actual->PC = pcb_actual->PC + 1;
-		sleep(quantumSleep);
-	} while (quantum > 0 && *(pcb_actual->PC) <= dictionary_size(pcb_actual->indice_codigo)
-			&& finPrograma != 0);
+		*(pcb_actual->PC) = *pcb_actual->PC + 1;
+		//sleep(/*quantumSleep*/3);//Cambio para testear
+		esFuncion = 0;
+	} while (/*quantum > 0 && !finPrograma*/1);//Cambio para testear
 
 	if (finPrograma == 1) {
 		int FIN_Proc = 1;
