@@ -13,6 +13,7 @@
 #include "umcCliente.h"
 #include <pthread.h>
 #include "umcMemoria.h"
+#include "umcTlb.h"
 
 
 void* memoriaPrincipal;
@@ -30,9 +31,10 @@ int entradasTLB;
 //---------fin
 void* inicializarMemoria(t_reg_config* configuracionUMC){
 
-	//int cantEntradas= umcConfg.configuracionUMC.ENTRADAS_TLB;
+	int cantidadDeMarcos = (*configuracionUMC).MARCOS;
 	entradasTLB = configuracionUMC->ENTRADAS_TLB;
-	//tlbCache = malloc(sizeof(tlb)*entradasTLB);
+	tlbCache = list_create();
+	inicializarTLB(tlbCache,cantidadDeMarcos);
 	log_memoria = log_create("logs/logUmcMemoria.txt","UMC",0,LOG_LEVEL_TRACE);
 	pthread_mutex_init(&semaforoMemoria,NULL);
 	log_trace(log_memoria,"Creando memoria");
@@ -40,7 +42,6 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 	programas_ejecucion = dictionary_create();
 	idProcesoActual = malloc(sizeof(int));
 	int i = 1;
-	int cantidadDeMarcos = (*configuracionUMC).MARCOS;
 	memoriaPrincipal = calloc(cantidadDeMarcos, umcConfg.configuracionUMC.MARCO_SIZE);
 	log_trace(log_memoria,"Memoria inicializada con un tamanio: %d",cantidadDeMarcos*umcConfg.configuracionUMC.MARCO_SIZE);
 	for(i = 0;i<cantidadDeMarcos;i++){
@@ -120,26 +121,18 @@ int desalojarPrograma(int id){
 void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 
 	log_trace(log_memoria,"Solcitud - id: %d pag: %d offset: %d tamanio: %d",*idProcesoActual,pagina,offset,tamanio);
-	//CON TLB
-	/*int estaEnTLB = 0;
-	int marcoTLB = buscarPaginaTLB(tlbCache,entradasTLB,&pagina);
-	if(marcoTLB!=-1){
+	int estaEnTLB = 0;
+	frame* marco = buscarFrameEnTLB(*idProcesoActual,pagina);
+	void* obtenido = malloc(tamanio);
+	if(marco!=NULL){
 		estaEnTLB = 1;
 	}
 	else if(!estaEnTLB)
 	{
-		frame* marco = dictionary_get(tabla_actual,&pagina);
-		if(marco->enUMC){
-			void* obtenido = malloc(tamanio);
-			int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
-			memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
-			marco->bit_uso = USADO;
-			return obtenido;
+		marco = dictionary_get(tabla_actual,&pagina);
+		if(!marco->enUMC){
 		}
 	}
-	solicitarEnSwap(*idProcesoActual,pagina);*/
-	frame* marco = dictionary_get(tabla_actual,&pagina);
-	void* obtenido = malloc(tamanio);
 	int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
 	marco->bit_uso = USADO;
@@ -149,43 +142,25 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 }
 
 void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
-	//Esto es de la entrega 2
-	//int estaEnTlb = 0;
+
+	int estaEnTlb = 0;
 	log_trace(log_memoria,"Almacenar - id: %d pag: %d offset: %d tamanio: %d",*idProcesoActual,pagina,offset,tamanio);
-	//Esto es mas de la entrega 3
-	frame* marco;
 	//CON TLB
-	/*frame* marco;
-	int marcoTLBPos = buscarPaginaTLB(tlbCache,entradasTLB,&pagina);
-	if(marcoTLBPos!=-1){
+	frame* marco;
+	marco = buscarFrameEnTLB(*idProcesoActual,pagina);
+	if(marco!=NULL){
 		estaEnTlb=1;
 	}
 	else if(!estaEnTlb){
 		marco = dictionary_get(tabla_actual,&pagina);
+		if(!marco->enUMC){
+		}
 	}
+
 	int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
 	marco->bit_uso = USADO;
 	pthread_mutex_unlock(&semaforoMemoria);
-	void* bufferALLPAGE = obtenerBytesMemoria(pagina,0,umcConfg.configuracionUMC.MARCO_SIZE);
-	almacenarEnSwap(*idProcesoActual,pagina,bufferALLPAGE);
-	if(estaEnTlb){
-		actualizarTablaPqEncontre(tlbCache,marcoTLBPos);
-	}
-	else if(!estaEnTlb){
-		actualizarTablaPqNoEncontre(tlbCache,tamanio,&pagina);
-	}*/
-	marco = dictionary_get(tabla_actual,&pagina);
-	int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
-	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
-	marco->bit_uso = USADO;
-	pthread_mutex_unlock(&semaforoMemoria);
-	void* bufferALLPAGE = obtenerBytesMemoria(pagina,0,umcConfg.configuracionUMC.MARCO_SIZE);
-	//almacenarEnSwap(*idProcesoActual,pagina,bufferALLPAGE);
-	//Probar CPU
-	/*int a = 5;
-	void* asd = &a;
-	almacenarEnSwap(*idProcesoActual,pagina,asd);*/
 	return;
 }
 

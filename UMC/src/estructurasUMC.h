@@ -50,19 +50,21 @@ typedef struct {
 }__attribute__((packed))
 id_programa;
 
-typedef struct{
-	int idProg;
-	int pag;
-	//Cambiar a frame estructura
-	//frame* marco;
-	int marco;
-}tlb;
-
 typedef struct {
 	int nro;
 	int bit_uso;
 	int enUMC;
 }__attribute__((packed))
 frame;
+
+typedef struct{
+	int idProg;
+	int pag;
+	//Cambiar a frame estructura
+	//frame* marco;
+	frame* marco;
+}tlb;
+
+
 
 #endif /* SRC_ESTRUCTURASUMC_H_ */
