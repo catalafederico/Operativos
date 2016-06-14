@@ -34,6 +34,7 @@
 
 pcb_t* recibirPCBdeCPU(int socket);
 int* recibirEstadoProceso(int socket_local);
+void *atender_CPU(int* socket_desc);
 
 
 // CONSTANTES -----
@@ -108,7 +109,8 @@ void *atender_conexion_CPU(){
 		aceptarConexion(socket_nuevo, serverPaCPU.socketServer, &direccionEntrante); //No hace falta chekear si es -1, aceptarConexiones lo hace ya
 		log_debug(logger, "Se ha conectado una CPU");
 
-		if(pthread_create(&thread_cpu_con , &attr , (void*) atender_CPU, socket_nuevo) < 0)
+		int proceso = pthread_create(&thread_cpu_con , &attr ,atender_CPU, socket_nuevo);
+		if( proceso < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ CPU");
 			exit(EXIT_FAILURE);
@@ -179,7 +181,7 @@ void *atender_CPU(int* socket_desc) {
 
 		do {
 			estado_proceso = leerHeader(socket_local);
-			switch (*estado_proceso) {
+			switch (*estado_proceso && CpuActivo) {
 			case FIN_QUANTUM:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
