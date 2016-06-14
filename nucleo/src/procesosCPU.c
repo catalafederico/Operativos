@@ -352,10 +352,34 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	int tamanioStack = aMandaCpu.tamanioStack;
 	for(i=0;i<tamanioStack && tamanioStack!= 0;i++){
 		stack* stackAMandar = dictionary_get(pcb->indice_stack,&i);
-		int tamanioArgs = list_size(stackAMandar->args);
-		int tamanioVars = list_size(stackAMandar->vars);
-		int PIDretorno = *(stackAMandar->pos_ret);
-		direccionMemoria direccionRetornoFuncion = *(stackAMandar->memoriaRetorno);
+		//Puede ser null
+		int tamanioArgs;
+		if(stackAMandar->args!=NULL)
+			tamanioArgs = list_size(stackAMandar->args);
+		else
+			tamanioArgs = -1;
+		//Puede ser null
+		int tamanioVars;
+		if(stackAMandar->vars!=NULL)
+			tamanioVars = list_size(stackAMandar->vars);
+		else
+			tamanioVars = -1;
+		//Puede ser null
+		int PIDretorno;
+		if(stackAMandar->pos_ret!=NULL)
+			PIDretorno = *(stackAMandar->pos_ret);
+		else
+			PIDretorno = -1;
+		//Puede ser null
+		direccionMemoria direccionRetornoFuncion;
+		if(stackAMandar->memoriaRetorno!=NULL)
+			direccionRetornoFuncion = 	*(stackAMandar->memoriaRetorno);
+		else{
+			direccionRetornoFuncion.offset = -1;
+			direccionRetornoFuncion.pagina = -1;
+			direccionRetornoFuncion.tamanio = -1;
+		}
+
 		send(cpu,&tamanioArgs,sizeof(int),0);
 		send(cpu,&tamanioVars,sizeof(int),0);
 		send(cpu,&PIDretorno,sizeof(int),0);
@@ -426,24 +450,43 @@ pcb_t* recibirPCBdeCPU(int socket){
 	//RECIBO STACK
 	for(i=0;i<*tamanioStack && *tamanioStack!=0;i++){
 		stack* stackNuevo = malloc(sizeof(stack));
-		stackNuevo->args = list_create();
-		stackNuevo->vars = list_create();
+		//Argumentos
 		int* tamArgs = recibirStream(socket, sizeof(int));
+		if(*tamArgs==-1)
+			stackNuevo->args = NULL;
+		else
+			stackNuevo->args = list_create();
+		//Variables
 		int* tamVars = recibirStream(socket, sizeof(int));
+		if(*tamVars==-1)
+			stackNuevo->vars = NULL;
+		else
+			stackNuevo->vars = list_create();
+		//Retorno PID del renglon stack
 		int* RetornoPID = recibirStream(socket, sizeof(int));
+		if(*RetornoPID == -1)
+			stackNuevo->pos_ret = NULL;
+		else
+			stackNuevo->pos_ret = RetornoPID;
+		//Retorno
 		direccionMemoria* memoriaRetorno = recibirStream(socket, sizeof(direccionMemoria));
+		if(memoriaRetorno->offset == -1)
+			memoriaRetorno = NULL;
+
+		stackNuevo->memoriaRetorno = memoriaRetorno;
 		int j;
 		for(j=0;j<*tamArgs;j++){
 			direccionMemoria* new_direc = recibirStream(socket, sizeof(direccionMemoria));
 			list_add_in_index(stackNuevo->args,j,new_direc);
 		}
-
+		free(tamArgs);
 		for(j=0;j<*tamVars;j++){
 			direccionStack* new_direc = recibirStream(socket, sizeof(direccionStack));
-			list_add_in_index(stackNuevo->args,j,new_direc);
+			list_add_in_index(stackNuevo->vars,j,new_direc);
 		}
+		free(tamVars);
 		int* key = malloc(sizeof(int));
-		*key = j;
+		*key = i;
 		dictionary_put(pcb_Recibido->indice_stack,key,stackNuevo);
 	}
 	//recibo quantum y quantumSleep
