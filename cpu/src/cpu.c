@@ -54,8 +54,6 @@ typedef struct {
 }__attribute__((packed))
 funcionTemp;
 
-extern int finPrograma;
-
 AnSISOP_funciones functions = {
 				.AnSISOP_definirVariable = vardef,
 				.AnSISOP_obtenerPosicionVariable = getvarpos,
@@ -226,7 +224,7 @@ void tratarPCB() {
 		procesarInstruccion(proxInstruccion);
 		quantum--;
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
-		sleep(/*quantumSleep*/3);//Cambio para testear
+		//sleep(/*quantumSleep*/3);//Cambio para testear
 		esFuncion = 0;
 	} while (quantum > 0 && puedeContinuarEstado());//Cambio para testear
 

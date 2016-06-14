@@ -35,6 +35,7 @@
 pcb_t* recibirPCBdeCPU(int socket);
 int* recibirEstadoProceso(int socket_local);
 void *atender_CPU(int* socket_desc);
+pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista);
 
 
 // CONSTANTES -----
@@ -184,7 +185,7 @@ void *atender_CPU(int* socket_desc) {
 			case FIN_QUANTUM:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
-					list_remove_by_condition(proc_Exec,	(void *) (*pcb_elegido->PID == pid_local));
+					buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
 					log_debug(logger, "PCB con PID %d sacado de EXEC x fin Quantum",pid_local);
 				pthread_mutex_unlock(&sem_l_Exec);
 				//
@@ -383,7 +384,7 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 		//Puede ser null
 		int PIDretorno;
 		if(stackAMandar->pos_ret!=NULL)
-			PIDretorno = *(stackAMandar->pos_ret);
+			PIDretorno = *(stackAMandar->pos_ret);//;
 		else
 			PIDretorno = -1;
 		//Puede ser null
@@ -553,4 +554,17 @@ void ansisop_obtenerValorCompartida(int socket_local){
 
 //	enviarStream();
 
+}
+
+
+pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista){
+	int tamanio = list_size(lista);
+	int i =0;
+	for (i=0;i<tamanio;i++){
+		pcb_t* temp = list_get(lista,i);
+		if(*(temp->PID) == pidBuscado){
+			return list_remove(lista,i);
+		}
+	}
+	return NULL;
 }

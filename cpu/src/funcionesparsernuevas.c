@@ -49,7 +49,7 @@ void agregarVariableStack(almUMC aAlmacenar, char var);
 void asignar(t_puntero puntero_var, t_valor_variable valor);
 t_valor_variable getglobalvar(t_nombre_compartida var);
 t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor);
-t_puntero_instruccion goint(t_nombre_etiqueta etiqueta);
+void goint(t_nombre_etiqueta etiqueta);
 void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion);
 void retornar(t_valor_variable retorno);
 void imprimir(t_valor_variable var);
@@ -177,7 +177,7 @@ void goint(t_nombre_etiqueta etiqueta) {
 	for (i= 0 ; i< cantidadDeFunciones; i++){
 		funcion_sisop* temp = list_get(pcb_actual->indice_funciones,i);
 		if(strcmp(temp->funcion,etiqueta)==0){
-			*(pcb_actual->PC) = *(temp->posicion_codigo);
+			*(pcb_actual->PC) = *(temp->posicion_codigo)-1;
 			return;
 		}
 	}
