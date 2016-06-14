@@ -10,6 +10,11 @@
 #include <commons/collections/dictionary.h>
 #include <commons/collections/list.h>
 
+#define ioSolID 1000
+#define signalID 2000
+#define waitID 3000
+#define finalID 4000
+
 typedef struct {
 	int pagina;
 	int offset;

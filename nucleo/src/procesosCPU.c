@@ -178,7 +178,6 @@ void *atender_CPU(int* socket_desc) {
 		/*pcb_elegido = recibirPCBdeCPU(socket_local);
 		 estado_proceso = recibirEstadoProceso(socket_local);*/
 
-
 		do {
 			estado_proceso = leerHeader(socket_local);
 			switch (*estado_proceso && CpuActivo) {
@@ -265,7 +264,8 @@ void *atender_CPU(int* socket_desc) {
 				break;
 
 			case IMPRIMIR: // es la primitiva imprimir
-				//              ansisop_imprimir();
+
+
 				break;
 
 			case IMPRIMIR_TXT: // es la primitiva imprimirTexto

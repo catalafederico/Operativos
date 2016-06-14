@@ -42,8 +42,11 @@ pcb_t* pcb_actual;
 t_log* logCpu;
 int quantum;
 int quantumSleep;
-extern t_list* lista_argumentos_temporales;
 extern int esFuncion;
+extern int estado;
+extern char* nombreSemaforoWait;
+extern char* nombreDispositivo;
+extern int tiempo_dispositivo;
 
 typedef struct {
 	int tamanioNombreFuncion;
@@ -107,7 +110,6 @@ int main(void) {
 	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 	 switch (*header) {
 	 case 163://Recibir PCB
-		 finPrograma = 0;
 		 recibirPCB();
 		 tratarPCB();
 	 break;
@@ -208,6 +210,16 @@ char* proximaInstruccion() {
 	return proximaInstruccion;
 }
 
+int puedeContinuarEstado(){
+	//Si no puede continuar por wait io o fin
+	//devuelve false
+	if((estado == finalID) || (estado == waitID) || (estado == ioSolID)){
+		return 0;
+	}
+	return 1;
+}
+
+
 void tratarPCB() {
 	do {
 		char* proxInstruccion = proximaInstruccion();
@@ -216,12 +228,29 @@ void tratarPCB() {
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
 		sleep(/*quantumSleep*/3);//Cambio para testear
 		esFuncion = 0;
-	} while (quantum > 0 && !finPrograma);//Cambio para testear
+	} while (quantum > 0 && puedeContinuarEstado());//Cambio para testear
 
-	if (finPrograma == 1) {
+	if (estado == finalID) {
 		int FIN_Proc = 1;
 		send(clienteCpuNucleo.socketCliente, &FIN_Proc, sizeof(int), 0);
 		enviarPCB();
+		return;
+	}
+	if (estado == waitID) {
+		int waitSem = 7;
+		send(clienteCpuNucleo.socketCliente, &waitSem, sizeof(int), 0);
+		enviarPCB();
+		free(nombreSemaforoWait);
+		return;
+	}
+	if (estado == ioSolID) {
+		int solNUCLEOIDIO = 3;
+		int tamanio = strlen(nombreDispositivo)+1;
+		nombreDispositivo = strcat(nombreDispositivo,"\0");
+		enviarStream(clienteCpuNucleo.socketCliente,solNUCLEOIDIO,sizeof(int),&tamanio);
+		send(clienteCpuNucleo.socketCliente,nombreDispositivo,tamanio,0);
+		enviarPCB();
+		free(nombreDispositivo);
 		return;
 	}
 	if (quantum == 0) {

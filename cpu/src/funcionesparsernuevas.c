@@ -7,12 +7,12 @@
 #include "estructurasCPU.h"
 
 
+
 //Tipos de datos
 
 direccionMemoria* obtenerPosicionStack(char var);
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
-int finPrograma;
 int esFuncion;
 typedef u_int32_t t_puntero;
 typedef u_int32_t t_size;
@@ -28,12 +28,15 @@ typedef t_nombre_variable* t_nombre_dispositivo;
 
 extern t_log* logCpu;
 extern int tamanioPaginaUMC;
+char* nombreSemaforoWait;
+char* nombreDispositivo;
+int tiempo_dispositivo;
 int socketMemoria;
 int socketNucleo;
 extern pcb_t* pcb_actual;
 direccionMemoria* ultimaDireccion; //Tenporal hasta q tengamos stack
-t_list* lista_argumentos_temporales;
 int esFuncion;
+int estado;
 
 //Prototipos
 
@@ -49,12 +52,10 @@ t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor);
 t_puntero_instruccion goint(t_nombre_etiqueta etiqueta);
 void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion);
 void retornar(t_valor_variable retorno);
-int imprimir(t_valor_variable var);
-int imptxt(char* aimpprimir);
+void imprimir(t_valor_variable var);
+void imptxt(char* aimpprimir);
 void fin();
-int ionotif(t_nombre_dispositivo ioname, int tiempo);
-int wait(t_nombre_semaforo semf);
-int signal(t_nombre_semaforo semf);
+void ionotif(t_nombre_dispositivo ioname, int tiempo);
 almUMC calculoDeDedireccionAlmalcenar();
 void agregarVariableStack(almUMC aAlmacenar, char var);
 direccionMemoria* obtenerPosicionStack(char var);
@@ -67,8 +68,8 @@ void inicialzarParser(int socketMem, int socketNuc) {
 	ultimaDireccion->offset = 0;
 	ultimaDireccion->tamanio = 0;
 	esFuncion = 0;
-	lista_argumentos_temporales = list_create();
 }
+
 //DefinirVariable
 t_puntero vardef(t_nombre_variable var) {
 	log_trace(logCpu, "Crear variable id: %d nombre: %c.", pcb_actual->PID,
@@ -149,15 +150,24 @@ void asignar(t_puntero puntero_var, t_valor_variable valor) {
 
 //ObtenerValorCompartida
 t_valor_variable getglobalvar(t_nombre_compartida var) {
-	printf("Se obtiene una variable global");
-
-	return CONTENIDO_VARIABLE;
+	int obtenerValorID = 5;
+	char* nombreVarialble = strcat(var,"0");
+	int logitudNombre = strlen(nombreVarialble)+1;
+	enviarStream(socketNucleo,obtenerValorID,sizeof(int),logitudNombre);
+	send(socketNucleo,var,logitudNombre,0);
+	int valor = leerHeader(socketNucleo);
+	return valor;
 }
 
 //AsignarValorCompartida
 t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor) {
-	printf("Se setea una variable global");
-	return CONTENIDO_VARIABLE;
+	int obtenerValorID = 6;
+	char* nombreVarialble = strcat(var,"0") ;
+	int logitudNombre = strlen(nombreVarialble)+1;;
+	enviarStream(socketNucleo,obtenerValorID,sizeof(int),logitudNombre);
+	send(socketNucleo,&valor,sizeof(int),0);
+	send(socketNucleo,var,logitudNombre,0);
+	return valor;
 }
 
 //IrALabel
@@ -174,8 +184,6 @@ void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
 	//Creo lista de argumentos
 	nuevaPosicion->args = list_create();
 	//Guardo
-	list_add_all(nuevaPosicion->args,lista_argumentos_temporales);
-	list_clean(lista_argumentos_temporales);
 	//Creo lista de variables
 	nuevaPosicion->vars = list_create();
 	//Guardo prozima instruccion
@@ -209,44 +217,52 @@ void retornar(t_valor_variable retorno) {
 	dictionary_remove(pcb_actual->indice_stack,(pcb_actual->SP));//SACO RENGLON DEL DICCIONARIO STACK
 	*(pcb_actual->SP) = *(pcb_actual->SP) - 1;
 	//BORRAR RENGLON DE MEMORA
-
 	return;
 }
 
 //Imprimir
-int imprimir(t_valor_variable var) {
-	printf("Se imprimi algo");
-	enviarStream(socketNucleo, 9, sizeof(int), &var);
-	return CONTENIDO_VARIABLE;
+void imprimir(t_valor_variable var) {
+	int imprimirId = 9;
+	enviarStream(socketNucleo,imprimirId,sizeof(char),&var);
+	return;
 }
 
 //ImprimirTexto
-int imptxt(char* aimpprimir) {
-	printf("nucleo manda a imprimir");
-	return CONTENIDO_VARIABLE;
+void imptxt(char* aImprimir) {
+	int imprimirTexto = 10;
+	int tamanio = strlen(aImprimir)+1;
+	aImprimir = strcat(aImprimir,"\0");
+	enviarStream(socketNucleo,imprimirTexto,sizeof(int),&tamanio);
+	send(socketNucleo,aImprimir,tamanio,0);
+	return;
 }
 
 void fin() {
-
-	finPrograma = 1;
+	estado = finalID;
 }
 
 //EntradaSalida
-int ionotif(t_nombre_dispositivo ioname, int tiempo) {
-	printf("nucleo se soliciona disp de entrada y salida");
-	return CONTENIDO_VARIABLE;
+void ionotif(t_nombre_dispositivo ioname, int tiempo) {
+	tiempo_dispositivo = tiempo;
+	nombreSemaforoWait = strdup(ioname);
+	return;
 }
 
 //wait
-int wait(t_nombre_semaforo semf) {
-	printf("Se llama a la funcion wait");
-	return CONTENIDO_VARIABLE;
+void waitCPU(t_nombre_semaforo semf) {
+	estado = waitID;
+	nombreSemaforoWait = strdup(semf);
+	return;
 }
 
 //signal
-int signal(t_nombre_semaforo semf) {
-	printf("Se llama a la funcion wait");
-	return CONTENIDO_VARIABLE;
+void signalCPU(t_nombre_semaforo semf) {
+	int obtenerValorID = 6;
+	char* nombreVarialble = strcat(semf,"0") ;
+	int logitudNombre = strlen(nombreVarialble)+1;;
+	enviarStream(socketNucleo,obtenerValorID,sizeof(int),&logitudNombre);
+	send(socketNucleo,semf,logitudNombre,0);
+	return;
 }
 
 void fcallNR(t_nombre_etiqueta nombre) {
@@ -333,10 +349,5 @@ direccionMemoria* obtenerPosicionStack(char var) {
 		i++;
 	}
 	return NULL;
-}
-
-
-void eliminarTempVars(){
-	list_clean(lista_argumentos_temporales);
 }
 
