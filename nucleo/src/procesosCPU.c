@@ -69,6 +69,7 @@ extern struct server serverPaCPU;
 extern sem_t sem_READY_dispo;
 //extern sem_t  sem_cpus_dispo;
 //extern pthread_mutex_t sem_l_cpus_dispo;
+extern t_dictionary* dict_variables;
 
 extern pthread_mutex_t sem_l_New;
 extern pthread_mutex_t sem_l_Ready;
@@ -76,7 +77,11 @@ extern pthread_mutex_t sem_l_Exec;
 extern pthread_mutex_t sem_l_Block;
 extern pthread_mutex_t sem_l_Exit;
 extern pthread_mutex_t sem_l_Reject;
+extern pthread_mutex_t sem_dic_variables;
 //extern pthread_mutex_t sem_log;
+
+
+
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_CPU  --------------------------------
 // Funcion que correra en un unico thread encargado de aceptar conexiones entrantes y generara
@@ -166,15 +171,6 @@ void *atender_CPU(int* socket_desc){
 		pcb_elegido = recibirPCBdeCPU(socket_local);
 		estado_proceso = recibirEstadoProceso(socket_local);
 
-// se evalua si se solicito una operacion privilegiada de Ansisop
-//		while(estado_proc_es_Ansisop(*estado_proceso)){
-//			switch (*estado_proceso) {
-//
-//				default:
-//					break;
-//			}
-//			estado_proceso = recibirEstadoProceso(socket_local);
-//		}
 		switch (*estado_proceso) {
 			case FIN_QUANTUM:
 				pthread_mutex_lock(&sem_l_Exec);
@@ -225,13 +221,10 @@ void *atender_CPU(int* socket_desc){
 
 				sem_post(&sem_READY_dispo);
 				break;
+
 //      Las siguientes son operaciones privilegiadas
 			case SOLIC_IO:	//es la primitiva entradaSalida
-//              ansisop_entradaSalida ();
-//				pthread_mutex_lock(&sem_l_Block); // se bloquea
-//				list_add(proc_Block, pcb_elegido);
-//				pthread_mutex_unlock(&sem_l_Block);
-//				log_debug(logger, "El proceso %d de la Consola %d pasa a BLOCK", *pcb_elegido->PID, *pcb_elegido->con_id);
+                ansisop_entradaSalida (socket_local, pcb_elegido, pid_local);
 				break;
 
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
@@ -433,21 +426,38 @@ int* recibirEstadoProceso(int socket_local){
 	return estado;
 }
 
-int estado_proc_es_Ansisop(int estado_proceso){
-	return 0; //por ahora que retorne que no es ansisop hasta que se defina junto al CPU el orden
-	switch (estado_proceso) {
-		case SOLIC_IO:	//es la primitiva entradaSalida
-		case OBT_VALOR:  //es la primitiva obtenerValorCompartida
-		case GRABA_VALOR: //es la primitiva asignarValorCompartida
-		case WAIT_SEM:	 // es la primitiva wait
-		case SIGNAL_SEM: // es la primitiva signal
-		case IMPRIMIR: // es la primitiva imprimir
-		case IMPRIMIR_TXT: // es la primitiva imprimirTexto
-			return 1;
-			break;
+void ansisop_entradaSalida(int socket_local, pcb_t* pcb_bloqueado, int pid_local){
+	//se recibe parametros para IO
+	int* long_char = recibirStream(socket_local,sizeof(int));
+	char * dispositivo = recibirStream(socket_local, *long_char);
+	int * unidades = recibirStream(socket_local,sizeof(int));
 
-		default:
-			return 0;
-			break;
-	}
+	t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
+	elem_block->pcb_bloqueado = pcb_bloqueado;
+	elem_block->tipo_de_bloqueo = 1;
+	elem_block->dispositivo = dispositivo;
+	elem_block->unidades = * unidades;
+
+	pthread_mutex_lock(&sem_l_Exec);
+		list_remove_by_condition(proc_Exec, (void *) (*pcb_bloqueado->PID == pid_local) );
+		log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de IO",pid_local);
+	pthread_mutex_unlock(&sem_l_Exec);
+
+	pthread_mutex_lock(&sem_l_Block); // se bloquea
+		list_add(proc_Block, elem_block);
+		log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
+	pthread_mutex_unlock(&sem_l_Block);
+}
+
+void ansisop_obtenerValorCompartida(int socket_local){
+	//se recibe parametros para obtener valor
+	int* long_char = recibirStream(socket_local,sizeof(int));
+	char * variable_comp = recibirStream(socket_local, *long_char);
+	void * valor_comp;
+	pthread_mutex_lock(&sem_dic_variables);
+		valor_comp = dictionary_get(dict_variables,variable_comp);
+	pthread_mutex_unlock(&sem_dic_variables);
+
+//	enviarStream();
+
 }

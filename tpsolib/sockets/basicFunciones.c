@@ -82,7 +82,6 @@ void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaj
 }
 
 void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
-//	PRIMERO SE RECIBE EL HEADER CON UN TAMANIO FIJO QUE ES TIPO t_head_mje
 	int bytesRecibidos;
 	void* recibido = malloc(tamanioEstructuraARecibir);
 	void* tempRcv = malloc(tamanioEstructuraARecibir);

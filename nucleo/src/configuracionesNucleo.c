@@ -118,3 +118,6 @@ t_reg_config get_config_params(void){
 //	log_destroy(logger);
 	return reg_config;
 }
+
+
+
