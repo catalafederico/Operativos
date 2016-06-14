@@ -71,17 +71,38 @@ void inicialzarParser(int socketMem, int socketNuc) {
 }
 //DefinirVariable
 t_puntero vardef(t_nombre_variable var) {
-		log_trace(logCpu, "Crear variable id: %d nombre: %c.", pcb_actual->PID,
-				var);
-		direccionMemoria* temp = malloc(sizeof(direccionMemoria));
-		almUMC aAlmacenar = calculoDeDedireccionAlmalcenar();
+	log_trace(logCpu, "Crear variable id: %d nombre: %c.", pcb_actual->PID,
+			var);
+	direccionMemoria* temp = malloc(sizeof(direccionMemoria));
+	almUMC aAlmacenar = calculoDeDedireccionAlmalcenar();
+	aAlmacenar.valor = 0;
+	aAlmacenar.tamanio = sizeof(int);
+	direccionMemoria* direc_arg = malloc(sizeof(direccionMemoria));
+	direc_arg-> offset = aAlmacenar.offset;
+	direc_arg->pagina = aAlmacenar.pagina;
+	direc_arg->tamanio = aAlmacenar.tamanio;
+	if (var >= '0' && var <= '9') {
+		//si son estos caracteres se esta almacenando un argumento
+		//se alamcena en la lista argumentos
+		// el renglon del stack se aumenta en fcall
+		stack* tempStack = dictionary_get(pcb_actual->indice_stack,pcb_actual->SP);
+		t_list* tempList = tempStack->args;
+		int posicion = var - '0';
+		direccionMemoria* direc_arg = malloc(sizeof(direccionMemoria));
+		direc_arg-> offset = aAlmacenar.offset;
+		direc_arg->pagina = aAlmacenar.pagina;
+		direc_arg->tamanio = aAlmacenar.tamanio;
+		list_add(tempList,direc_arg);
+	} else {
+		//Si no es una variable si se va a almacenar en la lista de variables del stack
 		aAlmacenar.valor = 0;
 		aAlmacenar.tamanio = sizeof(int);
 		enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
 		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 		//Actualizo stack
 		agregarVariableStack(aAlmacenar, var);
-	return NULL;
+	}
+	return direc_arg;
 }
 
 //ObtenerPosicionVariable
@@ -104,15 +125,9 @@ t_puntero getvarpos(t_nombre_variable var) {
 
 //Dereferenciar , ya esta lista
 t_valor_variable derf(t_puntero puntero_var) {
-	if(esFuncion){
-		list_add(lista_argumentos_temporales,puntero_var);
-		return NULL; // Si es una funcion sgnifica q lo estoy pasando como argumento entonces no lo busco
-		//en la memoria
-		//lo agrego en temp argumentos
-	}
 	log_trace(logCpu, "Solicitar  a memoria comezado");
 	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), puntero_var);
-	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
+	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 	int* valorRecibido;
 	valorRecibido = recibirStream(socketMemoria, sizeof(int));
 	return *valorRecibido;
@@ -120,19 +135,16 @@ t_valor_variable derf(t_puntero puntero_var) {
 
 //Asignar
 void asignar(t_puntero puntero_var, t_valor_variable valor) {
-	if(esFuncion){
+		almUMC temp;
+		direccionMemoria* direcMemory = puntero_var;
+		temp.pagina = direcMemory->pagina;
+		temp.offset = direcMemory->offset;
+		temp.tamanio = direcMemory->tamanio;
+		temp.valor = valor;
+		log_trace(logCpu, "Almacenar en UMC nuevo valor");
+		enviarStream(socketMemoria, 53, sizeof(almUMC), &temp);
+		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 		return;
-	}
-	almUMC temp;
-	direccionMemoria* direcMemory = puntero_var;
-	temp.pagina = direcMemory->pagina;
-	temp.offset = direcMemory->offset;
-	temp.tamanio = direcMemory->tamanio;
-	temp.valor = valor;
-	log_trace(logCpu, "Almacenar en UMC nuevo valor");
-	enviarStream(socketMemoria, 53, sizeof(almUMC), &temp);
-	send(socketMemoria,pcb_actual->PID,sizeof(int),0);
-	return;
 }
 
 //ObtenerValorCompartida
@@ -163,6 +175,7 @@ void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
 	nuevaPosicion->args = list_create();
 	//Guardo
 	list_add_all(nuevaPosicion->args,lista_argumentos_temporales);
+	list_clean(lista_argumentos_temporales);
 	//Creo lista de variables
 	nuevaPosicion->vars = list_create();
 	//Guardo prozima instruccion
@@ -173,12 +186,16 @@ void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
 	for (i= 0 ; i< cantidadDeFunciones; i++){
 		funcion_sisop* temp = list_get(pcb_actual->indice_funciones,i);
 		if(strcmp(temp->funcion,etiqueta)==0){
-			*(pcb_actual->PC) = *(temp->posicion_codigo)+1;
+			*(pcb_actual->PC) = *(temp->posicion_codigo);
 			break;
 		}
 	}
 	//
+	*(pcb_actual->SP) = *(pcb_actual->SP) + 1;
+	int* nuevaPos = malloc(sizeof(int));
+	*nuevaPos = *(pcb_actual->SP);
 	nuevaPosicion->memoriaRetorno = funcion;
+	dictionary_put(pcb_actual->indice_stack,nuevaPos,nuevaPosicion);
 	return;
 }
 

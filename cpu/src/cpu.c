@@ -215,9 +215,8 @@ void tratarPCB() {
 		quantum--;
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
 		sleep(/*quantumSleep*/3);//Cambio para testear
-		list_clean(lista_argumentos_temporales);
 		esFuncion = 0;
-	} while (/*quantum > 0 && !finPrograma*/1);
+	} while (/*quantum > 0 && !finPrograma*/1);//Cambio para testear
 
 	if (finPrograma == 1) {
 		int FIN_Proc = 1;
