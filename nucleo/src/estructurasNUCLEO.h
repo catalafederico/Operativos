@@ -112,4 +112,11 @@ typedef struct{
 }__attribute__((packed))
 direccionStack;
 
+typedef struct {
+	pcb_t* pcb_bloqueado;
+    int tipo_de_bloqueo;
+    char * dispositivo;
+    int unidades;
+}t_pcb_bloqueado;
+
 #endif /* ESTRUCTURASNUCLEO_H_ */

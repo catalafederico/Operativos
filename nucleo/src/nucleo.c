@@ -75,11 +75,13 @@ pthread_mutex_t sem_l_Exit = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t semProgramasAProcesar = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_pid_consola = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_dic_variables = PTHREAD_MUTEX_INITIALIZER;
 
 int tamanioPaginaUMC;
 
 // indice de consolas que asocia un PID a la consola que lo envio
 t_dictionary* dict_pid_consola;
+t_dictionary* dict_variables;
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -113,6 +115,7 @@ int main(int argc, char **argv) {
 	t_dictionary indiceEtiquetas;
 
 	dict_pid_consola = dictionary_create();
+	dict_variables = dictionary_create();
 
 	// Inicializa el log.
 	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
@@ -197,7 +200,9 @@ int main(int argc, char **argv) {
 
 }
 
+//**************************************************************************************
 /* administrar_cola_Exit toma los PCB cargados en Exit, Retorna mensaje a la consola  */
+//**************************************************************************************
 void *administrar_cola_Exit(){
 	log_debug(log_procesador_Exit, "administrar_cola_Exit esta corriendo");
 
@@ -232,10 +237,12 @@ void *administrar_cola_Exit(){
 
 }
 
+//*********************************************************************************************
 /* administrar_cola_Block toma los procesos que se encuentran bloqueados y procesa su bloqueo*/
+//*********************************************************************************************
 void *administrar_cola_Block(){
 	log_debug(log_procesador_Block, "administrar_cola_Block esta corriendo");
-
+	disparar_hilos_disp_IO();
 //	pcb_t* pcb_elegido;
 	int pid_local = 0;
 	while (1){
@@ -249,7 +256,31 @@ void *administrar_cola_Block(){
 
 }
 
+//***************************************************************************
+// disparar_hilos_disp_IO dispara un hilo para atender cada dispositivo de IO
+//***************************************************************************
+void disparar_hilos_disp_IO(){
+//Crear thread Administrador de colas IO
+	int i = 0;
+	pthread_t thread_IO_admin;
+	while (reg_config.io_id[i]!="NULL"){
+		char * dispositivo;
+		strcpy(dispositivo,reg_config.io_id[i]);
+		if( pthread_create( &thread_IO_admin, NULL , administrar_cola_IO, (void*) dispositivo) < 0)
+		{
+			log_debug(logger, "No fue posible crear thread Admin de IO: %s",dispositivo);
+		//	exit(EXIT_FAILURE);
+		}
+	}
+}
+
+void * administrar_cola_IO(char* dispositivo){
+	//recibir parametros
+}
+
+//*******************************************************************************************************
 /* administrar_cola_Reject toma los procesos que se encuentran Rechazados y se lo informa a su Consola */
+//*******************************************************************************************************
 void *administrar_cola_Reject (){
 	log_debug(log_procesador_Reject , "administrar_cola_Reject  esta corriendo");
 
