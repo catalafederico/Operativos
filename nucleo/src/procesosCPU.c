@@ -34,6 +34,8 @@
 
 pcb_t* recibirPCBdeCPU(int socket);
 int* recibirEstadoProceso(int socket_local);
+void *atender_CPU(int* socket_desc);
+pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista);
 
 
 // CONSTANTES -----
@@ -108,7 +110,8 @@ void *atender_conexion_CPU(){
 		aceptarConexion(socket_nuevo, serverPaCPU.socketServer, &direccionEntrante); //No hace falta chekear si es -1, aceptarConexiones lo hace ya
 		log_debug(logger, "Se ha conectado una CPU");
 
-		if(pthread_create(&thread_cpu_con , &attr , (void*) atender_CPU, socket_nuevo) < 0)
+		int proceso = pthread_create(&thread_cpu_con , &attr ,atender_CPU, socket_nuevo);
+		if( proceso < 0)
 		{
 			log_debug(logger, "No fue posible crear thread p/ CPU");
 			exit(EXIT_FAILURE);
@@ -176,14 +179,13 @@ void *atender_CPU(int* socket_desc) {
 		/*pcb_elegido = recibirPCBdeCPU(socket_local);
 		 estado_proceso = recibirEstadoProceso(socket_local);*/
 
-
 		do {
 			estado_proceso = leerHeader(socket_local);
-			switch (*estado_proceso) {
+			switch (*estado_proceso && CpuActivo) {
 			case FIN_QUANTUM:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
-					list_remove_by_condition(proc_Exec,	(void *) (*pcb_elegido->PID == pid_local));
+					buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
 					log_debug(logger, "PCB con PID %d sacado de EXEC x fin Quantum",pid_local);
 				pthread_mutex_unlock(&sem_l_Exec);
 				//
@@ -238,32 +240,60 @@ void *atender_CPU(int* socket_desc) {
 
 //      Las siguientes son operaciones privilegiadas
 			case SOLIC_IO:	//es la primitiva entradaSalida
-                ansisop_entradaSalida (socket_local, pcb_elegido, pid_local);
+                //ansisop_entradaSalida (socket_local, pcb_elegido, pid_local);
 				//              ansisop_entradaSalida ();
 				//				pthread_mutex_lock(&sem_l_Block); // se bloquea
 				//				list_add(proc_Block, pcb_elegido);
 				//				pthread_mutex_unlock(&sem_l_Block);
 				//				log_debug(logger, "El proceso %d de la Consola %d pasa a BLOCK", *pcb_elegido->PID, *pcb_elegido->con_id);
+			{
+				int* tamanioNombreIO = recibirStream(socket_local,sizeof(int));
+				char* nombreDispositivo = recibirStream(socket_local,*tamanioNombreIO);
+				int* tiempoDispositivo = recibirStream(socket_local, sizeof(int));
+				pcb_elegido = recibirPCBdeCPU(socket_local);
+			}
 				break;
 
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
 				//              ansisop_obtenerValorCompartida ();
+			{
+				int* tamanioNombreOV = recibirStream(socket_local,sizeof(int));
+				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreOV);
+				pcb_elegido = recibirPCBdeCPU(socket_local);
+			}
 				break;
 
 			case GRABA_VALOR: //es la primitiva asignarValorCompartida
 				//              ansisop_asignarValorCompartida ();
+			{
+				int* tamanioNombreGV = recibirStream(socket_local,sizeof(int));
+				int* valorAGrabar = recibirStream(socket_local, sizeof(int));
+				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreGV);
+				pcb_elegido = recibirPCBdeCPU(socket_local);
+			}
 				break;
 
 			case WAIT_SEM:	 // es la primitiva wait
 				//              ansisop_wait ();
+			{
+				int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
+				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombreWS);
+				pcb_elegido = recibirPCBdeCPU(socket_local);
+			}
 				break;
 
 			case SIGNAL_SEM: // es la primitiva signal
 				//              ansisop_signal ();
+			{
+				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
+				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
+			}
+				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
 
 			case IMPRIMIR: // es la primitiva imprimir
-				//              ansisop_imprimir();
+
+
 				break;
 
 			case IMPRIMIR_TXT: // es la primitiva imprimirTexto
@@ -339,10 +369,34 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	int tamanioStack = aMandaCpu.tamanioStack;
 	for(i=0;i<tamanioStack && tamanioStack!= 0;i++){
 		stack* stackAMandar = dictionary_get(pcb->indice_stack,&i);
-		int tamanioArgs = list_size(stackAMandar->args);
-		int tamanioVars = list_size(stackAMandar->vars);
-		int PIDretorno = *(stackAMandar->pos_ret);
-		direccionMemoria direccionRetornoFuncion = *(stackAMandar->memoriaRetorno);
+		//Puede ser null
+		int tamanioArgs;
+		if(stackAMandar->args!=NULL)
+			tamanioArgs = list_size(stackAMandar->args);
+		else
+			tamanioArgs = -1;
+		//Puede ser null
+		int tamanioVars;
+		if(stackAMandar->vars!=NULL)
+			tamanioVars = list_size(stackAMandar->vars);
+		else
+			tamanioVars = -1;
+		//Puede ser null
+		int PIDretorno;
+		if(stackAMandar->pos_ret!=NULL)
+			PIDretorno = *(stackAMandar->pos_ret);//;
+		else
+			PIDretorno = -1;
+		//Puede ser null
+		direccionMemoria direccionRetornoFuncion;
+		if(stackAMandar->memoriaRetorno!=NULL)
+			direccionRetornoFuncion = 	*(stackAMandar->memoriaRetorno);
+		else{
+			direccionRetornoFuncion.offset = -1;
+			direccionRetornoFuncion.pagina = -1;
+			direccionRetornoFuncion.tamanio = -1;
+		}
+
 		send(cpu,&tamanioArgs,sizeof(int),0);
 		send(cpu,&tamanioVars,sizeof(int),0);
 		send(cpu,&PIDretorno,sizeof(int),0);
@@ -413,24 +467,43 @@ pcb_t* recibirPCBdeCPU(int socket){
 	//RECIBO STACK
 	for(i=0;i<*tamanioStack && *tamanioStack!=0;i++){
 		stack* stackNuevo = malloc(sizeof(stack));
-		stackNuevo->args = list_create();
-		stackNuevo->vars = list_create();
+		//Argumentos
 		int* tamArgs = recibirStream(socket, sizeof(int));
+		if(*tamArgs==-1)
+			stackNuevo->args = NULL;
+		else
+			stackNuevo->args = list_create();
+		//Variables
 		int* tamVars = recibirStream(socket, sizeof(int));
+		if(*tamVars==-1)
+			stackNuevo->vars = NULL;
+		else
+			stackNuevo->vars = list_create();
+		//Retorno PID del renglon stack
 		int* RetornoPID = recibirStream(socket, sizeof(int));
+		if(*RetornoPID == -1)
+			stackNuevo->pos_ret = NULL;
+		else
+			stackNuevo->pos_ret = RetornoPID;
+		//Retorno
 		direccionMemoria* memoriaRetorno = recibirStream(socket, sizeof(direccionMemoria));
+		if(memoriaRetorno->offset == -1)
+			memoriaRetorno = NULL;
+
+		stackNuevo->memoriaRetorno = memoriaRetorno;
 		int j;
 		for(j=0;j<*tamArgs;j++){
 			direccionMemoria* new_direc = recibirStream(socket, sizeof(direccionMemoria));
 			list_add_in_index(stackNuevo->args,j,new_direc);
 		}
-
+		free(tamArgs);
 		for(j=0;j<*tamVars;j++){
 			direccionStack* new_direc = recibirStream(socket, sizeof(direccionStack));
-			list_add_in_index(stackNuevo->args,j,new_direc);
+			list_add_in_index(stackNuevo->vars,j,new_direc);
 		}
+		free(tamVars);
 		int* key = malloc(sizeof(int));
-		*key = j;
+		*key = i;
 		dictionary_put(pcb_Recibido->indice_stack,key,stackNuevo);
 	}
 	//recibo quantum y quantumSleep
@@ -481,4 +554,17 @@ void ansisop_obtenerValorCompartida(int socket_local){
 
 //	enviarStream();
 
+}
+
+
+pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista){
+	int tamanio = list_size(lista);
+	int i =0;
+	for (i=0;i<tamanio;i++){
+		pcb_t* temp = list_get(lista,i);
+		if(*(temp->PID) == pidBuscado){
+			return list_remove(lista,i);
+		}
+	}
+	return NULL;
 }

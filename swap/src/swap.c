@@ -62,7 +62,7 @@ void iniciar(void);
 
 int entraProceso(proceso proceso);
 
-proceso crearProceso(int pid, int cantidadDePaginas);
+proceso* crearProceso(int pid, int cantidadDePaginas);
 
 void inicializarBitMap(void);
 
@@ -146,6 +146,9 @@ int main(void) {
     crearArchivo();
     //inicializarArchivo();
 
+    listaSwap = malloc(sizeof(proceso));
+    listaSwap = NULL;
+
 /*
     proceso proceso2 = crearProceso(1,2);
     insertarProceso(&proceso2);
@@ -177,10 +180,10 @@ int main(void) {
     	printf("Pid: %d \n Comienzo: %d\n", listaSwap->pid, listaSwap->comienzo);
     	listaSwap = listaSwap->procesoSiguiente;
     }
-*/
+
     testEscribirEnPaginas();
     testLeerPagina();
-/*
+
     listaSwap = listaSwap->procesoSiguiente;
     compactar();
     listarBitMap();
@@ -197,6 +200,7 @@ int main(void) {
     manejarConexionesConUMC();
 
     	free(bitMap);
+    	free(listaSwap);
 		return 0;
 }
 
@@ -230,10 +234,10 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 }
  //----------Funciones para crear procesos y manejarlos
 
-	proceso crearProceso(int pid, int cantidadDePaginas){
-		proceso proceso;
-		proceso.pid = pid;
-		proceso.cantidadDePaginas = cantidadDePaginas;
+	proceso* crearProceso(int pid, int cantidadDePaginas){
+		proceso* proceso = malloc(sizeof(proceso));
+		proceso->pid = pid;
+		proceso->cantidadDePaginas = cantidadDePaginas;
 
 		return proceso;
 	}
@@ -244,19 +248,19 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		int cantidadPaginas;
 		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
 		recv(socketAdministradorDeMemoria, &cantidadPaginas, sizeof(int), 0);
-		proceso proceso = crearProceso(pid, cantidadPaginas);
-		if(entraProceso(proceso)){
+		proceso* proceso = crearProceso(pid, cantidadPaginas);
+		if(entraProceso(*proceso)){
 			//El proceso entra, realizar insercion
 			pthread_mutex_lock(&mutex);
-			insertarProceso(&proceso);
+			insertarProceso(proceso);
 			pthread_mutex_unlock(&mutex);
-			logIniciar(proceso);
+			//logIniciar(*proceso);
 			int exito = 6;
 			send(socketAdministradorDeMemoria,&exito, sizeof(int), 0);
 		} else {
 			//El proceso no entra, avisar rechazo
-			logRechazar(proceso);
-			printf("No hay cantidad de paginas suficientes para alojar el proceso %d", proceso.pid);
+			//logRechazar(*proceso);
+			printf("No hay cantidad de paginas suficientes para alojar el proceso %d", proceso->pid);
 			int fracaso = 7;
 			send(socketAdministradorDeMemoria,&fracaso, sizeof(int), 0);
 	}
@@ -374,7 +378,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 			//fprintf(archivo,"%s",texto1);
 			fclose(archivo);
 			//free(texto2);
-			//free(texto);
+			free(texto);
 	}
 
 	void* leerPagina(int pagina){
@@ -763,10 +767,9 @@ t_reg_config get_config_params(void){
 	}
 
 	void* recibirCadena() {
-		void* cadena;
 		int long_cadena = swap_configuracion.TAMANIO_PAGINA;
 		//recv(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
-		cadena = malloc(long_cadena);
+		void* cadena = malloc(long_cadena);
 		recv(socketAdministradorDeMemoria, cadena, long_cadena, 0);
 		return cadena;
 	}

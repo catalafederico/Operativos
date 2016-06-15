@@ -18,12 +18,12 @@
 	t_puntero_instruccion goint(t_nombre_etiqueta etiqueta);
 	void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion);
 	void retornar(t_valor_variable retorno);
-	int imprimir(t_valor_variable var);
-	int imptxt(char* aimpprimir);
-	int ionotif(t_nombre_dispositivo ioname, int tiempo);
+	void imprimir(t_valor_variable var);
+	void imptxt(char* aimpprimir);
+	void ionotif(t_nombre_dispositivo ioname, int tiempo);
 	void inicialzarParser(int socketMem,int socketNuc);
-	//int wait(t_nombre_semaforo semf);
-	//int signal(t_nombre_semaforo semf);
+	void waitCPU(t_nombre_semaforo semf);
+	void signalCPU(t_nombre_semaforo semf);
 	void fin();
 	void fcallNR(t_nombre_etiqueta nombre);
 

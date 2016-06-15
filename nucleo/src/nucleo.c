@@ -96,6 +96,7 @@ t_dictionary* dict_variables;
 void *administrar_cola_Exit();
 void *administrar_cola_Block();
 void *administrar_cola_Reject();
+void * administrar_cola_IO(char* dispositivo);
 // **************************************************************************************************
 // ******************************************    MAIN     ***************************************
 // **************************************************************************************************
@@ -262,15 +263,16 @@ void *administrar_cola_Block(){
 void disparar_hilos_disp_IO(){
 //Crear thread Administrador de colas IO
 	int i = 0;
-	pthread_t thread_IO_admin;
-	while (reg_config.io_id[i]!="NULL"){
+	while (reg_config.io_id[i]!=NULL){
+		pthread_t thread_IO_admin; //hay q crear uno por cada disp
 		char * dispositivo;
-		strcpy(dispositivo,reg_config.io_id[i]);
-		if( pthread_create( &thread_IO_admin, NULL , administrar_cola_IO, (void*) dispositivo) < 0)
+		dispositivo = strdup(reg_config.io_id[i]);
+		if(pthread_create(&thread_IO_admin, NULL , administrar_cola_IO, (void*) dispositivo) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread Admin de IO: %s",dispositivo);
 		//	exit(EXIT_FAILURE);
 		}
+		i++;
 	}
 }
 

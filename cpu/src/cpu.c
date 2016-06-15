@@ -42,16 +42,17 @@ pcb_t* pcb_actual;
 t_log* logCpu;
 int quantum;
 int quantumSleep;
-extern t_list* lista_argumentos_temporales;
 extern int esFuncion;
+extern int estado;
+extern char* nombreSemaforoWait;
+extern char* nombreDispositivo;
+extern int tiempo_dispositivo;
 
 typedef struct {
 	int tamanioNombreFuncion;
 	int posicionPID;
 }__attribute__((packed))
 funcionTemp;
-
-extern int finPrograma;
 
 AnSISOP_funciones functions = {
 				.AnSISOP_definirVariable = vardef,
@@ -107,7 +108,6 @@ int main(void) {
 	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 	 switch (*header) {
 	 case 163://Recibir PCB
-		 finPrograma = 0;
 		 recibirPCB();
 		 tratarPCB();
 	 break;
@@ -208,6 +208,16 @@ char* proximaInstruccion() {
 	return proximaInstruccion;
 }
 
+int puedeContinuarEstado(){
+	//Si no puede continuar por wait io o fin
+	//devuelve false
+	if((estado == finalID) || (estado == waitID) || (estado == ioSolID)){
+		return 0;
+	}
+	return 1;
+}
+
+
 void tratarPCB() {
 	do {
 		char* proxInstruccion = proximaInstruccion();
@@ -216,12 +226,33 @@ void tratarPCB() {
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
 		//sleep(/*quantumSleep*/3);//Cambio para testear
 		esFuncion = 0;
-	} while (/*quantum > 0 && !finPrograma*/1);//Cambio para testear
+	} while (quantum > 0 && puedeContinuarEstado());//Cambio para testear
 
-	if (finPrograma == 1) {
+	if (estado == finalID) {
 		int FIN_Proc = 1;
 		send(clienteCpuNucleo.socketCliente, &FIN_Proc, sizeof(int), 0);
 		enviarPCB();
+		return;
+	}
+	if (estado == waitID) {
+		int waitSem = 7;
+		int tamanio = strlen(nombreSemaforoWait)+1;
+		nombreSemaforoWait = strcat(nombreSemaforoWait,"\0");
+		enviarStream(clienteCpuNucleo.socketCliente,waitSem,sizeof(int),&tamanio);
+		send(clienteCpuNucleo.socketCliente,nombreSemaforoWait,tamanio,0);
+		enviarPCB();
+		free(nombreSemaforoWait);
+		return;
+	}
+	if (estado == ioSolID) {
+		int solNUCLEOIDIO = 3;
+		int tamanio = strlen(nombreDispositivo)+1;
+		nombreDispositivo = strcat(nombreDispositivo,"\0");
+		enviarStream(clienteCpuNucleo.socketCliente,solNUCLEOIDIO,sizeof(int),&tamanio);
+		send(clienteCpuNucleo.socketCliente,nombreDispositivo,tamanio,0);
+		send(clienteCpuNucleo.socketCliente,&tiempo_dispositivo,sizeof(int),0);
+		enviarPCB();
+		free(nombreDispositivo);
 		return;
 	}
 	if (quantum == 0) {
@@ -280,34 +311,49 @@ void recibirPCB() {
 		list_add_in_index(pcb_Recibido->indice_funciones, i, new_funcion);
 	}
 	free(tamanioIF);
-
+	int socket = clienteCpuNucleo.socketCliente;
 //RECIBO STACK
-	for (i = 0; i < *tamanioStack && *tamanioStack!=0; i++) {
+	for(i=0;i<*tamanioStack && *tamanioStack!=0;i++){
 		stack* stackNuevo = malloc(sizeof(stack));
-		stackNuevo->args = list_create();
-		stackNuevo->vars = list_create();
-		int* tamArgs = recibirStream(clienteCpuNucleo.socketCliente,
-				sizeof(int));
-		int* tamVars = recibirStream(clienteCpuNucleo.socketCliente,
-				sizeof(int));
-		int* RetornoPID = recibirStream(clienteCpuNucleo.socketCliente,
-				sizeof(int));
-		direccionMemoria* memoriaRetorno = recibirStream(
-				clienteCpuNucleo.socketCliente, sizeof(direccionMemoria));
+		//Argumentos
+		int* tamArgs = recibirStream(socket, sizeof(int));
+		if(*tamArgs==-1)
+			stackNuevo->args = NULL;
+		else
+			stackNuevo->args = list_create();
+		//Variables
+		int* tamVars = recibirStream(socket, sizeof(int));
+		if(*tamVars==-1)
+			stackNuevo->vars = NULL;
+		else
+			stackNuevo->vars = list_create();
+		//Retorno PID del renglon stack
+		int* RetornoPID = recibirStream(socket, sizeof(int));
+		if(*RetornoPID == -1)
+			stackNuevo->pos_ret = NULL;
+		else
+			stackNuevo->pos_ret = RetornoPID;
+		//Retorno
+		direccionMemoria* memoriaRetorno = recibirStream(socket, sizeof(direccionMemoria));
+		if(memoriaRetorno->offset == -1)
+			memoriaRetorno = NULL;
+
+		stackNuevo->memoriaRetorno = memoriaRetorno;
 		int j;
 		for (j = 0; j < *tamArgs; j++) {
 			direccionMemoria* new_direc = recibirStream(
 					clienteCpuNucleo.socketCliente, sizeof(direccionMemoria));
 			list_add_in_index(stackNuevo->args, j, new_direc);
 		}
-
+		free(tamArgs);
 		for (j = 0; j < *tamVars; j++) {
 			direccionStack* new_direc = recibirStream(
 					clienteCpuNucleo.socketCliente, sizeof(direccionStack));
-			list_add_in_index(stackNuevo->args, j, new_direc);
+			list_add_in_index(stackNuevo->vars, j, new_direc);
 		}
+		free(tamVars);
 		int* key = malloc(sizeof(int));
-		*key = j;
+		*key = i;
 		dictionary_put(pcb_Recibido->indice_stack, key, stackNuevo);
 	}
 //recibo quantum y quantumSleep
@@ -332,9 +378,10 @@ void enviarPCB() {
 	aMandaNucleo.tamanioStack = dictionary_size(pcb_actual->indice_stack);
 	aMandaNucleo.tamanioIndiceDeFunciones = list_size(
 			pcb_actual->indice_funciones);
-	int enviaPCB = 163;
-	enviarStream(clienteCpuNucleo.socketCliente, enviaPCB,
-			sizeof(serializablePCB), &aMandaNucleo);
+	//int enviaPCB = 163;
+	send(clienteCpuNucleo.socketCliente,&aMandaNucleo,sizeof(serializablePCB),0);
+	//enviarStream(clienteCpuNucleo.socketCliente, enviaPCB,
+			//sizeof(serializablePCB), &aMandaNucleo);
 	/*
 	 * Orden:
 	 * 	Indice de codigo
@@ -383,11 +430,34 @@ void enviarPCB() {
 	int tamanioStack = aMandaNucleo.tamanioStack;
 	for (i = 0; i < tamanioStack && tamanioStack!= 0; i++) {
 		stack* stackAMandar = dictionary_get(pcb_actual->indice_stack, &i);
-		int tamanioArgs = list_size(stackAMandar->args);
-		int tamanioVars = list_size(stackAMandar->vars);
-		int PIDretorno = *(stackAMandar->pos_ret);
-		direccionMemoria direccionRetornoFuncion =
-				*(stackAMandar->memoriaRetorno);
+		//Puede ser null
+		int tamanioArgs;
+		if(stackAMandar->args!=NULL)
+			tamanioArgs = list_size(stackAMandar->args);
+		else
+			tamanioArgs = -1;
+		//Puede ser null
+		int tamanioVars;
+		if(stackAMandar->vars!=NULL)
+			tamanioVars = list_size(stackAMandar->vars);
+		else
+			tamanioVars = -1;
+		//Puede ser null
+		int PIDretorno;
+		if(stackAMandar->pos_ret!=NULL)
+			PIDretorno = *(stackAMandar->pos_ret);
+		else
+			PIDretorno = -1;
+		//Puede ser null
+		direccionMemoria direccionRetornoFuncion;
+		if(stackAMandar->memoriaRetorno!=NULL)
+			direccionRetornoFuncion = 	*(stackAMandar->memoriaRetorno);
+		else{
+			direccionRetornoFuncion.offset = -1;
+			direccionRetornoFuncion.pagina = -1;
+			direccionRetornoFuncion.tamanio = -1;
+		}
+
 		send(clienteCpuNucleo.socketCliente, &tamanioArgs, sizeof(int), 0);
 		send(clienteCpuNucleo.socketCliente, &tamanioVars, sizeof(int), 0);
 		send(clienteCpuNucleo.socketCliente, &PIDretorno, sizeof(int), 0);

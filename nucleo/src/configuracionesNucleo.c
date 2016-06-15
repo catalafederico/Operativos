@@ -69,6 +69,7 @@ t_reg_config get_config_params(void){
 	// 7 get SEM_IDS
 	if (config_has_property(archivo_config,"SEM_IDS")){
 		reg_config.sem_id = config_get_array_value(archivo_config,"SEM_IDS");
+
 	}
 	else{
 		log_debug(logger, "No se encontro SEM_IDS");

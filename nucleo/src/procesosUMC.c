@@ -109,7 +109,7 @@ void conectarseConUmc(struct cliente clienteNucleo){
 	int a = 1;
 	while(conectarConServidor(clienteNucleo)==-1)
 	{
-		printf("CPU: No se pudo conectar con NUCLEO reintentando de 5 segundos, intento nro: %d\n", a );
+		printf("NUCLEO: No se pudo conectar con UMC reintentando de 5 segundos, intento nro: %d\n", a );
 		sleep(5);
 		a++;
 	}

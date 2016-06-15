@@ -63,6 +63,18 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 			continue;
 		if(string_starts_with(aAnalizar,"#"))
 			continue;
+		if(string_starts_with(aAnalizar,":"))
+		{
+			char* temp = strdup(aAnalizar+sizeof(char));
+			funcion_sisop* nuevaFc = malloc(sizeof(nuevaFc));
+			nuevaFc->funcion = temp;
+			nuevaFc->posicion_codigo = malloc(sizeof(int));
+			*(nuevaFc->posicion_codigo) = i;
+			list_add(lista_Inst_pcb,nuevaFc);
+			esFuncion = 0;
+			continue;
+		}
+
 
 		analizadorLinea(aAnalizar,&functions,&kernel_functions);
 		esInstruccion = obtenerEsVariable();
