@@ -72,7 +72,7 @@ extern sem_t sem_READY_dispo;
 //extern sem_t  sem_cpus_dispo;
 //extern pthread_mutex_t sem_l_cpus_dispo;
 extern t_dictionary* dict_variables;
-
+extern t_dictionary* dict_pid_consola;
 extern pthread_mutex_t sem_l_New;
 extern pthread_mutex_t sem_l_Ready;
 extern pthread_mutex_t sem_l_Exec;
@@ -166,7 +166,7 @@ void *atender_CPU(int* socket_desc) {
 		pthread_mutex_lock(&sem_l_Ready);
 			pcb_elegido = list_remove(proc_Ready, 0); //Agarro el pcb
 			pid_local = *(pcb_elegido->PID);
-			log_debug(logger, "PCB con PID %d sacado de NEW", pid_local);
+			log_debug(logger, "PCB con PID %d sacado de READY", pid_local);
 		pthread_mutex_unlock(&sem_l_Ready);
 
 		enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
@@ -175,13 +175,13 @@ void *atender_CPU(int* socket_desc) {
 			list_add(proc_Exec, pcb_elegido);
 			log_debug(logger, "PCB con PID %d pasado a EXEC", pid_local);
 		pthread_mutex_unlock(&sem_l_Exec);
-
+		cambioPcb = 0;
 		/*pcb_elegido = recibirPCBdeCPU(socket_local);
 		 estado_proceso = recibirEstadoProceso(socket_local);*/
 
 		do {
 			estado_proceso = leerHeader(socket_local);
-			switch (*estado_proceso && CpuActivo) {
+			switch (*estado_proceso) {
 			case FIN_QUANTUM:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
@@ -211,8 +211,8 @@ void *atender_CPU(int* socket_desc) {
 			case FIN_PROC:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
-					list_remove_by_condition(proc_Exec,	(void *) (*pcb_elegido->PID == pid_local));
-					log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",	pid_local);
+				buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
+				log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",	pid_local);
 				pthread_mutex_unlock(&sem_l_Exec);
 				//
 				pthread_mutex_lock(&sem_l_Exit);
@@ -220,6 +220,9 @@ void *atender_CPU(int* socket_desc) {
 					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
 				pthread_mutex_unlock(&sem_l_Exit);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
+				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+				int envVar = 999;
+				send(socketConsola->socket_dest,&envVar,sizeof(int),0);
 				break;
 
 			case FIN_CPU:
@@ -233,9 +236,10 @@ void *atender_CPU(int* socket_desc) {
 					list_add_in_index(proc_Ready, 0, pcb_elegido);
 					log_debug(logger,"PCB con PID %d pasado al principio de READY xfin CPU",pid_local);
 				pthread_mutex_unlock(&sem_l_Ready);
-
 				sem_post(&sem_READY_dispo);
 				CpuActivo = 0;
+				//LIBERAR PCB
+				//BORAR CONSOLA DEL DICCIONARIO
 				break;
 
 //      Las siguientes son operaciones privilegiadas
@@ -251,8 +255,9 @@ void *atender_CPU(int* socket_desc) {
 				char* nombreDispositivo = recibirStream(socket_local,*tamanioNombreIO);
 				int* tiempoDispositivo = recibirStream(socket_local, sizeof(int));
 				pcb_elegido = recibirPCBdeCPU(socket_local);
-			}
 				break;
+			}
+
 
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
 				//              ansisop_obtenerValorCompartida ();
@@ -260,8 +265,9 @@ void *atender_CPU(int* socket_desc) {
 				int* tamanioNombreOV = recibirStream(socket_local,sizeof(int));
 				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreOV);
 				pcb_elegido = recibirPCBdeCPU(socket_local);
-			}
 				break;
+			}
+
 
 			case GRABA_VALOR: //es la primitiva asignarValorCompartida
 				//              ansisop_asignarValorCompartida ();
@@ -270,8 +276,9 @@ void *atender_CPU(int* socket_desc) {
 				int* valorAGrabar = recibirStream(socket_local, sizeof(int));
 				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreGV);
 				pcb_elegido = recibirPCBdeCPU(socket_local);
-			}
 				break;
+			}
+
 
 			case WAIT_SEM:	 // es la primitiva wait
 				//              ansisop_wait ();
@@ -279,35 +286,53 @@ void *atender_CPU(int* socket_desc) {
 				int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
 				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombreWS);
 				pcb_elegido = recibirPCBdeCPU(socket_local);
-			}
 				break;
+			}
+
 
 			case SIGNAL_SEM: // es la primitiva signal
 				//              ansisop_signal ();
 			{
 				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
 				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
-			}
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
+			}
+
 
 			case IMPRIMIR: // es la primitiva imprimir
-
-
+			{
+				int* valoraImprimir = leerHeader(socket_local);
+				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+				int envVar = 100;
+				enviarStream(socketConsola->socket_dest,envVar,sizeof(int),valoraImprimir);
+				free(valoraImprimir);
 				break;
-
+			}
 			case IMPRIMIR_TXT: // es la primitiva imprimirTexto
 				//              ansisop_imprimirTexto ();
+			{
+				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+				int* tamanioAImprimir = leerHeader(socket_local);
+				void* mensaje = recibirStream(socket_local,*tamanioAImprimir);
+				int envTexto = 101;
+				enviarStream(socketConsola->socket_dest,envTexto,sizeof(int),tamanioAImprimir);
+				send(socketConsola->socket_dest,mensaje,*tamanioAImprimir,0);
+				free(tamanioAImprimir);
+				free(mensaje);
 				break;
+			}
+
 
 			default:
 				break;
 			}
 			free(estado_proceso);
-		} while (!cambioPcb);
+		} while (!cambioPcb && CpuActivo);
 
-		return NULL;
+
 	}
+	return NULL;
 }
 
 

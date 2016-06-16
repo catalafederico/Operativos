@@ -67,7 +67,7 @@ void almacenar_Byte(int socket){
 void* conexionCpu(int socketEscuchaCpu){
 	int seguir = 1;
 	while(seguir){
-		int* header = leerHeader(socketEscuchaCpu);
+		int* header = recibirStream(socketEscuchaCpu,sizeof(int));
 		switch (*header) {
 			case 52://SOLICITAR
 				solicitar_Bytes(socketEscuchaCpu);

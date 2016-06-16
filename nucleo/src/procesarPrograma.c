@@ -198,5 +198,8 @@ int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNeces
 			perror("error al enviar instruccion");
 		}
 	}
+
+	int finaAlocar =879;
+	send(socetUMC,&finaAlocar,sizeof(int),0);
 	return 0;
 }

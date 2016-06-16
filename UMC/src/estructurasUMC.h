@@ -54,6 +54,7 @@ typedef struct {
 	int nro;
 	int bit_uso;
 	int enUMC;
+	int modif;
 }__attribute__((packed))
 frame;
 
@@ -63,6 +64,7 @@ typedef struct{
 	//Cambiar a frame estructura
 	//frame* marco;
 	frame* marco;
+
 }tlb;
 
 

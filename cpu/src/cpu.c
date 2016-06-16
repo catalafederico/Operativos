@@ -20,14 +20,19 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <commons/collections/list.h>
+#include <pthread.h>
 #include <commons/log.h>
 #include "funcionesparsernuevas.h"
 #include <sockets/socketCliente.h>
 #include <parser/parser.h>
 #include <sockets/header.h>
 #include "estructurasCPU.h"
+#include <signal.h>
 #define  SERVERUMC 9999 //puerto de la umc
 #define  SERVERNUCLEO 5001 // puerto del nucleo
+#define OK 6
+#define TAMANIOPAGINA 666
+#define SOLICITAR 52
 
 void conectarseConUMC(struct cliente clienteCpuUmc);
 void conectarseConNucleo(struct cliente clienteCpuNucleo);
@@ -42,11 +47,13 @@ pcb_t* pcb_actual;
 t_log* logCpu;
 int quantum;
 int quantumSleep;
+int finEjecucion;
 extern int esFuncion;
 extern int estado;
 extern char* nombreSemaforoWait;
 extern char* nombreDispositivo;
 extern int tiempo_dispositivo;
+
 
 typedef struct {
 	int tamanioNombreFuncion;
@@ -72,8 +79,17 @@ AnSISOP_funciones functions = {
 };
 AnSISOP_kernel kernel_functions = { };
 
-int main(void) {
+//funcion para finalizar proceso cerrar el proceso consola
 
+void finalizarEjecucion(){
+	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
+	finEjecucion=1;
+}
+
+
+int main(void) {
+    pthread_t cpu;
+    finEjecucion=0;
 	logCpu = log_create("cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
 
 	//Empieza conexion UMC
@@ -92,8 +108,7 @@ int main(void) {
 	//Termina conexion Nucleo
 
 	//Le paso el socket de la umc, para no pasarlo x cada pedido
-	inicialzarParser(clienteCpuUmc.socketCliente,
-			clienteCpuNucleo.socketCliente);
+	inicialzarParser(clienteCpuUmc.socketCliente,clienteCpuNucleo.socketCliente);
 	//Empieza la escucha de nucleo
 	/*int b = 5;
 	 pcb_t* asd ;
@@ -102,6 +117,9 @@ int main(void) {
 	 asd->paginasDisponible = &b;
 	 pcb_actual = asd;*/
 	//procesarInstruccion("variables a,b,c,d\n");
+
+	//creo hilo para esperar la señal
+	//pthread_create(&cpu,NULL,(signal(SIGINT,finalizarEjecucion)),NULL);
 
 	int seguir = 1;
 	while(seguir){
@@ -118,6 +136,9 @@ int main(void) {
 	 }
 	return 0;
 }
+
+
+
 void conectarseConUMC(struct cliente clienteCpuUmc) {
 	int a = 1;
 	while(conectarConServidor(clienteCpuUmc)==-1)
@@ -199,12 +220,6 @@ char* proximaInstruccion() {
 	//Espero instruccion
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
 			(direcProxIntruccion->tamanio));
-	//Me fijo si es una funcion, como todas las funciones tienen retorno entonces todas van
-	// a tener ->, por lo tanto me fijo si la linea tiene ese char*, si lo tiene
-	//es funcion
-	if(strstr(proximaInstruccion,"<-")!=NULL){
-		esFuncion = 1; // NO es necesario
-	}
 	return proximaInstruccion;
 }
 
@@ -220,13 +235,14 @@ int puedeContinuarEstado(){
 
 void tratarPCB() {
 	do {
+		estado = 0;
 		char* proxInstruccion = proximaInstruccion();
 		procesarInstruccion(proxInstruccion);
 		quantum--;
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
 		//sleep(/*quantumSleep*/3);//Cambio para testear
 		esFuncion = 0;
-	} while (quantum > 0 && puedeContinuarEstado());//Cambio para testear
+	} while (quantum > 0 && puedeContinuarEstado()&& finEjecucion != 1);//Cambio para testear
 
 	if (estado == finalID) {
 		int FIN_Proc = 1;
@@ -258,6 +274,14 @@ void tratarPCB() {
 	if (quantum == 0) {
 		int FIN_QUAMTUM = 2;
 		send(clienteCpuNucleo.socketCliente, &FIN_QUAMTUM, sizeof(int), 0);
+		enviarPCB();
+		return;
+	}
+
+	if(finEjecucion){
+        int FIN_CONSOLA_CPU = 767768;//definir y agregar un header en nucleo
+		printf("se finalizo el proceso consola correspondiente desde la terminal \n");
+		send(clienteCpuNucleo.socketCliente, &FIN_CONSOLA_CPU, sizeof(int), 0);
 		enviarPCB();
 		return;
 	}

@@ -27,7 +27,7 @@ int* idProcesoActual;
 t_dictionary* programas_ejecucion;
 pthread_mutex_t semaforoMemoria;
 int entradasTLB;
-
+int alocandoPrograma;
 //---------fin
 void* inicializarMemoria(t_reg_config* configuracionUMC){
 
@@ -49,6 +49,7 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 		tempFrame->nro = i;
 		tempFrame->bit_uso = NOUSADO;
 		tempFrame->enUMC = 1;
+		tempFrame->modif = 0;
 		list_add(marcosLibres,tempFrame);
 	}
 	log_trace(log_memoria,"Marcos libres cargados: %d:",i);
@@ -56,38 +57,46 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 
 }
 
-int alocarPrograma(int paginasRequeridas, int id_proceso){
+int alocarPrograma(int paginasRequeridas, int id_proceso) {
 
-	if(list_size(marcosLibres) < paginasRequeridas  && paginasRequeridas < umcConfg.configuracionUMC.MARCO_X_PROC){
-		log_trace(log_memoria,"Rechazo programa id: %d , paginas requeridas: %d \n",paginasRequeridas,id_proceso);
+
+	if (paginasRequeridas > umcConfg.configuracionUMC.MARCO_X_PROC) {
+		log_trace(log_memoria,
+				"Rechazo programa id: %d , paginas requeridas: %d \n",
+				paginasRequeridas, id_proceso);
 		return -1;
+	} else if (list_size(marcosLibres) < paginasRequeridas) {
+
+		int paginasRestantesNecesarias = paginasRequeridas - list_size(marcosLibres);
+		int i;
+		for(i=0;i<paginasRestantesNecesarias;i++){
+			//Corro algoritmo clock o clock modificado
+			//para liberar la cant n de pag necesarias
+		}
 	}
-	else{
-		log_trace(log_memoria,"Comienza alocacion de programa id: %d", id_proceso);
+	if(1) {
+		log_trace(log_memoria, "Comienza alocacion de programa id: %d",
+				id_proceso);
 		int i = 1;
 		t_dictionary* pag_frame = dictionary_create();
 		int* idProceso = malloc(sizeof(int));
 		*idProceso = id_proceso;
-		log_trace(log_memoria,"Agregado en tabla de proceso id: ");
-		for(i = 0;i<paginasRequeridas;i++){
+		log_trace(log_memoria, "Agregado en tabla de proceso id: ");
+		for (i = 0; i < paginasRequeridas; i++) {
 			int* pagina = malloc(sizeof(int));
 			*pagina = i;
 			//obtengo un marco y lo saco
-			frame* tempFrame = list_remove(marcosLibres,0);
+			frame* tempFrame = list_remove(marcosLibres, 0);
 			//asigno marco a la pagina, DICCIONARIO YA DEBE ESTAR CREADO
-			log_trace(log_memoria,"Pag: %d \tMarco: %d ",i,tempFrame->nro);
-			dictionary_put(pag_frame,pagina,tempFrame);
+			log_trace(log_memoria, "Pag: %d \tMarco: %d ", i, tempFrame->nro);
+			dictionary_put(pag_frame, pagina, tempFrame);
 		}
 		tabla_actual = pag_frame;
 		*idProcesoActual = id_proceso;
-		dictionary_put(programas_ejecucion,idProceso,pag_frame);
-		pthread_mutex_unlock(&semaforoMemoria);
-		//habria que poner en 1 a los marcos de las pag asignadas
-		//faltaria saber si ya no se pueden asignar mas paginas si esto no se puede hay que desalojar con el algoritmo clock
-		//habria que dejar un puntero marcando la ultima pagina que se asigno para poder realizar el algoritmo
-		log_trace(log_memoria,"Alocado programa id: %d", id_proceso);
-		//notificarASwapPrograma(id_proceso,paginasRequeridas);
-		//Esto es para la entrega 3
+		dictionary_put(programas_ejecucion, idProceso, pag_frame);
+		//pthread_mutex_unlock(&semaforoMemoria);
+		log_trace(log_memoria, "Alocado programa id: %d", id_proceso);
+		alocandoPrograma = 1;
 		return 0;
 	}
 
@@ -132,6 +141,10 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 		marco = dictionary_get(tabla_actual,&pagina);
 		if(!marco->enUMC){
 		}
+
+		//agrego en la tlb marco
+		//lo inserto al principio ya q es el ultimo usado
+		insertarEnTLB(*idProcesoActual,pagina,marco,0);
 	}
 	int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
@@ -155,12 +168,14 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 		marco = dictionary_get(tabla_actual,&pagina);
 		if(!marco->enUMC){
 		}
+		insertarEnTLB(*idProcesoActual,pagina,marco,0);
 	}
 
 	int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
 	marco->bit_uso = USADO;
-	pthread_mutex_unlock(&semaforoMemoria);
+	if(!alocandoPrograma)
+		pthread_mutex_unlock(&semaforoMemoria);
 	return;
 }
 

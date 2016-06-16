@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 //	char* rutaArchivo;
 //	rutaArchivo=argv[1];
 	FILE *archivoAnsisop;
-	archivoAnsisop =fopen("medium.ansisop","r");
+	archivoAnsisop =fopen("facil.ansisop","r");
 //hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
 //	archivoAnsisop =fopen(rutaArchivo,"r");
 	if (archivoAnsisop == NULL) {
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 	int consola = CONSOLA;
 	enviarStream(clienteConsola.socketCliente,consola,sizeof(int),&tamanioBuffer);
 	send(clienteConsola.socketCliente,buffer,tamanioBuffer,0);
-	free(buffer);
+	//free(buffer);
 	int seguir = 1;
 	int* tamanio;
 	char* mensaje;
@@ -79,21 +79,23 @@ int main(int argc, char **argv) {
 				switch (*header) {
 					case 100://imprimir
 						tamanio = recibirStream(clienteConsola.socketCliente,sizeof(int));
-						mensaje = recibirStream(clienteConsola.socketCliente,*tamanio);
+						printf("%d\n",*tamanio);
 						free(tamanio);
-						free(mensaje);
-						printf("%s",mensaje);
 						break;
 					case 101://imprimirTexto
 						tamanio = recibirStream(clienteConsola.socketCliente,sizeof(int));
 						mensaje = recibirStream(clienteConsola.socketCliente,*tamanio);
+						printf("%s\n",mensaje);
 						free(tamanio);
 						free(mensaje);
-						printf("%s",mensaje);
+						break;
+					case 999:
+						printf("Fin del proceso. Chau. by explosive code\n");
+						seguir = 0;
 						break;
 					case -1://pierde conexion
-						printf("fin");
-						printf("desconectado");
+						printf("fin\n");
+						printf("desconectado\n");
 						free(header);
 						seguir =0;
 						break;
