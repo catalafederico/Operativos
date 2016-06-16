@@ -12,7 +12,7 @@
 #include <commons/collections/list.h>
 #include <pthread.h>
 #include "estructurasUMC.h"
-extern _Bool clock
+extern int clock;
 //-------comienzo de manejo de lista circular para algoritmo clock
 
 
@@ -21,14 +21,15 @@ t_link_element* pasarDelUltAlPrimero(t_list* lista, t_link_element* ptr){
 	return ptr;
 }
 
-int listaEstaLlena(t_list lista,int cantMaxElementos){
-	if(lista.elements_count == cantMaxElementos){
+int listaEstaLlena(t_list* lista,int cantMaxElementos){
+	if(lista->elements_count == cantMaxElementos){
 		return 1;//la lista esta llena
 	}
 	return 0;// la lista no esta llena
 }
-t_link_element* avanzarPuntero(t_list lista,int cantMaxElementos,t_link_element* ptr){
-	if((ptr->next == NULL) & (lista.elements_count==cantMaxElementos)){ //estoy en el ultimo elemento
+
+t_link_element* avanzarPuntero(t_list* lista,int cantMaxElementos,t_link_element* ptr){
+	if((ptr->next == NULL) & (lista->elements_count==cantMaxElementos)){ //estoy en el ultimo elemento
 		ptr=lista.head;//le asigno el primer elemento de la lista
 	}
 	else{
@@ -36,12 +37,13 @@ t_link_element* avanzarPuntero(t_list lista,int cantMaxElementos,t_link_element*
 	}
 	return ptr;
 }
+
 t_link_element* buscarPaginaClk(t_list lista, t_link_element* ptr, int cantMaxElementos,frame* pag) {
 	// no uso listfind pq retorna el valor que cumple y necesito retornar un puntero
 	//comienzo del principio
 	t_link_element* aux;
 	aux = lista.head; //estoy en el primer elemento de la lista con aux
-	while ((aux->next != NULL) & (aux->next->data != &pag->nro)) // si es null deberia preguntar la cant de elementos, y no encuentre la pagina
+	while ((aux->next != NULL) & (aux->next->data != pag->nro)) // si es null deberia preguntar la cant de elementos, y no encuentre la pagina
 	{
 		aux = aux->next;
 	}

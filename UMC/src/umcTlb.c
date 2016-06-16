@@ -49,10 +49,12 @@ frame* buscarFrameEnTLB(int id, int pagina){
 	int i;
 	for(i=0;i<cantidadDeEntradas;i++){
 		tlb* temp = list_get(tlb_tabla,i);
+		if(temp == NULL)
+			return NULL;
 		if(temp->idProg == id && temp->pag == pagina){
 			//TLB HIT
 			tlb* removido = removerDeTLB(-1,-1,i);
-			insertarEnTLB(id,pagina,removido->marco,i);
+			insertarEnTLB(id,pagina,removido->marco,0);
 			return temp->marco;
 		}
 	}
