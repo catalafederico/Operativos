@@ -230,7 +230,7 @@ void retornar(t_valor_variable retorno) {
 //Imprimir
 void imprimir(t_valor_variable var) {
 	int imprimirId = 9;
-	enviarStream(socketNucleo,imprimirId,sizeof(char),&var);
+	enviarStream(socketNucleo,imprimirId,sizeof(int),&var);
 	return;
 }
 

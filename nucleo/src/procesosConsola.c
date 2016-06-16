@@ -151,21 +151,10 @@ void *atender_consola(int* socket_desc){
 
 		pthread_mutex_lock(&sem_pid_consola);
 			int* tempId = malloc(sizeof(int));//no hacer free sino se borsa la clave
+			*tempId = promCargar->PID;
 			dictionary_put(dict_pid_consola,tempId, datos_a_consola);
 		pthread_mutex_unlock(&sem_pid_consola);
 
 		sem_post(&semaforoProgramasACargar);
-
-		//hay q hacer algo para q la consola pueda reciir mensajes
-		//yo pense en un diccionario q tega el pid y un semaforo de consola asi signal de consola paa q se active
-
-		/*while(1){
-			sleep(60);
-		}*/
-
-		//no hago free del mensaje ya q lo necesita la lista
-		//free((void *) mje_recibido);
-		//free(socket_desc);
-		//return NULL;
 }
 
