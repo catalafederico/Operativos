@@ -306,11 +306,23 @@ void *atender_CPU(int* socket_desc) {
 				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
 				int envVar = 100;
 				enviarStream(socketConsola->socket_dest,envVar,sizeof(int),valoraImprimir);
+				free(valoraImprimir);
 				break;
 			}
 			case IMPRIMIR_TXT: // es la primitiva imprimirTexto
 				//              ansisop_imprimirTexto ();
+			{
+				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+				int* tamanioAImprimir = leerHeader(socket_local);
+				void* mensaje = recibirStream(socket_local,*tamanioAImprimir);
+				int envTexto = 101;
+				enviarStream(socketConsola->socket_dest,envTexto,sizeof(int),tamanioAImprimir);
+				send(socketConsola->socket_dest,mensaje,*tamanioAImprimir,0);
+				free(tamanioAImprimir);
+				free(mensaje);
 				break;
+			}
+
 
 			default:
 				break;

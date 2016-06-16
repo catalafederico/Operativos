@@ -1,13 +1,21 @@
 #!/usr/bin/ansisop
 begin
 variables a,g
-    a = 1
+    a = 1500
     g <- doble a
     print g
 end
 
 function doble
-variables f
+variables f,a
     f = $0 + $0
+    f <- triple f
+    a = f + f
+    return a
+end
+
+function triple
+variables f
+    f = $0 + $0 + $0
     return f
 end

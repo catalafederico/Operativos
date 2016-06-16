@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 //	char* rutaArchivo;
 //	rutaArchivo=argv[1];
 	FILE *archivoAnsisop;
-	archivoAnsisop =fopen("salto.ansisop","r");
+	archivoAnsisop =fopen("facil.ansisop","r");
 //hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
 //	archivoAnsisop =fopen(rutaArchivo,"r");
 	if (archivoAnsisop == NULL) {
@@ -85,9 +85,9 @@ int main(int argc, char **argv) {
 					case 101://imprimirTexto
 						tamanio = recibirStream(clienteConsola.socketCliente,sizeof(int));
 						mensaje = recibirStream(clienteConsola.socketCliente,*tamanio);
+						printf("%s\n",mensaje);
 						free(tamanio);
 						free(mensaje);
-						printf("%s\n",mensaje);
 						break;
 					case 999:
 						printf("Fin del proceso. Chau. by explosive code\n");
