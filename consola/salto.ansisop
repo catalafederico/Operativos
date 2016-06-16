@@ -1,0 +1,11 @@
+#!/usr/bin/ansisop
+begin
+variables i,b
+    i = 1
+    :inicio_for
+    i = i + 1
+    print i
+    b = i - 100
+    jnz b inicio_for
+    #fuera del for
+end

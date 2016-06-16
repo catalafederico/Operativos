@@ -180,10 +180,7 @@ void *atender_CPU(int* socket_desc) {
 		 estado_proceso = recibirEstadoProceso(socket_local);*/
 
 		do {
-			log_debug(logger, "Esperando Header\n");
-			sleep(5);
 			estado_proceso = leerHeader(socket_local);
-			log_debug(logger, "Leido Header %d:\n",*estado_proceso);
 			switch (*estado_proceso) {
 			case FIN_QUANTUM:
 				pcb_elegido = recibirPCBdeCPU(socket_local);

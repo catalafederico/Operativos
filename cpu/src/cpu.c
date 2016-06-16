@@ -126,12 +126,8 @@ int main(void) {
 	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 	 switch (*header) {
 	 case 163://Recibir PCB
-		 printf("recibir pcb\n");
 		 recibirPCB();
-		 printf("recibir pcb fin\n");
-		 printf("tratar pcb\n");
 		 tratarPCB();
-		 printf("tratar pcb fin\n");
 	 break;
 	 default:
 	 break;
@@ -224,12 +220,6 @@ char* proximaInstruccion() {
 	//Espero instruccion
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
 			(direcProxIntruccion->tamanio));
-	//Me fijo si es una funcion, como todas las funciones tienen retorno entonces todas van
-	// a tener ->, por lo tanto me fijo si la linea tiene ese char*, si lo tiene
-	//es funcion
-	if(strstr(proximaInstruccion,"<-")!=NULL){
-		esFuncion = 1; // NO es necesario
-	}
 	return proximaInstruccion;
 }
 
@@ -247,9 +237,7 @@ void tratarPCB() {
 	do {
 		estado = 0;
 		char* proxInstruccion = proximaInstruccion();
-		printf("procesar inst %s\n", proxInstruccion);
 		procesarInstruccion(proxInstruccion);
-		printf("procesar inst fin\n");
 		quantum--;
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
 		//sleep(/*quantumSleep*/3);//Cambio para testear

@@ -119,12 +119,12 @@ int main(int argc, char **argv) {
 	dict_variables = dictionary_create();
 
 	// Inicializa el log.
-	logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
+	logger = log_create("nucleo.log", "NUCLEO", 0, LOG_LEVEL_TRACE);
 
 	//inizializa logs de prueba
-	log_procesador_Exit = log_create("procesador_EXIT.log", "procesador_EXIT", 1, LOG_LEVEL_TRACE);
-	log_procesador_Block = log_create("procesador_BLOCK.log", "procesador_BLOCK", 1, LOG_LEVEL_TRACE);
-	log_procesador_Reject = log_create("procesador_REJECT.log", "procesador_REJECT", 1, LOG_LEVEL_TRACE);
+	log_procesador_Exit = log_create("procesador_EXIT.log", "procesador_EXIT", 0, LOG_LEVEL_TRACE);
+	log_procesador_Block = log_create("procesador_BLOCK.log", "procesador_BLOCK", 0, LOG_LEVEL_TRACE);
+	log_procesador_Reject = log_create("procesador_REJECT.log", "procesador_REJECT", 0, LOG_LEVEL_TRACE);
 	//crear listas
 //	cpus_dispo = list_create();
 	proc_New = list_create();

@@ -29,12 +29,16 @@ t_list* programasEjecucion;
 extern umcNucleo umcConfg;
 int socketNucleo;
 extern t_log* logConexiones;
+extern pthread_mutex_t semaforoMemoria;
+extern int alocandoPrograma;
 
 void inicializar_programa() {
 	int* id = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* cantPag = (int*) recibirStream(socketNucleo, sizeof(int));
 	log_info(umcConfg.loguer, "Alocar Programa empezado");
+	pthread_mutex_lock(&semaforoMemoria);
 	if(alocarPrograma(*cantPag,*id)==-1){
+		pthread_mutex_unlock(&semaforoMemoria);
 		int error = ERROR;
 		send(socketNucleo,&error, sizeof(int),0);
 		log_info(umcConfg.loguer, "Programa no ha sido alocado correctamente");
@@ -103,7 +107,7 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 	int seguir = 1;
 	int tamanioPag = umcConfg.configuracionUMC.MARCO_SIZE;
 	while(seguir){
-		int* header = leerHeader(socketEscuchaNucleo);
+		int* header = recibirStream(socketEscuchaNucleo,sizeof(int));
 		/*int* id = leerHeader(socketEscuchaNucleo);
 		cambiarProceso(*id);*/
 		log_trace(logConexiones,"Header recibido en Nucleo: %d\n", *header);
@@ -122,6 +126,10 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 				break;
 			case ALMACENAR:
 				almacenar_Byte_NL();
+				break;
+			case 879://Programa cargado
+				pthread_mutex_unlock(&semaforoMemoria);
+				alocandoPrograma = 0;
 				break;
 			case 666:
 				enviarStream(socketEscuchaNucleo,666,sizeof(int),&tamanioPag);

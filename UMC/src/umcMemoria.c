@@ -27,7 +27,7 @@ int* idProcesoActual;
 t_dictionary* programas_ejecucion;
 pthread_mutex_t semaforoMemoria;
 int entradasTLB;
-
+int alocandoPrograma;
 //---------fin
 void* inicializarMemoria(t_reg_config* configuracionUMC){
 
@@ -59,12 +59,14 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 
 int alocarPrograma(int paginasRequeridas, int id_proceso) {
 
+
 	if (paginasRequeridas > umcConfg.configuracionUMC.MARCO_X_PROC) {
 		log_trace(log_memoria,
 				"Rechazo programa id: %d , paginas requeridas: %d \n",
 				paginasRequeridas, id_proceso);
 		return -1;
 	} else if (list_size(marcosLibres) < paginasRequeridas) {
+
 		int paginasRestantesNecesarias = paginasRequeridas - list_size(marcosLibres);
 		int i;
 		for(i=0;i<paginasRestantesNecesarias;i++){
@@ -92,8 +94,9 @@ int alocarPrograma(int paginasRequeridas, int id_proceso) {
 		tabla_actual = pag_frame;
 		*idProcesoActual = id_proceso;
 		dictionary_put(programas_ejecucion, idProceso, pag_frame);
-		pthread_mutex_unlock(&semaforoMemoria);
+		//pthread_mutex_unlock(&semaforoMemoria);
 		log_trace(log_memoria, "Alocado programa id: %d", id_proceso);
+		alocandoPrograma = 1;
 		return 0;
 	}
 
@@ -171,7 +174,8 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 	int posicionDeMemoria = ((marco->nro)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
 	marco->bit_uso = USADO;
-	pthread_mutex_unlock(&semaforoMemoria);
+	if(!alocandoPrograma)
+		pthread_mutex_unlock(&semaforoMemoria);
 	return;
 }
 
