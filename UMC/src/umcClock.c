@@ -12,7 +12,7 @@
 #include <commons/collections/list.h>
 #include <pthread.h>
 #include "estructurasUMC.h"
-extern int clock;
+extern int CLOCK;
 //-------comienzo de manejo de lista circular para algoritmo clock
 
 
@@ -191,7 +191,7 @@ t_link_element* recorrerLstYActualizarClockMod(t_list* lista, t_link_element* pt
 t_link_element* UmcClock(t_list* lista, t_link_element* ptr, int cantMaxElementos, frame* pag){
 	t_link_element* puntero;
 	puntero=buscarPaginaClk(lista,ptr,cantMaxElementos,pag);//busco la pagina funciona para ambos algoritmos
-	if (clock == 0){//algoritmo clock
+	if (CLOCK == 0){//algoritmo clock
 
 	if(puntero==NULL){//no encontre
 	puntero=actualizarLista(lista,ptr,cantMaxElementos,pag);
