@@ -433,7 +433,16 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 
 			int paginasLibres = 0;
 			int pag = 0;
-			for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
+			do{
+				if(bitMap[pag]==0)
+					paginasLibres++;
+				if(paginasLibres >= proceso.cantidadDePaginas){
+					return 1;
+				}
+				pag++;
+			}while(pag < (swap_configuracion.CANTIDAD_PAGINAS));
+			return 0;
+			/*for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
 				if(bitMap[pag]==0) paginasLibres++;
 			}
 
@@ -441,7 +450,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 				return 1;
 			}else{
 				return 0;
-			}
+			}*/
 		}
 
 

@@ -216,7 +216,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 			void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
 			memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
 			//La almaceno
-			almacenarEnSwap(*idProcesoActual,pagina,aAlmacenarEnSwap);
+			almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
 			//Le doy el marco de la pagina reemplazada a la nueva pagina
 			paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
 			paginaAReemplazar->nroMarco =-1;
@@ -255,7 +255,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 				void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
 				memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
 				//La almaceno
-				almacenarEnSwap(*idProcesoActual,pagina,aAlmacenarEnSwap);
+				almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
 				//Le doy el marco de la pagina reemplazada a la nueva pagina
 				paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
 				paginaAReemplazar->nroMarco =-1;
