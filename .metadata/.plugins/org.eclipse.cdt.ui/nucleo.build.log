@@ -1,19 +1,6 @@
-13:53:20 **** Incremental Build of configuration Debug for project nucleo ****
+16:38:05 **** Incremental Build of configuration Debug for project nucleo ****
 make all 
-Building file: ../src/configuracionesNucleo.c
-Invoking: GCC C Compiler
-gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/configuracionesNucleo.d" -MT"src/configuracionesNucleo.d" -o "src/configuracionesNucleo.o" "../src/configuracionesNucleo.c"
-In file included from ../src/configuracionesNucleo.c:7:0:
-../src/estructurasNUCLEO.h:51:2: error: unknown type name ‘t_list’
-  t_list* indice_funciones;
-  ^
-../src/estructurasNUCLEO.h:86:2: error: unknown type name ‘t_list’
-  t_list* args; //tiene direcciones de memoria
-  ^
-../src/estructurasNUCLEO.h:87:2: error: unknown type name ‘t_list’
-  t_list* vars; //tiene direcciones de stack
-  ^
-make: *** [src/configuracionesNucleo.o] Error 1
+make: No se hace nada para «all».
 
-13:53:20 Build Finished (took 63ms)
+16:38:05 Build Finished (took 86ms)
 

@@ -26,7 +26,7 @@ endif
 all: UMC
 
 dependents:
-	-cd /home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug && $(MAKE) clean all
+	-cd /home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug && $(MAKE) all
 
 # Tool invocations
 UMC: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so

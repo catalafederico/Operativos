@@ -1,6 +1,6 @@
-13:53:20 **** Incremental Build of configuration Debug for project tpsolib ****
+16:38:06 **** Incremental Build of configuration Debug for project tpsolib ****
 make all 
 make: No se hace nada para «all».
 
-13:53:20 Build Finished (took 66ms)
+16:38:06 Build Finished (took 95ms)
 

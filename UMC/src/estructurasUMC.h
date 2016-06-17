@@ -15,7 +15,8 @@
 
 #define USADO 1;
 #define NOUSADO 0;
-
+#define MOD 1;
+#define NOMOD 0;
 typedef struct {
 	int PUERTO;
 	char* IP_SWAP;

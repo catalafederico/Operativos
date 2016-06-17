@@ -1,19 +1,1804 @@
-13:53:20 **** Incremental Build of configuration Debug for project tpsolib ****
+16:04:08 **** Incremental Build of configuration Debug for project tpsolib ****
 make all 
 make: No se hace nada para «all».
-13:53:20 **** Incremental Build of configuration Debug for project nucleo ****
+16:04:08 **** Incremental Build of configuration Debug for project UMC ****
 make all 
-Building file: ../src/configuracionesNucleo.c
+Building file: ../src/umcMemoria.c
 Invoking: GCC C Compiler
-gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/configuracionesNucleo.d" -MT"src/configuracionesNucleo.d" -o "src/configuracionesNucleo.o" "../src/configuracionesNucleo.c"
-In file included from ../src/configuracionesNucleo.c:7:0:
-../src/estructurasNUCLEO.h:51:2: error: unknown type name ‘t_list’
-  t_list* indice_funciones;
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘inicializarMemoria’:
+../src/umcMemoria.c:40:11: warning: assignment from incompatible pointer type [enabled by default]
+  tlbCache = list_create();
+           ^
+../src/umcMemoria.c:41:2: warning: passing argument 1 of ‘inicializarTLB’ from incompatible pointer type [enabled by default]
+  inicializarTLB(tlbCache,cantidadDeMarcos);
   ^
-../src/estructurasNUCLEO.h:86:2: error: unknown type name ‘t_list’
-  t_list* args; //tiene direcciones de memoria
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:11:6: note: expected ‘struct t_list *’ but argument is of type ‘struct tlb *’
+ void inicializarTLB(t_list* tlb, int cant);
+      ^
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:84:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_paraClock,idClock,nuevoElemClock);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:91:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion, idProceso, pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:76:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i = 1;
+       ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:107:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
   ^
-../src/estructurasNUCLEO.h:87:2: error: unknown type name ‘t_list’
-  t_list* vars; //tiene direcciones de stack
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:118:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
   ^
-make: *** [src/configuracionesNucleo.o] Error 1
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:136:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   paginaInfo = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:138:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:142:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:148:4: warning: passing argument 2 of ‘almacenarEnSwap’ makes integer from pointer without a cast [enabled by default]
+    almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+    ^
+In file included from ../src/umcMemoria.c:13:0:
+../src/umcCliente.h:15:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ void almacenarEnSwap(int id, int pagina, void* buffer);
+      ^
+../src/umcMemoria.c:159:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:182:2: warning: passing argument 2 of ‘dictionary_has_key’ from incompatible pointer type [enabled by default]
+  if(!dictionary_has_key(tabla_actual,&pagina)){
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:86:11: note: expected ‘char *’ but argument is of type ‘int *’
+  bool     dictionary_has_key(t_dictionary *, char* key);
+           ^
+../src/umcMemoria.c:191:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:195:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:204:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:208:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:225:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c:237:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    paginaInfo = dictionary_get(tabla_actual, &pagina);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:240:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:244:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:261:5: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+     removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+     ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘cambiarProceso’:
+../src/umcMemoria.c:280:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+Finished building: ../src/umcMemoria.c
+ 
+Building target: UMC
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcCliente.o ./src/umcClockV2.o ./src/umcConsola.o ./src/umcCpu.o ./src/umcMemoria.o ./src/umcNucleo.o ./src/umcServer.o ./src/umcTlb.o   -lcommons -ltpsolib -lpthread
+Finished building target: UMC
+ 
+16:04:39 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:40 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:40 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:04:40 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:40 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+Building file: ../src/umcMemoria.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘inicializarMemoria’:
+../src/umcMemoria.c:40:11: warning: assignment from incompatible pointer type [enabled by default]
+  tlbCache = list_create();
+           ^
+../src/umcMemoria.c:41:2: warning: passing argument 1 of ‘inicializarTLB’ from incompatible pointer type [enabled by default]
+  inicializarTLB(tlbCache,cantidadDeMarcos);
+  ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:11:6: note: expected ‘struct t_list *’ but argument is of type ‘struct tlb *’
+ void inicializarTLB(t_list* tlb, int cant);
+      ^
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:84:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_paraClock,idClock,nuevoElemClock);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:91:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion, idProceso, pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:76:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i = 1;
+       ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:107:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:118:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:136:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   paginaInfo = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:138:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:142:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:148:4: warning: passing argument 2 of ‘almacenarEnSwap’ makes integer from pointer without a cast [enabled by default]
+    almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+    ^
+In file included from ../src/umcMemoria.c:13:0:
+../src/umcCliente.h:15:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ void almacenarEnSwap(int id, int pagina, void* buffer);
+      ^
+../src/umcMemoria.c:159:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:182:2: warning: passing argument 2 of ‘dictionary_has_key’ from incompatible pointer type [enabled by default]
+  if(!dictionary_has_key(tabla_actual,&pagina)){
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:86:11: note: expected ‘char *’ but argument is of type ‘int *’
+  bool     dictionary_has_key(t_dictionary *, char* key);
+           ^
+../src/umcMemoria.c:191:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:195:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:204:4: error: expected ‘;’ before ‘paginaInfo’
+    paginaInfo->bit_uso = 0;
+    ^
+../src/umcMemoria.c:206:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:210:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:227:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c:239:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    paginaInfo = dictionary_get(tabla_actual, &pagina);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:242:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:246:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:263:5: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+     removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+     ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘cambiarProceso’:
+../src/umcMemoria.c:282:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+make: *** [src/umcMemoria.o] Error 1
+16:04:50 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:50 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:50 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:04:51 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:51 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+Building file: ../src/umcMemoria.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘inicializarMemoria’:
+../src/umcMemoria.c:40:11: warning: assignment from incompatible pointer type [enabled by default]
+  tlbCache = list_create();
+           ^
+../src/umcMemoria.c:41:2: warning: passing argument 1 of ‘inicializarTLB’ from incompatible pointer type [enabled by default]
+  inicializarTLB(tlbCache,cantidadDeMarcos);
+  ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:11:6: note: expected ‘struct t_list *’ but argument is of type ‘struct tlb *’
+ void inicializarTLB(t_list* tlb, int cant);
+      ^
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:84:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_paraClock,idClock,nuevoElemClock);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:91:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion, idProceso, pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:76:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i = 1;
+       ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:107:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:118:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:136:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   paginaInfo = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:138:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:142:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:148:4: warning: passing argument 2 of ‘almacenarEnSwap’ makes integer from pointer without a cast [enabled by default]
+    almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+    ^
+In file included from ../src/umcMemoria.c:13:0:
+../src/umcCliente.h:15:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ void almacenarEnSwap(int id, int pagina, void* buffer);
+      ^
+../src/umcMemoria.c:159:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:182:2: warning: passing argument 2 of ‘dictionary_has_key’ from incompatible pointer type [enabled by default]
+  if(!dictionary_has_key(tabla_actual,&pagina)){
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:86:11: note: expected ‘char *’ but argument is of type ‘int *’
+  bool     dictionary_has_key(t_dictionary *, char* key);
+           ^
+../src/umcMemoria.c:191:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:195:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:206:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:210:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:227:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c:239:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    paginaInfo = dictionary_get(tabla_actual, &pagina);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:242:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:246:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:263:5: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+     removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+     ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘cambiarProceso’:
+../src/umcMemoria.c:282:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+Finished building: ../src/umcMemoria.c
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+ 
+Building target: UMC
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcCliente.o ./src/umcClockV2.o ./src/umcConsola.o ./src/umcCpu.o ./src/umcMemoria.o ./src/umcNucleo.o ./src/umcServer.o ./src/umcTlb.o   -lcommons -ltpsolib -lpthread
+Finished building target: UMC
+ 
+16:04:52 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:52 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:52 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+make: No se hace nada para «all».
+16:04:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:53 **** Incremental Build of configuration Debug for project cpu ****
+make all 
+make: No se hace nada para «all».
+16:04:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:04:54 **** Incremental Build of configuration Debug for project consola ****
+make all 
+make: No se hace nada para «all».
+16:07:05 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:05 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:05 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:07:05 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:05 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+Building file: ../src/umcMemoria.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘inicializarMemoria’:
+../src/umcMemoria.c:40:11: warning: assignment from incompatible pointer type [enabled by default]
+  tlbCache = list_create();
+           ^
+../src/umcMemoria.c:41:2: warning: passing argument 1 of ‘inicializarTLB’ from incompatible pointer type [enabled by default]
+  inicializarTLB(tlbCache,cantidadDeMarcos);
+  ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:11:6: note: expected ‘struct t_list *’ but argument is of type ‘struct tlb *’
+ void inicializarTLB(t_list* tlb, int cant);
+      ^
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:84:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_paraClock,idClock,nuevoElemClock);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:91:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion, idProceso, pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:76:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i = 1;
+       ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:107:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:118:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:136:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   paginaInfo = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:138:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:142:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:148:4: warning: passing argument 2 of ‘almacenarEnSwap’ makes integer from pointer without a cast [enabled by default]
+    almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+    ^
+In file included from ../src/umcMemoria.c:13:0:
+../src/umcCliente.h:15:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ void almacenarEnSwap(int id, int pagina, void* buffer);
+      ^
+../src/umcMemoria.c:159:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:182:2: warning: passing argument 2 of ‘dictionary_has_key’ from incompatible pointer type [enabled by default]
+  if(!dictionary_has_key(tabla_actual,&pagina)){
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:86:11: note: expected ‘char *’ but argument is of type ‘int *’
+  bool     dictionary_has_key(t_dictionary *, char* key);
+           ^
+../src/umcMemoria.c:191:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:195:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:206:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:210:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:227:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c:228:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:240:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    paginaInfo = dictionary_get(tabla_actual, &pagina);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:243:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:247:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:264:5: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+     removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+     ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘cambiarProceso’:
+../src/umcMemoria.c:283:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+Finished building: ../src/umcMemoria.c
+ 
+Building target: UMC
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcCliente.o ./src/umcClockV2.o ./src/umcConsola.o ./src/umcCpu.o ./src/umcMemoria.o ./src/umcNucleo.o ./src/umcServer.o ./src/umcTlb.o   -lcommons -ltpsolib -lpthread
+Finished building target: UMC
+ 
+16:07:07 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:07 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:07 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+make: No se hace nada para «all».
+16:07:07 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:08 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:08 **** Incremental Build of configuration Debug for project cpu ****
+make all 
+make: No se hace nada para «all».
+16:07:08 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:08 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:07:08 **** Incremental Build of configuration Debug for project consola ****
+make all 
+make: No se hace nada para «all».
+16:27:50 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:50 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:50 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:27:50 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:50 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+Building file: ../src/umcMemoria.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘inicializarMemoria’:
+../src/umcMemoria.c:40:11: warning: assignment from incompatible pointer type [enabled by default]
+  tlbCache = list_create();
+           ^
+../src/umcMemoria.c:41:2: warning: passing argument 1 of ‘inicializarTLB’ from incompatible pointer type [enabled by default]
+  inicializarTLB(tlbCache,cantidadDeMarcos);
+  ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:11:6: note: expected ‘struct t_list *’ but argument is of type ‘struct tlb *’
+ void inicializarTLB(t_list* tlb, int cant);
+      ^
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:84:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_paraClock,idClock,nuevoElemClock);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:91:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion, idProceso, pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:76:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i = 1;
+       ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:107:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:118:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:136:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   paginaInfo = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:138:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:142:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:148:4: warning: passing argument 2 of ‘almacenarEnSwap’ makes integer from pointer without a cast [enabled by default]
+    almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+    ^
+In file included from ../src/umcMemoria.c:13:0:
+../src/umcCliente.h:15:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ void almacenarEnSwap(int id, int pagina, void* buffer);
+      ^
+../src/umcMemoria.c:161:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:184:2: warning: passing argument 2 of ‘dictionary_has_key’ from incompatible pointer type [enabled by default]
+  if(!dictionary_has_key(tabla_actual,&pagina)){
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:86:11: note: expected ‘char *’ but argument is of type ‘int *’
+  bool     dictionary_has_key(t_dictionary *, char* key);
+           ^
+../src/umcMemoria.c:193:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:197:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:208:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:212:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:229:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c:230:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:242:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    paginaInfo = dictionary_get(tabla_actual, &pagina);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:245:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:249:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:266:5: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+     removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+     ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘cambiarProceso’:
+../src/umcMemoria.c:287:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+Finished building: ../src/umcMemoria.c
+ 
+Building target: UMC
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcCliente.o ./src/umcClockV2.o ./src/umcConsola.o ./src/umcCpu.o ./src/umcMemoria.o ./src/umcNucleo.o ./src/umcServer.o ./src/umcTlb.o   -lcommons -ltpsolib -lpthread
+Finished building target: UMC
+ 
+16:27:52 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:52 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:52 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+make: No se hace nada para «all».
+16:27:52 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:53 **** Incremental Build of configuration Debug for project cpu ****
+make all 
+make: No se hace nada para «all».
+16:27:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:27:53 **** Incremental Build of configuration Debug for project consola ****
+make all 
+make: No se hace nada para «all».
+16:31:52 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:52 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:52 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:31:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:53 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+make: No se hace nada para «all».
+16:31:53 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:54 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:54 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+make: No se hace nada para «all».
+16:31:54 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:54 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:54 **** Incremental Build of configuration Debug for project cpu ****
+make all 
+make: No se hace nada para «all».
+16:31:54 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:55 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:31:55 **** Incremental Build of configuration Debug for project consola ****
+make all 
+make: No se hace nada para «all».
+16:34:54 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:55 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:55 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:34:55 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:55 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+Building file: ../src/umcMemoria.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘inicializarMemoria’:
+../src/umcMemoria.c:40:11: warning: assignment from incompatible pointer type [enabled by default]
+  tlbCache = list_create();
+           ^
+../src/umcMemoria.c:41:2: warning: passing argument 1 of ‘inicializarTLB’ from incompatible pointer type [enabled by default]
+  inicializarTLB(tlbCache,cantidadDeMarcos);
+  ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:11:6: note: expected ‘struct t_list *’ but argument is of type ‘struct tlb *’
+ void inicializarTLB(t_list* tlb, int cant);
+      ^
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:84:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_paraClock,idClock,nuevoElemClock);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:91:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion, idProceso, pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:76:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i = 1;
+       ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:107:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:118:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:136:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   paginaInfo = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:138:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:142:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:148:4: warning: passing argument 2 of ‘almacenarEnSwap’ makes integer from pointer without a cast [enabled by default]
+    almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+    ^
+In file included from ../src/umcMemoria.c:13:0:
+../src/umcCliente.h:15:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ void almacenarEnSwap(int id, int pagina, void* buffer);
+      ^
+../src/umcMemoria.c:162:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:185:2: warning: passing argument 2 of ‘dictionary_has_key’ from incompatible pointer type [enabled by default]
+  if(!dictionary_has_key(tabla_actual,&pagina)){
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:86:11: note: expected ‘char *’ but argument is of type ‘int *’
+  bool     dictionary_has_key(t_dictionary *, char* key);
+           ^
+../src/umcMemoria.c:194:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:198:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:209:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:213:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:231:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c:232:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:245:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    paginaInfo = dictionary_get(tabla_actual, &pagina);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:248:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:252:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:270:5: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+     removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+     ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘cambiarProceso’:
+../src/umcMemoria.c:291:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+Finished building: ../src/umcMemoria.c
+ 
+Building target: UMC
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcCliente.o ./src/umcClockV2.o ./src/umcConsola.o ./src/umcCpu.o ./src/umcMemoria.o ./src/umcNucleo.o ./src/umcServer.o ./src/umcTlb.o   -lcommons -ltpsolib -lpthread
+Finished building target: UMC
+ 
+16:34:56 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:57 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:57 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+make: No se hace nada para «all».
+16:34:57 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:57 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:57 **** Incremental Build of configuration Debug for project cpu ****
+make all 
+make: No se hace nada para «all».
+16:34:58 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:58 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:34:58 **** Incremental Build of configuration Debug for project consola ****
+make all 
+make: No se hace nada para «all».
+16:36:59 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:36:59 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:36:59 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:36:59 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:36:59 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+Building file: ../src/umcMemoria.c
+Invoking: GCC C Compiler
+gcc -I"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"src/umcMemoria.d" -MT"src/umcMemoria.d" -o "src/umcMemoria.o" "../src/umcMemoria.c"
+../src/umcMemoria.c: In function ‘inicializarMemoria’:
+../src/umcMemoria.c:40:11: warning: assignment from incompatible pointer type [enabled by default]
+  tlbCache = list_create();
+           ^
+../src/umcMemoria.c:41:2: warning: passing argument 1 of ‘inicializarTLB’ from incompatible pointer type [enabled by default]
+  inicializarTLB(tlbCache,cantidadDeMarcos);
+  ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:11:6: note: expected ‘struct t_list *’ but argument is of type ‘struct tlb *’
+ void inicializarTLB(t_list* tlb, int cant);
+      ^
+../src/umcMemoria.c: In function ‘alocarPrograma’:
+../src/umcMemoria.c:84:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_paraClock,idClock,nuevoElemClock);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:91:3: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+   dictionary_put(programas_ejecucion, idProceso, pag_frame);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:76:7: warning: unused variable ‘i’ [-Wunused-variable]
+   int i = 1;
+       ^
+../src/umcMemoria.c: In function ‘desalojarPrograma’:
+../src/umcMemoria.c:107:2: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+  t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:112:3: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+   infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:118:2: warning: passing argument 2 of ‘dictionary_remove’ from incompatible pointer type [enabled by default]
+  int* idRemovido = dictionary_remove(programas_ejecucion,&id);
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:54:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_remove(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c: In function ‘obtenerBytesMemoria’:
+../src/umcMemoria.c:136:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   paginaInfo = dictionary_get(tabla_actual,&pagina);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:138:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:142:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:148:4: warning: passing argument 2 of ‘almacenarEnSwap’ makes integer from pointer without a cast [enabled by default]
+    almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+    ^
+In file included from ../src/umcMemoria.c:13:0:
+../src/umcCliente.h:15:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ void almacenarEnSwap(int id, int pagina, void* buffer);
+      ^
+../src/umcMemoria.c:162:4: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+    removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+    ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘almacenarBytes’:
+../src/umcMemoria.c:185:2: warning: passing argument 2 of ‘dictionary_has_key’ from incompatible pointer type [enabled by default]
+  if(!dictionary_has_key(tabla_actual,&pagina)){
+  ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:86:11: note: expected ‘char *’ but argument is of type ‘int *’
+  bool     dictionary_has_key(t_dictionary *, char* key);
+           ^
+../src/umcMemoria.c:194:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:198:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:209:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:213:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:232:4: warning: passing argument 2 of ‘dictionary_put’ from incompatible pointer type [enabled by default]
+    dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:42:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void     dictionary_put(t_dictionary *, char *key, void *data);
+           ^
+../src/umcMemoria.c:245:4: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+    paginaInfo = dictionary_get(tabla_actual, &pagina);
+    ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:248:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:252:5: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+     infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+     ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+../src/umcMemoria.c:270:5: warning: passing argument 2 of ‘removerDeTLB’ makes integer from pointer without a cast [enabled by default]
+     removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
+     ^
+In file included from ../src/umcMemoria.c:16:0:
+../src/umcTlb.h:16:6: note: expected ‘int’ but argument is of type ‘struct infoPagina *’
+ tlb* removerDeTLB(int id, int pagina, int pos);
+      ^
+../src/umcMemoria.c: In function ‘cambiarProceso’:
+../src/umcMemoria.c:291:3: warning: passing argument 2 of ‘dictionary_get’ from incompatible pointer type [enabled by default]
+   tabla_actual = dictionary_get(programas_ejecucion,&idProceso);
+   ^
+In file included from ../src/estructurasUMC.h:11:0,
+                 from ../src/archivoConf.h:10,
+                 from ../src/umcMemoria.c:7:
+/usr/include/commons/collections/dictionary.h:48:11: note: expected ‘char *’ but argument is of type ‘int *’
+  void    *dictionary_get(t_dictionary *, char *key);
+           ^
+Finished building: ../src/umcMemoria.c
+ 
+Building target: UMC
+Invoking: GCC C Linker
+gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC"  ./src/archivoConf.o ./src/umc.o ./src/umcCliente.o ./src/umcClockV2.o ./src/umcConsola.o ./src/umcCpu.o ./src/umcMemoria.o ./src/umcNucleo.o ./src/umcServer.o ./src/umcTlb.o   -lcommons -ltpsolib -lpthread
+Finished building target: UMC
+ 
+16:37:01 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:37:01 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:37:01 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+make: No se hace nada para «all».
+16:37:01 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:37:02 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:37:02 **** Incremental Build of configuration Debug for project cpu ****
+make all 
+make: No se hace nada para «all».
+16:37:02 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:37:02 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:37:02 **** Incremental Build of configuration Debug for project consola ****
+make all 
+make: No se hace nada para «all».
+16:38:03 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:03 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:03 **** Incremental Build of configuration Debug for project swap ****
+make all 
+make: No se hace nada para «all».
+16:38:04 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:04 **** Incremental Build of configuration Debug for project UMC ****
+make all 
+make: No se hace nada para «all».
+16:38:04 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:05 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:05 **** Incremental Build of configuration Debug for project nucleo ****
+make all 
+make: No se hace nada para «all».
+16:38:05 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:05 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:05 **** Incremental Build of configuration Debug for project cpu ****
+make all 
+make: No se hace nada para «all».
+16:38:06 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:06 **** Incremental Build of configuration Debug for project tpsolib ****
+make all 
+make: No se hace nada para «all».
+16:38:06 **** Incremental Build of configuration Debug for project consola ****
+make all 
+make: No se hace nada para «all».

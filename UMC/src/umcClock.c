@@ -11,6 +11,7 @@
 #include <string.h>
 #include <commons/collections/list.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include "estructurasUMC.h"
 extern int CLOCK;
 //-------comienzo de manejo de lista circular para algoritmo clock
@@ -215,8 +216,16 @@ return 0;
 t_link_element* UmcClock(t_list* lista, t_link_element* ptr,
 		int cantMaxElementos, frame* pag) {
 	t_link_element* puntero;
+<<<<<<< HEAD
 	puntero = buscarPaginaClk(lista, ptr, cantMaxElementos, pag);//busco la pagina funciona para ambos algoritmos
 	if (CLOCK == 0) {			//algoritmo clock
+=======
+	puntero=buscarPaginaClk(lista,ptr,cantMaxElementos,pag);//busco la pagina funciona para ambos algoritmos
+	//sem_wait(SEMAFOROCLOCK);
+	if (CLOCK == 0)
+	//sem_post(SEMAFOROCLOCK);
+	{//algoritmo clock
+>>>>>>> 1dbbd280acd9648cd2a3570d7a14ee5981bbe2c9
 
 		if (puntero == NULL) {			//no encontre
 			puntero = actualizarLista(lista, ptr, cantMaxElementos, pag);
