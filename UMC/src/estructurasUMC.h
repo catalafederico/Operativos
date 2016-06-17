@@ -15,7 +15,8 @@
 
 #define USADO 1;
 #define NOUSADO 0;
-
+#define MOD 1;
+#define NOMOD 0;
 typedef struct {
 	int PUERTO;
 	char* IP_SWAP;
@@ -25,6 +26,7 @@ typedef struct {
 	int MARCO_X_PROC;
 	int ENTRADAS_TLB;
 	int RETARDO;
+	int ALGORITMO;
 } t_reg_config;
 
 typedef struct{
@@ -51,22 +53,25 @@ typedef struct {
 id_programa;
 
 typedef struct {
-	int nro;
+	int nroMarco;
 	int bit_uso;
-	int enUMC;
 	int modif;
 }__attribute__((packed))
-frame;
+infoPagina;
 
 typedef struct{
 	int idProg;
 	int pag;
-	//Cambiar a frame estructura
-	//frame* marco;
-	frame* marco;
-
+	infoPagina* marco;
 }tlb;
 
+typedef struct{
+	t_list* paginasMemoria; //Va a tener tipos relojElem
+	int puntero;
+}reloj;
 
-
+typedef struct{
+	int pag;
+	infoPagina* marco;
+}relojElem;
 #endif /* SRC_ESTRUCTURASUMC_H_ */

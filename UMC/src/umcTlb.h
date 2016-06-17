@@ -11,8 +11,8 @@
 void inicializarTLB(t_list* tlb, int cant);
 int tlbLLena();
 int buscarPosicionEnTLB(int id, int pagina);
-frame* buscarFrameEnTLB(int id, int pagina);
-int insertarEnTLB(int id, int pagina, frame* marco, int posicion);
+infoPagina* buscarFrameEnTLB(int id, int pagina);
+int insertarEnTLB(int id, int pagina, infoPagina* marco, int posicion);
 tlb* removerDeTLB(int id, int pagina, int pos);
 int puedeInsertar();
 #endif /* SRC_UMCTLB_H_ */

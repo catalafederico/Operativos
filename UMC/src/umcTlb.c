@@ -45,7 +45,7 @@ int buscarPosicionEnTLB(int id, int pagina){
 	return -1;
 }
 
-frame* buscarFrameEnTLB(int id, int pagina){
+infoPagina* buscarFrameEnTLB(int id, int pagina){
 	int i;
 	for(i=0;i<cantidadDeEntradas;i++){
 		tlb* temp = list_get(tlb_tabla,i);
@@ -61,7 +61,7 @@ frame* buscarFrameEnTLB(int id, int pagina){
 	return NULL;
 }
 
-int insertarEnTLB(int id, int pagina, frame* marco, int posicion) {
+int insertarEnTLB(int id, int pagina, infoPagina* marco, int posicion) {
 	tlb* e_tlb = malloc(sizeof(tlb));
 	e_tlb->idProg = id;
 	e_tlb->pag = pagina;

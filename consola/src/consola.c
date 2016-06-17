@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 //	char* rutaArchivo;
 //	rutaArchivo=argv[1];
 	FILE *archivoAnsisop;
-	archivoAnsisop =fopen("facil.ansisop","r");
+	archivoAnsisop =fopen("salto.ansisop","r");
 //hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
 //	archivoAnsisop =fopen(rutaArchivo,"r");
 	if (archivoAnsisop == NULL) {

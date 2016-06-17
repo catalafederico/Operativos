@@ -100,7 +100,7 @@ void eliminarProceso(int pid);
 
 void* recibirCadena(void);
 
-void mandarCadena(char* cadena);
+void mandarCadena(void* cadena);
 
 void dormir(void);
 
@@ -433,7 +433,16 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 
 			int paginasLibres = 0;
 			int pag = 0;
-			for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
+			do{
+				if(bitMap[pag]==0)
+					paginasLibres++;
+				if(paginasLibres >= proceso.cantidadDePaginas){
+					return 1;
+				}
+				pag++;
+			}while(pag < (swap_configuracion.CANTIDAD_PAGINAS));
+			return 0;
+			/*for ( ; pag < (swap_configuracion.CANTIDAD_PAGINAS); pag++) {
 				if(bitMap[pag]==0) paginasLibres++;
 			}
 
@@ -441,7 +450,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 				return 1;
 			}else{
 				return 0;
-			}
+			}*/
 		}
 
 
@@ -717,10 +726,10 @@ t_reg_config get_config_params(void){
 				int status = 1;
 				struct server servidor;
 				servidor = crearServer(swap_configuracion.PUERTO_ESCUCHA);
-				loguear("Se crea el socket correctamente.");
+				loguear("Se crea el socket correctamente.\0");
 				ponerServerEscucha(servidor);
 				printf("Escuchando UMC en socket %d \n", servidor.socketServer);
-				loguear("Escuchando conexiones.");
+				loguear("Escuchando conexiones.\0");
 				socketAdministradorDeMemoria = conectarseConUMC(servidor);
 
 				    	while(status){
@@ -760,10 +769,10 @@ t_reg_config get_config_params(void){
 		return header;
 	}
 
-	void mandarCadena(char* cadena) {
+	void mandarCadena(void* cadena) {
 		//int long_cadena = strlen(cadena)+1;
 		//send(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
-		send(socketAdministradorDeMemoria, cadena, sizeof(cadena), 0);
+		send(socketAdministradorDeMemoria, cadena, swap_configuracion.TAMANIO_PAGINA, 0);
 	}
 
 	void* recibirCadena() {
@@ -783,27 +792,27 @@ t_reg_config get_config_params(void){
 	}
 
 	void logIniciar(proceso proceso){
-		char stringAlogear[200];
-		sprintf(stringAlogear,"Proceso asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
-		loguear(stringAlogear);
+		//char stringAlogear[200];
+		//sprintf(stringAlogear,"Proceso asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+		loguear(("Proceso asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA));
 	}
 
 	void logFinalizar(proceso proceso){
-		char stringAlogear[200];
-		sprintf(stringAlogear,"Proceso liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
-		loguear(stringAlogear);
+		//char stringAlogear[200];
+		//sprintf(stringAlogear,"Proceso liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+		loguear(("Proceso liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA));
 	}
 
 	void logRechazar(proceso proceso){
-		char stringAlogear[200];
-		sprintf(stringAlogear,"Proceso rechazado - PID: %d - Falta de espacio .",proceso.pid);
-		loguear(stringAlogear);
+		//char stringAlogear[200];
+		//sprintf(stringAlogear,"Proceso rechazado - PID: %d - Falta de espacio .",proceso.pid);
+		loguear(("Proceso rechazado - PID: %d - Falta de espacio .",proceso.pid));
 	}
 
 	void logCompactacionIniciada(){
-		char stringAlogear[100];
-		sprintf(stringAlogear,"Compactacion iniciada");
-		loguear(stringAlogear);
+		//char stringAlogear[100];
+		//sprintf(stringAlogear,"Compactacion iniciada");
+		loguear("Compactacion iniciada");
 	}
 
 	//---Tests

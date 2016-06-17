@@ -14,7 +14,7 @@ t_link_element* buscarPaginaClk(t_list lista, t_link_element* ptr, int cantMaxEl
 t_link_element* actualizarLista(t_list lista, t_link_element* ptr,int cantMaxElementos, int* pag);
 t_link_element* reemplazoMarco( t_list lista,t_link_element* ptr,int cantMaxElementos, int* pag);
 t_link_element* agregarPagina(t_list lista,t_link_element* ptr,int cantMaxElementos, int* pag);
-t_link_element* recorrerLstActualizandoBits(t_list lista, t_link_element* ptr, int cantMaxElementos, frame* pag);
-t_link_element* recorrerLstYActualizarClockMod(t_list lista, t_link_element* ptr, int cantMaxElementos, frame* pag);
-t_link_element* UmcClock(t_list lista, t_link_element* ptr, int cantMaxElementos, frame* pag,clock);
+t_link_element* recorrerLstActualizandoBits(t_list lista, t_link_element* ptr, int cantMaxElementos, infoPagina* pag);
+t_link_element* recorrerLstYActualizarClockMod(t_list lista, t_link_element* ptr, int cantMaxElementos, infoPagina* pag);
+t_link_element* UmcClock(t_list lista, t_link_element* ptr, int cantMaxElementos, infoPagina* pag,clock);
 #endif /* UMCCLOCK_H_ */

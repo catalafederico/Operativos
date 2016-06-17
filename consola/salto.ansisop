@@ -5,10 +5,9 @@ variables i,b
     :inicio_for
     i = i + 1
     print i
-    b = i - 100
+    b = i - 15
     textPrint b vale
     print b
-    b=1
     jnz b inicio_for
     #fuera del for
 end

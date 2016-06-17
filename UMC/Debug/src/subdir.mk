@@ -7,7 +7,7 @@ C_SRCS += \
 ../src/archivoConf.c \
 ../src/umc.c \
 ../src/umcCliente.c \
-../src/umcClock.c \
+../src/umcClockV2.c \
 ../src/umcConsola.c \
 ../src/umcCpu.c \
 ../src/umcMemoria.c \
@@ -19,7 +19,7 @@ OBJS += \
 ./src/archivoConf.o \
 ./src/umc.o \
 ./src/umcCliente.o \
-./src/umcClock.o \
+./src/umcClockV2.o \
 ./src/umcConsola.o \
 ./src/umcCpu.o \
 ./src/umcMemoria.o \
@@ -31,7 +31,7 @@ C_DEPS += \
 ./src/archivoConf.d \
 ./src/umc.d \
 ./src/umcCliente.d \
-./src/umcClock.d \
+./src/umcClockV2.d \
 ./src/umcConsola.d \
 ./src/umcCpu.d \
 ./src/umcMemoria.d \

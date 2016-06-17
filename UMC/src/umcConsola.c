@@ -114,10 +114,10 @@ void* mostrarEstructura(char* programaAImprimir, void* pag_marco){
 	int pidPrograma = *programaAImprimir;
 	int tamanioDiccionario = dictionary_size(pag_marco);
 	int i;
-		printf("ID\tPag\tMarco Nro\tBit Uso\tEn UMC\tModif\t\n");
+		printf("ID\tPag\tMarco Nro\tBit Uso\tModif\t\n");
 	for(i=0;i<tamanioDiccionario;i++){
-		frame* marcoTemp = dictionary_get(pag_marco,&i);
-		printf("%d\t %d \t    %d   \t  %d  \t  %d  \t  %d \t\n",pidPrograma,i,marcoTemp->nro,marcoTemp->bit_uso,marcoTemp->enUMC,marcoTemp->modif);
+		infoPagina* marcoTemp = dictionary_get(pag_marco,&i);
+		printf("%d\t %d \t    %d   \t  %d  \t  %d  \t  %d \t\n",pidPrograma,i,marcoTemp->nroMarco,marcoTemp->bit_uso,marcoTemp->modif);
 	}
 }
 
@@ -127,10 +127,10 @@ void* mostrarContenidoDeMemoria(char* programaAImprimir, void* pag_marco){
 	int i;
 	int posicioDeMemoria;
 	for(i=0;i<tamanioDiccionario;i++){
-		frame* marcoTemp = dictionary_get(pag_marco,&i);
-		posicioDeMemoria = ((marcoTemp->nro)*umcConfg.configuracionUMC.MARCO_SIZE);
+		infoPagina* marcoTemp = dictionary_get(pag_marco,&i);
+		posicioDeMemoria = ((marcoTemp->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
 		int j;
-		printf("ID: %d PAG: %d MARCO: %d\n",pidPrograma,i,marcoTemp->nro);
+		printf("ID: %d PAG: %d MARCO: %d\n",pidPrograma,i,marcoTemp->nroMarco);
 		for(j=0;j<vecesRepetir;j++){
 			char tempHexa;
 			int tempOffset = j;
