@@ -18,6 +18,7 @@
 
 void* memoriaPrincipal;
 extern umcNucleo umcConfg;
+int CLOCK;//declaro aca para que no tire errror
 t_log* log_memoria;
 tlb* tlbCache;
 //Menajo de la memoria

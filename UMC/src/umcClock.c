@@ -16,29 +16,36 @@ extern int CLOCK;
 //-------comienzo de manejo de lista circular para algoritmo clock
 
 
-t_link_element* pasarDelUltAlPrimero(t_list* lista, t_link_element* ptr){
+t_link_element* pasarDelUltAlPrimero(t_list* lista, t_link_element* ptr)
+{
 	ptr=lista->head;
 	return ptr;
 }
 
-int listaEstaLlena(t_list* lista,int cantMaxElementos){
-	if(lista->elements_count == cantMaxElementos){
+int listaEstaLlena(t_list* lista,int cantMaxElementos)
+{
+	if(lista->elements_count == cantMaxElementos)
+	{
 		return 1;//la lista esta llena
 	}
 	return 0;// la lista no esta llena
 }
 
-t_link_element* avanzarPuntero(t_list* lista,int cantMaxElementos,t_link_element* ptr){
-	if((ptr->next == NULL) & (lista->elements_count==cantMaxElementos)){ //estoy en el ultimo elemento
+t_link_element* avanzarPuntero(t_list* lista,int cantMaxElementos,t_link_element* ptr)
+{
+	if((ptr->next == NULL) & (lista->elements_count==cantMaxElementos))
+	{ //estoy en el ultimo elemento
 		ptr=lista->head;//le asigno el primer elemento de la lista
 	}
-	else{
+	else
+	{
 		ptr=ptr->next;
 	}
 	return ptr;
 }
 
-t_link_element* buscarPaginaClk(t_list* lista, t_link_element* ptr, int cantMaxElementos,frame* pag) {
+t_link_element* buscarPaginaClk(t_list* lista, t_link_element* ptr, int cantMaxElementos,frame* pag)
+{
 	// no uso listfind pq retorna el valor que cumple y necesito retornar un puntero
 	//comienzo del principio
 	t_link_element* aux;
@@ -48,13 +55,15 @@ t_link_element* buscarPaginaClk(t_list* lista, t_link_element* ptr, int cantMaxE
 		aux = aux->next;
 	}
 	//aca no encuentro la pagina
-	if ((aux->next == NULL) & (aux->next->data != &pag->nro)) {
+	if ((aux->next == NULL) & (aux->next->data != &pag->nro))
+	{
 		//pregunto si todavia  lllego a su maxima capacidad la lista
-		if (listaEstaLlena(lista,cantMaxElementos)) {
+		if (listaEstaLlena(lista,cantMaxElementos))
+		{
 			//solo puedo reemplazar el marco pq no tengo mas espacio
 			//reemplazarMarco(lista,ptr,cantMaxElementos,pag);
 			return NULL;			//no encontre
-		}
+	    }
 
 	}
 	// lo encontre
@@ -75,7 +84,8 @@ t_link_element* reemplazoMarco( t_list* lista,t_link_element* ptr,int cantMaxEle
 	return puntero;
 }
 
-t_link_element* agregarPagina(t_list* lista,t_link_element* ptr,int cantMaxElementos, frame* pag){// la lista no esta llena list add agrega al final
+t_link_element* agregarPagina(t_list* lista,t_link_element* ptr,int cantMaxElementos, frame* pag)
+{// la lista no esta llena list add agrega al final
 	//deberia funcionar
 	t_link_element* puntero;
 	t_list* punteroALista;
@@ -86,10 +96,12 @@ t_link_element* agregarPagina(t_list* lista,t_link_element* ptr,int cantMaxEleme
     return puntero;
 
 }
-t_link_element* recorrerLstActualizandoBits(t_list* lista, t_link_element* ptr, int cantMaxElementos, frame* pag){
+t_link_element* recorrerLstActualizandoBits(t_list* lista, t_link_element* ptr, int cantMaxElementos, frame* pag)
+{
 	t_link_element* puntero;
 	frame* frameActual =ptr->data;// frame en el cual estoy parado
-	while(frameActual->bit_uso != 0){//lo pongo en 0
+	while(frameActual->bit_uso != 0)
+	{//lo pongo en 0
 		frameActual->bit_uso =0;//actualizo
 		avanzarPuntero(lista,cantMaxElementos,ptr);//avanzo puntero
 		frameActual=ptr->data;//actualizo agarrado al valot que tiene el puntero qeu devolvio avanzarpuntero
@@ -100,16 +112,19 @@ t_link_element* recorrerLstActualizandoBits(t_list* lista, t_link_element* ptr, 
 	return puntero;
 }
 
-t_link_element* actualizarLista(t_list* lista, t_link_element* ptr,int cantMaxElementos, frame* pag) {
+t_link_element* actualizarLista(t_list* lista, t_link_element* ptr,int cantMaxElementos, frame* pag)
+{
 	t_link_element* puntero;
 	//si la lista no esta llena
-		if (!listaEstaLlena(lista, cantMaxElementos)) {
+		if (!listaEstaLlena(lista, cantMaxElementos))
+		{
 			puntero=agregarPagina(lista, ptr, cantMaxElementos ,pag);	// el puntero esta apuntando al ult elemento de la lista pero todavia tiene capacidad la lista
 			//acordarme de cuando agrego el ultimo elemento el puntero o tengo que llevar al primer elemento (avanzarpuntero)
 		}
 		// aca deberia recorrer desde la pos del puntero buscando el primer bit de uso en 0  y modificando los
 		// que vaya pasando poniendolo  en 1 acordarse que cuando llego al ultimo debo retornar al primero
-		else{
+		else
+		{
 			puntero=recorrerLstActualizandoBits(lista, ptr, cantMaxElementos,pag);
 		}
 		return puntero;
@@ -134,22 +149,26 @@ t_link_element* recorrerLstYActualizarClockMod(t_list* lista, t_link_element* pt
 	//paso 1 busco modificado en 0 y uso en 0
 	ptrAlSigDelRecibido=ptr->next;
 	frame* frameActual =ptr->data;// frame en el cual estoy parado
-	while((frameActual->bit_uso != 0)&(frameActual->modif !=0)&(ptrAlSigDelRecibido!=ptr)){//la ult condicion es para que no se quede loopeando
+	while((frameActual->bit_uso != 0)&(frameActual->modif !=0)&(ptrAlSigDelRecibido!=ptr))
+	{//la ult condicion es para que no se quede loopeando
 		//si sali por la ultima condicion tengo que retroceder en 1 ptr
 		avanzarPuntero(lista,cantMaxElementos,ptr);//avanzo puntero
 		frameActual=ptr->data;//actualizo agarrado al valot que tiene el puntero qeu devolvio avanzarpuntero
-		}
-	if((frameActual->bit_uso == 0)&(frameActual->modif==0)){//si encontre un espacio vacio
+	}
+	if((frameActual->bit_uso == 0)&(frameActual->modif==0))
+	{//si encontre un espacio vacio
 	puntero=agregarPagina(lista,ptr,cantMaxElementos,pag);//agrego la pagina
 	return puntero;
 	}
 
 	//paso 2 busco bit modificado en 1 y bit de uso en 0, actualizando los bit de uso a 0
-	if(ptrAlSigDelRecibido==ptr){//no encontre marco libre
+	if(ptrAlSigDelRecibido==ptr)
+	{//no encontre marco libre
 		ptr=punteroRecibido;
 		ptrAlSigDelRecibido=ptr->next;
 		frameActual =ptr->data;// frame en el cual estoy parado
-		while((frameActual->bit_uso != 0)&(frameActual->modif!= 1)&(ptrAlSigDelRecibido!=ptr)){//lo pongo en 0
+		while((frameActual->bit_uso != 0)&(frameActual->modif!= 1)&(ptrAlSigDelRecibido!=ptr))
+		{//lo pongo en 0
 			frameActual->bit_uso =0;//actualizo
 			avanzarPuntero(lista,cantMaxElementos,ptr);//avanzo puntero
 			frameActual=ptr->data;//actualizo agarrado al valot que tiene el puntero qeu devolvio avanzarpuntero
@@ -158,21 +177,24 @@ t_link_element* recorrerLstYActualizarClockMod(t_list* lista, t_link_element* pt
 			puntero=reemplazoMarco(lista,ptr,cantMaxElementos,pag);//reemplazo el marco
 			return puntero;
 			}
+	}
 		//paso 3
-		if(ptrAlSigDelRecibido==ptr){ //no encontre con modificado en 1 y bit de uso en 0,
+		if(ptrAlSigDelRecibido==ptr)
+		{ //no encontre con modificado en 1 y bit de uso en 0,
 			//ahora busco con modificado en 0 y bit de uso en 0
 			ptr=punteroRecibido;
 			frameActual=ptr->data;
 			frame* frameActual =ptr->data;// frame en el cual estoy parado
-			while((frameActual->bit_uso != 0)&(frameActual->modif !=0)){// aca si o si encuentro antes de volver al comienzo
+			while((frameActual->bit_uso != 0)&(frameActual->modif !=0))
+			{// aca si o si encuentro antes de volver al comienzo
 					avanzarPuntero(lista,cantMaxElementos,ptr);//avanzo puntero
 					frameActual=ptr->data;//actualizo agarrado al valot que tiene el puntero qeu devolvio avanzarpuntero
-					}
+			}
 				//si o si encuentro reemplazo el marco
 				puntero=reemplazoMarco(lista,ptr,cantMaxElementos,pag);//agrego la pagina
 				return puntero;
 				}
-
+return 0;
 }
 
 /* primero busco la pagina que me piden
@@ -188,20 +210,26 @@ t_link_element* recorrerLstYActualizarClockMod(t_list* lista, t_link_element* pt
   y retorna el puntero que recibe avanzado un elemento (en el siguiente del puntero que recibio)
   *agregarpagina agregaria un nuevo marco(es un elemento de la lista) a la lista con el numero de pagina que recibe y avanza
    el puntero a la siguiente posicion donde agrego*/
-t_link_element* UmcClock(t_list* lista, t_link_element* ptr, int cantMaxElementos, frame* pag){
+t_link_element* UmcClock(t_list* lista, t_link_element* ptr, int cantMaxElementos, frame* pag)
+{
 	t_link_element* puntero;
 	puntero=buscarPaginaClk(lista,ptr,cantMaxElementos,pag);//busco la pagina funciona para ambos algoritmos
-	if (CLOCK == 0){//algoritmo clock
+	if (CLOCK == 0)
+	{//algoritmo clock
 
-	if(puntero==NULL){//no encontre
+	if(puntero==NULL)
+	{//no encontre
 	puntero=actualizarLista(lista,ptr,cantMaxElementos,pag);
+
 	}
 
-}
+    }
 	else{ // algoritmo clock modificado
-	if(puntero==NULL){//no encontre
+	if(puntero==NULL)
+	{//no encontre
 	puntero=recorrerLstYActualizarClockMod(lista,ptr,cantMaxElementos,pag);
-		}
+
+    }
 	}
 	return puntero;
 }
