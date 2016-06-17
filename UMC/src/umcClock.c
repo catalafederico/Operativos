@@ -24,7 +24,7 @@ t_link_element* pasarDelUltAlPrimero(t_list* lista, t_link_element* ptr)
 
 int listaEstaLlena(t_list* lista,int cantMaxElementos)
 {
-	if(lista->elements_count == cantMaxElementos)
+	if(list_size(lista) == cantMaxElementos)
 	{
 		return 1;//la lista esta llena
 	}
@@ -33,9 +33,9 @@ int listaEstaLlena(t_list* lista,int cantMaxElementos)
 
 t_link_element* avanzarPuntero(t_list* lista,int cantMaxElementos,t_link_element* ptr)
 {
-	if((ptr->next == NULL) & (lista->elements_count==cantMaxElementos))
+	if((ptr->next == NULL) && listaEstaLlena(lista,cantMaxElementos))
 	{ //estoy en el ultimo elemento
-		ptr=lista->head;//le asigno el primer elemento de la lista
+		pasarDelUltAlPrimero(lista,ptr);
 	}
 	else
 	{
@@ -50,12 +50,14 @@ t_link_element* buscarPaginaClk(t_list* lista, t_link_element* ptr, int cantMaxE
 	//comienzo del principio
 	t_link_element* aux;
 	aux = lista->head; //estoy en el primer elemento de la lista con aux
-	while ((aux->next != NULL) & (aux->next->data != pag->nro)) // si es null deberia preguntar la cant de elementos, y no encuentre la pagina
+	relojElem* elemTemp = aux->next->data;
+	while ((aux->next != NULL) && (elemTemp->pag != pag->nro)) // si es null deberia preguntar la cant de elementos, y no encuentre la pagina
 	{
 		aux = aux->next;
+		relojElem* elemTemp = aux->next->data;
 	}
 	//aca no encuentro la pagina
-	if ((aux->next == NULL) & (aux->next->data != &pag->nro))
+	if ((aux->next == NULL) && (aux->next->data != &pag->nro))
 	{
 		//pregunto si todavia  lllego a su maxima capacidad la lista
 		if (listaEstaLlena(lista,cantMaxElementos))
@@ -68,7 +70,7 @@ t_link_element* buscarPaginaClk(t_list* lista, t_link_element* ptr, int cantMaxE
 	}
 	// lo encontre
 		frame* actual=ptr->data;
-		actual->bit_uso=1;// deberia haberlo preguntado pero bueno lo pongo en uno de una
+		actual->bit_uso=1; 	// deberia haberlo preguntado pero bueno lo pongo en uno de una
 		return ptr;	// ya estaba la pagina referenciada debo devolver elmismo puntero que recibi
 
 }
@@ -210,26 +212,23 @@ return 0;
   y retorna el puntero que recibe avanzado un elemento (en el siguiente del puntero que recibio)
   *agregarpagina agregaria un nuevo marco(es un elemento de la lista) a la lista con el numero de pagina que recibe y avanza
    el puntero a la siguiente posicion donde agrego*/
-t_link_element* UmcClock(t_list* lista, t_link_element* ptr, int cantMaxElementos, frame* pag)
-{
+t_link_element* UmcClock(t_list* lista, t_link_element* ptr,
+		int cantMaxElementos, frame* pag) {
 	t_link_element* puntero;
-	puntero=buscarPaginaClk(lista,ptr,cantMaxElementos,pag);//busco la pagina funciona para ambos algoritmos
-	if (CLOCK == 0)
-	{//algoritmo clock
+	puntero = buscarPaginaClk(lista, ptr, cantMaxElementos, pag);//busco la pagina funciona para ambos algoritmos
+	if (CLOCK == 0) {			//algoritmo clock
 
-	if(puntero==NULL)
-	{//no encontre
-	puntero=actualizarLista(lista,ptr,cantMaxElementos,pag);
+		if (puntero == NULL) {			//no encontre
+			puntero = actualizarLista(lista, ptr, cantMaxElementos, pag);
 
-	}
+		}
 
-    }
-	else{ // algoritmo clock modificado
-	if(puntero==NULL)
-	{//no encontre
-	puntero=recorrerLstYActualizarClockMod(lista,ptr,cantMaxElementos,pag);
+	} else { // algoritmo clock modificado
+		if (puntero == NULL) { //no encontre
+			puntero = recorrerLstYActualizarClockMod(lista, ptr,
+					cantMaxElementos, pag);
 
-    }
+		}
 	}
 	return puntero;
 }

@@ -21,7 +21,7 @@ t_reg_config get_config_params(){
 
 	char * UMC_config_path = "umc_config.cfg";
 	UMC_config = config_create(UMC_config_path);
-	int a = sizeof(int)*7+sizeof(char)*16;
+	int a = sizeof(int)*8+sizeof(char)*16;
 	t_reg_config* puntero_configuracion = malloc(a);
 	t_reg_config configuracion = *puntero_configuracion;
 	*configuracion.IP_SWAP = malloc(16);
@@ -31,9 +31,9 @@ t_reg_config get_config_params(){
 	setearValorEntero(&configuracion.MARCOS,"MARCOS");
 	setearValorEntero(&configuracion.MARCO_SIZE,"MARCO_SIZE");
 	setearValorEntero(&configuracion.MARCO_X_PROC,"MARCO_X_PROC");
+	setearValorEntero(&configuracion.ALGORITMO,"ALGORITMO");
 	setearValorEntero(&configuracion.ENTRADAS_TLB,"ENTRADAS_TLB");
 	setearValorEntero(&configuracion.RETARDO,"RETARDO");
-
 	config_destroy(UMC_config);
 	return configuracion;
 }
