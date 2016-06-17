@@ -126,6 +126,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 
 	log_trace(log_memoria,"Solcitud - id: %d pag: %d offset: %d tamanio: %d",*idProcesoActual,pagina,offset,tamanio);
 	int estaEnTLB = 0;
+	int posicionDeMemoria;
 	infoPagina* paginaInfo = buscarFrameEnTLB(*idProcesoActual,pagina);
 	void* obtenido = malloc(tamanio);
 	if(paginaInfo!=NULL){
@@ -141,11 +142,15 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 			//Agarro info de la pagina a reemplazar
 			infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
 			//Obtengo toda la pagina para almacenar en swap
-			int posicionDeMemoria = ((paginaAReemplazar->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
+			posicionDeMemoria = ((paginaAReemplazar->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
 			void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
-			memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
-			//La almaceno
-			almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
+			if (!(paginaAReemplazar->modif == 0 && clockModificado)) {
+				memcpy(aAlmacenarEnSwap, (memoriaPrincipal + posicionDeMemoria),
+						umcConfg.configuracionUMC.MARCO_SIZE);
+				//La almaceno
+				almacenarEnSwap(*idProcesoActual, paginaARemplazar,
+						aAlmacenarEnSwap);
+			}
 			//Le doy el marco de la pagina reemplazada a la nueva pagina
 			paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
 			paginaAReemplazar->nroMarco =-1;
@@ -166,7 +171,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 		//lo inserto al principio ya q es el ultimo usado
 		insertarEnTLB(*idProcesoActual,pagina,paginaInfo,0);
 	}
-	int posicionDeMemoria = ((paginaInfo->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
+	posicionDeMemoria = ((paginaInfo->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
 	paginaInfo->bit_uso = USADO;
 	pthread_mutex_unlock(&semaforoMemoria);
@@ -176,6 +181,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 
 void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 
+	int posicionDeMemoria;
 	int recienAsignado = 0;
 	int estaEnTlb = 0;
 	infoPagina* paginaInfo;
@@ -212,11 +218,15 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 			//Agarro info de la pagina a reemplazar
 			infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
 			//Obtengo toda la pagina para almacenar en swap
-			int posicionDeMemoria = ((paginaAReemplazar->nroMarco)*(umcConfg.configuracionUMC.MARCO_SIZE));
+			posicionDeMemoria = ((paginaAReemplazar->nroMarco)*(umcConfg.configuracionUMC.MARCO_SIZE));
 			void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
-			memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
-			//La almaceno
-			almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
+			if (!(paginaAReemplazar->modif == 0 && clockModificado)) {
+				memcpy(aAlmacenarEnSwap, (memoriaPrincipal + posicionDeMemoria),
+						umcConfg.configuracionUMC.MARCO_SIZE);
+				//La almaceno
+				almacenarEnSwap(*idProcesoActual, paginaARemplazar,
+						aAlmacenarEnSwap);
+			}
 			//Le doy el marco de la pagina reemplazada a la nueva pagina
 			paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
 			paginaAReemplazar->nroMarco =-1;
@@ -251,11 +261,13 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 				//Agarro info de la pagina a reemplazar
 				infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
 				//Obtengo toda la pagina para almacenar en swap
-				int posicionDeMemoria = ((paginaAReemplazar->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
+				posicionDeMemoria = ((paginaAReemplazar->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
 				void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
-				memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
+				if (!(paginaAReemplazar->modif == 0 && clockModificado)) {
+					memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
 				//La almaceno
-				almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
+					almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
+				}
 				//Le doy el marco de la pagina reemplazada a la nueva pagina
 				paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
 				paginaAReemplazar->nroMarco =-1;
@@ -275,7 +287,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 			insertarEnTLB(*idProcesoActual, pagina, paginaInfo, 0);
 		}
 	}
-	int posicionDeMemoria = ((paginaInfo->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
+	posicionDeMemoria = ((paginaInfo->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
 	paginaInfo->bit_uso = USADO;
 	paginaInfo->modif = 1;

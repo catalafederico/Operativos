@@ -726,10 +726,10 @@ t_reg_config get_config_params(void){
 				int status = 1;
 				struct server servidor;
 				servidor = crearServer(swap_configuracion.PUERTO_ESCUCHA);
-				loguear("Se crea el socket correctamente.");
+				loguear("Se crea el socket correctamente.\0");
 				ponerServerEscucha(servidor);
 				printf("Escuchando UMC en socket %d \n", servidor.socketServer);
-				loguear("Escuchando conexiones.");
+				loguear("Escuchando conexiones.\0");
 				socketAdministradorDeMemoria = conectarseConUMC(servidor);
 
 				    	while(status){
@@ -792,27 +792,27 @@ t_reg_config get_config_params(void){
 	}
 
 	void logIniciar(proceso proceso){
-		char stringAlogear[200];
-		sprintf(stringAlogear,"Proceso asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
-		loguear(stringAlogear);
+		//char stringAlogear[200];
+		//sprintf(stringAlogear,"Proceso asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+		loguear(("Proceso asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA));
 	}
 
 	void logFinalizar(proceso proceso){
-		char stringAlogear[200];
-		sprintf(stringAlogear,"Proceso liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
-		loguear(stringAlogear);
+		//char stringAlogear[200];
+		//sprintf(stringAlogear,"Proceso liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+		loguear(("Proceso liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d .",proceso.pid, proceso.comienzo,proceso.cantidadDePaginas,proceso.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA));
 	}
 
 	void logRechazar(proceso proceso){
-		char stringAlogear[200];
-		sprintf(stringAlogear,"Proceso rechazado - PID: %d - Falta de espacio .",proceso.pid);
-		loguear(stringAlogear);
+		//char stringAlogear[200];
+		//sprintf(stringAlogear,"Proceso rechazado - PID: %d - Falta de espacio .",proceso.pid);
+		loguear(("Proceso rechazado - PID: %d - Falta de espacio .",proceso.pid));
 	}
 
 	void logCompactacionIniciada(){
-		char stringAlogear[100];
-		sprintf(stringAlogear,"Compactacion iniciada");
-		loguear(stringAlogear);
+		//char stringAlogear[100];
+		//sprintf(stringAlogear,"Compactacion iniciada");
+		loguear("Compactacion iniciada");
 	}
 
 	//---Tests
