@@ -100,7 +100,7 @@ void eliminarProceso(int pid);
 
 void* recibirCadena(void);
 
-void mandarCadena(char* cadena);
+void mandarCadena(void* cadena);
 
 void dormir(void);
 
@@ -769,10 +769,10 @@ t_reg_config get_config_params(void){
 		return header;
 	}
 
-	void mandarCadena(char* cadena) {
+	void mandarCadena(void* cadena) {
 		//int long_cadena = strlen(cadena)+1;
 		//send(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
-		send(socketAdministradorDeMemoria, cadena, sizeof(cadena), 0);
+		send(socketAdministradorDeMemoria, cadena, swap_configuracion.TAMANIO_PAGINA, 0);
 	}
 
 	void* recibirCadena() {

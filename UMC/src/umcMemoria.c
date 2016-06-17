@@ -145,7 +145,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 			void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
 			memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
 			//La almaceno
-			almacenarEnSwap(*idProcesoActual,paginaAReemplazar,aAlmacenarEnSwap);
+			almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
 			//Le doy el marco de la pagina reemplazada a la nueva pagina
 			paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
 			paginaAReemplazar->nroMarco =-1;
