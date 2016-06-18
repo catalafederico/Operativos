@@ -146,7 +146,7 @@ int main(void) {
     crearArchivo();
     //inicializarArchivo();
 
-    listaSwap = malloc(sizeof(proceso));
+    //listaSwap = malloc(sizeof(proceso));
     listaSwap = NULL;
 
 /*
@@ -298,7 +298,7 @@ void agregarProcesoAListaSwap(proceso* procesoAInsertar){
 		int numeroPagina;
 		recv(socketAdministradorDeMemoria, &pid, sizeof(int), 0);
 		recv(socketAdministradorDeMemoria, &numeroPagina, sizeof(int), 0);
-		void* texto = recibirCadena();
+		void* texto = recibirStream(socketAdministradorDeMemoria,swap_configuracion.TAMANIO_PAGINA);
 		if(procesoSeEncuentraEnSwap(pid)){
 			proceso proceso = obtenerProceso(pid);
 			if(numeroPagina >= proceso.cantidadDePaginas){
@@ -776,10 +776,9 @@ t_reg_config get_config_params(void){
 	}
 
 	void* recibirCadena() {
-		int long_cadena = swap_configuracion.TAMANIO_PAGINA;
+		//int long_cadena =
 		//recv(socketAdministradorDeMemoria, &long_cadena, sizeof(long_cadena), 0);
-		void* cadena = malloc(long_cadena);
-		recv(socketAdministradorDeMemoria, cadena, long_cadena, 0);
+		void* cadena = recibirStream(socketAdministradorDeMemoria,swap_configuracion.TAMANIO_PAGINA);
 		return cadena;
 	}
 
