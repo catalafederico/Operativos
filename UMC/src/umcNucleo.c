@@ -33,11 +33,22 @@ extern pthread_mutex_t semaforoMemoria;
 extern int alocandoPrograma;
 
 void inicializar_programa() {
+	t_dictionary* codigo_programa = dictionary_create();
 	int* id = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* cantPag = (int*) recibirStream(socketNucleo, sizeof(int));
 	log_info(umcConfg.loguer, "Alocar Programa empezado");
-	pthread_mutex_lock(&semaforoMemoria);
-	if(alocarPrograma(*cantPag,*id)==-1){
+	int seguir = 1;
+	while(seguir){
+		int* pagina = recibirStream(socketNucleo,sizeof(int));//si es menos uno no hay mas paginas
+		if(*pagina==-1){
+			seguir = 0;
+		}
+		else{
+			void* buffer = recibirStream(socketNucleo,umcConfg.configuracionUMC.MARCO_SIZE);
+			dictionary_put(codigo_programa,pagina,buffer);
+		}
+	}
+	if(alocarPrograma(*cantPag,*id,codigo_programa)==-1){
 		pthread_mutex_unlock(&semaforoMemoria);
 		int error = ERROR;
 		send(socketNucleo,&error, sizeof(int),0);
@@ -47,7 +58,6 @@ void inicializar_programa() {
 		send(socketNucleo,&ok, sizeof(int),0);
 		log_info(umcConfg.loguer, "Programa alocado correctamente");
 	}
-
 	free(id);
 	free(cantPag);
 }
@@ -96,12 +106,6 @@ void almacenar_Byte_NL(){
 	return;
 }
 
-
-
-
-
-
-
 void* conexionNucleo(int  socketEscuchaNucleo){
 	socketNucleo = socketEscuchaNucleo;
 	int seguir = 1;
@@ -126,10 +130,6 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 				break;
 			case ALMACENAR:
 				almacenar_Byte_NL();
-				break;
-			case 879://Programa cargado
-				pthread_mutex_unlock(&semaforoMemoria);
-				alocandoPrograma = 0;
 				break;
 			case 666:
 				enviarStream(socketEscuchaNucleo,666,sizeof(int),&tamanioPag);

@@ -179,27 +179,39 @@ int cargarEnUMC(t_dictionary* codigoPaginado,t_list* instrucciones, int pagNeces
 	prog.id = id;
 	prog.pagnias = pagNecesarias;
 	enviarStream(socetUMC,newProgram,sizeof(programa_id),&prog);//Solicito paginas a la umc
-	int* header = recibirStream(socetUMC,sizeof(int));
-	if(*header==ERROR){
-		return -1;//No hay paginas disponibles
-	}
-
-
+	//Liberarlo solo el codigo4UMC!
+	t_dictionary* codigo4UMC = dictionary_create();
 	int mensajesAEnviar = list_size(instrucciones);
 	int i;
 	for(i=0;i<mensajesAEnviar;i++){
 		//Agarro la direccion de la instruccion y se la envia para informarle donde almacenar la instruccion
 		//No cambiar orden ya q umc recibe asi
 		direccionMemoria* aAlmacenar = dictionary_get(codigoPaginado,&i);
-		enviarStream(socetUMC,ALMACENAR,sizeof(direccionMemoria),aAlmacenar);
 		//puntero a la instruccion a enviar
 		char* instruccionAENviar = list_get(instrucciones,i);
-		if(send(socetUMC,instruccionAENviar,aAlmacenar->tamanio,0)==-1){
-			perror("error al enviar instruccion");
+		if(!dictionary_has_key(codigo4UMC,&aAlmacenar->pagina)){
+			void* buffer = malloc(tamanioPaginaUMC);
+			memcpy(buffer,instruccionAENviar,aAlmacenar->tamanio);
+			dictionary_put(codigo4UMC,&aAlmacenar->pagina,buffer);
+		}
+		else{
+			void* buffer = dictionary_get(codigo4UMC,&aAlmacenar->pagina);
+			memcpy(buffer+aAlmacenar->offset,instruccionAENviar,aAlmacenar->tamanio);
 		}
 	}
 
-	int finaAlocar =879;
+	int cantPagCodigo = dictionary_size(codigo4UMC);
+	for(i=0;i<cantPagCodigo;i++){
+		void* bufferAEnviar = dictionary_get(codigo4UMC,&i);
+		enviarStream(socetUMC,i,tamanioPaginaUMC,bufferAEnviar);
+	}
+
+	int finaAlocar =-1;
 	send(socetUMC,&finaAlocar,sizeof(int),0);
+
+	int* header = recibirStream(socetUMC,sizeof(int));
+	if(*header==ERROR){
+		return -1;//No hay paginas disponibles
+	}
 	return 0;
 }

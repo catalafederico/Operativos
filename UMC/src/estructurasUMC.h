@@ -30,6 +30,13 @@ typedef struct {
 } t_reg_config;
 
 typedef struct{
+	int pagina;
+	int offset;
+	int tamanio;
+}__attribute__((packed))
+direccionMemoria;
+
+typedef struct{
 	int* id_programa;
 	t_dictionary* pag_marco;
 }proceso;
