@@ -224,16 +224,20 @@ void *administrar_cola_Exit(){
 		// quito el proceso del Diccionario, obtengo Consola_Id y mensaje de respuesta
 		t_sock_mje* datos_a_consola;
 		pthread_mutex_lock(&sem_pid_consola);
-			datos_a_consola = dictionary_get(dict_pid_consola,string_itoa(pid_local));
-			dictionary_remove(dict_pid_consola,string_itoa(pid_local));
+			datos_a_consola = dictionary_get(dict_pid_consola,&pid_local);
+			dictionary_remove(dict_pid_consola,&pid_local);
 		pthread_mutex_unlock(&sem_pid_consola);
 		log_debug(log_procesador_Exit, "Se removio el PID ( %d ) del dicc y se envio el mje ( %s ) a consola: %d", pid_local, datos_a_consola->mensaje, datos_a_consola->socket_dest);
 		log_debug(logger, "PCB con PID %d sacado de EXIT y se respondio a la consola %d",pid_local, datos_a_consola->socket_dest);
 		log_debug(logger, "Se envio a consola: %d el mensaje: %s", datos_a_consola->socket_dest,datos_a_consola->mensaje);
-	    if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, MJE_RTA, 0) == -1){
+		int fin = 999;
+		send(datos_a_consola->socket_dest,&fin,sizeof(int),0);
+	    /*if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, MJE_RTA, 0) == -1){
 	    	log_debug(logger, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
 	    	log_debug(log_procesador_Exit, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
-	    }
+	    }*/
+		free(datos_a_consola->mensaje);
+		free(datos_a_consola);
 	    log_debug(log_procesador_Exit, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
 
 	}

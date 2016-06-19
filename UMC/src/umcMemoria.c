@@ -18,13 +18,13 @@
 
 extern umcNucleo umcConfg;
 t_log* log_memoria;
-tlb* tlbCache;
+tlb* tlbCache; // liberar al desalojar
 pthread_mutex_t semaforoMemoria;
 void* memoriaPrincipal;
 t_list* marcosLibres;
 t_dictionary* tabla_actual;
-t_dictionary* programas_ejecucion;
-t_dictionary* programas_paraClock;
+t_dictionary* programas_ejecucion; // liberar al desalojar
+t_dictionary* programas_paraClock; // liberar al desalojar
 int* idProcesoActual;
 int entradasTLB;
 int clockModificado;
@@ -114,18 +114,26 @@ int alocarPrograma(int paginasRequeridas, int id_proceso,
 
 int desalojarPrograma(int id){
 	log_trace(log_memoria,"Comienza desalojo de programa id: %d", id);
-	t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+	t_dictionary* tabla_desalojar = dictionary_remove(programas_ejecucion,&id);
 	int cant_paginas = dictionary_size(tabla_desalojar);
 	int i;
 	log_trace(log_memoria,"Agregado a marcos libres:");
 	for(i=0;i <cant_paginas; i++){
 		infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
 		list_add(marcosLibres,marcoLibre->nroMarco);
+		free(marcoLibre);
 		log_trace(log_memoria,"Pag: %d \tMarco: %d ",i,marcoLibre->nroMarco);
 	}
 	dictionary_destroy(tabla_desalojar);
-	int* idRemovido = dictionary_remove(programas_ejecucion,&id);
-	free(idRemovido);
+	//desalojo programas para clock
+	reloj* elemento = dictionary_get(programas_paraClock,&id);
+	cant_paginas = list_size(elemento);
+	for(i=0;i<cant_paginas;i++){
+		relojElem* temp = list_remove(elemento->paginasMemoria,i);
+		free(temp);
+	}
+	list_destroy(elemento->paginasMemoria);
+	free(elemento);
 	pthread_mutex_unlock(&semaforoMemoria);
 	log_trace(log_memoria,"Programa desalojado");
 	return 0;

@@ -239,12 +239,12 @@ void *atender_CPU(int* socket_desc) {
 					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
 				pthread_mutex_unlock(&sem_l_Exit);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
-				sem_post(&sem_EXIT_dispo);
-				socketConsola = dictionary_get(dict_pid_consola,string_itoa(pid_local));
-				strcpy(socketConsola->mensaje,"Proceso_Finalizado_Correctamente");
 				pthread_mutex_lock(&sem_pid_consola);
-					dictionary_put(dict_pid_consola,&pid_local, socketConsola);
+				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
 				pthread_mutex_unlock(&sem_pid_consola);
+				free(socketConsola->mensaje);
+				socketConsola->mensaje = strdup("Proceso_Finalizado_Correctamente");
+				sem_post(&sem_EXIT_dispo);
 //				int envVar = 999;
 //				send(socketConsola->socket_dest,&envVar,sizeof(int),0);
 				break;

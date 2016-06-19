@@ -97,7 +97,7 @@ typedef struct{
 
 typedef struct {
     int socket_dest;
-    char mensaje[256];
+    char* mensaje;
 }t_sock_mje;
 
 typedef struct {
