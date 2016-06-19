@@ -10,5 +10,6 @@
 
 void *procesos_UMC();
 void conectarseConUmc(struct cliente clienteNucleo);
+void notificarAUMCfpc(int id);
 
 #endif /* PROCESOSUMC_H_ */

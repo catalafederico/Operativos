@@ -127,13 +127,14 @@ int desalojarPrograma(int id){
 	dictionary_destroy(tabla_desalojar);
 	//desalojo programas para clock
 	reloj* elemento = dictionary_get(programas_paraClock,&id);
-	cant_paginas = list_size(elemento);
+	cant_paginas = list_size(elemento->paginasMemoria);
 	for(i=0;i<cant_paginas;i++){
-		relojElem* temp = list_remove(elemento->paginasMemoria,i);
+		relojElem* temp = list_remove(elemento->paginasMemoria,0);
 		free(temp);
 	}
 	list_destroy(elemento->paginasMemoria);
 	free(elemento);
+	notificarASwapFinPrograma(id);
 	pthread_mutex_unlock(&semaforoMemoria);
 	log_trace(log_memoria,"Programa desalojado");
 	return 0;

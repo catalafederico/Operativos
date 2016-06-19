@@ -219,6 +219,8 @@ void *administrar_cola_Exit(){
 			pcb_elegido = list_remove(proc_Exit, 0);//Agarro el pcb
 			pid_local = *(pcb_elegido->PID);
 		pthread_mutex_unlock(&sem_l_Exit);
+		//Notifico umc
+		notificarAUMCfpc(pid_local);
 
 		log_debug(log_procesador_Exit, "Se removio el PCB de EXIT: %d", pid_local);
 		// quito el proceso del Diccionario, obtengo Consola_Id y mensaje de respuesta

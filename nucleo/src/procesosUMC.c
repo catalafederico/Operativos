@@ -181,3 +181,8 @@ pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado){
 	return pcbNuevo;
 }
 
+void notificarAUMCfpc(int id){
+	int fpc = 51;
+	enviarStream(clienteNucleoUMC.socketCliente,fpc,sizeof(int),&id);
+}
+
