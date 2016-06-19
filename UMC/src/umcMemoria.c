@@ -27,18 +27,17 @@ t_dictionary* programas_ejecucion;
 t_dictionary* programas_paraClock;
 int* idProcesoActual;
 int entradasTLB;
-int alocandoPrograma;
 int clockModificado;
 
 
 //---------fin
 void* inicializarMemoria(t_reg_config* configuracionUMC){
 
-	clockModificado = configuracionUMC->ALGORITMO;
 	int cantidadDeMarcos = configuracionUMC->MARCOS;
+	clockModificado = configuracionUMC->ALGORITMO;
 	entradasTLB = configuracionUMC->ENTRADAS_TLB;
 	tlbCache = list_create();
-	inicializarTLB(tlbCache,cantidadDeMarcos);
+	inicializarTLB(tlbCache,entradasTLB);
 	log_memoria = log_create("logs/logUmcMemoria.txt","UMC",0,LOG_LEVEL_TRACE);
 	pthread_mutex_init(&semaforoMemoria,NULL);
 	log_trace(log_memoria,"Creando memoria");
@@ -51,10 +50,8 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 	int tamanio = cantidadDeMarcos*umcConfg.configuracionUMC.MARCO_SIZE;
 	log_trace(log_memoria,"Memoria inicializada con un tamanio: %d",tamanio);
 	for(i = 0;i<cantidadDeMarcos;i++){
-		infoPagina* tempFrame = malloc(sizeof(infoPagina));
-		tempFrame->nroMarco = i;
-		tempFrame->bit_uso = NOUSADO;
-		tempFrame->modif = 0;
+		int* tempFrame = malloc(sizeof(int));
+		*tempFrame = i;
 		list_add(marcosLibres,tempFrame);
 	}
 	log_trace(log_memoria,"Marcos libres cargados: %d:",i);
@@ -62,8 +59,8 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 
 }
 
-int alocarPrograma(int paginasRequeridas, int id_proceso) {
-
+int alocarPrograma(int paginasRequeridas, int id_proceso, t_dictionary* codigoPrograma) {
+	pthread_mutex_lock(&semaforoMemoria);
 	if (paginasRequeridas > umcConfg.configuracionUMC.MARCO_X_PROC) {
 		log_trace(log_memoria,
 				"Rechazo programa id: %d , paginas requeridas: %d \n",
@@ -74,7 +71,15 @@ int alocarPrograma(int paginasRequeridas, int id_proceso) {
 		log_trace(log_memoria, "Comienza alocacion de programa id: %d",
 				id_proceso);
 		int i = 1;
+		//Creo yable pag_marco
 		t_dictionary* pag_frame = dictionary_create();
+		for(i=0;i<paginasRequeridas;i++){
+			infoPagina* pagina = malloc(sizeof(infoPagina));
+			pagina->bit_uso = 0;
+			pagina->nroMarco = -1;
+			pagina->modif = 0;
+			dictionary_put(pag_frame,&i,pagina);
+		}
 		//Creo Elemento para el manejo de clock
 		reloj* nuevoElemClock = malloc(sizeof(reloj));
 		nuevoElemClock->paginasMemoria = list_create();
@@ -82,27 +87,25 @@ int alocarPrograma(int paginasRequeridas, int id_proceso) {
 		int* idClock = malloc(sizeof(int));
 		*idClock = id_proceso;
 		dictionary_put(programas_paraClock,idClock,nuevoElemClock);
-		//
+		//Agrego table de codigo o todas las tablas
 		int* idProceso = malloc(sizeof(int));
 		*idProceso = id_proceso;
 		log_trace(log_memoria, "Agregado en tabla de proceso id: ");
-		tabla_actual = pag_frame;
-		*idProcesoActual = id_proceso;
 		dictionary_put(programas_ejecucion, idProceso, pag_frame);
 		log_trace(log_memoria, "Alocado programa id: %d", id_proceso);
-		alocandoPrograma = 1;
+		//Notifico a swap
 		notificarASwapPrograma(id_proceso,paginasRequeridas);
-		return 0;
+		int paginasDeCodigo = dictionary_size(codigoPrograma);
+		for(i=0;i<paginasDeCodigo;i++){
+			void* aAlmacenarEnSwap = dictionary_get(codigoPrograma,&i);
+			almacenarEnSwap(id_proceso,i,aAlmacenarEnSwap);
+		}
 	}
-
+	pthread_mutex_unlock(&semaforoMemoria);
+	return 0;
 }
 
 int desalojarPrograma(int id){
-	//Esto es de la entrega 2
-	/*notificarASwapFinPrograma(id);
-	return 0;*/
-
-	//Esto es mas de la entrega 3
 	log_trace(log_memoria,"Comienza desalojo de programa id: %d", id);
 	t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
 	int cant_paginas = dictionary_size(tabla_desalojar);
@@ -127,15 +130,33 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 	log_trace(log_memoria,"Solcitud - id: %d pag: %d offset: %d tamanio: %d",*idProcesoActual,pagina,offset,tamanio);
 	int estaEnTLB = 0;
 	int posicionDeMemoria;
-	infoPagina* paginaInfo = buscarFrameEnTLB(*idProcesoActual,pagina);
+	infoPagina* paginaBuscada = buscarFrameEnTLB(*idProcesoActual,pagina);
 	void* obtenido = malloc(tamanio);
-	if(paginaInfo!=NULL){
+	if(paginaBuscada!=NULL){
 		estaEnTLB = 1;
 	}
 	else if(!estaEnTLB)
 	{
-		paginaInfo = dictionary_get(tabla_actual,&pagina);
-		if(paginaInfo->nroMarco == -1){
+		paginaBuscada = dictionary_get(tabla_actual,&pagina);
+		reloj* pagEnMemoria = dictionary_get(programas_paraClock,idProcesoActual);
+		if(!(paginaBuscada->nroMarco == -1)){
+
+		}
+		//Si hay marcos libres, le asigno uno, la pag no esta en mry
+		else if(list_size(marcosLibres)>0){
+			paginaBuscada->nroMarco = *((int*)(list_remove(marcosLibres,0)));
+			void* contenidoDeLaPagina = solicitarEnSwap(*idProcesoActual,pagina);
+			//copio sin el offset ya que copio la pag entera
+			int offsetTotal = paginaBuscada->nroMarco*umcConfg.configuracionUMC.MARCO_SIZE;
+			memcpy(memoriaPrincipal + offsetTotal,contenidoDeLaPagina,umcConfg.configuracionUMC.MARCO_SIZE);
+			relojElem* nuevoElem = malloc(sizeof(relojElem));
+			nuevoElem->pag = pagina;
+			nuevoElem->marco = paginaBuscada;
+			list_add(pagEnMemoria->paginasMemoria,nuevoElem);
+			free(contenidoDeLaPagina);
+		}
+		//Me fijo si hay alguna pagina en memoria, ya q no hay marcos libres, para sustituirla
+		else if(list_size(pagEnMemoria->paginasMemoria)>0){
 			reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
 			//Veo q pagina reemplzar
 			int paginaARemplazar = buscarPagAReemplazar(elem->paginasMemoria,&(elem->puntero));
@@ -152,14 +173,14 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 						aAlmacenarEnSwap);
 			}
 			//Le doy el marco de la pagina reemplazada a la nueva pagina
-			paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
+			paginaBuscada->nroMarco = paginaAReemplazar->nroMarco;
 			paginaAReemplazar->nroMarco =-1;
 			paginaAReemplazar->modif = 0;
 			paginaAReemplazar->bit_uso = 0;
 			//saco la pagina actual de la lista de clock ya q no la tengo en memoria y agrego la pagina memoria
 			int anterior = (elem->puntero) - 1;
 			relojElem* temp = list_get((elem->paginasMemoria),anterior);
-			temp->marco = paginaInfo;
+			temp->marco = paginaBuscada;
 			temp->pag = pagina;
 			aAlmacenarEnSwap = solicitarEnSwap(*idProcesoActual,pagina);
 			memcpy((memoriaPrincipal + posicionDeMemoria),aAlmacenarEnSwap,umcConfg.configuracionUMC.MARCO_SIZE);
@@ -167,59 +188,72 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 			removerDeTLB(*idProcesoActual,paginaARemplazar,-1);
 			free(aAlmacenarEnSwap);
 		}
+		// sino hay pag en memoria y no hay marcos libres me quede sin memoria
+		//avisarle a cpu?
+		else{
+
+		}
 		//agrego en la tlb marco
 		//lo inserto al principio ya q es el ultimo usado
-		insertarEnTLB(*idProcesoActual,pagina,paginaInfo,0);
+		insertarEnTLB(*idProcesoActual,pagina,paginaBuscada,0);
 	}
-	posicionDeMemoria = ((paginaInfo->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
+	posicionDeMemoria = ((paginaBuscada->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
-	paginaInfo->bit_uso = USADO;
+	paginaBuscada->bit_uso = USADO;
 	pthread_mutex_unlock(&semaforoMemoria);
 	return obtenido;
 	//Esto es mas de la entrega 3
 }
 
-void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
+void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 
 	int posicionDeMemoria;
 	int recienAsignado = 0;
 	int estaEnTlb = 0;
-	infoPagina* paginaInfo;
-	log_trace(log_memoria,"Almacenar - id: %d pag: %d offset: %d tamanio: %d",*idProcesoActual,pagina,offset,tamanio);
-	//Me fijo si tiene clave q seria la pagina
-	//Si no tiene le tengo q asignar un frame
-	if(!dictionary_has_key(tabla_actual,&pagina)){
-		int* paginaAPoner = malloc(sizeof(int));
-		*paginaAPoner = pagina;
-		//obtengo un marco y lo saco
-		//ME fijo si hay marcos libres
-		if (list_size(marcosLibres)>= 1) {
-			paginaInfo = list_remove(marcosLibres, 0);
-			//asigno marco a la pagina, DICCIONARIO YA DEBE ESTAR CREADO
-			log_trace(log_memoria, "Pag: %d \tMarco: %d ", pagina, paginaInfo->nroMarco);
-			dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
-			insertarEnTLB(*idProcesoActual,pagina,paginaInfo,0);
-			//Insterto en lista para clock
-			relojElem* nuevoElemento = malloc(sizeof(nuevoElemento));
-			reloj* paraClock = dictionary_get(programas_paraClock,idProcesoActual);
-			nuevoElemento->marco = paginaInfo;
-			nuevoElemento->pag = pagina;
-			list_add(paraClock->paginasMemoria,nuevoElemento);
-			//Elemento insertado
+	infoPagina* paginaBuscada;
+	log_trace(log_memoria, "Almacenar - id: %d pag: %d offset: %d tamanio: %d",
+			*idProcesoActual, pagina, offset, tamanio);
+	//Busco Marco, primero me fijo si fue recien asignado, si fue recien asignado, ya tengo el marco,
+	//sino me fijo si esta en tlb, sino me fijo en memoria, y sino swap
+	paginaBuscada = buscarFrameEnTLB(*idProcesoActual, pagina);
+	if (paginaBuscada != NULL) {
+		estaEnTlb = 1;
+	} else if (!estaEnTlb) {
+		paginaBuscada = dictionary_get(tabla_actual, &pagina);
+		reloj* pagEnMemoria = dictionary_get(programas_paraClock,idProcesoActual);
+		//-1 dice q esta en swap la pagina
+		if(!(paginaBuscada->nroMarco == -1)){
+
 		}
-		//No hay marcos libres entonces hago reemplazo
-		else{
-			paginaInfo = malloc(sizeof(infoPagina));
-			paginaInfo->bit_uso = 0;
-			paginaInfo->modif = 0;
-			reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
+		else if (list_size(marcosLibres) > 0) {
+			paginaBuscada->nroMarco = *((int*)(list_remove(marcosLibres,0)));
+			void* contenidoDeLaPagina = solicitarEnSwap(*idProcesoActual,
+					pagina);
+			//copio sin el offset ya que copio la pag entera
+			int offsetTotal = paginaBuscada->nroMarco
+					* umcConfg.configuracionUMC.MARCO_SIZE;
+			memcpy(memoriaPrincipal + offsetTotal, contenidoDeLaPagina,
+					umcConfg.configuracionUMC.MARCO_SIZE);
+
+			relojElem* nuevoElem = malloc(sizeof(relojElem));
+			nuevoElem->pag = pagina;
+			nuevoElem->marco = paginaBuscada;
+			list_add(pagEnMemoria->paginasMemoria,nuevoElem);
+			free(contenidoDeLaPagina);
+		}
+		else if (list_size(pagEnMemoria->paginasMemoria)>0) {
+			reloj* elem = dictionary_get(programas_paraClock, idProcesoActual);
 			//Veo q pagina reemplzar
-			int paginaARemplazar = buscarPagAReemplazar(elem->paginasMemoria,&(elem->puntero));
+			int paginaARemplazar = buscarPagAReemplazar(elem->paginasMemoria,
+					&(elem->puntero));
 			//Agarro info de la pagina a reemplazar
-			infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
+			infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,
+					&paginaARemplazar);
 			//Obtengo toda la pagina para almacenar en swap
-			posicionDeMemoria = ((paginaAReemplazar->nroMarco)*(umcConfg.configuracionUMC.MARCO_SIZE));
-			void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
+			posicionDeMemoria = ((paginaAReemplazar->nroMarco)
+					* umcConfg.configuracionUMC.MARCO_SIZE);
+			void* aAlmacenarEnSwap = malloc(
+					umcConfg.configuracionUMC.MARCO_SIZE);
 			if (!(paginaAReemplazar->modif == 0 && clockModificado)) {
 				memcpy(aAlmacenarEnSwap, (memoriaPrincipal + posicionDeMemoria),
 						umcConfg.configuracionUMC.MARCO_SIZE);
@@ -228,71 +262,30 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer){
 						aAlmacenarEnSwap);
 			}
 			//Le doy el marco de la pagina reemplazada a la nueva pagina
-			paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
-			paginaAReemplazar->nroMarco =-1;
+			paginaBuscada->nroMarco = paginaAReemplazar->nroMarco;
+			paginaAReemplazar->nroMarco = -1;
 			paginaAReemplazar->modif = 0;
 			paginaAReemplazar->bit_uso = 0;
 			//saco la pagina actual de la lista de clock ya q no la tengo en memoria y agrego la pagina memoria
 			int anterior = (elem->puntero) - 1;
-			relojElem* temp = list_get((elem->paginasMemoria),anterior);
-			temp->marco = paginaInfo;
+			relojElem* temp = list_get((elem->paginasMemoria), anterior);
+			temp->marco = paginaBuscada;
 			temp->pag = pagina;
 			//saco de tlb la pagina si estuviera
-			removerDeTLB(*idProcesoActual,paginaARemplazar,-1);
-			dictionary_put(tabla_actual, paginaAPoner, paginaInfo);
+			removerDeTLB(*idProcesoActual, paginaAReemplazar, -1);
+			aAlmacenarEnSwap = solicitarEnSwap(*idProcesoActual, pagina);
+			memcpy((memoriaPrincipal + posicionDeMemoria), aAlmacenarEnSwap,
+					umcConfg.configuracionUMC.MARCO_SIZE);
 			free(aAlmacenarEnSwap);
-			insertarEnTLB(*idProcesoActual, pagina, paginaInfo, 0);
 		}
-		recienAsignado = 1;
+		insertarEnTLB(*idProcesoActual, pagina, paginaBuscada, 0);
 	}
-	//Busco Marco, primero me fijo si fue recien asignado, si fue recien asignado, ya tengo el marco,
-	//sino me fijo si esta en tlb, sino me fijo en memoria, y sino swap
-	if (!recienAsignado) {
-		paginaInfo = buscarFrameEnTLB(*idProcesoActual, pagina);
-		if (paginaInfo != NULL) {
-			estaEnTlb = 1;
-		} else if (!estaEnTlb) {
-			paginaInfo = dictionary_get(tabla_actual, &pagina);
-			//-1 dice q esta en swap la pagina
-			if(paginaInfo->nroMarco == -1){
-				reloj* elem =  dictionary_get(programas_paraClock,idProcesoActual);
-				//Veo q pagina reemplzar
-				int paginaARemplazar = buscarPagAReemplazar(elem->paginasMemoria,&(elem->puntero));
-				//Agarro info de la pagina a reemplazar
-				infoPagina* paginaAReemplazar = dictionary_get(tabla_actual,&paginaARemplazar);
-				//Obtengo toda la pagina para almacenar en swap
-				posicionDeMemoria = ((paginaAReemplazar->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
-				void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
-				if (!(paginaAReemplazar->modif == 0 && clockModificado)) {
-					memcpy(aAlmacenarEnSwap,(memoriaPrincipal + posicionDeMemoria),umcConfg.configuracionUMC.MARCO_SIZE);
-				//La almaceno
-					almacenarEnSwap(*idProcesoActual,paginaARemplazar,aAlmacenarEnSwap);
-				}
-				//Le doy el marco de la pagina reemplazada a la nueva pagina
-				paginaInfo->nroMarco = paginaAReemplazar->nroMarco;
-				paginaAReemplazar->nroMarco =-1;
-				paginaAReemplazar->modif = 0;
-				paginaAReemplazar->bit_uso = 0;
-				//saco la pagina actual de la lista de clock ya q no la tengo en memoria y agrego la pagina memoria
-				int anterior = (elem->puntero) - 1;
-				relojElem* temp = list_get((elem->paginasMemoria),anterior);
-				temp->marco = paginaInfo;
-				temp->pag = pagina;
-				//saco de tlb la pagina si estuviera
-				removerDeTLB(*idProcesoActual,paginaAReemplazar,-1);
-				aAlmacenarEnSwap = solicitarEnSwap(*idProcesoActual,pagina);
-				memcpy((memoriaPrincipal + posicionDeMemoria),aAlmacenarEnSwap,umcConfg.configuracionUMC.MARCO_SIZE);
-				free(aAlmacenarEnSwap);
-			}
-			insertarEnTLB(*idProcesoActual, pagina, paginaInfo, 0);
-		}
-	}
-	posicionDeMemoria = ((paginaInfo->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
-	memcpy((memoriaPrincipal+posicionDeMemoria),buffer,tamanio);
-	paginaInfo->bit_uso = USADO;
-	paginaInfo->modif = 1;
-	if(!alocandoPrograma)
-		pthread_mutex_unlock(&semaforoMemoria);
+	posicionDeMemoria = ((paginaBuscada->nroMarco)
+			* umcConfg.configuracionUMC.MARCO_SIZE) + offset;
+	memcpy((memoriaPrincipal + posicionDeMemoria), buffer, tamanio);
+	paginaBuscada->bit_uso = USADO;
+	paginaBuscada->modif = 1;
+	pthread_mutex_unlock(&semaforoMemoria);
 	return;
 }
 
@@ -304,39 +297,6 @@ void cambiarProceso(int idProceso){
 		log_trace(log_memoria,"CambiarProceso - idAnterior: %d , idNuevo: %d",*idProcesoActual,idProceso);
 		return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

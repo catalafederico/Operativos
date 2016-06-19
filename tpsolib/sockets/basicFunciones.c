@@ -93,11 +93,13 @@ void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
 	memcpy(recibido,tempRcv,tamanioEstructuraARecibir);
 	if(bytesRecibidos<=0)
 	{
+		free(tempRcv);
 		free(recibido);
 		return NULL;
 	}
 	else
 	{
+		free(tempRcv);
 		return recibido;
 	}
 }
