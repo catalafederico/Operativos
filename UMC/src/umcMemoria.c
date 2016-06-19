@@ -120,7 +120,11 @@ int desalojarPrograma(int id){
 	log_trace(log_memoria,"Agregado a marcos libres:");
 	for(i=0;i <cant_paginas; i++){
 		infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
-		list_add(marcosLibres,marcoLibre->nroMarco);
+		if(marcoLibre->nroMarco!=-1){
+			int* nuevoMArco = malloc(sizeof(int));
+			*nuevoMArco = marcoLibre->nroMarco;
+			list_add(marcosLibres,nuevoMArco);
+		}
 		free(marcoLibre);
 		log_trace(log_memoria,"Pag: %d \tMarco: %d ",i,marcoLibre->nroMarco);
 	}
@@ -159,7 +163,9 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 		}
 		//Si hay marcos libres, le asigno uno, la pag no esta en mry
 		else if(list_size(marcosLibres)>0){
-			paginaBuscada->nroMarco = *((int*)(list_remove(marcosLibres,0)));
+			int* valor = list_remove(marcosLibres,0);
+			paginaBuscada->nroMarco = *valor;
+			free(valor);
 			void* contenidoDeLaPagina = solicitarEnSwap(*idProcesoActual,pagina);
 			//copio sin el offset ya que copio la pag entera
 			int offsetTotal = paginaBuscada->nroMarco*umcConfg.configuracionUMC.MARCO_SIZE;
@@ -241,7 +247,9 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 
 		}
 		else if (list_size(marcosLibres) > 0) {
-			paginaBuscada->nroMarco = *((int*)(list_remove(marcosLibres,0)));
+			int* valor = list_remove(marcosLibres,0);
+			paginaBuscada->nroMarco = *valor;
+			free(valor);
 			void* contenidoDeLaPagina = solicitarEnSwap(*idProcesoActual,
 					pagina);
 			//copio sin el offset ya que copio la pag entera
