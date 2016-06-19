@@ -31,11 +31,16 @@
 #include <sockets/header.h>
 
 //FUNCIONES
-
+void *atender_conexion_CPU();
 pcb_t* recibirPCBdeCPU(int socket);
-int* recibirEstadoProceso(int socket_local);
 void *atender_CPU(int* socket_desc);
 pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista);
+
+void ansisop_entradaSalida(int socket_local, int pid_local);
+void ansisop_obtenerValorCompartida(int socket_local);
+void ansisop_asignarValorCompartida(int socket_local);
+int ansisop_wait (int socket_local, int pid_local);
+void ansisop_signal(int socket_local);
 
 
 // CONSTANTES -----
@@ -58,28 +63,35 @@ pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista);
 
 // Variables compartidas ---------------------------------------------
 extern t_reg_config reg_config;
-extern t_list* consolas_dispo;
-extern t_list* proc_New;
+//extern t_list* consolas_dispo;
+//extern t_list* proc_New;
 extern t_list* proc_Ready;
 extern t_list* proc_Exec;
 extern t_list* proc_Block;
-extern t_list* proc_Reject;
+//extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
 extern struct server serverPaCPU;
 // semaforos Compartidos
 extern sem_t sem_READY_dispo;
+extern sem_t sem_EXIT_dispo;
+extern sem_t sem_BLOCK_dispo;
+
 //extern sem_t  sem_cpus_dispo;
 //extern pthread_mutex_t sem_l_cpus_dispo;
 extern t_dictionary* dict_variables;
 extern t_dictionary* dict_pid_consola;
-extern pthread_mutex_t sem_l_New;
+extern t_dictionary* dict_semaforos;
+
+//extern pthread_mutex_t sem_l_New;
 extern pthread_mutex_t sem_l_Ready;
 extern pthread_mutex_t sem_l_Exec;
 extern pthread_mutex_t sem_l_Block;
 extern pthread_mutex_t sem_l_Exit;
-extern pthread_mutex_t sem_l_Reject;
+//extern pthread_mutex_t sem_l_Reject;
 extern pthread_mutex_t sem_dic_variables;
+extern pthread_mutex_t sem_pid_consola;
+extern pthread_mutex_t sem_dic_semaforos;
 //extern pthread_mutex_t sem_log;
 
 
@@ -158,6 +170,11 @@ void *atender_CPU(int* socket_desc) {
 	pcb_t* pcb_elegido;
 	int pid_local = 0;
 	int* estado_proceso;
+	t_sock_mje* socketConsola;
+	int esEl_Pid(pcb_t* pcb_compara) {
+			return (*pcb_compara->PID==pid_local);
+	}
+
 	while (CpuActivo) {
 		//////////////////////////////////////////////
 		//Le otorgo un pcb para tarabajar/////////////
@@ -185,7 +202,8 @@ void *atender_CPU(int* socket_desc) {
 			case FIN_QUANTUM:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
-					buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
+					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
+				//	buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
 					log_debug(logger, "PCB con PID %d sacado de EXEC x fin Quantum",pid_local);
 				pthread_mutex_unlock(&sem_l_Exec);
 				//
@@ -211,8 +229,9 @@ void *atender_CPU(int* socket_desc) {
 			case FIN_PROC:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
-				buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
-				log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",	pid_local);
+					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
+				//	buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
+					log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",	pid_local);
 				pthread_mutex_unlock(&sem_l_Exec);
 				//
 				pthread_mutex_lock(&sem_l_Exit);
@@ -220,15 +239,20 @@ void *atender_CPU(int* socket_desc) {
 					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
 				pthread_mutex_unlock(&sem_l_Exit);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
-				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
-				int envVar = 999;
-				send(socketConsola->socket_dest,&envVar,sizeof(int),0);
+				sem_post(&sem_EXIT_dispo);
+				socketConsola = dictionary_get(dict_pid_consola,string_itoa(pid_local));
+				strcpy(socketConsola->mensaje,"Proceso_Finalizado_Correctamente");
+				pthread_mutex_lock(&sem_pid_consola);
+					dictionary_put(dict_pid_consola,&pid_local, socketConsola);
+				pthread_mutex_unlock(&sem_pid_consola);
+//				int envVar = 999;
+//				send(socketConsola->socket_dest,&envVar,sizeof(int),0);
 				break;
 
 			case FIN_CPU:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
-					list_remove_by_condition(proc_Exec,	(void *) (*pcb_elegido->PID == pid_local));
+					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
 					log_debug(logger, "PCB con PID %d sacado de EXEC xfin CPU",	pid_local);
 				pthread_mutex_unlock(&sem_l_Exec);
 				//
@@ -244,60 +268,61 @@ void *atender_CPU(int* socket_desc) {
 
 //      Las siguientes son operaciones privilegiadas
 			case SOLIC_IO:	//es la primitiva entradaSalida
-                //ansisop_entradaSalida (socket_local, pcb_elegido, pid_local);
-				//              ansisop_entradaSalida ();
-				//				pthread_mutex_lock(&sem_l_Block); // se bloquea
-				//				list_add(proc_Block, pcb_elegido);
-				//				pthread_mutex_unlock(&sem_l_Block);
-				//				log_debug(logger, "El proceso %d de la Consola %d pasa a BLOCK", *pcb_elegido->PID, *pcb_elegido->con_id);
-			{
+                ansisop_entradaSalida(socket_local, pid_local);
+                cambioPcb = 1;//activo el cambio del pcb ya q se bloqueo el proceso
+				break;
+/*			{
 				int* tamanioNombreIO = recibirStream(socket_local,sizeof(int));
 				char* nombreDispositivo = recibirStream(socket_local,*tamanioNombreIO);
 				int* tiempoDispositivo = recibirStream(socket_local, sizeof(int));
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
 			}
-
+*/
 
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
-				//              ansisop_obtenerValorCompartida ();
-			{
+				ansisop_obtenerValorCompartida (socket_local);
+				break;
+/*			{
 				int* tamanioNombreOV = recibirStream(socket_local,sizeof(int));
 				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreOV);
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
 			}
-
+*/
 
 			case GRABA_VALOR: //es la primitiva asignarValorCompartida
-				//              ansisop_asignarValorCompartida ();
-			{
+				ansisop_asignarValorCompartida (socket_local);
+				break;
+/*			{
 				int* tamanioNombreGV = recibirStream(socket_local,sizeof(int));
 				int* valorAGrabar = recibirStream(socket_local, sizeof(int));
 				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreGV);
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
-			}
+			} */
 
 
 			case WAIT_SEM:	 // es la primitiva wait
-				//              ansisop_wait ();
-			{
+				cambioPcb = ansisop_wait (socket_local, pid_local);
+				break;
+		/*	{
 				int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
 				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombreWS);
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
-			}
+			} */
 
 
 			case SIGNAL_SEM: // es la primitiva signal
-				//              ansisop_signal ();
-			{
+				ansisop_signal (socket_local);
+				break;
+/*			{
 				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
 				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
-			}
+			} */
 
 
 			case IMPRIMIR: // es la primitiva imprimir
@@ -535,21 +560,22 @@ pcb_t* recibirPCBdeCPU(int socket){
 	 return pcb_Recibido;
 }
 
-int* recibirEstadoProceso(int socket_local){
+/*int* recibirEstadoProceso(int socket_local){
 	//se libera estado al final del while, por eso lo cambie a puntero
 	int* estado = recibirStream(socket_local,sizeof(int));
 	return estado;
-}
+}*/
 
 
 void ansisop_entradaSalida(int socket_local, int pid_local){
-	//se recibe el PCB
-	pcb_t* pcb_bloqueado = recibirPCBdeCPU(socket_local);
 
 	//se recibe parametros para IO
-	int* long_char = leerHeader(socket_local);
+	int* long_char = recibirStream(socket_local,sizeof(int));
 	char * dispositivo = recibirStream(socket_local, *long_char);
 	int * unidades = recibirStream(socket_local,sizeof(int));
+
+	//se recibe el PCB
+	pcb_t* pcb_bloqueado = recibirPCBdeCPU(socket_local);
 
 	t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
 	elem_block->pcb_bloqueado = pcb_bloqueado;
@@ -557,8 +583,13 @@ void ansisop_entradaSalida(int socket_local, int pid_local){
 	elem_block->dispositivo = dispositivo;
 	elem_block->unidades = * unidades;
 
+	int esEl_Pid(pcb_t* pcb_compara) {
+			return (*pcb_compara->PID==pid_local);
+	}
+
 	pthread_mutex_lock(&sem_l_Exec);
-		list_remove_by_condition(proc_Exec, (void *) (*pcb_bloqueado->PID == pid_local) );
+		list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
+//		list_remove_by_condition(proc_Exec, (void *) (*pcb_bloqueado->PID == pid_local) );
 		log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de IO",pid_local);
 	pthread_mutex_unlock(&sem_l_Exec);
 
@@ -566,18 +597,102 @@ void ansisop_entradaSalida(int socket_local, int pid_local){
 		list_add(proc_Block, elem_block);
 		log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
 	pthread_mutex_unlock(&sem_l_Block);
+	sem_post(&sem_BLOCK_dispo);
 }
 
 void ansisop_obtenerValorCompartida(int socket_local){
 	//se recibe parametros para obtener valor
 	int* long_char = recibirStream(socket_local,sizeof(int));
 	char * variable_comp = recibirStream(socket_local, *long_char);
-	void * valor_comp;
+
+	//se recibe el PCB  // no hace falta el PCB
+//	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
+
+	int * valor_comp;
 	pthread_mutex_lock(&sem_dic_variables);
 		valor_comp = dictionary_get(dict_variables,variable_comp);
 	pthread_mutex_unlock(&sem_dic_variables);
 
-//	enviarStream();
+	send(socket_local,*valor_comp,sizeof(int),0);
+
+}
+
+void ansisop_asignarValorCompartida(int socket_local){
+	int* tamanioNombreGV = recibirStream(socket_local,sizeof(int));
+	int* valorAGrabar = recibirStream(socket_local, sizeof(int));
+	char* nombreVariable = recibirStream(socket_local,*tamanioNombreGV);
+	void * valor_comp;
+
+//	pthread_mutex_lock(&sem_dic_variables);
+//		valor_comp = dictionary_get(dict_variables,nombreVariable);
+//	pthread_mutex_unlock(&sem_dic_variables);
+	valor_comp = valorAGrabar;
+//	pcb_elegido = recibirPCBdeCPU(socket_local);
+	pthread_mutex_lock(&sem_dic_variables);
+		dictionary_put(dict_variables,nombreVariable, valor_comp);
+	pthread_mutex_unlock(&sem_dic_variables);
+}
+
+int ansisop_wait (int socket_local, int pid_local){
+	int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
+	char* nombreSemaforo = recibirStream(socket_local,*tamanioNombreWS);
+	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
+	int * valor_semaforo;
+
+	int esEl_Pid(pcb_t* pcb_compara) {
+			return (*pcb_compara->PID==pid_local);
+	}
+
+	pthread_mutex_lock(&sem_dic_semaforos);
+		valor_semaforo = dictionary_get(dict_semaforos,nombreSemaforo);
+	pthread_mutex_unlock(&sem_dic_semaforos);
+
+	if (*valor_semaforo > 0){
+		*valor_semaforo = *valor_semaforo-1 ;
+		pthread_mutex_lock(&sem_dic_semaforos);
+			dictionary_put(dict_semaforos,nombreSemaforo,valor_semaforo);
+		pthread_mutex_unlock(&sem_dic_semaforos);
+		return 0;
+	}
+	else { // Bloqueo el proceso
+
+		t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
+		elem_block->pcb_bloqueado = pcb_elegido;
+		elem_block->tipo_de_bloqueo = 2;
+		elem_block->dispositivo = nombreSemaforo;
+		elem_block->unidades = 0;
+
+		pthread_mutex_lock(&sem_l_Exec);
+			list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
+			log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de IO",pid_local);
+		pthread_mutex_unlock(&sem_l_Exec);
+
+		pthread_mutex_lock(&sem_l_Block); // se bloquea
+			list_add(proc_Block, pcb_elegido);
+			log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
+		pthread_mutex_unlock(&sem_l_Block);
+		sem_post(&sem_BLOCK_dispo);
+		return 1; // retorna 1 si se bloquea el proceso para que cambie de PCB
+		}
+
+}
+
+void ansisop_signal(int socket_local){
+	int* tamanioNombre = recibirStream(socket_local,sizeof(int));
+	char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
+
+	//se recibe el PCB  // no hace falta el PCB
+//	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
+
+	int * valor_semaforo;
+	pthread_mutex_lock(&sem_dic_semaforos);
+		valor_semaforo = dictionary_get(dict_semaforos,nombreSemaforo);
+	pthread_mutex_unlock(&sem_dic_semaforos);
+
+	*valor_semaforo = *valor_semaforo-1 ;
+	pthread_mutex_lock(&sem_dic_semaforos);
+		dictionary_put(dict_semaforos,nombreSemaforo,valor_semaforo);
+	pthread_mutex_unlock(&sem_dic_semaforos);
 
 }
 

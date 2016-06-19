@@ -150,7 +150,7 @@ void *atender_consola(int* socket_desc){
 		strcpy(datos_a_consola->mensaje,string_repeat(" ",MJE_RTA));
 
 		pthread_mutex_lock(&sem_pid_consola);
-			int* tempId = malloc(sizeof(int));//no hacer free sino se borsa la clave
+			int* tempId = malloc(sizeof(int));//no hacer free sino se borra la clave
 			*tempId = promCargar->PID;
 			dictionary_put(dict_pid_consola,tempId, datos_a_consola);
 		pthread_mutex_unlock(&sem_pid_consola);

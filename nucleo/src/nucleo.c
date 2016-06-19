@@ -76,12 +76,14 @@ pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t semProgramasAProcesar = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_pid_consola = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_dic_variables = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_dic_semaforos = PTHREAD_MUTEX_INITIALIZER;
 
 int tamanioPaginaUMC;
 
 // indice de consolas que asocia un PID a la consola que lo envio
 t_dictionary* dict_pid_consola;
 t_dictionary* dict_variables;
+t_dictionary* dict_semaforos;
 
 // CONSTANTES -----
 #define SOY_CPU 	"Te_conectaste_con_CPU____"
@@ -288,6 +290,7 @@ void *administrar_cola_Reject (){
 
 	pcb_t* pcb_elegido;
 	int pid_local = 0;
+	t_sock_mje* datos_a_consola;
 	while (1){
 		sem_wait(&sem_REJECT_dispo); // espero que haya un proceso en REJECT disponible
 		log_debug(log_procesador_Reject, "Se empezo a procesar un PCB de REJECT");
@@ -300,7 +303,6 @@ void *administrar_cola_Reject (){
 		log_debug(log_procesador_Reject, "Se removio el PCB de REJECT: %d", pid_local);
 
 		// quito el proceso del Diccionario, obtengo Consola_Id y mensaje de respuesta
-		t_sock_mje* datos_a_consola;
 		pthread_mutex_lock(&sem_pid_consola);
 			datos_a_consola = dictionary_get(dict_pid_consola,string_itoa(pid_local));
 			dictionary_remove(dict_pid_consola,string_itoa(pid_local));
@@ -318,7 +320,6 @@ void *administrar_cola_Reject (){
 	    	log_debug(log_procesador_Reject, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
 	    }
 	    log_debug(log_procesador_Reject, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
-
+		free(datos_a_consola);
 	}
-
 }
