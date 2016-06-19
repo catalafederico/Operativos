@@ -29,7 +29,7 @@ typedef newProgram solcPag;
 typedef newProgram almcPag;
 
 
-void notificarASwapPrograma(int id,int paginas){
+int notificarASwapPrograma(int id,int paginas){
 	newProgram newProceso ;
 	newProceso.id = id;
 	newProceso.pag = paginas;
@@ -38,9 +38,11 @@ void notificarASwapPrograma(int id,int paginas){
 	enviarStream(umcConfg.socketSwap,nuevoPrograma,sizeof(newProgram),&newProceso);
 	int* conf = leerHeader(umcConfg.socketSwap);
 	if(*conf==OK){
-		printf("OK\n");
+		//printf("OK\n");
+		return 1;
 	}else if(*conf==ERROR){
-		printf("ERROR\n");
+		//printf("ERROR\n");
+		return 0;
 	}
 }
 

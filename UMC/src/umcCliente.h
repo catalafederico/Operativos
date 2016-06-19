@@ -10,7 +10,7 @@
 #include "estructurasUMC.h"
 
 void inicializarSwap(int* socket);
-void notificarASwapPrograma(int id,int paginas);
+int notificarASwapPrograma(int id,int paginas);
 void notificarASwapFinPrograma(int id);
 void almacenarEnSwap(int id, int pagina, void* buffer);
 void* solicitarEnSwap(int id, int pagina);
