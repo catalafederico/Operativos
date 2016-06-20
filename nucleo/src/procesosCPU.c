@@ -6,7 +6,7 @@
  */
 
 #include <stdio.h>
-//#include <string.h>
+#include <string.h>
 #include <stdlib.h>
 #include<pthread.h>
 
@@ -20,7 +20,7 @@
 //#include <signal.h>
 #include <commons/collections/list.h>
 //#include <commons/config.h>
-//#include <commons/string.h>
+#include <commons/string.h>
 #include <commons/log.h>
 #include <sockets/socketCliente.h>
 #include <sockets/socketServer.h>
@@ -29,18 +29,6 @@
 #include "procesosCPU.h"
 #include "semaphore.h"
 #include <sockets/header.h>
-
-//FUNCIONES
-void *atender_conexion_CPU();
-pcb_t* recibirPCBdeCPU(int socket);
-void *atender_CPU(int* socket_desc);
-pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista);
-
-void ansisop_entradaSalida(int socket_local, int pid_local);
-void ansisop_obtenerValorCompartida(int socket_local);
-void ansisop_asignarValorCompartida(int socket_local);
-int ansisop_wait (int socket_local, int pid_local);
-void ansisop_signal(int socket_local);
 
 
 // CONSTANTES -----
@@ -79,7 +67,7 @@ extern sem_t sem_BLOCK_dispo;
 
 //extern sem_t  sem_cpus_dispo;
 //extern pthread_mutex_t sem_l_cpus_dispo;
-extern t_dictionary* dict_variables;
+//extern t_dictionary* dict_variables;
 extern t_dictionary* dict_pid_consola;
 extern t_dictionary* dict_semaforos;
 
@@ -89,7 +77,7 @@ extern pthread_mutex_t sem_l_Exec;
 extern pthread_mutex_t sem_l_Block;
 extern pthread_mutex_t sem_l_Exit;
 //extern pthread_mutex_t sem_l_Reject;
-extern pthread_mutex_t sem_dic_variables;
+extern pthread_mutex_t sem_reg_config;
 extern pthread_mutex_t sem_pid_consola;
 extern pthread_mutex_t sem_dic_semaforos;
 //extern pthread_mutex_t sem_log;
@@ -215,17 +203,6 @@ void *atender_CPU(int* socket_desc) {
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el quantum
 				break;
 
-//			case FIN_IO:// VER SI ESTO SE MANEJA DESDE OTRO LADO,
-//				pthread_mutex_lock(&sem_l_Block); // lo quito de bloqueados
-//				list_remove_by_condition(proc_Block, (void *) (*pcb_elegido->PID == pid_local) );
-//				pthread_mutex_unlock(&sem_l_Block);
-//
-//				pthread_mutex_lock(&sem_l_Ready); // lo agrego a listos
-//				list_add(proc_Ready, pcb_elegido);
-//				pthread_mutex_unlock(&sem_l_Ready);
-//				log_debug(logger, "El proceso %d de la Consola %d pasa a READY", *pcb_elegido->PID, *pcb_elegido->con_id);
-//				break;
-
 			case FIN_PROC:
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
@@ -305,6 +282,9 @@ void *atender_CPU(int* socket_desc) {
 
 			case WAIT_SEM:	 // es la primitiva wait
 				cambioPcb = ansisop_wait (socket_local, pid_local);
+				send(socket_local,&cambioPcb,sizeof(int),0);
+				// si cambioPcb es 0 significa que el wait no bloqueo y el cpu puede seguir procesando,
+				// si es 1 entonces el proceso se bloqueo y le CPU debe tomar otro PCB
 				break;
 		/*	{
 				int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
@@ -589,7 +569,6 @@ void ansisop_entradaSalida(int socket_local, int pid_local){
 
 	pthread_mutex_lock(&sem_l_Exec);
 		list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
-//		list_remove_by_condition(proc_Exec, (void *) (*pcb_bloqueado->PID == pid_local) );
 		log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de IO",pid_local);
 	pthread_mutex_unlock(&sem_l_Exec);
 
@@ -609,11 +588,11 @@ void ansisop_obtenerValorCompartida(int socket_local){
 //	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
 
 	int * valor_comp;
-	pthread_mutex_lock(&sem_dic_variables);
-		valor_comp = dictionary_get(dict_variables,variable_comp);
-	pthread_mutex_unlock(&sem_dic_variables);
+	pthread_mutex_lock(&sem_reg_config);
+		valor_comp = dictionary_get(reg_config.dic_variables,variable_comp);
+	pthread_mutex_unlock(&sem_reg_config);
 
-	send(socket_local,*valor_comp,sizeof(int),0);
+	send(socket_local,valor_comp,sizeof(int),0);
 
 }
 
@@ -628,33 +607,33 @@ void ansisop_asignarValorCompartida(int socket_local){
 //	pthread_mutex_unlock(&sem_dic_variables);
 	valor_comp = valorAGrabar;
 //	pcb_elegido = recibirPCBdeCPU(socket_local);
-	pthread_mutex_lock(&sem_dic_variables);
-		dictionary_put(dict_variables,nombreVariable, valor_comp);
-	pthread_mutex_unlock(&sem_dic_variables);
+	pthread_mutex_lock(&sem_reg_config);
+		dictionary_put(reg_config.dic_variables,nombreVariable, valor_comp);
+	pthread_mutex_unlock(&sem_reg_config);
 }
 
 int ansisop_wait (int socket_local, int pid_local){
 	int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
 	char* nombreSemaforo = recibirStream(socket_local,*tamanioNombreWS);
 	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
-	int * valor_semaforo;
+//	int * valor_semaforo;
+	int retorno=0;
+	t_datos_samaforos* datos_sem;
 
 	int esEl_Pid(pcb_t* pcb_compara) {
 			return (*pcb_compara->PID==pid_local);
 	}
 
-	pthread_mutex_lock(&sem_dic_semaforos);
-		valor_semaforo = dictionary_get(dict_semaforos,nombreSemaforo);
-	pthread_mutex_unlock(&sem_dic_semaforos);
+	pthread_mutex_lock(&sem_reg_config);
+		datos_sem=dictionary_get(reg_config.dic_semaforos,nombreSemaforo);
 
-	if (*valor_semaforo > 0){
-		*valor_semaforo = *valor_semaforo-1 ;
-		pthread_mutex_lock(&sem_dic_semaforos);
-			dictionary_put(dict_semaforos,nombreSemaforo,valor_semaforo);
-		pthread_mutex_unlock(&sem_dic_semaforos);
-		return 0;
+	if (datos_sem->valor > 0){
+		(datos_sem->valor)-- ;
+		dictionary_put(reg_config.dic_semaforos,nombreSemaforo,datos_sem);
+		retorno=0;
 	}
-	else { // Bloqueo el proceso
+
+	if (datos_sem->valor <= 0) { // Bloqueo el proceso
 
 		t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
 		elem_block->pcb_bloqueado = pcb_elegido;
@@ -668,31 +647,28 @@ int ansisop_wait (int socket_local, int pid_local){
 		pthread_mutex_unlock(&sem_l_Exec);
 
 		pthread_mutex_lock(&sem_l_Block); // se bloquea
-			list_add(proc_Block, pcb_elegido);
+			list_add(proc_Block, elem_block);
 			log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
 		pthread_mutex_unlock(&sem_l_Block);
 		sem_post(&sem_BLOCK_dispo);
-		return 1; // retorna 1 si se bloquea el proceso para que cambie de PCB
+		retorno = 1; // retorna 1 si se bloquea el proceso para que cambie de PCB
 		}
-
+	pthread_mutex_unlock(&sem_reg_config);
+	return retorno;
 }
 
 void ansisop_signal(int socket_local){
 	int* tamanioNombre = recibirStream(socket_local,sizeof(int));
 	char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
-
+	t_datos_samaforos* datos_sem;
 	//se recibe el PCB  // no hace falta el PCB
 //	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
 
-	int * valor_semaforo;
-	pthread_mutex_lock(&sem_dic_semaforos);
-		valor_semaforo = dictionary_get(dict_semaforos,nombreSemaforo);
-	pthread_mutex_unlock(&sem_dic_semaforos);
-
-	*valor_semaforo = *valor_semaforo-1 ;
-	pthread_mutex_lock(&sem_dic_semaforos);
-		dictionary_put(dict_semaforos,nombreSemaforo,valor_semaforo);
-	pthread_mutex_unlock(&sem_dic_semaforos);
+	pthread_mutex_lock(&sem_reg_config);
+		datos_sem = dictionary_get(reg_config.dic_semaforos,nombreSemaforo);
+		(datos_sem->valor)++;
+		dictionary_put(reg_config.dic_semaforos,nombreSemaforo,datos_sem);
+	pthread_mutex_unlock(&sem_reg_config);
 
 }
 

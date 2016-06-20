@@ -46,6 +46,7 @@ t_list* proc_Reject;
 t_list* proc_Exit;
 t_log *logger;
 
+
 // logs para pruebas
 t_log * log_procesador_Exit;
 t_log * log_procesador_Block;
@@ -75,14 +76,15 @@ pthread_mutex_t sem_l_Exit = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_log = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t semProgramasAProcesar = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sem_pid_consola = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t sem_dic_variables = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t sem_dic_semaforos = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_reg_config = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t sem_dic_semaforos = PTHREAD_MUTEX_INITIALIZER;
+
 
 int tamanioPaginaUMC;
 
 // indice de consolas que asocia un PID a la consola que lo envio
 t_dictionary* dict_pid_consola;
-t_dictionary* dict_variables;
+//t_dictionary* dict_variables;
 t_dictionary* dict_semaforos;
 
 // CONSTANTES -----
@@ -98,7 +100,7 @@ t_dictionary* dict_semaforos;
 void *administrar_cola_Exit();
 void *administrar_cola_Block();
 void *administrar_cola_Reject();
-void * administrar_cola_IO(char* dispositivo);
+
 // **************************************************************************************************
 // ******************************************    MAIN     ***************************************
 // **************************************************************************************************
@@ -112,13 +114,14 @@ int main(int argc, char **argv) {
 	sem_init(&sem_READY_dispo,0,0);
 	sem_init(&sem_EXIT_dispo,0,0);
 	sem_init(&sem_BLOCK_dispo,0,0);
+	sem_init(&sem_REJECT_dispo,0,0);
 //	sem_init(&sem_cpus_dispo,0,0);
 
 	//declaro indice etiquetas
 	t_dictionary indiceEtiquetas;
 
 	dict_pid_consola = dictionary_create();
-	dict_variables = dictionary_create();
+//	dict_variables = dictionary_create();
 
 	// Inicializa el log.
 	logger = log_create("nucleo.log", "NUCLEO", 0, LOG_LEVEL_TRACE);
@@ -140,7 +143,8 @@ int main(int argc, char **argv) {
 	//Leo archivo de configuracion ------------------------------
 	reg_config = get_config_params();
 
-
+//sacarr
+return 0 ;
 
 //Administrador de UMC----------------------
 	if(pthread_create( &thread_UMC, NULL , procesos_UMC, NULL) < 0)
@@ -245,42 +249,44 @@ void *administrar_cola_Exit(){
 //*********************************************************************************************
 void *administrar_cola_Block(){
 	log_debug(log_procesador_Block, "administrar_cola_Block esta corriendo");
-	disparar_hilos_disp_IO();
-//	pcb_t* pcb_elegido;
+
+	t_pcb_bloqueado* elem_block;
+	t_datos_dicIO* datos_io;
+	t_datos_samaforos* datos_sem;
 	int pid_local = 0;
 	while (1){
 		sem_wait(&sem_BLOCK_dispo); // espero que haya un proceso en BLOCK disponible
 		log_debug(log_procesador_Block, "Se empezo a procesar un PCB de BLOCK");
 
-		// quito el proceso de la cola Block
+		pthread_mutex_lock(&sem_l_Block);
+			elem_block=list_remove(proc_Block, 0);
+			pid_local=*(elem_block->pcb_bloqueado->PID);
+			log_debug(logger, "PCB con PID %d sacado de cola BLOCK",pid_local);
+		pthread_mutex_unlock(&sem_l_Block);
 
-
-	}
-
-}
-
-//***************************************************************************
-// disparar_hilos_disp_IO dispara un hilo para atender cada dispositivo de IO
-//***************************************************************************
-void disparar_hilos_disp_IO(){
-//Crear thread Administrador de colas IO
-	int i = 0;
-	while (reg_config.io_id[i]!=NULL){
-		pthread_t thread_IO_admin; //hay q crear uno por cada disp
-		char * dispositivo;
-		dispositivo = strdup(reg_config.io_id[i]);
-		if(pthread_create(&thread_IO_admin, NULL , administrar_cola_IO, (void*) dispositivo) < 0)
-		{
-			log_debug(logger, "No fue posible crear thread Admin de IO: %s",dispositivo);
-		//	exit(EXIT_FAILURE);
+		switch((elem_block->tipo_de_bloqueo)){
+			case 1:	// bloqueo por IO
+				pthread_mutex_lock(&sem_reg_config);
+					datos_io=dictionary_get(reg_config.dic_IO,elem_block->dispositivo);
+					list_add(datos_io->cola_procesos,elem_block);
+					sem_post(&(datos_io->sem_dispositivo)); // ver si hay que usar el &
+					dictionary_put(reg_config.dic_IO,elem_block->dispositivo,datos_io); //verr
+				pthread_mutex_unlock(&sem_reg_config);
+				break;
+			case 2:	// bloqueo por wait
+				pthread_mutex_lock(&sem_reg_config);
+					datos_sem=dictionary_get(reg_config.dic_semaforos,elem_block->dispositivo);
+					list_add(datos_sem->cola_procesos,elem_block);
+					dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem); //verr
+				pthread_mutex_unlock(&sem_reg_config);
+				break;
 		}
-		i++;
+
+		log_debug(logger, "PCB con PID %d pasado a cola de dispositivo",pid_local);
 	}
+
 }
 
-void * administrar_cola_IO(char* dispositivo){
-	//recibir parametros
-}
 
 //*******************************************************************************************************
 /* administrar_cola_Reject toma los procesos que se encuentran Rechazados y se lo informa a su Consola */

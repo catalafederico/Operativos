@@ -10,21 +10,36 @@
 
 #include <commons/collections/list.h>
 #include <commons/collections/dictionary.h>
+#include <semaphore.h>
 
 typedef struct {
 	int puerto_prog;
 	int puerto_cpu;
 	int quantum;
 	int quantum_sleep;			// Estructura del archivo de configuracion
-	char ** io_id;
-	char ** io_sleep;
-	char ** sem_id;
-	char ** sem_init;
-	char ** shared_vars;
+	t_dictionary* dic_IO;		 //clave nombre del dispositivo y datos la estructura t_datos_dicIO
+	t_dictionary* dic_semaforos; //clave nombre del Semaforo y datos el int del valor
+	t_dictionary* dic_variables; //clave el nombre de la variable y datos el int del valor
+//	char ** io_id;
+//	char ** io_sleep;
+//	char ** sem_id;
+//	char ** sem_init;
+//	char ** shared_vars;
 	unsigned int stack_size;
 	char * ip_umc;
 	int puerto_umc;
 } t_reg_config;
+
+typedef struct{
+	int retardo;
+	sem_t sem_dispositivo;
+	t_list* cola_procesos;
+}t_datos_dicIO;
+
+typedef struct{
+	int valor;
+	t_list* cola_procesos;
+}t_datos_samaforos;
 
 //Pcb
 typedef struct{

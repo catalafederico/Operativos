@@ -26,13 +26,13 @@ endif
 all: nucleo
 
 dependents:
-	-cd /home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug && $(MAKE) all
+	-cd /home/utnso/workspace/tp-2016-1c-Explosive-code/tpsolib/Debug && $(MAKE) all
 
 # Tool invocations
-nucleo: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so
+nucleo: $(OBJS) $(USER_OBJS) /home/utnso/workspace/tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "nucleo" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"/home/utnso/workspace/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "nucleo" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -43,6 +43,6 @@ clean:
 
 .PHONY: all clean dependents
 .SECONDARY:
-/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so:
+/home/utnso/workspace/tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so:
 
 -include ../makefile.targets
