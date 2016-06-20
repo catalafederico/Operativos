@@ -60,6 +60,7 @@ extern t_list* proc_Block;
 extern t_list* proc_Exit;
 extern t_log *logger;
 extern struct server serverPaCPU;
+
 // semaforos Compartidos
 extern sem_t sem_READY_dispo;
 extern sem_t sem_EXIT_dispo;
@@ -69,7 +70,7 @@ extern sem_t sem_BLOCK_dispo;
 //extern pthread_mutex_t sem_l_cpus_dispo;
 //extern t_dictionary* dict_variables;
 extern t_dictionary* dict_pid_consola;
-extern t_dictionary* dict_semaforos;
+//extern t_dictionary* dict_semaforos;
 
 //extern pthread_mutex_t sem_l_New;
 extern pthread_mutex_t sem_l_Ready;
@@ -79,7 +80,7 @@ extern pthread_mutex_t sem_l_Exit;
 //extern pthread_mutex_t sem_l_Reject;
 extern pthread_mutex_t sem_reg_config;
 extern pthread_mutex_t sem_pid_consola;
-extern pthread_mutex_t sem_dic_semaforos;
+//extern pthread_mutex_t sem_dic_semaforos;
 //extern pthread_mutex_t sem_log;
 
 
