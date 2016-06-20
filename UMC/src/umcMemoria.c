@@ -18,13 +18,13 @@
 
 extern umcNucleo umcConfg;
 t_log* log_memoria;
-tlb* tlbCache;
+tlb* tlbCache; // liberar al desalojar
 pthread_mutex_t semaforoMemoria;
 void* memoriaPrincipal;
 t_list* marcosLibres;
 t_dictionary* tabla_actual;
-t_dictionary* programas_ejecucion;
-t_dictionary* programas_paraClock;
+t_dictionary* programas_ejecucion; // liberar al desalojar
+t_dictionary* programas_paraClock; // liberar al desalojar
 int* idProcesoActual;
 int entradasTLB;
 int clockModificado;
@@ -59,47 +59,54 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 
 }
 
-int alocarPrograma(int paginasRequeridas, int id_proceso, t_dictionary* codigoPrograma) {
+int alocarPrograma(int paginasRequeridas, int id_proceso,
+		t_dictionary* codigoPrograma) {
+
 	pthread_mutex_lock(&semaforoMemoria);
+
 	if (paginasRequeridas > umcConfg.configuracionUMC.MARCO_X_PROC) {
 		log_trace(log_memoria,
 				"Rechazo programa id: %d , paginas requeridas: %d \n",
 				paginasRequeridas, id_proceso);
+		pthread_mutex_unlock(&semaforoMemoria);
 		return -1;
 	}
-	if(1) {
-		log_trace(log_memoria, "Comienza alocacion de programa id: %d",
-				id_proceso);
-		int i = 1;
-		//Creo yable pag_marco
-		t_dictionary* pag_frame = dictionary_create();
-		for(i=0;i<paginasRequeridas;i++){
-			infoPagina* pagina = malloc(sizeof(infoPagina));
-			pagina->bit_uso = 0;
-			pagina->nroMarco = -1;
-			pagina->modif = 0;
-			dictionary_put(pag_frame,&i,pagina);
-		}
-		//Creo Elemento para el manejo de clock
-		reloj* nuevoElemClock = malloc(sizeof(reloj));
-		nuevoElemClock->paginasMemoria = list_create();
-		nuevoElemClock->puntero = 0;
-		int* idClock = malloc(sizeof(int));
-		*idClock = id_proceso;
-		dictionary_put(programas_paraClock,idClock,nuevoElemClock);
-		//Agrego table de codigo o todas las tablas
-		int* idProceso = malloc(sizeof(int));
-		*idProceso = id_proceso;
-		log_trace(log_memoria, "Agregado en tabla de proceso id: ");
-		dictionary_put(programas_ejecucion, idProceso, pag_frame);
-		log_trace(log_memoria, "Alocado programa id: %d", id_proceso);
-		//Notifico a swap
-		notificarASwapPrograma(id_proceso,paginasRequeridas);
-		int paginasDeCodigo = dictionary_size(codigoPrograma);
-		for(i=0;i<paginasDeCodigo;i++){
-			void* aAlmacenarEnSwap = dictionary_get(codigoPrograma,&i);
-			almacenarEnSwap(id_proceso,i,aAlmacenarEnSwap);
-		}
+	if (!notificarASwapPrograma(id_proceso, paginasRequeridas)) {
+		log_trace(log_memoria,
+				"Rechazo programa id: %d , paginas requeridas: %d \n",
+				paginasRequeridas, id_proceso);
+		pthread_mutex_unlock(&semaforoMemoria);
+		return -1;
+	}
+	log_trace(log_memoria, "Comienza alocacion de programa id: %d", id_proceso);
+	int i = 1;
+	//Creo yable pag_marco
+	t_dictionary* pag_frame = dictionary_create();
+	for (i = 0; i < paginasRequeridas; i++) {
+		infoPagina* pagina = malloc(sizeof(infoPagina));
+		pagina->bit_uso = 0;
+		pagina->nroMarco = -1;
+		pagina->modif = 0;
+		dictionary_put(pag_frame, &i, pagina);
+	}
+	//Creo Elemento para el manejo de clock
+	reloj* nuevoElemClock = malloc(sizeof(reloj));
+	nuevoElemClock->paginasMemoria = list_create();
+	nuevoElemClock->puntero = 0;
+	/*int* idClock = malloc(sizeof(int));
+	*idClock = id_proceso;*/
+	dictionary_put(programas_paraClock, &id_proceso, nuevoElemClock);
+	//Agrego table de codigo o todas las tablas
+	/*int* idProceso = malloc(sizeof(int));
+	*idProceso = id_proceso;*/
+	log_trace(log_memoria, "Agregado en tabla de proceso id: ");
+	dictionary_put(programas_ejecucion, &id_proceso, pag_frame);
+	log_trace(log_memoria, "Alocado programa id: %d", id_proceso);
+	//Notifico a swap
+	int paginasDeCodigo = dictionary_size(codigoPrograma);
+	for (i = 0; i < paginasDeCodigo; i++) {
+		void* aAlmacenarEnSwap = dictionary_get(codigoPrograma, &i);
+		almacenarEnSwap(id_proceso, i, aAlmacenarEnSwap);
 	}
 	pthread_mutex_unlock(&semaforoMemoria);
 	return 0;
@@ -107,19 +114,31 @@ int alocarPrograma(int paginasRequeridas, int id_proceso, t_dictionary* codigoPr
 
 int desalojarPrograma(int id){
 	log_trace(log_memoria,"Comienza desalojo de programa id: %d", id);
-	t_dictionary* tabla_desalojar = dictionary_get(programas_ejecucion,&id);
+	t_dictionary* tabla_desalojar = dictionary_remove(programas_ejecucion,&id);
 	int cant_paginas = dictionary_size(tabla_desalojar);
 	int i;
 	log_trace(log_memoria,"Agregado a marcos libres:");
 	for(i=0;i <cant_paginas; i++){
 		infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
-		list_add(marcosLibres,marcoLibre);
+		if(marcoLibre->nroMarco!=-1){
+			int* nuevoMArco = malloc(sizeof(int));
+			*nuevoMArco = marcoLibre->nroMarco;
+			list_add(marcosLibres,nuevoMArco);
+		}
+		free(marcoLibre);
 		log_trace(log_memoria,"Pag: %d \tMarco: %d ",i,marcoLibre->nroMarco);
 	}
-	tabla_actual = NULL;
 	dictionary_destroy(tabla_desalojar);
-	int* idRemovido = dictionary_remove(programas_ejecucion,&id);
-	free(idRemovido);
+	//desalojo programas para clock
+	reloj* elemento = dictionary_get(programas_paraClock,&id);
+	cant_paginas = list_size(elemento->paginasMemoria);
+	for(i=0;i<cant_paginas;i++){
+		relojElem* temp = list_remove(elemento->paginasMemoria,0);
+		free(temp);
+	}
+	list_destroy(elemento->paginasMemoria);
+	free(elemento);
+	notificarASwapFinPrograma(id);
 	pthread_mutex_unlock(&semaforoMemoria);
 	log_trace(log_memoria,"Programa desalojado");
 	return 0;
@@ -144,7 +163,9 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 		}
 		//Si hay marcos libres, le asigno uno, la pag no esta en mry
 		else if(list_size(marcosLibres)>0){
-			paginaBuscada->nroMarco = *((int*)(list_remove(marcosLibres,0)));
+			int* valor = list_remove(marcosLibres,0);
+			paginaBuscada->nroMarco = *valor;
+			free(valor);
 			void* contenidoDeLaPagina = solicitarEnSwap(*idProcesoActual,pagina);
 			//copio sin el offset ya que copio la pag entera
 			int offsetTotal = paginaBuscada->nroMarco*umcConfg.configuracionUMC.MARCO_SIZE;
@@ -226,7 +247,9 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 
 		}
 		else if (list_size(marcosLibres) > 0) {
-			paginaBuscada->nroMarco = *((int*)(list_remove(marcosLibres,0)));
+			int* valor = list_remove(marcosLibres,0);
+			paginaBuscada->nroMarco = *valor;
+			free(valor);
 			void* contenidoDeLaPagina = solicitarEnSwap(*idProcesoActual,
 					pagina);
 			//copio sin el offset ya que copio la pag entera

@@ -63,9 +63,8 @@ int procesoSeEncuentraEnSwap(int pid) {
 		} else {
 			auxiliar = auxiliar->procesoSiguiente;
 		}
-
-		return 0;
 	}
+	return 0;
 }
 
 proceso obtenerProceso(int pid) {
@@ -134,7 +133,7 @@ int hayHuecoDondeCabeProceso(proceso* proceso) {
 	int ultimaPagina = swap_configuracion.CANTIDAD_PAGINAS;
 	int paginasLibresConsecutivas = 0;
 
-	while (paginaActual <= ultimaPagina) {
+	while (paginaActual < ultimaPagina) {
 
 		if (bitMap[paginaActual] == 0) {
 			paginasLibresConsecutivas++;

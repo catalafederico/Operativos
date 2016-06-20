@@ -49,7 +49,6 @@ void inicializar_programa() {
 		}
 	}
 	if(alocarPrograma(*cantPag,*id,codigo_programa)==-1){
-		pthread_mutex_unlock(&semaforoMemoria);
 		int error = ERROR;
 		send(socketNucleo,&error, sizeof(int),0);
 		log_info(umcConfg.loguer, "Programa no ha sido alocado correctamente");

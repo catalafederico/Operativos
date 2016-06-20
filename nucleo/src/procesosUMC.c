@@ -51,7 +51,7 @@ extern struct cliente clienteNucleoUMC;
 
 
 // semaforos Compartidos
-
+extern t_dictionary* dict_pid_consola;
 extern pthread_mutex_t sem_l_New;
 extern pthread_mutex_t sem_l_Ready;
 extern pthread_mutex_t sem_l_Exec;
@@ -63,25 +63,27 @@ extern pthread_mutex_t semProgramasAProcesar;
 extern sem_t sem_READY_dispo;
 //extern sem_t  cpus_dispo;
 
-pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo);
+pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado);
 
 void *procesos_UMC(){
+	int estado;
 	clienteNucleoUMC = crearCliente(reg_config.puerto_umc,reg_config.ip_umc);
 //	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
 	log_debug(logger, "Conexion con UMC");
 	conectarseConUmc(clienteNucleoUMC);
 	int seguir = 1;
 	while(seguir){
+		estado = 0;
 		sem_wait(&semaforoProgramasACargar);//Espera a q haya programas a cargar
 		pthread_mutex_lock(&semProgramasAProcesar);
 			programaNoCargado* progParaCargar = list_remove(programas_para_procesar,0);
 		pthread_mutex_unlock(&semProgramasAProcesar);
 
 		char* instrucciones = progParaCargar->instrucciones;
-		pcb_t* pcbNuevo = crearPCBinicial(instrucciones,progParaCargar->PID);
+		pcb_t* pcbNuevo = crearPCBinicial(instrucciones,progParaCargar->PID,&estado);
 
 
-		if (pcbNuevo!=NULL){ //hay espacio y cargo el pcb para procesar
+		if (estado==0){ //hay espacio y cargo el pcb para procesar
 			pthread_mutex_lock(&sem_l_New);
 				list_add(proc_New, pcbNuevo);
 				log_debug(logger, "PCB con PID %d creado y agregado a NEW",progParaCargar->PID);
@@ -146,7 +148,7 @@ void conectarseConUmc(struct cliente clienteNucleo){
 	//Termina
 }
 
-pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo){
+pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado){
 	pcb_t* pcbNuevo = malloc(sizeof(pcb_t));
 	pcbNuevo->PID = malloc(sizeof(int));
 	pcbNuevo->PC = malloc(sizeof(int));
@@ -163,8 +165,11 @@ pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo){
 							  // 1 = No Hay espacio
 	if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente,idProgramaNuevo)==-1){
 		//no se pudo cargar notificar a la consola determinda
+		t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&idProgramaNuevo);
+		int NOSEPUDOCARGAR = 123456;
+		send(socketConsola->socket_dest,&NOSEPUDOCARGAR,sizeof(int),0);
 		log_debug(logger, "No se pudo cargar el programa %d en UMC", idProgramaNuevo);
-		return NULL;
+		*estado = -1;
 	}
 	*(pcbNuevo->PID) = idProgramaNuevo;
 	*(pcbNuevo->PC) = 0;
@@ -174,5 +179,10 @@ pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo){
 	//el indce de funciones ya se creo al usar la funcion nuevoPrograma de arriba
 	pcbNuevo->indice_stack = dictionary_create();
 	return pcbNuevo;
+}
+
+void notificarAUMCfpc(int id){
+	int fpc = 51;
+	enviarStream(clienteNucleoUMC.socketCliente,fpc,sizeof(int),&id);
 }
 

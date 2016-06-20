@@ -147,7 +147,7 @@ void *atender_consola(int* socket_desc){
 
 		t_sock_mje* datos_a_consola = malloc(sizeof(t_sock_mje));
 		datos_a_consola->socket_dest = socket_co;
-		strcpy(datos_a_consola->mensaje,string_repeat(" ",MJE_RTA));
+		datos_a_consola->mensaje = strdup(string_repeat(" ",MJE_RTA));
 
 		pthread_mutex_lock(&sem_pid_consola);
 			int* tempId = malloc(sizeof(int));//no hacer free sino se borra la clave
