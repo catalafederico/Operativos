@@ -40,6 +40,7 @@ void procesarInstruccion(char* instruccion);
 void tratarPCB();
 void recibirPCB();
 void enviarPCB();
+void finalizarEjecucion();
 struct cliente clienteCpuUmc;
 struct cliente clienteCpuNucleo;
 int tamanioPaginaUMC;
@@ -79,16 +80,9 @@ AnSISOP_funciones functions = {
 };
 AnSISOP_kernel kernel_functions = { };
 
-//funcion para finalizar proceso cerrar el proceso consola
-
-void finalizarEjecucion(){
-	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
-	finEjecucion=1;
-}
 
 
 int main(void) {
-    pthread_t cpu;
     finEjecucion=0;
 	logCpu = log_create("cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
 
@@ -118,8 +112,8 @@ int main(void) {
 	 pcb_actual = asd;*/
 	//procesarInstruccion("variables a,b,c,d\n");
 
-	//creo hilo para esperar la señal
-	//pthread_create(&cpu,NULL,(signal(SIGINT,finalizarEjecucion)),NULL);
+	//esperar la señal para cerrar a la cpu "felizmente"
+	signal(SIGINT,finalizarEjecucion);
 
 	int seguir = 1;
 	while(seguir){
@@ -137,6 +131,12 @@ int main(void) {
 	return 0;
 }
 
+//funcion para finalizar correctamente al cpu con un ctrl c desde su consola
+
+void finalizarEjecucion(){
+	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
+	finEjecucion=1;
+}
 
 
 void conectarseConUMC(struct cliente clienteCpuUmc) {
@@ -279,9 +279,9 @@ void tratarPCB() {
 	}
 
 	if(finEjecucion){
-        int FIN_CONSOLA_CPU = 767768;//definir y agregar un header en nucleo
-		printf("se finalizo el proceso consola correspondiente desde la terminal \n");
-		send(clienteCpuNucleo.socketCliente, &FIN_CONSOLA_CPU, sizeof(int), 0);
+        int FIN_CPU = 4;
+		printf("se finalizo la ejecucion de esta cpu \n");
+		send(clienteCpuNucleo.socketCliente, &FIN_CPU, sizeof(int), 0);
 		enviarPCB();
 		return;
 	}
