@@ -162,7 +162,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 
 		}
 		//Si hay marcos libres, le asigno uno, la pag no esta en mry
-		else if(list_size(marcosLibres)>0){
+		else if(list_size(marcosLibres)>0 && list_size(pagEnMemoria->paginasMemoria)<umcConfg.configuracionUMC.MARCO_X_PROC){
 			int* valor = list_remove(marcosLibres,0);
 			paginaBuscada->nroMarco = *valor;
 			free(valor);
@@ -186,7 +186,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 			//Obtengo toda la pagina para almacenar en swap
 			posicionDeMemoria = ((paginaAReemplazar->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
 			void* aAlmacenarEnSwap = malloc(umcConfg.configuracionUMC.MARCO_SIZE);
-			if (!(paginaAReemplazar->modif == 0 && clockModificado)) {
+			if (paginaAReemplazar->modif) {
 				memcpy(aAlmacenarEnSwap, (memoriaPrincipal + posicionDeMemoria),
 						umcConfg.configuracionUMC.MARCO_SIZE);
 				//La almaceno
@@ -246,7 +246,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 		if(!(paginaBuscada->nroMarco == -1)){
 
 		}
-		else if (list_size(marcosLibres) > 0) {
+		else if (list_size(marcosLibres) > 0 && list_size(pagEnMemoria->paginasMemoria)<umcConfg.configuracionUMC.MARCO_X_PROC) {
 			int* valor = list_remove(marcosLibres,0);
 			paginaBuscada->nroMarco = *valor;
 			free(valor);
@@ -277,7 +277,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 					* umcConfg.configuracionUMC.MARCO_SIZE);
 			void* aAlmacenarEnSwap = malloc(
 					umcConfg.configuracionUMC.MARCO_SIZE);
-			if (!(paginaAReemplazar->modif == 0 && clockModificado)) {
+			if (paginaAReemplazar->modif) {
 				memcpy(aAlmacenarEnSwap, (memoriaPrincipal + posicionDeMemoria),
 						umcConfg.configuracionUMC.MARCO_SIZE);
 				//La almaceno

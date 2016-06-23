@@ -67,7 +67,9 @@ pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado);
 
 void *procesos_UMC(){
 	int estado;
-	clienteNucleoUMC = crearCliente(reg_config.puerto_umc,reg_config.ip_umc);
+	int puerto = reg_config.puerto_umc;
+	char* ip = strdup(reg_config.ip_umc);
+	clienteNucleoUMC = crearCliente(puerto,ip);
 //	clienteNucleoUMC = crearCliente(9999, "127.0.0.1");
 	log_debug(logger, "Conexion con UMC");
 	conectarseConUmc(clienteNucleoUMC);

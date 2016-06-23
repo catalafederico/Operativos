@@ -120,7 +120,8 @@ t_reg_config get_config_params(void){
 
 	// 11 get IP_UMC
 	if (config_has_property(archivo_config,"IP_UMC")){
-		reg_config.ip_umc = config_get_string_value(archivo_config,"IP_UMC");
+		char* temp = config_get_string_value(archivo_config,"IP_UMC");
+		reg_config.ip_umc = strdup(temp);
 	}
 	else{
 		log_debug(logger, "No se encontro IP_UMC");
