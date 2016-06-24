@@ -52,6 +52,12 @@ typedef struct{
 	direccionMemoria* memoriaRetorno;
 }stack;
 
+typedef struct{
+	int puertoUMC;
+	int puertoNucleo;
+	char* IPUMC;
+	char* IPNucleo;
+}t_reg_config;
 
 
 

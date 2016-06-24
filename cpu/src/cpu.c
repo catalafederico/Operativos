@@ -28,8 +28,9 @@
 #include <sockets/header.h>
 #include "estructurasCPU.h"
 #include <signal.h>
-#define  SERVERUMC 9999 //puerto de la umc
-#define  SERVERNUCLEO 5001 // puerto del nucleo
+#include "archivoConf.h"
+#define SERVERUMC 9999 //puerto de la umc
+#define SERVERNUCLEO 5001 // puerto del nucleo
 #define OK 6
 #define TAMANIOPAGINA 666
 #define SOLICITAR 52
@@ -83,18 +84,19 @@ AnSISOP_kernel kernel_functions = { };
 
 
 int main(void) {
+	t_reg_config config = get_config_params();
     finEjecucion=0;
 	logCpu = log_create("cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
 
 	//Empieza conexion UMC
-	clienteCpuUmc = crearCliente(SERVERUMC, "127.0.0.1");
+	clienteCpuUmc = crearCliente(config.puertoUMC, config.IPUMC);
 	log_info(logCpu, "Conectando a UMC Puerto : %d", SERVERUMC);
 	conectarseConUMC(clienteCpuUmc);
 	log_info(logCpu, "Conectado a UMC socket: %d", clienteCpuUmc.socketCliente);
 	//Termina conexion UMC
 
 	//Empieza conexion Nucleo
-	clienteCpuNucleo = crearCliente(SERVERNUCLEO, "127.0.0.1");
+	clienteCpuNucleo = crearCliente(config.puertoNucleo, config.IPNucleo);
 	log_info(logCpu, "Conectando a Nucleo Puerto : %d", SERVERNUCLEO);
 	conectarseConNucleo(clienteCpuNucleo);
 	log_info(logCpu, "Conectado a Nucleo socket: %d",
@@ -103,20 +105,12 @@ int main(void) {
 
 	//Le paso el socket de la umc, para no pasarlo x cada pedido
 	inicialzarParser(clienteCpuUmc.socketCliente,clienteCpuNucleo.socketCliente);
-	//Empieza la escucha de nucleo
-	/*int b = 5;
-	 pcb_t* asd ;
-	 asd->PC = &seguir;
-	 asd->PID = &seguir;
-	 asd->paginasDisponible = &b;
-	 pcb_actual = asd;*/
-	//procesarInstruccion("variables a,b,c,d\n");
 
 	//esperar la señal para cerrar a la cpu "felizmente"
 	signal(SIGINT,finalizarEjecucion);
 
 	int seguir = 1;
-	while(seguir){
+	while(seguir && !finEjecucion){
 	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 	 switch (*header) {
 	 case 163://Recibir PCB
@@ -226,7 +220,11 @@ char* proximaInstruccion() {
 int puedeContinuarEstado(){
 	//Si no puede continuar por wait io o fin
 	//devuelve false
-	if((estado == finalID) || (estado == waitID) || (estado == ioSolID)){
+	if((estado == finalID)
+			|| (estado == waitID)
+			|| (estado == ioSolID)
+			|| (finEjecucion)
+			|| (quantum>0)){
 		return 0;
 	}
 	return 1;
@@ -240,9 +238,9 @@ void tratarPCB() {
 		procesarInstruccion(proxInstruccion);
 		quantum--;
 		*(pcb_actual->PC) = *pcb_actual->PC + 1;
-		//sleep(/*quantumSleep*/3);//Cambio para testear
+		sleep(quantumSleep);
 		esFuncion = 0;
-	} while (quantum > 0 && puedeContinuarEstado()&& finEjecucion != 1);//Cambio para testear
+	} while (puedeContinuarEstado());
 
 	if (estado == finalID) {
 		int FIN_Proc = 1;
