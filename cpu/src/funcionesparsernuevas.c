@@ -143,6 +143,9 @@ t_valor_variable derf(t_puntero puntero_var) {
 	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 	int* valorRecibido;
 	valorRecibido = recibirStream(socketMemoria, sizeof(int));*/
+	if(valorRecibido==NULL){
+		return -1;
+	}
 	return *valorRecibido;
 }
 
