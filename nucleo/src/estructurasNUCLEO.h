@@ -61,6 +61,7 @@ typedef struct{
 typedef struct{
 	int* PID;
 	int* PC;
+	int* PCI;
 	int* SP;
 	int* paginasDisponible;
 	t_dictionary* indice_codigo;
@@ -71,6 +72,7 @@ typedef struct{
 typedef struct{
 	int PID;
 	int PC;
+	int PCI;
 	int SP;
 	int paginasDisponible;
 	int tamanioIndiceCodigo;

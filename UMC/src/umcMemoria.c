@@ -17,6 +17,7 @@
 #include "umcClockV2.h"
 
 extern umcNucleo umcConfg;
+extern pthread_mutex_t memoriaLibre;;
 t_log* log_memoria;
 tlb* tlbCache; // liberar al desalojar
 pthread_mutex_t semaforoMemoria;
@@ -40,6 +41,7 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 	inicializarTLB(tlbCache,entradasTLB);
 	log_memoria = log_create("logs/logUmcMemoria.txt","UMC",0,LOG_LEVEL_TRACE);
 	pthread_mutex_init(&semaforoMemoria,NULL);
+	pthread_mutex_init(&memoriaLibre,NULL);
 	log_trace(log_memoria,"Creando memoria");
 	marcosLibres = list_create();
 	programas_ejecucion = dictionary_create();
@@ -62,6 +64,7 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 int alocarPrograma(int paginasRequeridas, int id_proceso,
 		t_dictionary* codigoPrograma) {
 
+	//log_trace(log_memoria,"Lock on");
 	pthread_mutex_lock(&semaforoMemoria);
 
 	if (paginasRequeridas > umcConfg.configuracionUMC.MARCO_X_PROC) {
@@ -108,11 +111,15 @@ int alocarPrograma(int paginasRequeridas, int id_proceso,
 		void* aAlmacenarEnSwap = dictionary_get(codigoPrograma, &i);
 		almacenarEnSwap(id_proceso, i, aAlmacenarEnSwap);
 	}
+	//log_trace(log_memoria,"Lock off");
 	pthread_mutex_unlock(&semaforoMemoria);
 	return 0;
 }
 
 int desalojarPrograma(int id){
+
+	//log_trace(log_memoria,"Lock on");
+	pthread_mutex_lock(&semaforoMemoria);
 	log_trace(log_memoria,"Comienza desalojo de programa id: %d", id);
 	t_dictionary* tabla_desalojar = dictionary_remove(programas_ejecucion,&id);
 	int cant_paginas = dictionary_size(tabla_desalojar);
@@ -124,9 +131,9 @@ int desalojarPrograma(int id){
 			int* nuevoMArco = malloc(sizeof(int));
 			*nuevoMArco = marcoLibre->nroMarco;
 			list_add(marcosLibres,nuevoMArco);
+			log_trace(log_memoria,"Liberado Pag: %d \tMarco: %d ",i,marcoLibre->nroMarco);
 		}
 		free(marcoLibre);
-		log_trace(log_memoria,"Pag: %d \tMarco: %d ",i,marcoLibre->nroMarco);
 	}
 	dictionary_destroy(tabla_desalojar);
 	//desalojo programas para clock
@@ -212,7 +219,9 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 		// sino hay pag en memoria y no hay marcos libres me quede sin memoria
 		//avisarle a cpu?
 		else{
-
+			//log_trace(log_memoria,"Lock off");
+			pthread_mutex_unlock(&semaforoMemoria);
+			return strdup("#");
 		}
 		//agrego en la tlb marco
 		//lo inserto al principio ya q es el ultimo usado
@@ -221,6 +230,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 	posicionDeMemoria = ((paginaBuscada->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE) + offset;
 	memcpy(obtenido,(memoriaPrincipal + posicionDeMemoria),tamanio);
 	paginaBuscada->bit_uso = USADO;
+	//log_trace(log_memoria,"Lock off");
 	pthread_mutex_unlock(&semaforoMemoria);
 	return obtenido;
 	//Esto es mas de la entrega 3
@@ -295,7 +305,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 			temp->marco = paginaBuscada;
 			temp->pag = pagina;
 			//saco de tlb la pagina si estuviera
-			removerDeTLB(*idProcesoActual, paginaAReemplazar, -1);
+			removerDeTLB(*idProcesoActual, paginaARemplazar, -1);
 			aAlmacenarEnSwap = solicitarEnSwap(*idProcesoActual, pagina);
 			memcpy((memoriaPrincipal + posicionDeMemoria), aAlmacenarEnSwap,
 					umcConfg.configuracionUMC.MARCO_SIZE);
@@ -308,12 +318,14 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 	memcpy((memoriaPrincipal + posicionDeMemoria), buffer, tamanio);
 	paginaBuscada->bit_uso = USADO;
 	paginaBuscada->modif = 1;
+	//log_trace(log_memoria,"Lock off");
 	pthread_mutex_unlock(&semaforoMemoria);
 	return;
 }
 
 void cambiarProceso(int idProceso){
 	//Esto es de la entrega 2
+		//log_trace(log_memoria,"Lock on");
 		pthread_mutex_lock(&semaforoMemoria);
 		*idProcesoActual = idProceso;
 		tabla_actual = dictionary_get(programas_ejecucion,&idProceso);

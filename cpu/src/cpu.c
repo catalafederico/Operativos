@@ -202,6 +202,7 @@ void conectarseConNucleo(struct cliente clienteCpuNucleo) {
 void procesarInstruccion(char* instruccion) {
 	analizadorLinea(instruccion, &functions, &kernel_functions);
 }
+
 char* proximaInstruccion() {
 	//Leo la direccion de la proxima instruccion
 	direccionMemoria* direcProxIntruccion = dictionary_get(
@@ -214,6 +215,9 @@ char* proximaInstruccion() {
 	//Espero instruccion
 	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
 			(direcProxIntruccion->tamanio));
+	if(!strcmp(proximaInstruccion,"#")){
+		return NULL;
+	}
 	return proximaInstruccion;
 }
 
@@ -224,23 +228,35 @@ int puedeContinuarEstado(){
 			|| (estado == waitID)
 			|| (estado == ioSolID)
 			|| (finEjecucion)
-			|| (quantum>0)){
+			|| !(quantum>0)){
 		return 0;
 	}
 	return 1;
 }
 
-
 void tratarPCB() {
+	int hayEspacio = 1;
 	do {
-		estado = 0;
-		char* proxInstruccion = proximaInstruccion();
-		procesarInstruccion(proxInstruccion);
-		quantum--;
-		*(pcb_actual->PC) = *pcb_actual->PC + 1;
-		sleep(quantumSleep);
-		esFuncion = 0;
-	} while (puedeContinuarEstado());
+		hayEspacio = 1;
+		//if(hayMemoria()){
+			estado = 0;
+			char* proxInstruccion = proximaInstruccion();
+			if(proxInstruccion == NULL){
+				hayEspacio = 0;
+				printf("no hay espacio %d\n",*pcb_actual->PID);
+				continue;
+			}
+			printf("procesando instruccion %d\n",*(pcb_actual->PC));
+			printf("procesando inst:%s\n",proxInstruccion);
+			procesarInstruccion(proxInstruccion);
+			quantum--;
+			*(pcb_actual->PC) = *pcb_actual->PC + 1;
+			sleep(quantumSleep);
+			esFuncion = 0;
+		//}
+		//else
+			//hayEspacio = 0;
+	} while (puedeContinuarEstado() && hayEspacio);
 
 	if (estado == finalID) {
 		int FIN_Proc = 1;
@@ -269,12 +285,13 @@ void tratarPCB() {
 		free(nombreDispositivo);
 		return;
 	}
-	if (quantum == 0) {
+	if (quantum == 0 || !hayEspacio) {
 		int FIN_QUAMTUM = 2;
 		send(clienteCpuNucleo.socketCliente, &FIN_QUAMTUM, sizeof(int), 0);
 		enviarPCB();
 		return;
 	}
+
 
 	if(finEjecucion){
         int FIN_CPU = 4;
@@ -284,6 +301,22 @@ void tratarPCB() {
 		return;
 	}
 }
+//
+int hayMemoria(){
+	if(*pcb_actual->PCI != *pcb_actual->PC)
+		return 1;
+	int haymemoria = 123456789;
+	send(clienteCpuUmc.socketCliente,&haymemoria,sizeof(int),0);
+	int* recibido = recibirStream(clienteCpuUmc.socketCliente, sizeof(int));
+	if(*recibido == OK){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+
 
 //Enviar y recibir pcb --------------------------------------------------------
 
@@ -292,6 +325,8 @@ void recibirPCB() {
 	pcb_Recibido->PID = recibirStream(clienteCpuNucleo.socketCliente,
 			sizeof(int));
 	pcb_Recibido->PC = recibirStream(clienteCpuNucleo.socketCliente,
+			sizeof(int));
+	pcb_Recibido->PCI = recibirStream(clienteCpuNucleo.socketCliente,
 			sizeof(int));
 	pcb_Recibido->SP = recibirStream(clienteCpuNucleo.socketCliente,
 			sizeof(int));
@@ -393,6 +428,7 @@ void enviarPCB() {
 	serializablePCB aMandaNucleo;
 	aMandaNucleo.PID = *(pcb_actual->PID);
 	aMandaNucleo.PC = *(pcb_actual->PC);
+	aMandaNucleo.PCI = *(pcb_actual->PCI);
 	aMandaNucleo.SP = *(pcb_actual->SP);
 	aMandaNucleo.paginasDisponible = *(pcb_actual->paginasDisponible);
 	aMandaNucleo.tamanioIndiceCodigo = dictionary_size(

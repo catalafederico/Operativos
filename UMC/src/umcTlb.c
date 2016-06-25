@@ -36,7 +36,7 @@ int tlbLLena(){
 
 int buscarPosicionEnTLB(int id, int pagina){
 	int i;
-	for(i=0;i<cantidadDeEntradas;i++){
+	for(i=0;i<cantidadDeEntradas && i<list_size(tlb_tabla);i++){
 		tlb* temp = list_get(tlb_tabla,i);
 		if(temp->idProg == id && temp->pag == pagina){
 			return i;
@@ -47,7 +47,7 @@ int buscarPosicionEnTLB(int id, int pagina){
 
 infoPagina* buscarFrameEnTLB(int id, int pagina){
 	int i;
-	for(i=0;i<cantidadDeEntradas;i++){
+	for(i=0;i<cantidadDeEntradas && i<list_size(tlb_tabla);i++){
 		tlb* temp = list_get(tlb_tabla,i);
 		if(temp == NULL)
 			return NULL;

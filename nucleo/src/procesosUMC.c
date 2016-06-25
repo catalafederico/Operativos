@@ -154,12 +154,13 @@ pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado){
 	pcb_t* pcbNuevo = malloc(sizeof(pcb_t));
 	pcbNuevo->PID = malloc(sizeof(int));
 	pcbNuevo->PC = malloc(sizeof(int));
+	pcbNuevo->PCI = malloc(sizeof(int));
 	pcbNuevo->SP = malloc(sizeof(int));
 	pcbNuevo->paginasDisponible = malloc(sizeof(int));
 	pcbNuevo->indice_funciones = list_create();
 	indiceCodigo* icNuevo;
 	t_list* instruccionesPaUMC = list_create();
-	icNuevo = nuevoPrograma(instrucciones,instruccionesPaUMC,pcbNuevo->indice_funciones);
+	icNuevo = nuevoPrograma(instrucciones,instruccionesPaUMC,pcbNuevo->indice_funciones,pcbNuevo->PC);
 	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
 	int posicion = (dictionary_size(icNuevo->inst_tamanio)-1);
 	direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,&posicion);
@@ -174,7 +175,7 @@ pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado){
 		*estado = -1;
 	}
 	*(pcbNuevo->PID) = idProgramaNuevo;
-	*(pcbNuevo->PC) = 0;
+	*(pcbNuevo->PCI) = *(pcbNuevo->PC);
 	*(pcbNuevo->SP) = 0;
 	*(pcbNuevo->paginasDisponible)=ultimaPaginaDeCodigo+reg_config.stack_size;
 	pcbNuevo->indice_codigo = icNuevo->inst_tamanio;

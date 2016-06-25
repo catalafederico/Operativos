@@ -39,7 +39,7 @@ AnSISOP_kernel kernel_functions = { };
 
 //Se crea inidice de codigo e indice funciones
 
-indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_Inst_pcb){
+indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_Inst_pcb, int* IC){
 	indiceCodigo* ic = malloc(sizeof(indiceCodigo));
 	//Copio el char en memoria de este procedimiento
 	//sino no podia modificarla
@@ -56,16 +56,17 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 		string_trim(&aAnalizar);
 		//En eso 4 pasos verifico si es valido la instruccion
 		if(!strcmp(aAnalizar,"begin"))
+		{
+			*IC = i;
 			continue;
-		//if(!strcmp(aAnalizar,"end"))
-			//break;
+		}
 		if(string_is_empty(aAnalizar))
 			continue;
 		if(string_starts_with(aAnalizar,"#"))
 			continue;
 		if(string_starts_with(aAnalizar,":"))
 		{
-			char* temp = strdup(aAnalizar+sizeof(char));
+			char* temp = strdup(aAnalizar);
 			funcion_sisop* nuevaFc = malloc(sizeof(nuevaFc));
 			nuevaFc->funcion = temp;
 			nuevaFc->posicion_codigo = malloc(sizeof(int));

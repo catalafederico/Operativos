@@ -126,7 +126,9 @@ void finalizar(void) {
 	int* pid = recibirStream(socketAdministradorDeMemoria,sizeof(int));
 	if (procesoSeEncuentraEnSwap(*pid)) {
 		proceso procesoAEliminar = obtenerProceso(*pid);
+		printf("Eliminando proceso\n");
 		eliminarProceso(*pid);
+		printf("Proceso eliminado\n");
 		//Avisar a la UMC que se borro el proceso con exito
 		int exito = 6;
 		send(socketAdministradorDeMemoria, &exito, sizeof(int), 0);

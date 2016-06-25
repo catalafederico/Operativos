@@ -36,15 +36,23 @@ proceso* crearProceso(int pid, int cantidadDePaginas) {
 void eliminarProceso(int pid) {
 	proceso* auxiliar1 = listaSwap->procesoSiguiente;
 	proceso* auxiliar2 = listaSwap;
-
+	int i = 0;
 	while (auxiliar1 != NULL) {
+		i++;
+		if(i>100){
+			printf("asd\n");
+		}
 		if (listaSwap->pid == pid) {
 			eliminarDelBitMapLasPaginasDelProceso(listaSwap);
 			listaSwap = listaSwap->procesoSiguiente;
+			free(auxiliar2);
+			auxiliar1 = NULL;
 		} else {
 			if (auxiliar1->pid == pid) {
 				auxiliar2->procesoSiguiente = auxiliar1->procesoSiguiente;
 				eliminarDelBitMapLasPaginasDelProceso(auxiliar1);
+				free(auxiliar1);
+				auxiliar1 = NULL;
 			} else {
 				auxiliar2 = auxiliar1;
 				auxiliar1 = auxiliar2->procesoSiguiente;

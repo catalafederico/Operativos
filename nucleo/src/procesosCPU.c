@@ -348,6 +348,7 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	serializablePCB aMandaCpu;
 	aMandaCpu.PID = *(pcb->PID);
 	aMandaCpu.PC= *(pcb->PC);
+	aMandaCpu.PCI = *(pcb->PCI);
 	aMandaCpu.SP = *(pcb->SP);
 	aMandaCpu.paginasDisponible = *(pcb->paginasDisponible);
 	aMandaCpu.tamanioIndiceCodigo = dictionary_size(pcb->indice_codigo);
@@ -459,6 +460,7 @@ pcb_t* recibirPCBdeCPU(int socket){
 	pcb_t* pcb_Recibido = malloc(sizeof(pcb_t));
 	pcb_Recibido->PID = recibirStream(socket,sizeof(int));
 	pcb_Recibido->PC = recibirStream(socket,sizeof(int));
+	pcb_Recibido->PCI = recibirStream(socket,sizeof(int));
 	pcb_Recibido->SP = recibirStream(socket,sizeof(int));
 	pcb_Recibido->paginasDisponible = recibirStream(socket,sizeof(int));
 

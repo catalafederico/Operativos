@@ -14,13 +14,13 @@
 void setearValorEntero(int* valorASetear,char* parametroABuscar);
 void setearValorChar(char** valorASetear,char* parametroABuscar);
 
-t_config * UMC_config = NULL;
+t_config * CPU_config = NULL;
 
 
 t_reg_config get_config_params(){
 
 	char * UMC_config_path = "umc_config.cfg";
-	UMC_config = config_create(UMC_config_path);
+	CPU_config = config_create(UMC_config_path);
 	int a = sizeof(int)*8+sizeof(char)*16;
 	t_reg_config* puntero_configuracion = malloc(a);
 	t_reg_config configuracion = *puntero_configuracion;
@@ -34,13 +34,13 @@ t_reg_config get_config_params(){
 	setearValorEntero(&configuracion.ALGORITMO,"ALGORITMO");
 	setearValorEntero(&configuracion.ENTRADAS_TLB,"ENTRADAS_TLB");
 	setearValorEntero(&configuracion.RETARDO,"RETARDO");
-	config_destroy(UMC_config);
+	config_destroy(CPU_config);
 	return configuracion;
 }
 
 void setearValorEntero(int* valorASetear,char* parametroABuscar){
-	if (config_has_property(UMC_config,parametroABuscar)){
-		*valorASetear = config_get_int_value(UMC_config,parametroABuscar);
+	if (config_has_property(CPU_config,parametroABuscar)){
+		*valorASetear = config_get_int_value(CPU_config,parametroABuscar);
 		printf("%s = %d \n",parametroABuscar, *valorASetear);
 	}
 	else{
@@ -49,8 +49,8 @@ void setearValorEntero(int* valorASetear,char* parametroABuscar){
 }
 
 void setearValorChar(char** valorASetear,char* parametroABuscar){
-	if (config_has_property(UMC_config,parametroABuscar)){
-		*valorASetear = strdup(config_get_string_value(UMC_config,parametroABuscar));
+	if (config_has_property(CPU_config,parametroABuscar)){
+		*valorASetear = strdup(config_get_string_value(CPU_config,parametroABuscar));
 		printf("%s = %s \n",parametroABuscar, *valorASetear);
 	}
 	else{

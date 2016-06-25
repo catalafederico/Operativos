@@ -27,7 +27,7 @@
 
 t_list* programasEjecucion;
 extern umcNucleo umcConfg;
-
+pthread_mutex_t memoriaLibre;
 
 void solicitar_Bytes(int socket){
 	int* pagina = (int*) recibirStream(socket, sizeof(int));

@@ -26,6 +26,7 @@ almUMC;
 typedef struct{
 	int* PID;
 	int* PC;
+	int* PCI;
 	int* SP;
 	int* paginasDisponible;
 	t_dictionary* indice_codigo;
@@ -70,6 +71,7 @@ direccionStack;
 typedef struct{
 	int PID;
 	int PC;
+	int PCI;
 	int SP;
 	int paginasDisponible;
 	int tamanioIndiceCodigo;
