@@ -154,7 +154,13 @@ void *atender_consola(int* socket_desc){
 			*tempId = promCargar->PID;
 			dictionary_put(dict_pid_consola,tempId, datos_a_consola);
 		pthread_mutex_unlock(&sem_pid_consola);
-
+		send(socket_co,&promCargar->PID,sizeof(int),0);
 		sem_post(&semaforoProgramasACargar);
+		int* cerrar = malloc(4);
+		do{
+			free(cerrar);
+			cerrar = recibirStream(socket_co,sizeof(int));
+		}while(cerrar != NULL && *cerrar != -123);
+		//Cierra consola
 }
 

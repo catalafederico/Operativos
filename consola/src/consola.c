@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 //	char* rutaArchivo;
 //	rutaArchivo=argv[1];
 	FILE *archivoAnsisop;
-	archivoAnsisop =fopen("facil.ansisop","r");
+	archivoAnsisop =fopen("ansisop/vector.ansisop","r");
 //hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
 //	archivoAnsisop =fopen(rutaArchivo,"r");
 	if (archivoAnsisop == NULL) {
@@ -71,6 +71,8 @@ int main(int argc, char **argv) {
 	int consola = CONSOLA;
 	enviarStream(clienteConsola.socketCliente,consola,sizeof(int),&tamanioBuffer);
 	send(clienteConsola.socketCliente,buffer,tamanioBuffer,0);
+	int* pid = recibirStream(clienteConsola.socketCliente,sizeof(int));
+	printf("PID DEL PROCESO: %d\n",*pid);
 	//free(buffer);
 	int seguir = 1;
 	int* tamanio;

@@ -240,6 +240,7 @@ void * administrar_cola_sem(void* semaforo){
 	t_pcb_bloqueado* elem_block;
 
 	while(1){
+		sleep(20);
 		datos_sem=dictionary_get(reg_config.dic_semaforos,semaforo);
 		if(list_size(datos_sem->cola_procesos)>= 1){
 			if(datos_sem->valor >= 1){

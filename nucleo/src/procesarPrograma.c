@@ -19,6 +19,7 @@
 extern int tamanioPaginaUMC;
 extern int esFuncion;
 extern char* nombreFuncion;
+extern int esVariable;
 AnSISOP_funciones functions = {
 	.AnSISOP_definirVariable	= vardef,
 	.AnSISOP_obtenerPosicionVariable= getvarpos,
@@ -45,7 +46,7 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 	//sino no podia modificarla
 	char* tempInstruccion = strdup(instrucciones);
 	char* newInst = strtok(tempInstruccion,"\n");
-
+	int j = 0;
 	inicialzarPrograma();// es instruccion en 0 (false)
 	ic->inst_tamanio = dictionary_create(); //inicializo indice de codigo
 	int i = 0; //numero de instrucciones
@@ -64,6 +65,7 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 			continue;
 		if(string_starts_with(aAnalizar,"#"))
 			continue;
+		analizadorLinea(aAnalizar,&functions,&kernel_functions);
 		if(string_starts_with(aAnalizar,":"))
 		{
 			//le sumo sizeof(char) para eliminar el : del principio
@@ -74,11 +76,12 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 			*(nuevaFc->posicion_codigo) = i;
 			list_add(lista_Inst_pcb,nuevaFc);
 			esFuncion = 0;
-			continue;
+			esVariable = 1;
+			//continue;
 		}
 
 
-		analizadorLinea(aAnalizar,&functions,&kernel_functions);
+
 		esInstruccion = obtenerEsVariable();
 		//analizo si es intruccion
 
