@@ -35,6 +35,7 @@ extern pcb_t* pcb_actual;
 direccionMemoria* ultimaDireccion; //Tenporal hasta q tengamos stack
 int esFuncion;
 int estado;
+extern int quantum;
 
 //Prototipos
 
@@ -276,7 +277,8 @@ void signalCPU(t_nombre_semaforo semf) {
 }
 
 void fcallNR(t_nombre_etiqueta nombre) {
-	esFuncion = 1;
+	//esFuncion = 1;
+	quantum++;
 }
 
 //FUNCIONES PARA STACK-----------------------------------------------------------------------------------
