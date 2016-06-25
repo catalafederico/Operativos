@@ -22,7 +22,8 @@
 #include <sockets/header.h>
 #include <commons/txt.h>
 #include <string.h>
-
+#include <signal.h>
+int finDeEjecucion
 int main(int argc, char **argv) {
 	/*int index;
 	  for(index = 0; index < argc; index++) {
@@ -74,7 +75,8 @@ int main(int argc, char **argv) {
 	int seguir = 1;
 	int* tamanio;
 	char* mensaje;
-	while(seguir){
+	signal(SIGINT,finalizarEjecucion(clienteConsola));
+	while(seguir && !finDeEjecucion){
 		int* header = leerHeader(clienteConsola.socketCliente);
 				switch (*header) {
 					case 100://imprimir
@@ -116,3 +118,10 @@ int main(int argc, char **argv) {
 
 
 
+void finalizarEjecucion(struct cliente clienteConsola){
+	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
+	finDeEjecucion=1;
+	int valor= -123;
+	send(clienteConsola.socketCliente,(void*) &valor ,sizeof(int),0);
+	exit(0);
+}
