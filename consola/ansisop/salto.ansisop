@@ -5,7 +5,7 @@ variables i,b
     :inicio_for
     i = i + 1
     print i
-    b = i - 15
+    b = i - 1500
     textPrint b vale
     print b
     jnz b inicio_for

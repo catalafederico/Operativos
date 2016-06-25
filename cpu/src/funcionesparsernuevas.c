@@ -9,8 +9,6 @@
 
 
 //Tipos de datos
-
-direccionMemoria* obtenerPosicionStack(char var);
 static const int CONTENIDO_VARIABLE = 20;
 static const int POSICION_MEMORIA = 0x10;
 int esFuncion;
@@ -76,7 +74,7 @@ t_puntero vardef(t_nombre_variable var) {
 			var);
 	direccionMemoria* temp = malloc(sizeof(direccionMemoria));
 	almUMC aAlmacenar = calculoDeDedireccionAlmalcenar();
-	aAlmacenar.valor = 0;
+	aAlmacenar.valor;
 	aAlmacenar.tamanio = sizeof(int);
 	direccionMemoria* direc_arg = malloc(sizeof(direccionMemoria));
 	direc_arg-> offset = aAlmacenar.offset;
@@ -96,19 +94,17 @@ t_puntero vardef(t_nombre_variable var) {
 		list_add(tempList,direc_arg);
 	} else {
 		//Si no es una variable si se va a almacenar en la lista de variables del stack
-		aAlmacenar.valor = 0;
-		aAlmacenar.tamanio = sizeof(int);
 		enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
 		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 		//Actualizo stack
 		agregarVariableStack(aAlmacenar, var);
 	}
-	return direc_arg;
+	return dirRetoAbs(direc_arg->pagina,direc_arg->offset);
 }
 
 //ObtenerPosicionVariable
 t_puntero getvarpos(t_nombre_variable var) {
-	direccionMemoria* solicitarUMC = malloc(sizeof(direccionMemoria));
+	direccionMemoria* solicitarUMC;
 	if (var >= '0' && var <= '9') {
 		//si esta entre esos caracteres significa q estamos dentro de una funcion y ya esta declarada
 		//entonces obtenemos variables de la lista de argumentos del stack
@@ -121,13 +117,16 @@ t_puntero getvarpos(t_nombre_variable var) {
 		//Obtengo posicion de memoria de la umc
 		solicitarUMC = obtenerPosicionStack(var);
 	}
-	return solicitarUMC;
+	return dirRetoAbs(solicitarUMC->pagina,solicitarUMC->offset);
 }
 
 //Dereferenciar , ya esta lista
 t_valor_variable derf(t_puntero puntero_var) {
+	direccionMemoria* solicitarUMC = malloc(sizeof(direccionMemoria));
+	dirAbstoRe(puntero_var,&solicitarUMC->pagina,&solicitarUMC->offset);
+	solicitarUMC->tamanio = sizeof(int);
 	log_trace(logCpu, "Solicitar  a memoria comezado");
-	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), puntero_var);
+	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), solicitarUMC);
 	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 	int* valorRecibido;
 	valorRecibido = recibirStream(socketMemoria, sizeof(int));
@@ -136,8 +135,11 @@ t_valor_variable derf(t_puntero puntero_var) {
 
 //Asignar
 void asignar(t_puntero puntero_var, t_valor_variable valor) {
+		direccionMemoria* direcMemory = malloc(sizeof(direccionMemoria));
+		dirAbstoRe(puntero_var,&direcMemory->pagina,&direcMemory->offset);
+		direcMemory->tamanio = sizeof(int);
 		almUMC temp;
-		direccionMemoria* direcMemory = puntero_var;
+		//direccionMemoria* direcMemory = puntero_var;
 		temp.pagina = direcMemory->pagina;
 		temp.offset = direcMemory->offset;
 		temp.tamanio = direcMemory->tamanio;
@@ -318,8 +320,8 @@ void agregarVariableStack(almUMC aAlmacenar, char var) {
 		nuevoStack->memoriaRetorno = NULL;
 		nuevoStack->pos_ret = NULL;
 		nuevoStack->vars = list_create();
-		int* startPCB = malloc(sizeof(int));
-		startPCB = 0;
+		//int* startPCB = malloc(sizeof(int));
+		int startPCB = 0;
 		dictionary_put(pcb_actual->indice_stack,&startPCB,nuevoStack);
 		stackActual = nuevoStack;
 	}
@@ -357,5 +359,15 @@ direccionMemoria* obtenerPosicionStack(char var) {
 		i++;
 	}
 	return NULL;
+}
+
+
+int dirRetoAbs(int pag, int offset){
+	return pag*tamanioPaginaUMC+offset;
+}
+
+void dirAbstoRe(int dirAbs, int* pag, int* offset){
+	*offset = dirAbs%tamanioPaginaUMC;
+	*pag = (dirAbs - *offset) / tamanioPaginaUMC;
 }
 
