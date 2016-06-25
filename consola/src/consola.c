@@ -70,6 +70,8 @@ int main(int argc, char **argv) {
 	int consola = CONSOLA;
 	enviarStream(clienteConsola.socketCliente,consola,sizeof(int),&tamanioBuffer);
 	send(clienteConsola.socketCliente,buffer,tamanioBuffer,0);
+	int* pid = recibirStream(clienteConsola.socketCliente,sizeof(int));
+	printf("PID DEL PROCESO: %d\n",*pid);
 	//free(buffer);
 	int seguir = 1;
 	int* tamanio;
