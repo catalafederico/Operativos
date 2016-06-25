@@ -23,7 +23,7 @@
 #include <commons/txt.h>
 #include <string.h>
 #include <signal.h>
-int finDeEjecucion
+int finDeEjecucion;
 int main(int argc, char **argv) {
 	/*int index;
 	  for(index = 0; index < argc; index++) {
@@ -36,8 +36,9 @@ int main(int argc, char **argv) {
 	char* buff;
 //	char* rutaArchivo;
 //	rutaArchivo=argv[1];
+	finDeEjecucion = 0;
 	FILE *archivoAnsisop;
-	archivoAnsisop =fopen("ansisop/vector.ansisop","r");
+	archivoAnsisop =fopen("ansisop/medium.ansisop","r");
 //hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
 //	archivoAnsisop =fopen(rutaArchivo,"r");
 	if (archivoAnsisop == NULL) {
@@ -77,7 +78,7 @@ int main(int argc, char **argv) {
 	int seguir = 1;
 	int* tamanio;
 	char* mensaje;
-	signal(SIGINT,finalizarEjecucion(clienteConsola));
+	///signal(SIGINT,finalizarEjecucion(clienteConsola));
 	while(seguir && !finDeEjecucion){
 		int* header = leerHeader(clienteConsola.socketCliente);
 				switch (*header) {
@@ -95,6 +96,10 @@ int main(int argc, char **argv) {
 						break;
 					case 999:
 						printf("Fin del proceso. Chau. by explosive code\n");
+						seguir = 0;
+						break;
+					case -999:
+						printf("Se ha producido un SEG FAULT, se cierra proceso.\n");
 						seguir = 0;
 						break;
 					case 123456:

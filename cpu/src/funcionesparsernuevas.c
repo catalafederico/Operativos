@@ -58,6 +58,7 @@ void ionotif(t_nombre_dispositivo ioname, int tiempo);
 almUMC calculoDeDedireccionAlmalcenar();
 void agregarVariableStack(almUMC aAlmacenar, char var);
 direccionMemoria* obtenerPosicionStack(char var);
+void* pedirUMC(direccionMemoria* solicitarUMC);
 
 void inicialzarParser(int socketMem, int socketNuc) {
 	socketMemoria = socketMem;
@@ -71,6 +72,9 @@ void inicialzarParser(int socketMem, int socketNuc) {
 
 //DefinirVariable
 t_puntero vardef(t_nombre_variable var) {
+	if(estado==segFaultID){
+		return 0;
+	}
 	log_trace(logCpu, "Crear variable id: %d nombre: %c.", pcb_actual->PID,
 			var);
 	direccionMemoria* temp = malloc(sizeof(direccionMemoria));
@@ -95,8 +99,9 @@ t_puntero vardef(t_nombre_variable var) {
 		list_add(tempList,direc_arg);
 	} else {
 		//Si no es una variable si se va a almacenar en la lista de variables del stack
-		enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
-		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
+		almacenarUMC(aAlmacenar);
+		//enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
+		//send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 		//Actualizo stack
 		agregarVariableStack(aAlmacenar, var);
 	}
@@ -105,6 +110,9 @@ t_puntero vardef(t_nombre_variable var) {
 
 //ObtenerPosicionVariable
 t_puntero getvarpos(t_nombre_variable var) {
+	if(estado==segFaultID){
+		return 0;
+	}
 	direccionMemoria* solicitarUMC;
 	if (var >= '0' && var <= '9') {
 		//si esta entre esos caracteres significa q estamos dentro de una funcion y ya esta declarada
@@ -123,19 +131,26 @@ t_puntero getvarpos(t_nombre_variable var) {
 
 //Dereferenciar , ya esta lista
 t_valor_variable derf(t_puntero puntero_var) {
+	if(estado==segFaultID){
+		return 0;
+	}
 	direccionMemoria* solicitarUMC = malloc(sizeof(direccionMemoria));
 	dirAbstoRe(puntero_var,&solicitarUMC->pagina,&solicitarUMC->offset);
 	solicitarUMC->tamanio = sizeof(int);
 	log_trace(logCpu, "Solicitar  a memoria comezado");
-	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), solicitarUMC);
+	int* valorRecibido = pedirUMC(solicitarUMC);
+	/*enviarStream(socketMemoria, 52, sizeof(direccionMemoria), solicitarUMC);
 	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
 	int* valorRecibido;
-	valorRecibido = recibirStream(socketMemoria, sizeof(int));
+	valorRecibido = recibirStream(socketMemoria, sizeof(int));*/
 	return *valorRecibido;
 }
 
 //Asignar
 void asignar(t_puntero puntero_var, t_valor_variable valor) {
+		if(estado==segFaultID){
+			return;
+		}
 		direccionMemoria* direcMemory = malloc(sizeof(direccionMemoria));
 		dirAbstoRe(puntero_var,&direcMemory->pagina,&direcMemory->offset);
 		direcMemory->tamanio = sizeof(int);
@@ -146,13 +161,17 @@ void asignar(t_puntero puntero_var, t_valor_variable valor) {
 		temp.tamanio = direcMemory->tamanio;
 		temp.valor = valor;
 		log_trace(logCpu, "Almacenar en UMC nuevo valor");
-		enviarStream(socketMemoria, 53, sizeof(almUMC), &temp);
-		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
+		almacenarUMC(temp);
+		/*enviarStream(socketMemoria, 53, sizeof(almUMC), &temp);
+		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);*/
 		return;
 }
 
 //ObtenerValorCompartida
 t_valor_variable getglobalvar(t_nombre_compartida var) {
+	if(estado==segFaultID){
+		return 0;
+	}
 	int obtenerValorID = 5;
 	char* nombreVarialble = strcat(var,"0");
 	int logitudNombre = strlen(nombreVarialble)+1;
@@ -164,6 +183,9 @@ t_valor_variable getglobalvar(t_nombre_compartida var) {
 
 //AsignarValorCompartida
 t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor) {
+	if(estado==segFaultID){
+		return 0;
+	}
 	int obtenerValorID = 6;
 	char* nombreVarialble = strcat(var,"0") ;
 	int logitudNombre = strlen(nombreVarialble)+1;;
@@ -175,6 +197,9 @@ t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor) {
 
 //IrALabel
 void goint(t_nombre_etiqueta etiqueta) {
+	if(estado==segFaultID){
+		return;
+	}
 	int cantidadDeFunciones = list_size(pcb_actual->indice_funciones);
 	int i = 0;
 	for (i= 0 ; i< cantidadDeFunciones; i++){
@@ -188,6 +213,12 @@ void goint(t_nombre_etiqueta etiqueta) {
 
 //LlamarFuncion
 void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
+	if(estado==segFaultID){
+		return;
+	}
+	direccionMemoria* direcMemory = malloc(sizeof(direccionMemoria));
+	dirAbstoRe(funcion,&direcMemory->pagina,&direcMemory->offset);
+	direcMemory->tamanio = sizeof(int);
 	//SE LLAMA UNA FUNCION
 	//Creo una posicion de stack nueva
 	stack* nuevaPosicion = malloc(sizeof(int));
@@ -212,17 +243,20 @@ void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
 	*(pcb_actual->SP) = *(pcb_actual->SP) + 1;
 	int* nuevaPos = malloc(sizeof(int));
 	*nuevaPos = *(pcb_actual->SP);
-	nuevaPosicion->memoriaRetorno = funcion;
+	nuevaPosicion->memoriaRetorno = direcMemory;
 	dictionary_put(pcb_actual->indice_stack,nuevaPos,nuevaPosicion);
 	return;
 }
 
 //Retornar
 void retornar(t_valor_variable retorno) {
+	if(estado==segFaultID){
+		return;
+	}
 	printf("Se retorna un puntero al contecto anterior");
 	stack* stackActual = dictionary_get(pcb_actual->indice_stack,(pcb_actual->SP));
 	direccionMemoria* retornoDireccion = stackActual->memoriaRetorno;
-	asignar(retornoDireccion,retorno);
+	asignar(dirRetoAbs(retornoDireccion->pagina,retornoDireccion->offset),retorno);
 	*(pcb_actual->PC) = *(stackActual->pos_ret);
 	dictionary_remove(pcb_actual->indice_stack,(pcb_actual->SP));//SACO RENGLON DEL DICCIONARIO STACK
 	*(pcb_actual->SP) = *(pcb_actual->SP) - 1;
@@ -232,6 +266,9 @@ void retornar(t_valor_variable retorno) {
 
 //Imprimir
 void imprimir(t_valor_variable var) {
+	if(estado==segFaultID){
+		return;
+	}
 	int imprimirId = 9;
 	enviarStream(socketNucleo,imprimirId,sizeof(int),&var);
 	return;
@@ -239,6 +276,9 @@ void imprimir(t_valor_variable var) {
 
 //ImprimirTexto
 void imptxt(char* aImprimir) {
+	if(estado==segFaultID){
+		return;
+	}
 	int imprimirTexto = 10;
 	int tamanio = strlen(aImprimir)+1;
 	aImprimir = strcat(aImprimir,"\0");
@@ -248,11 +288,17 @@ void imptxt(char* aImprimir) {
 }
 
 void fin() {
+	if(estado==segFaultID){
+		return;
+	}
 	estado = finalID;
 }
 
 //EntradaSalida
 void ionotif(t_nombre_dispositivo ioname, int tiempo) {
+	if(estado==segFaultID){
+		return;
+	}
 	estado = ioSolID;
 	tiempo_dispositivo = tiempo;
 	nombreSemaforoWait = strdup(ioname);
@@ -261,6 +307,9 @@ void ionotif(t_nombre_dispositivo ioname, int tiempo) {
 
 //wait
 void waitCPU(t_nombre_semaforo semf) {
+	if(estado==segFaultID){
+		return;
+	}
 	estado = waitID;
 	nombreSemaforoWait = strdup(semf);
 	return;
@@ -268,6 +317,9 @@ void waitCPU(t_nombre_semaforo semf) {
 
 //signal
 void signalCPU(t_nombre_semaforo semf) {
+	if(estado==segFaultID){
+		return;
+	}
 	int obtenerValorID = 6;
 	char* nombreVarialble = strcat(semf,"0") ;
 	int logitudNombre = strlen(nombreVarialble)+1;;
@@ -278,6 +330,9 @@ void signalCPU(t_nombre_semaforo semf) {
 
 void fcallNR(t_nombre_etiqueta nombre) {
 	//esFuncion = 1;
+	if(estado==segFaultID){
+		return;
+	}
 	quantum++;
 }
 
@@ -371,5 +426,51 @@ int dirRetoAbs(int pag, int offset){
 void dirAbstoRe(int dirAbs, int* pag, int* offset){
 	*offset = dirAbs%tamanioPaginaUMC;
 	*pag = (dirAbs - *offset) / tamanioPaginaUMC;
+}
+
+void* pedirUMC(direccionMemoria* solicitarUMC){
+	//Le envio lo pedido
+	//SEG FAULT = 777
+	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), solicitarUMC);
+	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
+	int* header = leerHeader(socketMemoria);
+	switch (*header) {
+		case OK:
+		{
+			int* valorRecibido = recibirStream(socketMemoria, sizeof(int));
+			return valorRecibido;
+		}
+			break;
+		case 777:
+		{
+			*(pcb_actual->PC) = *(pcb_actual->PC) - 1;//Bajo uno ya q alterminar sube uno, entonces para que quede igual
+			//Igual la ejecucion finaliza asi q no seria necesario
+			estado = segFaultID;
+			return NULL;
+		}
+			break;
+	}
+}
+
+void almacenarUMC(almUMC aAlmacenar){
+	enviarStream(socketMemoria, 53, sizeof(almUMC), &aAlmacenar);
+	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
+
+	int* header = leerHeader(socketMemoria);
+	switch (*header) {
+		case OK:
+		{
+			return;
+		}
+			break;
+		case 777:
+		{
+			*(pcb_actual->PC) = *(pcb_actual->PC) - 1;//Bajo uno ya q alterminar sube uno, entonces para que quede igual
+			//Igual la ejecucion finaliza asi q no seria necesario
+			estado = segFaultID;
+			return;
+		}
+			break;
+	}
 }
 

@@ -164,7 +164,7 @@ pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado){
 	icNuevo->inst_tamanio = paginarIC(icNuevo->inst_tamanio);
 	int posicion = (dictionary_size(icNuevo->inst_tamanio)-1);
 	direccionMemoria* lastInt = dictionary_get(icNuevo->inst_tamanio,&posicion);
-	int ultimaPaginaDeCodigo = lastInt->pagina;
+	int ultimaPaginaDeCodigo = lastInt->pagina+1;
 							  // 1 = No Hay espacio
 	if(cargarEnUMC(icNuevo->inst_tamanio,instruccionesPaUMC,ultimaPaginaDeCodigo+reg_config.stack_size,clienteNucleoUMC.socketCliente,idProgramaNuevo)==-1){
 		//no se pudo cargar notificar a la consola determinda

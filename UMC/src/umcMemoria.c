@@ -153,7 +153,10 @@ int desalojarPrograma(int id){
 }
 
 void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
-
+	//Chekeo SEG FAULT
+	if(pagina>=dictionary_size(tabla_actual)){
+		return NULL;
+	}
 	log_trace(log_memoria,"Solcitud - id: %d pag: %d offset: %d tamanio: %d",*idProcesoActual,pagina,offset,tamanio);
 	int estaEnTLB = 0;
 	int posicionDeMemoria;
@@ -237,8 +240,11 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 	//Esto es mas de la entrega 3
 }
 
-void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
-
+int almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
+	//Chekeo SEG FAULT
+	if(pagina>=dictionary_size(tabla_actual)){
+		return 0;
+	}
 	int posicionDeMemoria;
 	int recienAsignado = 0;
 	int estaEnTlb = 0;
@@ -321,7 +327,7 @@ void almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 	paginaBuscada->modif = 1;
 	//log_trace(log_memoria,"Lock off");
 	pthread_mutex_unlock(&semaforoMemoria);
-	return;
+	return 1;
 }
 
 void cambiarProceso(int idProceso){
