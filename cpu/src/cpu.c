@@ -243,11 +243,11 @@ void tratarPCB() {
 			char* proxInstruccion = proximaInstruccion();
 			if(proxInstruccion == NULL){
 				hayEspacio = 0;
-				printf("no hay espacio %d\n",*pcb_actual->PID);
+				printf("No hay espacio, PID: %d\n",*pcb_actual->PID);
 				continue;
 			}
-			printf("procesando instruccion %d\n",*(pcb_actual->PC));
-			printf("procesando inst:%s\n",proxInstruccion);
+			//printf("procesando instruccion %d\n",*(pcb_actual->PC));
+			//printf("procesando inst:%s\n",proxInstruccion);
 			procesarInstruccion(proxInstruccion);
 			quantum--;
 			*(pcb_actual->PC) = *pcb_actual->PC + 1;

@@ -126,6 +126,7 @@ int desalojarPrograma(int id){
 	int i;
 	log_trace(log_memoria,"Agregado a marcos libres:");
 	for(i=0;i <cant_paginas; i++){
+		removerDeTLB(id,i,-1);
 		infoPagina* marcoLibre = dictionary_remove(tabla_desalojar,&i);
 		if(marcoLibre->nroMarco!=-1){
 			int* nuevoMArco = malloc(sizeof(int));
@@ -136,7 +137,7 @@ int desalojarPrograma(int id){
 		free(marcoLibre);
 	}
 	dictionary_destroy(tabla_desalojar);
-	//desalojo programas para clock
+	//desalojo programas para clock9
 	reloj* elemento = dictionary_get(programas_paraClock,&id);
 	cant_paginas = list_size(elemento->paginasMemoria);
 	for(i=0;i<cant_paginas;i++){

@@ -117,36 +117,39 @@ void* mostrarEstructura(char* programaAImprimir, void* pag_marco){
 		printf("ID\tPag\tMarco Nro\tBit Uso\tModif\t\n");
 	for(i=0;i<tamanioDiccionario;i++){
 		infoPagina* marcoTemp = dictionary_get(pag_marco,&i);
-		printf("%d\t %d \t    %d   \t  %d  \t  %d  \t  %d \t\n",pidPrograma,i,marcoTemp->nroMarco,marcoTemp->bit_uso,marcoTemp->modif);
+		printf("%d\t %d \t    %d   \t  %d  \t  %d  \t\n",pidPrograma,i,marcoTemp->nroMarco,marcoTemp->bit_uso,marcoTemp->modif);
 	}
 }
 
-void* mostrarContenidoDeMemoria(char* programaAImprimir, void* pag_marco){
+void* mostrarContenidoDeMemoria(char* programaAImprimir, void* pag_marco) {
 	int pidPrograma = *programaAImprimir;
 	int tamanioDiccionario = dictionary_size(pag_marco);
 	int i;
 	int posicioDeMemoria;
-	for(i=0;i<tamanioDiccionario;i++){
-		infoPagina* marcoTemp = dictionary_get(pag_marco,&i);
-		posicioDeMemoria = ((marcoTemp->nroMarco)*umcConfg.configuracionUMC.MARCO_SIZE);
-		int j;
-		printf("ID: %d PAG: %d MARCO: %d\n",pidPrograma,i,marcoTemp->nroMarco);
-		for(j=0;j<vecesRepetir;j++){
-			char tempHexa;
-			int tempOffset = j;
-			memcpy(&tempHexa,(memoriaPrincipal +posicioDeMemoria + tempOffset),1);
-			/*int resultado = strtol(tempHexa,NULL,16);
-			char resultadoChar = resultado;*/
-			//char tempRes = (char)*tempHexa;
-			/*if(((tempHexa >= '0') && (tempHexa <= 'Z')))
-				printf("%c  ",tempHexa);
-			else*/
-			if(j%15==0&&j>1){
-				printf("\n");
+	for (i = 0; i < tamanioDiccionario; i++) {
+		infoPagina* marcoTemp = dictionary_get(pag_marco, &i);
+		if (marcoTemp->nroMarco == -1) {
+			printf("ID: %d PAG: %d MARCO: %d\n", pidPrograma, i,
+								marcoTemp->nroMarco);
+			printf("Pagina no se encuentra en memoria\n\n");
+		} else {
+			posicioDeMemoria = ((marcoTemp->nroMarco)
+					* umcConfg.configuracionUMC.MARCO_SIZE);
+			int j;
+			printf("ID: %d PAG: %d MARCO: %d\n", pidPrograma, i,
+					marcoTemp->nroMarco);
+			for (j = 0; j < vecesRepetir; j++) {
+				char tempHexa;
+				int tempOffset = j;
+				memcpy(&tempHexa,
+						(memoriaPrincipal + posicioDeMemoria + tempOffset), 1);
+				if (j % 15 == 0 && j > 1) {
+					printf("\n");
+				}
+				printf("%hhX\t", tempHexa);
 			}
-			printf("%hhX\t",tempHexa);
+			printf("\n");
 		}
-		printf("\n");
 	}
 }
 

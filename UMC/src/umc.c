@@ -53,16 +53,6 @@ int main(void) {
 	log_info(umcConfg.loguer, "Conectado a Swap socket: %d", aSwap.socketCliente);
 	umcConfg.socketSwap = aSwap.socketCliente;
 
-
-	/*int a = 123;
-	notificarASwapPrograma(5,5);
-	almacenarEnSwap(5,1,&a);
-	int* ab = solicitarEnSwap(5,1);
-	printf("%d\n",*(ab));*/
-
-	//ROmpe
-	//notificarASwapFinPrograma(5);
-
 	pthread_t consola;
 	pthread_t socket;
 
