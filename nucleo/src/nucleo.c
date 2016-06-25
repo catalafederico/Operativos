@@ -282,6 +282,7 @@ void *administrar_cola_Block(){
 				pthread_mutex_lock(&sem_reg_config);
 					datos_sem=dictionary_get(reg_config.dic_semaforos,elem_block->dispositivo);
 					list_add(datos_sem->cola_procesos,elem_block);
+					sem_post(&datos_sem->sem_semaforos); // ver si hay que usar el &
 					dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem); //verr
 				pthread_mutex_unlock(&sem_reg_config);
 				break;

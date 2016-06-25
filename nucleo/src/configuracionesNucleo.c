@@ -156,7 +156,7 @@ t_reg_config get_config_params(void){
 	datos_sem = malloc(sizeof(t_datos_samaforos));
     datos_sem->valor= atoi(sems_init[idx]);
     datos_sem->cola_procesos=list_create();
-
+    sem_init(&datos_sem->sem_semaforos,0,0);
     dictionary_put(reg_config.dic_semaforos,sem_id[idx],datos_sem);
     idx++;
   }
@@ -240,8 +240,9 @@ void * administrar_cola_sem(void* semaforo){
 	t_pcb_bloqueado* elem_block;
 
 	while(1){
-		sleep(20);
+//		sleep(20);
 		datos_sem=dictionary_get(reg_config.dic_semaforos,semaforo);
+		sem_wait(&datos_sem->sem_semaforos); // ver si hay que usar el &
 		if(list_size(datos_sem->cola_procesos)>= 1){
 			if(datos_sem->valor >= 1){
 				pthread_mutex_lock(&sem_reg_config);

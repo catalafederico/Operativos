@@ -38,6 +38,7 @@ typedef struct{
 
 typedef struct{
 	int valor;
+	sem_t sem_semaforos;
 	t_list* cola_procesos;
 }t_datos_samaforos;
 
