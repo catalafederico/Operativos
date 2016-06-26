@@ -1,0 +1,8 @@
+#!/usr/bin/ansisop
+begin
+	print !Global
+	!Global = !Global + 5
+	print !Global
+end
+
+

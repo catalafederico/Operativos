@@ -161,12 +161,12 @@ t_reg_config get_config_params(void){
     idx++;
   }
 
-  // cago el diccionario de semaforos dic_variables
+  	  //cago el diccionario de semaforos dic_variables
     idx=0;
     while(!(shared_vars[idx]==NULL)){
       int* valor_variable = malloc(sizeof(int));
       *valor_variable = 0;
-      dictionary_put(reg_config.dic_variables,shared_vars[idx],valor_variable);
+      dictionary_put(reg_config.dic_variables,shared_vars[idx]+sizeof(char),valor_variable);//sumo uno para sacarle !
       idx++;
     }
 

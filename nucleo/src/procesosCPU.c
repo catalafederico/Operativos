@@ -251,36 +251,12 @@ void *atender_CPU(int* socket_desc) {
                 ansisop_entradaSalida(socket_local, pid_local);
                 cambioPcb = 1;//activo el cambio del pcb ya q se bloqueo el proceso
 				break;
-/*			{
-				int* tamanioNombreIO = recibirStream(socket_local,sizeof(int));
-				char* nombreDispositivo = recibirStream(socket_local,*tamanioNombreIO);
-				int* tiempoDispositivo = recibirStream(socket_local, sizeof(int));
-				pcb_elegido = recibirPCBdeCPU(socket_local);
-				break;
-			}
-*/
-
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
 				ansisop_obtenerValorCompartida (socket_local);
 				break;
-/*			{
-				int* tamanioNombreOV = recibirStream(socket_local,sizeof(int));
-				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreOV);
-				pcb_elegido = recibirPCBdeCPU(socket_local);
-				break;
-			}
-*/
-
 			case GRABA_VALOR: //es la primitiva asignarValorCompartida
 				ansisop_asignarValorCompartida (socket_local);
 				break;
-/*			{
-				int* tamanioNombreGV = recibirStream(socket_local,sizeof(int));
-				int* valorAGrabar = recibirStream(socket_local, sizeof(int));
-				char* nombreVaribale = recibirStream(socket_local,*tamanioNombreGV);
-				pcb_elegido = recibirPCBdeCPU(socket_local);
-				break;
-			} */
 			case WAIT_SEM:	 // es la primitiva wait
 				cambioPcb = ansisop_wait (socket_local, pid_local);
 				send(socket_local,&cambioPcb,sizeof(int),0);
@@ -603,34 +579,25 @@ void ansisop_entradaSalida(int socket_local, int pid_local){
 void ansisop_obtenerValorCompartida(int socket_local){
 	//se recibe parametros para obtener valor
 	int* long_char = recibirStream(socket_local,sizeof(int));
-	char * variable_comp = recibirStream(socket_local, *long_char);
-
-	//se recibe el PCB  // no hace falta el PCB
-//	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
-
+	char* variable_comp = recibirStream(socket_local, *long_char);
 	int * valor_comp;
 	pthread_mutex_lock(&sem_reg_config);
 		valor_comp = dictionary_get(reg_config.dic_variables,variable_comp);
 	pthread_mutex_unlock(&sem_reg_config);
 
 	send(socket_local,valor_comp,sizeof(int),0);
-
 }
 
 void ansisop_asignarValorCompartida(int socket_local){
 	int* tamanioNombreGV = recibirStream(socket_local,sizeof(int));
 	int* valorAGrabar = recibirStream(socket_local, sizeof(int));
 	char* nombreVariable = recibirStream(socket_local,*tamanioNombreGV);
-	void * valor_comp;
-
-//	pthread_mutex_lock(&sem_dic_variables);
-//		valor_comp = dictionary_get(dict_variables,nombreVariable);
-//	pthread_mutex_unlock(&sem_dic_variables);
-	valor_comp = valorAGrabar;
-//	pcb_elegido = recibirPCBdeCPU(socket_local);
 	pthread_mutex_lock(&sem_reg_config);
-		dictionary_put(reg_config.dic_variables,nombreVariable, valor_comp);
+		free(dictionary_remove(reg_config.dic_variables,nombreVariable));//libero xq es un int* malloc lo q hay
+		dictionary_put(reg_config.dic_variables,nombreVariable, valorAGrabar);
 	pthread_mutex_unlock(&sem_reg_config);
+	free(tamanioNombreGV);
+	free(nombreVariable);
 }
 
 int ansisop_wait (int socket_local, int pid_local){
