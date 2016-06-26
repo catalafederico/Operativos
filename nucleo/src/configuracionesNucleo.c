@@ -217,12 +217,12 @@ void * administrar_cola_IO(void* dispositivo){
 	t_pcb_bloqueado* elem_block;
 	t_datos_dicIO* datos_io;
 	int tiempo = 0;
+	datos_io=dictionary_get(reg_config.dic_IO,dispositivo);
 	while(1){
-		datos_io=dictionary_get(reg_config.dic_IO,dispositivo);
-		sem_wait(&(datos_io->sem_dispositivo)); // ver si hay que usar el &
+		sem_wait(&(datos_io->sem_dispositivo)); // ver si hay que 	usar el &
 		elem_block = list_remove(datos_io->cola_procesos,0);
-		tiempo = datos_io->retardo * elem_block->unidades;
-		usleep(tiempo);
+		tiempo = datos_io->retardo/1000 * elem_block->unidades;//divido mil para pasarlo a segundo
+		sleep(tiempo);
 		pthread_mutex_lock(&sem_l_Ready);
 			list_add(proc_Ready,elem_block->pcb_bloqueado);
 			log_debug(logger,"PCB con PID %d pasado a READY xfin de IO",elem_block->pcb_bloqueado->PID);

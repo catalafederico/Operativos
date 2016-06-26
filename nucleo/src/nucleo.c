@@ -275,14 +275,15 @@ void *administrar_cola_Block(){
 					datos_io=dictionary_get(reg_config.dic_IO,elem_block->dispositivo);
 					list_add(datos_io->cola_procesos,elem_block);
 					sem_post(&(datos_io->sem_dispositivo)); // ver si hay que usar el &
-					dictionary_put(reg_config.dic_IO,elem_block->dispositivo,datos_io); //verr
+					//dictionary_put(reg_config.dic_IO,elem_block->dispositivo,datos_io); //verr No hace falta hacer un put ya q cuando lo modificas
+					//se guarda igual por ser puntero
 				pthread_mutex_unlock(&sem_reg_config);
 				break;
 			case 2:	// bloqueo por wait
 				pthread_mutex_lock(&sem_reg_config);
 					datos_sem=dictionary_get(reg_config.dic_semaforos,elem_block->dispositivo);
 					list_add(datos_sem->cola_procesos,elem_block);
-					dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem); //verr
+					//dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem); //verrlo mismo q en el switch 1
 				pthread_mutex_unlock(&sem_reg_config);
 				break;
 		}
