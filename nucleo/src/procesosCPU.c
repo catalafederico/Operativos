@@ -48,6 +48,7 @@
 #define SIGNAL_SEM 	 8
 #define IMPRIMIR	 9
 #define IMPRIMIR_TXT 10
+#define SEG_FAULT 11
 
 // Variables compartidas ---------------------------------------------
 extern t_reg_config reg_config;
@@ -56,7 +57,7 @@ extern t_reg_config reg_config;
 extern t_list* proc_Ready;
 extern t_list* proc_Exec;
 extern t_list* proc_Block;
-//extern t_list* proc_Reject;
+extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
 extern struct server serverPaCPU;
@@ -65,6 +66,7 @@ extern struct server serverPaCPU;
 extern sem_t sem_READY_dispo;
 extern sem_t sem_EXIT_dispo;
 extern sem_t sem_BLOCK_dispo;
+extern sem_t sem_REJECT_dispo;
 
 //extern sem_t  sem_cpus_dispo;
 //extern pthread_mutex_t sem_l_cpus_dispo;
@@ -77,7 +79,7 @@ extern pthread_mutex_t sem_l_Ready;
 extern pthread_mutex_t sem_l_Exec;
 extern pthread_mutex_t sem_l_Block;
 extern pthread_mutex_t sem_l_Exit;
-//extern pthread_mutex_t sem_l_Reject;
+extern pthread_mutex_t sem_l_Reject;
 extern pthread_mutex_t sem_reg_config;
 extern pthread_mutex_t sem_pid_consola;
 //extern pthread_mutex_t sem_dic_semaforos;
@@ -279,8 +281,6 @@ void *atender_CPU(int* socket_desc) {
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
 			} */
-
-
 			case WAIT_SEM:	 // es la primitiva wait
 				cambioPcb = ansisop_wait (socket_local, pid_local);
 				send(socket_local,&cambioPcb,sizeof(int),0);
@@ -293,8 +293,6 @@ void *atender_CPU(int* socket_desc) {
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
 			} */
-
-
 			case SIGNAL_SEM: // es la primitiva signal
 				ansisop_signal (socket_local);
 				break;
@@ -304,8 +302,6 @@ void *atender_CPU(int* socket_desc) {
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				break;
 			} */
-
-
 			case IMPRIMIR: // es la primitiva imprimir
 			{
 				int* valoraImprimir = leerHeader(socket_local);
@@ -328,8 +324,30 @@ void *atender_CPU(int* socket_desc) {
 				free(mensaje);
 				break;
 			}
+			case SEG_FAULT:
+			{
+				pcb_elegido = recibirPCBdeCPU(socket_local);
+				pthread_mutex_lock(&sem_l_Exec);
+					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
+				//	buscarYRemoverPCBporPID(*(pcb_elegido->PID),proc_Exec);
+					log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",	pid_local);
+				pthread_mutex_unlock(&sem_l_Exec);
 
-
+				pthread_mutex_lock(&sem_l_Reject);
+					list_add(proc_Reject, pcb_elegido);
+					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
+				pthread_mutex_unlock(&sem_l_Reject);
+				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
+				pthread_mutex_lock(&sem_pid_consola);
+					socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+				pthread_mutex_unlock(&sem_pid_consola);
+				free(socketConsola->mensaje);
+				socketConsola->mensaje = strdup("Proceso_Produjo_SEG_FAULT");
+				sem_post(&sem_REJECT_dispo);
+//				int envVar = 999;
+//				send(socketConsola->socket_dest,&envVar,sizeof(int),0);
+				break;
+			}
 			default:
 				break;
 			}

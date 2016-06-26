@@ -213,12 +213,29 @@ char* proximaInstruccion() {
 			sizeof(direccionMemoria), direcProxIntruccion);
 	send(clienteCpuUmc.socketCliente,pcb_actual->PID,sizeof(int),0);
 	//Espero instruccion
-	char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
-			(direcProxIntruccion->tamanio));
-	if(!strcmp(proximaInstruccion,"#")){
-		return NULL;
+	int* header = leerHeader(clienteCpuUmc.socketCliente);
+	switch (*header) {
+		case OK:
+		{
+			char* proximaInstruccion = recibirStream(clienteCpuUmc.socketCliente,
+					(direcProxIntruccion->tamanio));
+			if(!strcmp(proximaInstruccion,"#")){
+				return NULL;
+			}
+			return proximaInstruccion;
+			break;
+		}
+		case 777:
+		{
+			*(pcb_actual->PC) = *(pcb_actual->PC) - 1;//Bajo uno ya q alterminar sube uno, entonces para que quede igual
+			//Igual la ejecucion finaliza asi q no seria necesario
+			estado = segFaultID;
+			return NULL;
+			break;
+		}
 	}
-	return proximaInstruccion;
+
+
 }
 
 int puedeContinuarEstado(){
@@ -227,6 +244,7 @@ int puedeContinuarEstado(){
 	if((estado == finalID)
 			|| (estado == waitID)
 			|| (estado == ioSolID)
+			|| (estado == segFaultID)
 			|| (finEjecucion)
 			|| !(quantum>0)){
 		return 0;
@@ -261,6 +279,12 @@ void tratarPCB() {
 	if (estado == finalID) {
 		int FIN_Proc = 1;
 		send(clienteCpuNucleo.socketCliente, &FIN_Proc, sizeof(int), 0);
+		enviarPCB();
+		return;
+	}
+	if (estado == segFaultID) {
+		int segFault = 11;
+		send(clienteCpuNucleo.socketCliente, &segFault, sizeof(int), 0);
 		enviarPCB();
 		return;
 	}
@@ -509,7 +533,7 @@ void enviarPCB() {
 		//Puede ser null
 		direccionMemoria direccionRetornoFuncion;
 		if(stackAMandar->memoriaRetorno!=NULL)
-			direccionRetornoFuncion = 	*(stackAMandar->memoriaRetorno);
+			direccionRetornoFuncion = *(stackAMandar->memoriaRetorno);
 		else{
 			direccionRetornoFuncion.offset = -1;
 			direccionRetornoFuncion.pagina = -1;

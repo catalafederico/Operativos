@@ -312,25 +312,25 @@ void *administrar_cola_Reject (){
 			pid_local = *(pcb_elegido->PID);
 		pthread_mutex_unlock(&sem_l_Reject);
 
+		notificarAUMCfpc(pid_local);
 		log_debug(log_procesador_Reject, "Se removio el PCB de REJECT: %d", pid_local);
 
 		// quito el proceso del Diccionario, obtengo Consola_Id y mensaje de respuesta
 		pthread_mutex_lock(&sem_pid_consola);
-			datos_a_consola = dictionary_get(dict_pid_consola,string_itoa(pid_local));
-			dictionary_remove(dict_pid_consola,string_itoa(pid_local));
+			datos_a_consola = dictionary_get(dict_pid_consola,&pid_local);
+			dictionary_remove(dict_pid_consola,&pid_local);
 		pthread_mutex_unlock(&sem_pid_consola);
 
-		char *mje_Rej = string_new();
-		string_append(&mje_Rej, "SIN ESPACIO");
-		int cant_pasada = MJE_RTA - 11;
-		string_append(&mje_Rej, string_repeat(' ', cant_pasada));
+
 		log_debug(log_procesador_Reject, "Se removio el PID ( %d ) del dicc y se envio el mje ( SIN ESPACIO ) a consola: %d", pid_local, datos_a_consola->socket_dest);
 		log_debug(logger, "PCB con PID %d sacado de REJECT y se respondio a la consola %d",pid_local, datos_a_consola->socket_dest);
-		log_debug(logger, "Se envio a consola: %d el mensaje: %s", datos_a_consola->socket_dest, mje_Rej);
-	    if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, MJE_RTA, 0) == -1){
+		//log_debug(logger, "Se envio a consola: %d el mensaje: %s", datos_a_consola->socket_dest, mje_Rej);
+		int fin = -999;
+		send(datos_a_consola->socket_dest,&fin,sizeof(int),0);
+	    /*if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, MJE_RTA, 0) == -1){
 	    	log_debug(logger, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
 	    	log_debug(log_procesador_Reject, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
-	    }
+	    }*/
 	    log_debug(log_procesador_Reject, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
 		free(datos_a_consola);
 	}

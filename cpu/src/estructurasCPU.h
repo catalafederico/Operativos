@@ -14,6 +14,7 @@
 #define signalID 2000
 #define waitID 3000
 #define finalID 4000
+#define segFaultID 5000
 
 typedef struct {
 	int pagina;

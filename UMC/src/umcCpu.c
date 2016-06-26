@@ -37,14 +37,25 @@ void solicitar_Bytes(int socket){
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Obtener bytes iniciado");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
-	log_info(umcConfg.loguer, "Obtener bytes terminado");
-	//le envio lo obtenido a cpu
-	send(socket,obtenido,*tamanio,0);
-	free(pagina);
-	free(offset);
-	free(tamanio);
-	free(obtenido);
-	return;
+	if(obtenido==NULL){
+		int segFault = 777;
+		send(socket,&segFault,sizeof(int),0);
+		free(pagina);
+		free(offset);
+		free(tamanio);
+		return;
+	}else{
+		int ok = OK;
+		send(socket,&ok,sizeof(int),0);
+		log_info(umcConfg.loguer, "Obtener bytes terminado");
+		//le envio lo obtenido a cpu
+		send(socket,obtenido,*tamanio,0);
+		free(pagina);
+		free(offset);
+		free(tamanio);
+		free(obtenido);
+		return;
+	}
 }
 
 void almacenar_Byte(int socket){
@@ -55,7 +66,16 @@ void almacenar_Byte(int socket){
 	int* idProceso = (int*) recibirStream(socket,sizeof(int));
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
-	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
+	int conf = almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
+	if(conf==0){
+		int segFault = 777;
+		send(socket,&segFault,sizeof(int),0);
+	}else{
+		int ok = OK;
+		send(socket,&ok,sizeof(int),0);
+		log_info(umcConfg.loguer, "Obtener bytes terminado");
+		//le envio lo obtenido a cpu
+	}
 	log_info(umcConfg.loguer, "Almacenar byte terminado");
 	free(pagina);
 	free(offset);
