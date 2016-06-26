@@ -155,6 +155,7 @@ int desalojarPrograma(int id){
 void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 	//Chekeo SEG FAULT
 	if(pagina>=dictionary_size(tabla_actual)){
+		pthread_mutex_unlock(&semaforoMemoria);
 		return NULL;
 	}
 	log_trace(log_memoria,"Solcitud - id: %d pag: %d offset: %d tamanio: %d",*idProcesoActual,pagina,offset,tamanio);
@@ -243,6 +244,7 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 int almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 	//Chekeo SEG FAULT
 	if(pagina>=dictionary_size(tabla_actual)){
+		pthread_mutex_unlock(&semaforoMemoria);
 		return 0;
 	}
 	int posicionDeMemoria;
