@@ -176,12 +176,12 @@ t_valor_variable getglobalvar(t_nombre_compartida var) {
 		return 0;
 	}
 	int obtenerValorID = 5;
-	char* nombreVarialble = strcat(var,"0");
+	char* nombreVarialble = strcat(var,"\0");
 	int logitudNombre = strlen(nombreVarialble)+1;
-	enviarStream(socketNucleo,obtenerValorID,sizeof(int),logitudNombre);
+	enviarStream(socketNucleo,obtenerValorID,sizeof(int),&logitudNombre);
 	send(socketNucleo,var,logitudNombre,0);
-	int valor = leerHeader(socketNucleo);
-	return valor;
+	int* valor = leerHeader(socketNucleo);
+	return *valor;
 }
 
 //AsignarValorCompartida
@@ -190,9 +190,9 @@ t_valor_variable setglobalvar(t_nombre_compartida var, t_valor_variable valor) {
 		return 0;
 	}
 	int obtenerValorID = 6;
-	char* nombreVarialble = strcat(var,"0") ;
+	char* nombreVarialble = strcat(var,"\0") ;
 	int logitudNombre = strlen(nombreVarialble)+1;;
-	enviarStream(socketNucleo,obtenerValorID,sizeof(int),logitudNombre);
+	enviarStream(socketNucleo,obtenerValorID,sizeof(int),&logitudNombre);
 	send(socketNucleo,&valor,sizeof(int),0);
 	send(socketNucleo,var,logitudNombre,0);
 	return valor;
@@ -304,7 +304,7 @@ void ionotif(t_nombre_dispositivo ioname, int tiempo) {
 	}
 	estado = ioSolID;
 	tiempo_dispositivo = tiempo;
-	nombreSemaforoWait = strdup(ioname);
+	nombreDispositivo = strdup(ioname);
 	return;
 }
 

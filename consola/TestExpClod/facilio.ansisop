@@ -1,0 +1,10 @@
+#!/usr/bin/ansisop
+begin
+	io Disco 10
+	textPrint espera Disco fin
+	io Impresora 5
+	textPrint espera Impresora fin
+	textPrint FIN
+end
+
+
