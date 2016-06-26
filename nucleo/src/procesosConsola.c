@@ -147,6 +147,8 @@ void *atender_consola(int* socket_desc){
 
 		t_sock_mje* datos_a_consola = malloc(sizeof(t_sock_mje));
 		datos_a_consola->socket_dest = socket_co;
+		datos_a_consola->semaforo_de_lista = &semProgramasAProcesar;
+		datos_a_consola->cola_proceso = programas_para_procesar;
 		datos_a_consola->mensaje = strdup(string_repeat(" ",MJE_RTA));
 
 		pthread_mutex_lock(&sem_pid_consola);
@@ -154,6 +156,7 @@ void *atender_consola(int* socket_desc){
 			*tempId = promCargar->PID;
 			dictionary_put(dict_pid_consola,tempId, datos_a_consola);
 		pthread_mutex_unlock(&sem_pid_consola);
+
 		send(socket_co,&promCargar->PID,sizeof(int),0);
 		sem_post(&semaforoProgramasACargar);
 		int* cerrar = malloc(4);
@@ -162,5 +165,63 @@ void *atender_consola(int* socket_desc){
 			cerrar = recibirStream(socket_co,sizeof(int));
 		}while(cerrar != NULL && *cerrar != -123);
 		//Cierra consola
+		//si se cerro la consola debe eliminarse el proceso
+		eliminar_proceso_del_sistema(tempId);
+
 }
 
+void eliminar_proceso_del_sistema(int* un_pid){
+
+	log_debug(logger, "Se elimina el proceso %d del sistema", un_pid);
+	t_sock_mje* datos_a_consola;
+
+	int esEl_proc_noCargado(programaNoCargado* elem_compara) {
+			return (*elem_compara->PID==un_pid);
+	}
+	int esEl_pcb_t(pcb_t* elem_compara) {
+			return (*elem_compara->PID==un_pid);
+	}
+	int esEl_pcb_bloqueado(t_pcb_bloqueado* elem_compara) {
+			return (*elem_compara->pcb_bloqueado->PID==un_pid);
+	}
+	pthread_mutex_lock(&sem_pid_consola);
+		datos_a_consola=dictionary_get(dict_pid_consola,un_pid);
+		dictionary_remove(dict_pid_consola,un_pid);
+	pthread_mutex_unlock(&sem_pid_consola);
+	pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
+	switch(datos_a_consola->tipo_de_lista){
+		case 1: //lista de programaNoCargado
+//			pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
+				programaNoCargado* progAeliminar = list_remove_by_condition(datos_a_consola.cola_proceso,(void*)esEl_proc_noCargado);
+//			pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
+			notificarAUMCfpc(progAeliminar->PID);
+			free(progAeliminar->instrucciones);
+			free(progAeliminar);
+			break;
+
+		case 2: //lista de t_pcb
+//			pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
+				pcb_t* pcbAeliminar = list_remove_by_condition(datos_a_consola.cola_proceso,(void*)esEl_pcb_t);
+//			pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
+			notificarAUMCfpc(pcbAeliminar->PID);
+			//issue ver que mas se hace Free del PCB;
+			free(pcbAeliminar);
+			break;
+
+		case 3: //lista de t_pcb_bloqueado
+//			pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
+				t_pcb_bloqueado* pcbBockAeliminar = list_remove_by_condition(datos_a_consola.cola_proceso,(void*)esEl_pcb_bloqueado);
+//			pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
+			notificarAUMCfpc(pcbBockAeliminar->pcb_bloqueado->PID);
+			//issue ver que mas se hace Free del PCB;
+			free(pcbBockAeliminar->dispositivo);
+			free(pcbBockAeliminar->pcb_bloqueado);
+			free(pcbBockAeliminar);
+			break;
+	}
+	pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
+
+	free(datos_a_consola->mensaje);
+	free(datos_a_consola);
+
+}

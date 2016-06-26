@@ -211,7 +211,7 @@ int main(int argc, char **argv) {
 //**************************************************************************************
 void *administrar_cola_Exit(){
 	log_debug(log_procesador_Exit, "administrar_cola_Exit esta corriendo");
-
+	t_sock_mje* datos_a_consola;
 	pcb_t* pcb_elegido;
 	int pid_local = 0;
 	while (1){
@@ -227,10 +227,10 @@ void *administrar_cola_Exit(){
 
 		log_debug(log_procesador_Exit, "Se removio el PCB de EXIT: %d", pid_local);
 		// quito el proceso del Diccionario, obtengo Consola_Id y mensaje de respuesta
-		t_sock_mje* datos_a_consola;
+
 		pthread_mutex_lock(&sem_pid_consola);
-			datos_a_consola = dictionary_get(dict_pid_consola,&pid_local);
-			dictionary_remove(dict_pid_consola,&pid_local);
+//			datos_a_consola = dictionary_get(dict_pid_consola,&pid_local);
+			datos_a_consola = dictionary_remove(dict_pid_consola,&pid_local);
 		pthread_mutex_unlock(&sem_pid_consola);
 		log_debug(log_procesador_Exit, "Se removio el PID ( %d ) del dicc y se envio el mje ( %s ) a consola: %d", pid_local, datos_a_consola->mensaje, datos_a_consola->socket_dest);
 		log_debug(logger, "PCB con PID %d sacado de EXIT y se respondio a la consola %d",pid_local, datos_a_consola->socket_dest);

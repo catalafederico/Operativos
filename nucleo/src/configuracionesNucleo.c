@@ -249,12 +249,14 @@ void * administrar_cola_sem(void* semaforo){
 					(datos_sem->valor)--;
 					elem_block = list_remove(datos_sem->cola_procesos,0);
 					dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem);
-					log_debug(logger,"PPCB con PID %d pasado al principio de READY xfin de IO",elem_block->pcb_bloqueado->PID);
+					log_debug(logger,"PCB con PID %d pasado al principio de READY xfin de IO",elem_block->pcb_bloqueado->PID);
 				pthread_mutex_unlock(&sem_reg_config);
+
 				pthread_mutex_lock(&sem_l_Ready);
 					list_add(proc_Ready,elem_block->pcb_bloqueado);
 					log_debug(logger,"PCB con PID %d pasado a READY xfin de Wait de semaforo: %s",elem_block->pcb_bloqueado->PID,semaforo);
 				pthread_mutex_unlock(&sem_l_Ready);
+
 				sem_post(&sem_READY_dispo);
 				free(elem_block);
 			}
