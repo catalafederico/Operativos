@@ -172,11 +172,38 @@ void *atender_CPU(int* socket_desc) {
 		//Le otorgo un pcb para tarabajar/////////////
 		//////////////////////////////////////////////
 		sem_wait(&sem_READY_dispo); // espero que haya un proceso en READY disponible
+
+//		pthread_mutex_lock(&sem_pid_consola); //verrr
+
 		pthread_mutex_lock(&sem_l_Ready);
 			pcb_elegido = list_remove(proc_Ready, 0); //Agarro el pcb
 			pid_local = *(pcb_elegido->PID);
 			log_debug(logger, "PCB con PID %d sacado de READY", pid_local);
 		pthread_mutex_unlock(&sem_l_Ready);
+
+		pthread_mutex_lock(&sem_pid_consola);
+				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+		pthread_mutex_unlock(&sem_pid_consola);
+
+		while (socketConsola->proc_status!=0){ //verifico si se cerro la consola del proceso
+
+			pthread_mutex_lock(&sem_l_Reject);
+				list_add(proc_Reject, pcb_elegido);
+				log_debug(logger, "PCB con PID %d pasado a REJECT xfin de consola",pid_local);
+			pthread_mutex_unlock(&sem_l_Reject);
+			sem_post(&sem_REJECT_dispo);
+
+			pthread_mutex_lock(&sem_l_Ready);
+				pcb_elegido = list_remove(proc_Ready, 0); //Agarro el pcb
+				pid_local = *(pcb_elegido->PID);
+				log_debug(logger, "PCB con PID %d sacado de READY", pid_local);
+			pthread_mutex_unlock(&sem_l_Ready);
+
+			pthread_mutex_lock(&sem_pid_consola);
+					socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+			pthread_mutex_unlock(&sem_pid_consola);
+		}
+
 
 		enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
 		//Guardo pcb en la lista de ejecutandose
@@ -189,6 +216,7 @@ void *atender_CPU(int* socket_desc) {
 			estado_proceso = leerHeader(socket_local);
 			switch (*estado_proceso) {
 			case FIN_QUANTUM:
+			{
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
 					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
@@ -201,8 +229,10 @@ void *atender_CPU(int* socket_desc) {
 				pthread_mutex_unlock(&sem_l_Ready);
 				sem_post(&sem_READY_dispo);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el quantum
+			}
 				break;
 			case FIN_PROC:
+			{
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
 					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
@@ -214,14 +244,16 @@ void *atender_CPU(int* socket_desc) {
 					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
 				pthread_mutex_unlock(&sem_l_Exit);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
-				pthread_mutex_lock(&sem_pid_consola);
+//				pthread_mutex_lock(&sem_pid_consola);
 				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
-				pthread_mutex_unlock(&sem_pid_consola);
+//				pthread_mutex_unlock(&sem_pid_consola);
 				free(socketConsola->mensaje);
 				socketConsola->mensaje = strdup("Proceso_Finalizado_Correctamente");
 				sem_post(&sem_EXIT_dispo);
+			}
 				break;
 			case FIN_CPU:
+			{
 				pcb_elegido = recibirPCBdeCPU(socket_local);
 				pthread_mutex_lock(&sem_l_Exec);
 					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
@@ -234,12 +266,15 @@ void *atender_CPU(int* socket_desc) {
 				pthread_mutex_unlock(&sem_l_Ready);
 				sem_post(&sem_READY_dispo);
 				CpuActivo = 0;
+			}
 				//LIBERAR PCB
 				//BORAR CONSOLA DEL DICCIONARIO
 				break;
 			case SOLIC_IO:	//es la primitiva entradaSalida
+			{
                 ansisop_entradaSalida(socket_local, pid_local);
                 cambioPcb = 1;//activo el cambio del pcb ya q se bloqueo el proceso
+			}
 				break;
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
 				ansisop_obtenerValorCompartida (socket_local);
@@ -248,10 +283,12 @@ void *atender_CPU(int* socket_desc) {
 				ansisop_asignarValorCompartida (socket_local);
 				break;
 			case WAIT_SEM:	 // es la primitiva wait
+			{
 				cambioPcb = ansisop_wait (socket_local, pid_local);
 				send(socket_local,&cambioPcb,sizeof(int),0);
 				// si cambioPcb es 0 significa que el wait no bloqueo y el cpu puede seguir procesando,
-				// si es 1 entonces el proceso se bloqueo y le CPU debe tomar otro PCB
+				// si es 1 entonces el proceso se bloqueo y el CPU debe tomar otro PCB
+			}
 				break;
 		/*	{
 				int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
@@ -271,7 +308,7 @@ void *atender_CPU(int* socket_desc) {
 			case IMPRIMIR: // es la primitiva imprimir
 			{
 				int* valoraImprimir = leerHeader(socket_local);
-				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+			/*	t_sock_mje* */ socketConsola = dictionary_get(dict_pid_consola,&pid_local);
 				int envVar = 100;
 				enviarStream(socketConsola->socket_dest,envVar,sizeof(int),valoraImprimir);
 				free(valoraImprimir);
@@ -279,7 +316,7 @@ void *atender_CPU(int* socket_desc) {
 			}
 			case IMPRIMIR_TXT: // es la primitiva imprimirTexto
 			{
-				t_sock_mje* socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+			/*	t_sock_mje* */ socketConsola = dictionary_get(dict_pid_consola,&pid_local);
 				int* tamanioAImprimir = leerHeader(socket_local);
 				void* mensaje = recibirStream(socket_local,*tamanioAImprimir);
 				int envTexto = 101;
@@ -301,9 +338,9 @@ void *atender_CPU(int* socket_desc) {
 					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
 				pthread_mutex_unlock(&sem_l_Reject);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
-				pthread_mutex_lock(&sem_pid_consola);
+//				pthread_mutex_lock(&sem_pid_consola);
 					socketConsola = dictionary_get(dict_pid_consola,&pid_local);
-				pthread_mutex_unlock(&sem_pid_consola);
+//				pthread_mutex_unlock(&sem_pid_consola);
 				free(socketConsola->mensaje);
 				socketConsola->mensaje = strdup("Proceso_Produjo_SEG_FAULT");
 				sem_post(&sem_REJECT_dispo);
@@ -314,7 +351,7 @@ void *atender_CPU(int* socket_desc) {
 			}
 			free(estado_proceso);
 		} while (!cambioPcb && CpuActivo);
-
+//		pthread_mutex_unlock(&sem_pid_consola); //verr
 
 	}
 	return NULL;
@@ -532,11 +569,11 @@ void ansisop_entradaSalida(int socket_local, int pid_local){
 	//se recibe el PCB
 	pcb_t* pcb_bloqueado = recibirPCBdeCPU(socket_local);
 
-	t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
-	elem_block->pcb_bloqueado = pcb_bloqueado;
-	elem_block->tipo_de_bloqueo = 1;
-	elem_block->dispositivo = dispositivo;
-	elem_block->unidades = * unidades;
+	t_sock_mje* socketConsola;
+
+	pthread_mutex_lock(&sem_pid_consola);
+			socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+	pthread_mutex_unlock(&sem_pid_consola);
 
 	int esEl_Pid(pcb_t* pcb_compara) {
 			return (*pcb_compara->PID==pid_local);
@@ -547,11 +584,26 @@ void ansisop_entradaSalida(int socket_local, int pid_local){
 		log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de IO",pid_local);
 	pthread_mutex_unlock(&sem_l_Exec);
 
-	pthread_mutex_lock(&sem_l_Block); // se bloquea
-		list_add(proc_Block, elem_block);
-		log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
-	pthread_mutex_unlock(&sem_l_Block);
-	sem_post(&sem_BLOCK_dispo);
+	if (socketConsola->proc_status==0){
+		t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
+		elem_block->pcb_bloqueado = pcb_bloqueado;
+		elem_block->tipo_de_bloqueo = 1;
+		elem_block->dispositivo = dispositivo;
+		elem_block->unidades = * unidades;
+		pthread_mutex_lock(&sem_l_Block); // se bloquea
+			list_add(proc_Block, elem_block);
+			log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
+		pthread_mutex_unlock(&sem_l_Block);
+		sem_post(&sem_BLOCK_dispo);
+	}
+	else{
+		pthread_mutex_lock(&sem_l_Reject);
+			list_add(proc_Reject, pcb_bloqueado);
+			log_debug(logger, "PCB con PID %d pasado a REJECT xfin de consola",pid_local);
+		pthread_mutex_unlock(&sem_l_Reject);
+		sem_post(&sem_REJECT_dispo);
+	}
+
 }
 
 void ansisop_obtenerValorCompartida(int socket_local){
@@ -584,6 +636,7 @@ int ansisop_wait (int socket_local, int pid_local){
 	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
 	int retorno=0;
 	t_datos_samaforos* datos_sem;
+	t_sock_mje* socketConsola;
 
 	int esEl_Pid(pcb_t* pcb_compara) {
 			return (*pcb_compara->PID==pid_local);
@@ -600,22 +653,35 @@ int ansisop_wait (int socket_local, int pid_local){
 
 	if (datos_sem->valor <= 0) { // Bloqueo el proceso
 
-		t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
-		elem_block->pcb_bloqueado = pcb_elegido;
-		elem_block->tipo_de_bloqueo = 2;
-		elem_block->dispositivo = nombreSemaforo;
-		elem_block->unidades = 0;
-
 		pthread_mutex_lock(&sem_l_Exec);
 			list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
 			log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de IO",pid_local);
 		pthread_mutex_unlock(&sem_l_Exec);
 
-		pthread_mutex_lock(&sem_l_Block); // se bloquea
-			list_add(proc_Block, elem_block);
-			log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
-		pthread_mutex_unlock(&sem_l_Block);
-		sem_post(&sem_BLOCK_dispo);
+		pthread_mutex_lock(&sem_pid_consola);
+				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+		pthread_mutex_unlock(&sem_pid_consola);
+
+		if (socketConsola->proc_status==0){
+			t_pcb_bloqueado* elem_block = malloc(sizeof(t_pcb_bloqueado));
+			elem_block->pcb_bloqueado = pcb_elegido;
+			elem_block->tipo_de_bloqueo = 2;
+			elem_block->dispositivo = nombreSemaforo;
+			elem_block->unidades = 0;
+			pthread_mutex_lock(&sem_l_Block); // se bloquea
+				list_add(proc_Block, elem_block);
+				log_debug(logger, "PCB con PID %d pasado a cola BLOCK",pid_local);
+			pthread_mutex_unlock(&sem_l_Block);
+			sem_post(&sem_BLOCK_dispo);
+		}
+		else{
+			pthread_mutex_lock(&sem_l_Reject);
+				list_add(proc_Reject, pcb_elegido);
+				log_debug(logger, "PCB con PID %d pasado a REJECT xfin de consola",pid_local);
+			pthread_mutex_unlock(&sem_l_Reject);
+			sem_post(&sem_REJECT_dispo);
+		}
+
 		retorno = 1; // retorna 1 si se bloquea el proceso para que cambie de PCB
 		}
 	pthread_mutex_unlock(&sem_reg_config);

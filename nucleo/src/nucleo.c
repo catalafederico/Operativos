@@ -255,6 +255,7 @@ void *administrar_cola_Exit(){
 void *administrar_cola_Block(){
 	log_debug(log_procesador_Block, "administrar_cola_Block esta corriendo");
 
+	t_sock_mje* socketConsola;
 	t_pcb_bloqueado* elem_block;
 	t_datos_dicIO* datos_io;
 	t_datos_samaforos* datos_sem;
@@ -269,27 +270,40 @@ void *administrar_cola_Block(){
 			log_debug(logger, "PCB con PID %d sacado de cola BLOCK",pid_local);
 		pthread_mutex_unlock(&sem_l_Block);
 
-		switch((elem_block->tipo_de_bloqueo)){
-			case 1:	// bloqueo por IO
-				pthread_mutex_lock(&sem_reg_config);
-					datos_io=dictionary_get(reg_config.dic_IO,elem_block->dispositivo);
-					list_add(datos_io->cola_procesos,elem_block);
-					sem_post(&(datos_io->sem_dispositivo)); // ver si hay que usar el &
-					//dictionary_put(reg_config.dic_IO,elem_block->dispositivo,datos_io); //verr No hace falta hacer un put ya q cuando lo modificas
-					//se guarda igual por ser puntero
-				pthread_mutex_unlock(&sem_reg_config);
-				break;
-			case 2:	// bloqueo por wait
-				pthread_mutex_lock(&sem_reg_config);
-					datos_sem=dictionary_get(reg_config.dic_semaforos,elem_block->dispositivo);
-					list_add(datos_sem->cola_procesos,elem_block);
-					sem_post(&datos_sem->sem_semaforos); // ver si hay que usar el &
-					//dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem); //verr
-				pthread_mutex_unlock(&sem_reg_config);
-				break;
-		}
+		pthread_mutex_lock(&sem_pid_consola);
+				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
+		pthread_mutex_unlock(&sem_pid_consola);
+
+		if (socketConsola->proc_status==0){
+			switch((elem_block->tipo_de_bloqueo)){
+				case 1:	// bloqueo por IO
+					pthread_mutex_lock(&sem_reg_config);
+						datos_io=dictionary_get(reg_config.dic_IO,elem_block->dispositivo);
+						list_add(datos_io->cola_procesos,elem_block);
+						sem_post(&(datos_io->sem_dispositivo)); // ver si hay que usar el &
+						//dictionary_put(reg_config.dic_IO,elem_block->dispositivo,datos_io); //verr No hace falta hacer un put ya q cuando lo modificas
+						//se guarda igual por ser puntero
+					pthread_mutex_unlock(&sem_reg_config);
+					break;
+				case 2:	// bloqueo por wait
+					pthread_mutex_lock(&sem_reg_config);
+						datos_sem=dictionary_get(reg_config.dic_semaforos,elem_block->dispositivo);
+						list_add(datos_sem->cola_procesos,elem_block);
+						sem_post(&datos_sem->sem_semaforos); // ver si hay que usar el &
+						//dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem); //verr
+					pthread_mutex_unlock(&sem_reg_config);
+					break;
+			}
 
 		log_debug(logger, "PCB con PID %d pasado a cola de dispositivo",pid_local);
+		}
+		else{
+			pthread_mutex_lock(&sem_l_Reject);
+				list_add(proc_Reject, elem_block->pcb_bloqueado);
+				log_debug(logger, "PCB con PID %d pasado a REJECT xfin de consola",pid_local);
+			pthread_mutex_unlock(&sem_l_Reject);
+			sem_post(&sem_REJECT_dispo);
+		}
 	}
 
 }

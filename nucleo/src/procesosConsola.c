@@ -147,8 +147,9 @@ void *atender_consola(int* socket_desc){
 
 		t_sock_mje* datos_a_consola = malloc(sizeof(t_sock_mje));
 		datos_a_consola->socket_dest = socket_co;
-		datos_a_consola->semaforo_de_lista = &semProgramasAProcesar;
-		datos_a_consola->cola_proceso = programas_para_procesar;
+		datos_a_consola->proc_status = 0;
+//		datos_a_consola->semaforo_de_lista = &semProgramasAProcesar;
+//		datos_a_consola->cola_proceso = programas_para_procesar;
 		datos_a_consola->mensaje = strdup(string_repeat(" ",MJE_RTA));
 
 		pthread_mutex_lock(&sem_pid_consola);
@@ -174,6 +175,11 @@ void eliminar_proceso_del_sistema(int* un_pid){
 
 	log_debug(logger, "Se elimina el proceso %d del sistema", un_pid);
 	t_sock_mje* datos_a_consola;
+	pthread_mutex_lock(&sem_pid_consola);
+		datos_a_consola=dictionary_get(dict_pid_consola,un_pid);
+		datos_a_consola->proc_status = 1;
+	pthread_mutex_unlock(&sem_pid_consola);
+	/*
 
 	int esEl_proc_noCargado(programaNoCargado* elem_compara) {
 			return (elem_compara->PID==*un_pid);
@@ -230,5 +236,5 @@ void eliminar_proceso_del_sistema(int* un_pid){
 
 	free(datos_a_consola->mensaje);
 	free(datos_a_consola);
-
+*/
 }

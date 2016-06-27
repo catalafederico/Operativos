@@ -15,8 +15,13 @@ extern t_log *logger;
 extern t_reg_config reg_config;
 extern pthread_mutex_t sem_reg_config;
 extern pthread_mutex_t sem_l_Ready;
+extern pthread_mutex_t sem_l_Reject;
+extern pthread_mutex_t sem_pid_consola;
+extern t_list* proc_Reject;
 extern t_list* proc_Ready;
 extern sem_t sem_READY_dispo;
+extern sem_t sem_REJECT_dispo;
+extern t_dictionary* dict_pid_consola;
 
 t_reg_config get_config_params(void){
 //	t_log* logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
@@ -216,18 +221,33 @@ void * administrar_cola_IO(void* dispositivo){
 	log_debug(logger, "Comenzo el administrador de cola de: %s",dispositivo);
 	t_pcb_bloqueado* elem_block;
 	t_datos_dicIO* datos_io;
+	t_sock_mje* socketConsola;
+
 	int tiempo = 0;
 	datos_io=dictionary_get(reg_config.dic_IO,dispositivo);
 	while(1){
 		sem_wait(&(datos_io->sem_dispositivo)); // ver si hay que 	usar el &
 		elem_block = list_remove(datos_io->cola_procesos,0);
-		tiempo = datos_io->retardo/1000 * elem_block->unidades;//divido mil para pasarlo a segundo
-		sleep(tiempo);
-		pthread_mutex_lock(&sem_l_Ready);
-			list_add(proc_Ready,elem_block->pcb_bloqueado);
-			log_debug(logger,"PCB con PID %d pasado a READY xfin de IO",elem_block->pcb_bloqueado->PID);
-		pthread_mutex_unlock(&sem_l_Ready);
-		sem_post(&sem_READY_dispo);
+		pthread_mutex_lock(&sem_pid_consola);
+				socketConsola = dictionary_get(dict_pid_consola,elem_block->pcb_bloqueado->PID);
+		pthread_mutex_unlock(&sem_pid_consola);
+
+		if (socketConsola->proc_status==0){
+			tiempo = datos_io->retardo/1000 * elem_block->unidades;//divido mil para pasarlo a segundo
+			sleep(tiempo);
+			pthread_mutex_lock(&sem_l_Ready);
+				list_add(proc_Ready,elem_block->pcb_bloqueado);
+				log_debug(logger,"PCB con PID %d pasado a READY xfin de IO",elem_block->pcb_bloqueado->PID);
+			pthread_mutex_unlock(&sem_l_Ready);
+			sem_post(&sem_READY_dispo);
+		}
+		else{
+			pthread_mutex_lock(&sem_l_Reject);
+				list_add(proc_Reject, elem_block->pcb_bloqueado);
+				log_debug(logger, "PCB con PID %d pasado a REJECT xfin de consola",elem_block->pcb_bloqueado->PID);
+			pthread_mutex_unlock(&sem_l_Reject);
+			sem_post(&sem_REJECT_dispo);
+		}
 		free(elem_block);
 	}
 	return 0;
