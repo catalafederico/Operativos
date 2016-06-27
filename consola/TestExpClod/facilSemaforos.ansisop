@@ -1,6 +1,7 @@
 #!/usr/bin/ansisop
 begin
 	wait SEM1
+	wait SEM1
 	print !Global
 	!Global = !Global + 5
 	print !Global

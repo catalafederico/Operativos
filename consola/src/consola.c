@@ -23,23 +23,25 @@
 #include <commons/txt.h>
 #include <string.h>
 #include <signal.h>
-int finDeEjecucion;
+struct cliente clienteConsola;
+void finalizarEjecucionConsola(int a);
 int main(int argc, char **argv) {
 	/*int index;
 	  for(index = 0; index < argc; index++) {
 	    printf("  Parametro %d: %s\n", index, argv[index]);
 	  }*/
-
+	signal(SIGINT,finalizarEjecucionConsola);
 	int ch;
 	char* buffer;
 	int size;
 	char* buff;
 //	char* rutaArchivo;
 //	rutaArchivo=argv[1];
-	finDeEjecucion = 0;
 	FILE *archivoAnsisop;
 	//archivoAnsisop =fopen("ansisop/segfault.ansisop","r");
-	archivoAnsisop =fopen("TestExpClod/facilSemaforos.ansisop","r");
+	//desbloqsem1
+	//facilSemaforos
+	archivoAnsisop =fopen("TestExpClod/facilglobalvars.ansisop","r");
 //hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
 //	archivoAnsisop =fopen(rutaArchivo,"r");
 	if (archivoAnsisop == NULL) {
@@ -79,8 +81,7 @@ int main(int argc, char **argv) {
 	int seguir = 1;
 	int* tamanio;
 	char* mensaje;
-	///signal(SIGINT,finalizarEjecucion(clienteConsola));
-	while(seguir && !finDeEjecucion){
+	while(seguir){
 		int* header = leerHeader(clienteConsola.socketCliente);
 				switch (*header) {
 					case 100://imprimir
@@ -126,9 +127,8 @@ int main(int argc, char **argv) {
 
 
 
-void finalizarEjecucion(struct cliente clienteConsola){
+void finalizarEjecucionConsola(int a){
 	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
-	finDeEjecucion=1;
 	int valor= -123;
 	send(clienteConsola.socketCliente,(void*) &valor ,sizeof(int),0);
 	exit(0);

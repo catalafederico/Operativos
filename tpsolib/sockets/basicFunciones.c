@@ -84,8 +84,19 @@ void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaj
 void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
 	int bytesRecibidos;
 	void* recibido = malloc(tamanioEstructuraARecibir);
-	void* tempRcv = malloc(tamanioEstructuraARecibir);
-	bytesRecibidos = recv(socketDondeRecibe,tempRcv,tamanioEstructuraARecibir,0);
+	void* tempRcv;
+	int denuevo;
+	do{
+		denuevo = 0;
+		tempRcv = malloc(tamanioEstructuraARecibir);
+		bytesRecibidos = recv(socketDondeRecibe,tempRcv,tamanioEstructuraARecibir,0);
+		if(bytesRecibidos==-1 && errno == EINTR)
+		{
+			denuevo = 1;
+			free(tempRcv);
+		}
+	}while(denuevo);
+	//errno = 0;
 	if(bytesRecibidos == -1){
 		perror("error en recibir stream");
 		exit(-1);
@@ -130,9 +141,19 @@ int conectarConDireccion(int* socketMio,struct sockaddr_in* direccionDestino){
 }
 
 int* leerHeader(int socketARecibir){
-	int* header = malloc(sizeof(int));
+	int* header;
 	int bytesRecibidos = -1;
-	bytesRecibidos = recv(socketARecibir,header,sizeof(int),0);
+	int denuevo;
+	do{
+		denuevo = 0;
+		header = malloc(sizeof(int));
+		bytesRecibidos = recv(socketARecibir,header,sizeof(int),0);
+		if(bytesRecibidos==-1 && errno == EINTR){
+			printf("ERROR\n");
+			denuevo = 1;
+			free(header);
+		}
+	}while(denuevo);
 	if(bytesRecibidos<=0)
 	{
 		*header = -1;

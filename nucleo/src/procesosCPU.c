@@ -302,10 +302,7 @@ void *atender_CPU(int* socket_desc) {
 			}
 			free(estado_proceso);
 		} while (!cambioPcb && CpuActivo);
-
-
 	}
-	return NULL;
 }
 
 
