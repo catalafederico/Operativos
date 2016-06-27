@@ -26,28 +26,28 @@
 struct cliente clienteConsola;
 void finalizarEjecucionConsola(int a);
 int main(int argc, char **argv) {
-	/*int index;
+	int index;
 	  for(index = 0; index < argc; index++) {
 	    printf("  Parametro %d: %s\n", index, argv[index]);
-	  }*/
+	  }
 	signal(SIGINT,finalizarEjecucionConsola);
 	int ch;
 	char* buffer;
 	int size;
 	char* buff;
-//	char* rutaArchivo;
-//	rutaArchivo=argv[1];
 	FILE *archivoAnsisop;
-	//archivoAnsisop =fopen("ansisop/segfault.ansisop","r");
-	//desbloqsem1
-	//facilSemaforos
-	archivoAnsisop =fopen("TestExpClod/facilglobalvars.ansisop","r");
-//hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
-//	archivoAnsisop =fopen(rutaArchivo,"r");
+	archivoAnsisop =fopen("ansisop/segfault.ansisop","r");
+	//archivoAnsisop =fopen("TestExpClod/facilglobalvars.ansisop","r");
+
+
+	//hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
+
+	//DESCOMENTAR ESTO PARA PASAR POR CONSOLA
+	/*archivoAnsisop =fopen(argv[1],"r");
 	if (archivoAnsisop == NULL) {
 		perror("Error al tratar de leer archivo");
 		exit(EXIT_FAILURE);
-	}
+	}*/
 
 	fseek (archivoAnsisop , 0 , SEEK_END);
 	size = ftell (archivoAnsisop);
