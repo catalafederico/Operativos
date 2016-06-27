@@ -155,8 +155,11 @@ t_reg_config get_config_params(void){
   while(!(sem_id[idx]==NULL)){
 	datos_sem = malloc(sizeof(t_datos_samaforos));
     datos_sem->valor= atoi(sems_init[idx]);
+    pthread_mutex_init(&(datos_sem->semsem),NULL);
+    //datos_sem->semsem = PTHREAD_MUTEX_INITIALIZER;
     datos_sem->cola_procesos=list_create();
     sem_init(&datos_sem->sem_semaforos,0,0);
+    sem_init(&datos_sem->sem_valor,0,0);
     dictionary_put(reg_config.dic_semaforos,sem_id[idx],datos_sem);
     idx++;
   }
@@ -197,16 +200,11 @@ t_reg_config get_config_params(void){
 		pthread_t thread_sem_admin; //hay q crear uno por cada disp
 		semaforo = strdup(sem_id[i]);
 		if(pthread_create(&thread_sem_admin, NULL , administrar_cola_sem, (void*) semaforo) < 0)
-//			if(pthread_create(&thread_sem_admin, NULL , administrar_cola_sem,NULL) < 0)
 		{
 			log_debug(logger, "No fue posible crear thread Admin de semaforos: %s",semaforo);
-		//	exit(EXIT_FAILURE);
 		}
 		i++;
 	}
-
-//	config_destroy(archivo_config);
-//	log_destroy(logger);
 	return reg_config;
 }
 
@@ -238,30 +236,22 @@ void * administrar_cola_sem(void* semaforo){
 	log_debug(logger, "Comenzo el administrador de cola de: %s",semaforo);
 	t_datos_samaforos* datos_sem;
 	t_pcb_bloqueado* elem_block;
-
+	datos_sem=dictionary_get(reg_config.dic_semaforos,semaforo);
 	while(1){
-//		sleep(20);
-		datos_sem=dictionary_get(reg_config.dic_semaforos,semaforo);
-		sem_wait(&datos_sem->sem_semaforos); // ver si hay que usar el &
-		if(list_size(datos_sem->cola_procesos)>= 1){
-			if(datos_sem->valor >= 1){
-				pthread_mutex_lock(&sem_reg_config);
-					(datos_sem->valor)--;
-					elem_block = list_remove(datos_sem->cola_procesos,0);
-					dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem);
-					log_debug(logger,"PCB con PID %d pasado al principio de READY xfin de IO",elem_block->pcb_bloqueado->PID);
-				pthread_mutex_unlock(&sem_reg_config);
-
+		sem_wait(&datos_sem->sem_valor);//Espero un signal de algun proceso
+			sem_wait(&datos_sem->sem_semaforos); //espero por un proceso de ansisop
+			pthread_mutex_lock(&datos_sem->semsem);
+				(datos_sem->valor)--;
+				elem_block = list_remove(datos_sem->cola_procesos,0);
+				//dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem);
+				log_debug(logger,"PCB con PID %d pasado al principio de READY xfin de IO",elem_block->pcb_bloqueado->PID);
+				pthread_mutex_unlock(&datos_sem->semsem);
 				pthread_mutex_lock(&sem_l_Ready);
 					list_add(proc_Ready,elem_block->pcb_bloqueado);
 					log_debug(logger,"PCB con PID %d pasado a READY xfin de Wait de semaforo: %s",elem_block->pcb_bloqueado->PID,semaforo);
 				pthread_mutex_unlock(&sem_l_Ready);
-
 				sem_post(&sem_READY_dispo);
 				free(elem_block);
-			}
-		}
-
 	}
 	return 0;
 }

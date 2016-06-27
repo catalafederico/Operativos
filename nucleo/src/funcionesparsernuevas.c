@@ -101,15 +101,15 @@ int ionotif(t_nombre_dispositivo ioname, int tiempo) {
 }
 
 //wait
-int wait(t_nombre_semaforo semf) {
+void waitCPU(t_nombre_semaforo semf) {
 	esVariable = 1;
-	return CONTENIDO_VARIABLE;
+	return;// CONTENIDO_VARIABLE;
 }
 
 //signal
-int signal(t_nombre_semaforo semf) {
+void signalCPU(t_nombre_semaforo semf) {
 	esVariable = 1;
-	return CONTENIDO_VARIABLE;
+	return;//CONTENIDO_VARIABLE;
 }
 
 //Funciones agreagadas 10/06/2016

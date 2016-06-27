@@ -38,7 +38,9 @@ typedef struct{
 
 typedef struct{
 	int valor;
-	sem_t sem_semaforos;
+	sem_t sem_semaforos; //Uno espera pcbs,otro va a tener valor
+	sem_t sem_valor;
+	pthread_mutex_t semsem;
 	t_list* cola_procesos;
 }t_datos_samaforos;
 

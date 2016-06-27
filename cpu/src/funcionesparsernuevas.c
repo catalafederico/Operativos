@@ -323,8 +323,8 @@ void signalCPU(t_nombre_semaforo semf) {
 	if(estado==segFaultID){
 		return;
 	}
-	int obtenerValorID = 6;
-	char* nombreVarialble = strcat(semf,"0") ;
+	int obtenerValorID = 8;
+	char* nombreVarialble = strcat(semf,"\0") ;
 	int logitudNombre = strlen(nombreVarialble)+1;;
 	enviarStream(socketNucleo,obtenerValorID,sizeof(int),&logitudNombre);
 	send(socketNucleo,semf,logitudNombre,0);

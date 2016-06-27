@@ -79,7 +79,10 @@ AnSISOP_funciones functions = {
 				.AnSISOP_finalizar = fin,
 				.AnSISOP_llamarSinRetorno = fcallNR
 };
-AnSISOP_kernel kernel_functions = { };
+AnSISOP_kernel kernel_functions = {
+		.AnSISOP_wait = waitCPU,
+		.AnSISOP_signal = signalCPU
+};
 
 
 
@@ -271,9 +274,19 @@ void tratarPCB() {
 			*(pcb_actual->PC) = *pcb_actual->PC + 1;
 			sleep(quantumSleep);
 			esFuncion = 0;
-		//}
-		//else
-			//hayEspacio = 0;
+
+			if (estado == waitID) {
+				int waitSem = 7;
+				int tamanio = strlen(nombreSemaforoWait)+1;
+				nombreSemaforoWait = strcat(nombreSemaforoWait,"\0");
+				enviarStream(clienteCpuNucleo.socketCliente,waitSem,sizeof(int),&tamanio);
+				send(clienteCpuNucleo.socketCliente,nombreSemaforoWait,tamanio,0);
+				enviarPCB();
+				free(nombreSemaforoWait);
+				int* header = leerHeader(clienteCpuNucleo.socketCliente);
+				if(*header==0)
+					estado = 0;
+			}
 	} while (puedeContinuarEstado() && hayEspacio);
 
 	if (estado == finalID) {
@@ -286,16 +299,6 @@ void tratarPCB() {
 		int segFault = 11;
 		send(clienteCpuNucleo.socketCliente, &segFault, sizeof(int), 0);
 		enviarPCB();
-		return;
-	}
-	if (estado == waitID) {
-		int waitSem = 7;
-		int tamanio = strlen(nombreSemaforoWait)+1;
-		nombreSemaforoWait = strcat(nombreSemaforoWait,"\0");
-		enviarStream(clienteCpuNucleo.socketCliente,waitSem,sizeof(int),&tamanio);
-		send(clienteCpuNucleo.socketCliente,nombreSemaforoWait,tamanio,0);
-		enviarPCB();
-		free(nombreSemaforoWait);
 		return;
 	}
 	if (estado == ioSolID) {

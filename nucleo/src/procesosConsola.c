@@ -166,7 +166,7 @@ void *atender_consola(int* socket_desc){
 		}while(cerrar != NULL && *cerrar != -123);
 		//Cierra consola
 		//si se cerro la consola debe eliminarse el proceso
-		eliminar_proceso_del_sistema(tempId);
+		//eliminar_proceso_del_sistema(tempId);
 		return 0;
 }
 

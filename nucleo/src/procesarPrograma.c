@@ -36,7 +36,10 @@ AnSISOP_funciones functions = {
 	.AnSISOP_finalizar = fin,
 	.AnSISOP_llamarSinRetorno = fcallNR
 };
-AnSISOP_kernel kernel_functions = { };
+AnSISOP_kernel kernel_functions = {
+		.AnSISOP_wait = waitCPU,
+		.AnSISOP_signal = signalCPU
+};
 
 //Se crea inidice de codigo e indice funciones
 

@@ -26,7 +26,7 @@
 	void fin();
 	void fcallNR(t_nombre_etiqueta nombre);
 
-	//int wait(t_nombre_semaforo semf);
-	//int signal(t_nombre_semaforo semf);
+	void waitCPU(t_nombre_semaforo semf);
+	void signalCPU(t_nombre_semaforo semf);
 
 #endif /* FUNCIONESPARSERNUEVAS_H_ */
