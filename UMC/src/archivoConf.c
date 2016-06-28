@@ -19,12 +19,13 @@ t_config * CPU_config = NULL;
 
 t_reg_config get_config_params(){
 
+	int ab = 16;
 	char * UMC_config_path = "umc_config.cfg";
 	CPU_config = config_create(UMC_config_path);
-	int a = sizeof(int)*8+sizeof(char)*16;
+	int a = sizeof(int)*8+sizeof(char*);
 	t_reg_config* puntero_configuracion = malloc(a);
 	t_reg_config configuracion = *puntero_configuracion;
-	*configuracion.IP_SWAP = malloc(16);
+	//*configuracion.IP_SWAP = malloc(ab);
 	setearValorEntero(&configuracion.PUERTO,"PUERTO");
 	setearValorChar(&configuracion.IP_SWAP,"IP_SWAP");
 	setearValorEntero(&configuracion.PUERTO_SWAP,"PUERTO_SWAP");

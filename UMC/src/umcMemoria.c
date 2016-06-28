@@ -19,7 +19,7 @@
 extern umcNucleo umcConfg;
 extern pthread_mutex_t memoriaLibre;;
 t_log* log_memoria;
-tlb* tlbCache; // liberar al desalojar
+t_list* tlbCache; // liberar al desalojar
 pthread_mutex_t semaforoMemoria;
 void* memoriaPrincipal;
 t_list* marcosLibres;

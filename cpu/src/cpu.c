@@ -296,7 +296,7 @@ void tratarPCB() {
 
 			quantum--;
 			*(pcb_actual->PC) = *pcb_actual->PC + 1;
-			sleep(quantumSleep);
+			usleep(quantumSleep*1000);
 			esFuncion = 0;
 	} while (puedeContinuarEstado() && hayEspacio);
 
