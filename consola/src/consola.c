@@ -25,12 +25,13 @@
 #include <signal.h>
 struct cliente clienteConsola;
 void finalizarEjecucionConsola(int a);
+int nroSocketNucleo;
 int main(int argc, char **argv) {
 	int index;
 	  for(index = 0; index < argc; index++) {
 	    printf("  Parametro %d: %s\n", index, argv[index]);
 	  }
-	signal(SIGINT,finalizarEjecucionConsola);
+//	signal(SIGINT,finalizarEjecucionConsola);
 	int ch;
 	char* buffer;
 	int size;
@@ -57,6 +58,8 @@ int main(int argc, char **argv) {
 
 	struct cliente clienteConsola;
 	clienteConsola = crearCliente(8080, "127.0.0.1");
+
+	signal(SIGINT,finalizarEjecucionConsola);//me qeudo captando la señal ctrl c,le aviso al nucleo que voy a cerrar
 	int a = 1;
 	while(conectarConServidor(clienteConsola)==-1)
 	{
@@ -130,6 +133,8 @@ int main(int argc, char **argv) {
 void finalizarEjecucionConsola(int a){
 	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
 	int valor= -123;
-	send(clienteConsola.socketCliente,(void*) &valor ,sizeof(int),0);
-	exit(0);
+	printf("La consola se cerro, recibi señal: %d",a);
+	send(clienteConsola.socketServer,(void*) &valor ,sizeof(int),0);
+//	raise(SIGTERM);// envia señal al propio proceso para que se cierre
+exit(0);
 }
