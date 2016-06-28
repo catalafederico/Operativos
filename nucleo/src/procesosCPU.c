@@ -173,7 +173,6 @@ void *atender_CPU(int* socket_desc) {
 		//////////////////////////////////////////////
 		sem_wait(&sem_READY_dispo); // espero que haya un proceso en READY disponible
 
-//		pthread_mutex_lock(&sem_pid_consola); //verrr
 
 		pthread_mutex_lock(&sem_l_Ready);
 			pcb_elegido = list_remove(proc_Ready, 0); //Agarro el pcb
@@ -290,21 +289,9 @@ void *atender_CPU(int* socket_desc) {
 				// si es 1 entonces el proceso se bloqueo y el CPU debe tomar otro PCB
 			}
 				break;
-		/*	{
-				int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
-				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombreWS);
-				pcb_elegido = recibirPCBdeCPU(socket_local);
-				break;
-			} */
 			case SIGNAL_SEM: // es la primitiva signal
 				ansisop_signal (socket_local);
 				break;
-/*			{
-				int* tamanioNombre = recibirStream(socket_local,sizeof(int));
-				char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
-				pcb_elegido = recibirPCBdeCPU(socket_local);
-				break;
-			} */
 			case IMPRIMIR: // es la primitiva imprimir
 			{
 				int* valoraImprimir = leerHeader(socket_local);
@@ -351,10 +338,7 @@ void *atender_CPU(int* socket_desc) {
 			}
 			free(estado_proceso);
 		} while (!cambioPcb && CpuActivo);
-//		pthread_mutex_unlock(&sem_pid_consola); //verr
-
 	}
-	return NULL;
 }
 
 
@@ -642,16 +626,13 @@ int ansisop_wait (int socket_local, int pid_local){
 			return (*pcb_compara->PID==pid_local);
 	}
 
-	pthread_mutex_lock(&sem_reg_config);
-		datos_sem=dictionary_remove(reg_config.dic_semaforos,nombreSemaforo);
-
-	if (datos_sem->valor > 0){
+	datos_sem = dictionary_get(reg_config.dic_semaforos,nombreSemaforo);
+	pthread_mutex_lock(&datos_sem->semsem);
+	if (datos_sem->valor >= 0 && list_is_empty(datos_sem->cola_procesos)){//se bloquea en -1
 		(datos_sem->valor)-- ;
-		dictionary_put(reg_config.dic_semaforos,nombreSemaforo,datos_sem);
 		retorno=0;
 	}
-
-	if (datos_sem->valor <= 0) { // Bloqueo el proceso
+	else if (datos_sem->valor < 0) { // Bloqueo el proceso
 
 		pthread_mutex_lock(&sem_l_Exec);
 			list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
@@ -684,7 +665,7 @@ int ansisop_wait (int socket_local, int pid_local){
 
 		retorno = 1; // retorna 1 si se bloquea el proceso para que cambie de PCB
 		}
-	pthread_mutex_unlock(&sem_reg_config);
+	pthread_mutex_unlock(&datos_sem->semsem);
 	return retorno;
 }
 
@@ -692,11 +673,12 @@ void ansisop_signal(int socket_local){
 	int* tamanioNombre = recibirStream(socket_local,sizeof(int));
 	char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
 	t_datos_samaforos* datos_sem;
-	pthread_mutex_lock(&sem_reg_config);
-		datos_sem = dictionary_remove(reg_config.dic_semaforos,nombreSemaforo);
+	datos_sem = dictionary_get(reg_config.dic_semaforos,nombreSemaforo);
+	pthread_mutex_lock(&datos_sem->semsem);
+		if(!list_is_empty(datos_sem->cola_procesos))
+			sem_post(&datos_sem->sem_valor);
 		(datos_sem->valor)++;
-		dictionary_put(reg_config.dic_semaforos,nombreSemaforo,datos_sem);
-	pthread_mutex_unlock(&sem_reg_config);
+	pthread_mutex_unlock(&datos_sem->semsem);
 
 }
 

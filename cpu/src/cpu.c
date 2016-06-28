@@ -41,7 +41,7 @@ void procesarInstruccion(char* instruccion);
 void tratarPCB();
 void recibirPCB();
 void enviarPCB();
-void finalizarEjecucion();
+void finalizarEjecucion(int a);
 struct cliente clienteCpuUmc;
 struct cliente clienteCpuNucleo;
 int tamanioPaginaUMC;
@@ -79,11 +79,22 @@ AnSISOP_funciones functions = {
 				.AnSISOP_finalizar = fin,
 				.AnSISOP_llamarSinRetorno = fcallNR
 };
-AnSISOP_kernel kernel_functions = { };
+AnSISOP_kernel kernel_functions = {
+		.AnSISOP_wait = waitCPU,
+		.AnSISOP_signal = signalCPU
+};
 
 
 
 int main(void) {
+
+	struct sigaction sa;
+	sa.sa_handler = finalizarEjecucion;
+	sa.sa_flags = SA_RESTART;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGUSR1,&sa, NULL);
+	/*signal(SIGUSR1,finalizarEjecucion);
+	signal(SIGINT,finalizarEjecucion);*/
 	t_reg_config config = get_config_params();
     finEjecucion=0;
 	logCpu = log_create("cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
@@ -107,14 +118,16 @@ int main(void) {
 	inicialzarParser(clienteCpuUmc.socketCliente,clienteCpuNucleo.socketCliente);
 
 	//esperar la señal para cerrar a la cpu "felizmente"
-	signal(SIGINT,finalizarEjecucion);
 
 	int seguir = 1;
 	while(seguir && !finEjecucion){
+		printf("CPU LIBRE\n");
+		EINTR;
 	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
 	 switch (*header) {
 	 case 163://Recibir PCB
 		 recibirPCB();
+			printf("CPU OCUPADO\n");
 		 tratarPCB();
 	 break;
 	 default:
@@ -127,8 +140,8 @@ int main(void) {
 
 //funcion para finalizar correctamente al cpu con un ctrl c desde su consola
 
-void finalizarEjecucion(){
-	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
+void finalizarEjecucion(int a){
+	printf("Finalizacion cpu inicializado\n");
 	finEjecucion=1;
 }
 
@@ -267,13 +280,24 @@ void tratarPCB() {
 			//printf("procesando instruccion %d\n",*(pcb_actual->PC));
 			//printf("procesando inst:%s\n",proxInstruccion);
 			procesarInstruccion(proxInstruccion);
+
+			if (estado == waitID) {
+				int waitSem = 7;
+				int tamanio = strlen(nombreSemaforoWait)+1;
+				nombreSemaforoWait = strcat(nombreSemaforoWait,"\0");
+				enviarStream(clienteCpuNucleo.socketCliente,waitSem,sizeof(int),&tamanio);
+				send(clienteCpuNucleo.socketCliente,nombreSemaforoWait,tamanio,0);
+				enviarPCB();
+				free(nombreSemaforoWait);
+				int* header = leerHeader(clienteCpuNucleo.socketCliente);
+				if(*header==0)
+					estado = 0;
+			}
+
 			quantum--;
 			*(pcb_actual->PC) = *pcb_actual->PC + 1;
 			sleep(quantumSleep);
 			esFuncion = 0;
-		//}
-		//else
-			//hayEspacio = 0;
 	} while (puedeContinuarEstado() && hayEspacio);
 
 	if (estado == finalID) {
@@ -286,16 +310,6 @@ void tratarPCB() {
 		int segFault = 11;
 		send(clienteCpuNucleo.socketCliente, &segFault, sizeof(int), 0);
 		enviarPCB();
-		return;
-	}
-	if (estado == waitID) {
-		int waitSem = 7;
-		int tamanio = strlen(nombreSemaforoWait)+1;
-		nombreSemaforoWait = strcat(nombreSemaforoWait,"\0");
-		enviarStream(clienteCpuNucleo.socketCliente,waitSem,sizeof(int),&tamanio);
-		send(clienteCpuNucleo.socketCliente,nombreSemaforoWait,tamanio,0);
-		enviarPCB();
-		free(nombreSemaforoWait);
 		return;
 	}
 	if (estado == ioSolID) {
@@ -315,12 +329,11 @@ void tratarPCB() {
 		enviarPCB();
 		return;
 	}
-
-
 	if(finEjecucion){
         int FIN_CPU = 4;
 		printf("se finalizo la ejecucion de esta cpu \n");
 		send(clienteCpuNucleo.socketCliente, &FIN_CPU, sizeof(int), 0);
+		send(clienteCpuUmc.socketCliente,&FIN_CPU, sizeof(int), 0);//aviso a la umc too
 		enviarPCB();
 		return;
 	}
@@ -563,7 +576,8 @@ void enviarPCB() {
 //!!!!!!!!!!!!!!!!!!!!!!!!!
 //LIBERAR TODA MEMORIA PCB!
 //!!!!!!!!!!!!!!!!!!!!!!!!!
-
+	free(pcb_actual);
+	pcb_actual = NULL;
 	return;
 }
 
