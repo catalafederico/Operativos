@@ -293,9 +293,12 @@ void tratarPCB() {
 				enviarPCB();
 				free(nombreSemaforoWait);
 				int* header = leerHeader(clienteCpuNucleo.socketCliente);
-				if(*header==0)
+				if(*header==0){
 					estado = 0;
-				analizar = 0;
+				}
+				else if(*header == 1){
+					analizar = 0;
+				}
 			}
 
 			quantum--;
