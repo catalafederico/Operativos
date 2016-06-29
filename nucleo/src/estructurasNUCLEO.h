@@ -20,11 +20,7 @@ typedef struct {
 	t_dictionary* dic_IO;		 //clave nombre del dispositivo y datos la estructura t_datos_dicIO
 	t_dictionary* dic_semaforos; //clave nombre del Semaforo y datos el int del valor
 	t_dictionary* dic_variables; //clave el nombre de la variable y datos el int del valor
-//	char ** io_id;
-//	char ** io_sleep;
-//	char ** sem_id;
-//	char ** sem_init;
-//	char ** shared_vars;
+
 	unsigned int stack_size;
 	char * ip_umc;
 	int puerto_umc;

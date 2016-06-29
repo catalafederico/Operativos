@@ -172,7 +172,7 @@ void *atender_consola(int* socket_desc){
 		//Cierra consola
 		//si se cerro la consola debe eliminarse el proceso
 		//eliminar_proceso_del_sistema(tempId);
-		eliminar_proceso_del_sistema(tempId);
+//		eliminar_proceso_del_sistema(tempId);
 		return 0;
 }
 
@@ -184,62 +184,5 @@ void eliminar_proceso_del_sistema(int* un_pid){
 		datos_a_consola=dictionary_get(dict_pid_consola,un_pid);
 		datos_a_consola->proc_status = 1;
 	pthread_mutex_unlock(&sem_pid_consola);
-	/*
 
-	int esEl_proc_noCargado(programaNoCargado* elem_compara) {
-			return (elem_compara->PID==*un_pid);
-	}
-	int esEl_pcb_t(pcb_t* elem_compara) {
-			return (elem_compara->PID==un_pid);
-	}
-	int esEl_pcb_bloqueado(t_pcb_bloqueado* elem_compara) {
-			return (elem_compara->pcb_bloqueado->PID==un_pid);
-	}
-	pthread_mutex_lock(&sem_pid_consola);
-		datos_a_consola=dictionary_get(dict_pid_consola,un_pid);
-		dictionary_remove(dict_pid_consola,un_pid);
-	pthread_mutex_unlock(&sem_pid_consola);
-	pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
-
-	switch(datos_a_consola->tipo_de_lista){
-		case 1: //lista de programaNoCargado
-		{
-//			pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
-				programaNoCargado* progAeliminar = list_remove_by_condition(datos_a_consola->cola_proceso,(void*)esEl_proc_noCargado);
-//			pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
-			notificarAUMCfpc(progAeliminar->PID);
-			free(progAeliminar->instrucciones);
-			free(progAeliminar);
-		}
-			break;
-
-		case 2: //lista de t_pcb
-		{
-//			pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
-				pcb_t* pcbAeliminar = list_remove_by_condition(datos_a_consola->cola_proceso,(void*)esEl_pcb_t);
-//			pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
-			notificarAUMCfpc(*pcbAeliminar->PID);
-			//issue ver que mas se hace Free del PCB;
-			free(pcbAeliminar);
-		}
-			break;
-
-		case 3: //lista de t_pcb_bloqueado
-		{
-//			pthread_mutex_lock(datos_a_consola->semaforo_de_lista);
-				t_pcb_bloqueado* pcbBockAeliminar = list_remove_by_condition(datos_a_consola->cola_proceso,(void*)esEl_pcb_bloqueado);
-//			pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
-			notificarAUMCfpc(*pcbBockAeliminar->pcb_bloqueado->PID);
-			//issue ver que mas se hace Free del PCB;
-			free(pcbBockAeliminar->dispositivo);
-			free(pcbBockAeliminar->pcb_bloqueado);
-			free(pcbBockAeliminar);
-		}
-			break;
-	}
-	pthread_mutex_unlock(datos_a_consola->semaforo_de_lista);
-
-	free(datos_a_consola->mensaje);
-	free(datos_a_consola);
-*/
 }
