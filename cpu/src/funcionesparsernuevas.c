@@ -129,7 +129,6 @@ t_puntero getvarpos(t_nombre_variable var) {
 	return dirRetoAbs(solicitarUMC->pagina,solicitarUMC->offset);
 }
 
-//Dereferenciar , ya esta lista
 t_valor_variable derf(t_puntero puntero_var) {
 	if(estado==segFaultID){
 		return 0;
@@ -139,10 +138,6 @@ t_valor_variable derf(t_puntero puntero_var) {
 	solicitarUMC->tamanio = sizeof(int);
 	log_trace(logCpu, "Solicitar  a memoria comezado");
 	int* valorRecibido = pedirUMC(solicitarUMC);
-	/*enviarStream(socketMemoria, 52, sizeof(direccionMemoria), solicitarUMC);
-	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
-	int* valorRecibido;
-	valorRecibido = recibirStream(socketMemoria, sizeof(int));*/
 	if(valorRecibido==NULL){
 		return -1;
 	}
@@ -158,15 +153,12 @@ void asignar(t_puntero puntero_var, t_valor_variable valor) {
 		dirAbstoRe(puntero_var,&direcMemory->pagina,&direcMemory->offset);
 		direcMemory->tamanio = sizeof(int);
 		almUMC temp;
-		//direccionMemoria* direcMemory = puntero_var;
 		temp.pagina = direcMemory->pagina;
 		temp.offset = direcMemory->offset;
 		temp.tamanio = direcMemory->tamanio;
 		temp.valor = valor;
 		log_trace(logCpu, "Almacenar en UMC nuevo valor");
 		almacenarUMC(temp);
-		/*enviarStream(socketMemoria, 53, sizeof(almUMC), &temp);
-		send(socketMemoria, pcb_actual->PID, sizeof(int), 0);*/
 		return;
 }
 
@@ -256,12 +248,26 @@ void retornar(t_valor_variable retorno) {
 	if(estado==segFaultID){
 		return;
 	}
-	printf("Se retorna un puntero al contecto anterior");
+	printf("Se retorna un puntero al contecto anterior\n");
 	stack* stackActual = dictionary_get(pcb_actual->indice_stack,(pcb_actual->SP));
 	direccionMemoria* retornoDireccion = stackActual->memoriaRetorno;
 	asignar(dirRetoAbs(retornoDireccion->pagina,retornoDireccion->offset),retorno);
 	*(pcb_actual->PC) = *(stackActual->pos_ret);
-	dictionary_remove(pcb_actual->indice_stack,(pcb_actual->SP));//SACO RENGLON DEL DICCIONARIO STACK
+	void* liberarStack(stack* aLib){
+		free(aLib->pos_ret);
+		void* liberarDM(direccionMemoria* aLib){
+			free(aLib);
+		}
+		void* liberarDS(direccionStack* aLib){
+			free(aLib);
+		}
+		liberarDM(aLib->memoriaRetorno);
+		if(aLib->args!=NULL)
+		list_destroy_and_destroy_elements(aLib->args,liberarDM);
+		if(aLib->vars!=NULL)
+		list_destroy_and_destroy_elements(aLib->vars,liberarDS);
+	}
+	dictionary_remove_and_destroy(pcb_actual->indice_stack,(pcb_actual->SP),liberarStack);//SACO RENGLON DEL DICCIONARIO STACK
 	*(pcb_actual->SP) = *(pcb_actual->SP) - 1;
 	//BORRAR RENGLON DE MEMORA
 	return;
@@ -380,7 +386,6 @@ void agregarVariableStack(almUMC aAlmacenar, char var) {
 		nuevoStack->memoriaRetorno = NULL;
 		nuevoStack->pos_ret = NULL;
 		nuevoStack->vars = list_create();
-		//int* startPCB = malloc(sizeof(int));
 		int startPCB = 0;
 		dictionary_put(pcb_actual->indice_stack,&startPCB,nuevoStack);
 		stackActual = nuevoStack;
@@ -421,7 +426,6 @@ direccionMemoria* obtenerPosicionStack(char var) {
 	return NULL;
 }
 
-
 int dirRetoAbs(int pag, int offset){
 	return pag*tamanioPaginaUMC+offset;
 }
@@ -436,11 +440,13 @@ void* pedirUMC(direccionMemoria* solicitarUMC){
 	//SEG FAULT = 777
 	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), solicitarUMC);
 	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
+	free(solicitarUMC);
 	int* header = leerHeader(socketMemoria);
 	switch (*header) {
 		case OK:
 		{
 			int* valorRecibido = recibirStream(socketMemoria, sizeof(int));
+			free(header);
 			return valorRecibido;
 		}
 			break;
@@ -449,6 +455,7 @@ void* pedirUMC(direccionMemoria* solicitarUMC){
 			*(pcb_actual->PC) = *(pcb_actual->PC) - 1;//Bajo uno ya q alterminar sube uno, entonces para que quede igual
 			//Igual la ejecucion finaliza asi q no seria necesario
 			estado = segFaultID;
+			free(header);
 			return NULL;
 		}
 			break;
@@ -463,6 +470,7 @@ void almacenarUMC(almUMC aAlmacenar){
 	switch (*header) {
 		case OK:
 		{
+			free(header);
 			return;
 		}
 			break;
@@ -471,6 +479,7 @@ void almacenarUMC(almUMC aAlmacenar){
 			*(pcb_actual->PC) = *(pcb_actual->PC) - 1;//Bajo uno ya q alterminar sube uno, entonces para que quede igual
 			//Igual la ejecucion finaliza asi q no seria necesario
 			estado = segFaultID;
+			free(header);
 			return;
 		}
 			break;

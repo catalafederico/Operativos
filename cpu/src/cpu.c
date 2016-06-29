@@ -92,11 +92,9 @@ int main(void) {
 	sa.sa_handler = finalizarEjecucion;
 	sa.sa_flags = SA_RESTART;
 	sigemptyset(&sa.sa_mask);
-	sigaction(SIGUSR1,&sa, NULL);
-	/*signal(SIGUSR1,finalizarEjecucion);
-	signal(SIGINT,finalizarEjecucion);*/
+	sigaction(SIGUSR1, &sa, NULL);
 	t_reg_config config = get_config_params();
-    finEjecucion=0;
+	finEjecucion = 0;
 	logCpu = log_create("cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
 
 	//Empieza conexion UMC
@@ -115,26 +113,30 @@ int main(void) {
 	//Termina conexion Nucleo
 
 	//Le paso el socket de la umc, para no pasarlo x cada pedido
-	inicialzarParser(clienteCpuUmc.socketCliente,clienteCpuNucleo.socketCliente);
+	inicialzarParser(clienteCpuUmc.socketCliente,
+			clienteCpuNucleo.socketCliente);
 
 	//esperar la señal para cerrar a la cpu "felizmente"
 
 	int seguir = 1;
-	while(seguir && !finEjecucion){
+	while (seguir && !finEjecucion) {
 		printf("CPU LIBRE\n");
 		EINTR;
-	 int* header = leerHeader(clienteCpuNucleo.socketCliente,"127.0.0.1");
-	 switch (*header) {
-	 case 163://Recibir PCB
-		 recibirPCB();
+		int* header = leerHeader(clienteCpuNucleo.socketCliente, "127.0.0.1");
+		switch (*header) {
+		case 163: //Recibir PCB
+			recibirPCB();
 			printf("CPU OCUPADO\n");
-		 tratarPCB();
-	 break;
-	 default:
-	 break;
-	 }
-	 free(header);
-	 }
+			tratarPCB();
+			liberarPcb(pcb_actual);
+			break;
+		case -1:
+			printf("Se perdio la conexion con nucleo, cerrando cpu\n");
+			seguir = 0;
+			break;
+		}
+		free(header);
+	}
 	return 0;
 }
 
@@ -144,7 +146,6 @@ void finalizarEjecucion(int a){
 	printf("Finalizacion cpu inicializado\n");
 	finEjecucion=1;
 }
-
 
 void conectarseConUMC(struct cliente clienteCpuUmc) {
 	int a = 1;
@@ -165,6 +166,7 @@ void conectarseConUMC(struct cliente clienteCpuUmc) {
 	if (*recibido == OK) {
 		printf("Se ha conectado correctamente con UMC.\n");
 	}
+	free(recibido);
 	//Solicito tamanio de paginas
 	int tamanioPagina = TAMANIOPAGINA;
 	if (send(clienteCpuUmc.socketCliente, &tamanioPagina, sizeof(int), 0)
@@ -183,7 +185,7 @@ void conectarseConUMC(struct cliente clienteCpuUmc) {
 		printf("Tamanio de pagina configurado en: %d \n", tamanioPaginaUMC);
 		log_info(logCpu, "Tamanio de pagina  configurado en  : %d",
 				tamanioPaginaUMC);
-
+		free(recibirTamanioDePag);
 	}
 	free(recibido);
 	//Termina Handshake
@@ -337,23 +339,6 @@ void tratarPCB() {
 		return;
 	}
 }
-//
-int hayMemoria(){
-	if(*pcb_actual->PCI != *pcb_actual->PC)
-		return 1;
-	int haymemoria = 123456789;
-	send(clienteCpuUmc.socketCliente,&haymemoria,sizeof(int),0);
-	int* recibido = recibirStream(clienteCpuUmc.socketCliente, sizeof(int));
-	if(*recibido == OK){
-		return 1;
-	}
-	else{
-		return 0;
-	}
-}
-
-
-
 //Enviar y recibir pcb --------------------------------------------------------
 
 void recibirPCB() {
@@ -382,11 +367,9 @@ void recibirPCB() {
 
 //RECIBO INDICE DE CODIGO
 	for (i = 0; i < *tamanioIC && *tamanioIC != 0; i++) {
-		int* nuevaPagina = malloc(sizeof(int));
-		*nuevaPagina = i;
 		direccionMemoria* nuevaDireccionMemoria = recibirStream(
 				clienteCpuNucleo.socketCliente, sizeof(direccionMemoria));
-		dictionary_put(pcb_Recibido->indice_codigo, nuevaPagina,
+		dictionary_put(pcb_Recibido->indice_codigo, &i,
 				nuevaDireccionMemoria);
 	}
 	free(tamanioIC);
@@ -402,6 +385,7 @@ void recibirPCB() {
 		new_funcion->posicion_codigo = malloc(sizeof(int));
 		*(new_funcion->posicion_codigo) = funcion->posicionPID;
 		list_add_in_index(pcb_Recibido->indice_funciones, i, new_funcion);
+		free(funcion);
 	}
 	free(tamanioIF);
 	int socket = clienteCpuNucleo.socketCliente;
@@ -580,3 +564,36 @@ void enviarPCB() {
 	return;
 }
 
+void liberarPcb(pcb_t* pcb){
+
+	free(pcb->PC);
+	free(pcb->PCI);
+	free(pcb->PID);
+	free(pcb->SP);
+	free(pcb->paginasDisponible);
+	void* liberarIC(direccionMemoria* aLib){
+		free(aLib);
+	}
+	dictionary_destroy_and_destroy_elements(pcb->indice_codigo,liberarIC);
+	void* liberarIF(funcion_sisop* aLib){
+		free(aLib->funcion);
+		free(aLib->posicion_codigo);
+	}
+	list_destroy_and_destroy_elements(pcb->indice_funciones,liberarIF);
+	void* liberarStack(stack* aLib){
+		free(aLib->pos_ret);
+		void* liberarDM(direccionMemoria* aLib){
+			free(aLib);
+		}
+		void* liberarDS(direccionStack* aLib){
+			free(aLib);
+		}
+		liberarDM(aLib->memoriaRetorno);
+		if(aLib->args!=NULL)
+		list_destroy_and_destroy_elements(aLib->args,liberarDM);
+		if(aLib->vars!=NULL)
+		list_destroy_and_destroy_elements(aLib->vars,liberarDS);
+	}
+	dictionary_destroy_and_destroy_elements(pcb->indice_stack,liberarStack);
+	free(pcb);
+}
