@@ -131,10 +131,8 @@ int main(int argc, char **argv) {
 
 
 void finalizarEjecucionConsola(int a){
-	//printf("La señal es : %d",senial) en el caso de necesitar usar el int que recibe la funcion cuando la llama signal
-	int valor= -123;
+
 	printf("La consola se cerro, recibi señal: %d",a);
-	send(clienteConsola.socketServer,(void*) &valor ,sizeof(int),0);
-//	raise(SIGTERM);// envia señal al propio proceso para que se cierre
-exit(0);
+	raise(SIGTERM);// envia señal al propio proceso para que se cierre
+    //exit(0);
 }
