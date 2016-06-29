@@ -66,14 +66,6 @@ int alocarPrograma(int paginasRequeridas, int id_proceso,
 
 	//log_trace(log_memoria,"Lock on");
 	pthread_mutex_lock(&semaforoMemoria);
-
-	if (paginasRequeridas > umcConfg.configuracionUMC.MARCO_X_PROC) {
-		log_trace(log_memoria,
-				"Rechazo programa id: %d , paginas requeridas: %d \n",
-				paginasRequeridas, id_proceso);
-		pthread_mutex_unlock(&semaforoMemoria);
-		return -1;
-	}
 	if (!notificarASwapPrograma(id_proceso, paginasRequeridas)) {
 		log_trace(log_memoria,
 				"Rechazo programa id: %d , paginas requeridas: %d \n",

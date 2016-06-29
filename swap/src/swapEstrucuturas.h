@@ -15,6 +15,7 @@ typedef struct {
 	char* NOMBRE_SWAP;
 	int CANTIDAD_PAGINAS;
 	int TAMANIO_PAGINA;
+	int RETARDO_ACCESO;
 	int RETARDO_COMPACTACION;
 } t_reg_config;
 

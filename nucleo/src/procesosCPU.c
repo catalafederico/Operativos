@@ -628,11 +628,11 @@ int ansisop_wait (int socket_local, int pid_local){
 
 	datos_sem = dictionary_get(reg_config.dic_semaforos,nombreSemaforo);
 	pthread_mutex_lock(&datos_sem->semsem);
-	if (datos_sem->valor >= 0 && list_is_empty(datos_sem->cola_procesos)){//se bloquea en -1
+	if (datos_sem->valor > 0 && list_is_empty(datos_sem->cola_procesos)){
 		(datos_sem->valor)-- ;
 		retorno=0;
 	}
-	else if (datos_sem->valor < 0) { // Bloqueo el proceso
+	else if (datos_sem->valor <= 0) { // Bloqueo el proceso
 
 		pthread_mutex_lock(&sem_l_Exec);
 			list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
