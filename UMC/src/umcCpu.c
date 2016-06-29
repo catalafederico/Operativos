@@ -34,6 +34,7 @@ void solicitar_Bytes(int socket){
 	int* offset = (int*) recibirStream(socket, sizeof(int));
 	int* tamanio = (int*) recibirStream(socket, sizeof(int));
 	int* idProceso = (int*) recibirStream(socket,sizeof(int));
+	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Obtener bytes iniciado");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
@@ -64,6 +65,7 @@ void almacenar_Byte(int socket){
 	int* tamanio =(int*) recibirStream(socket, sizeof(int));
 	void* aAlmacenar = recibirStream(socket, *tamanio);
 	int* idProceso = (int*) recibirStream(socket,sizeof(int));
+	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
 	int conf = almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);

@@ -48,6 +48,7 @@ void inicializar_programa() {
 			dictionary_put(codigo_programa,pagina,buffer);
 		}
 	}
+	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	if(alocarPrograma(*cantPag,*id,codigo_programa)==-1){
 		int error = ERROR;
 		send(socketNucleo,&error, sizeof(int),0);
@@ -64,6 +65,7 @@ void inicializar_programa() {
 void finalizar_programa(){
 	int* id = (int*) recibirStream(socketNucleo, sizeof(int));
 	log_info(umcConfg.loguer, "Desalojar programa empesado");
+	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	desalojarPrograma(*id);
 	log_info(umcConfg.loguer, "Proceso desalojado");
 	free(id);
@@ -75,6 +77,7 @@ void* solicitar_Bytes_NL(){
 	int* offset = (int*) recibirStream(socketNucleo, sizeof(int));
 	int* tamanio = (int*) recibirStream(socketNucleo, sizeof(int));
 	log_info(umcConfg.loguer, "Obtener bytes iniciado.\n");
+	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
 	log_info(umcConfg.loguer, "Obtener bytes terminado.\n");
 	free(pagina);
@@ -96,6 +99,7 @@ void almacenar_Byte_NL(){
 	int* tamanio =(int*) recibirStream(socketNucleo, sizeof(int));
 	void* aAlmacenar = recibirStream(socketNucleo, *tamanio);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado.\n");
+	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
 	log_info(umcConfg.loguer, "Almacenar byte terminado.\n");
 	free(pagina);

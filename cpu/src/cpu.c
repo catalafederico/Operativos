@@ -280,7 +280,7 @@ void tratarPCB() {
 			//printf("procesando instruccion %d\n",*(pcb_actual->PC));
 			//printf("procesando inst:%s\n",proxInstruccion);
 			procesarInstruccion(proxInstruccion);
-
+			*(pcb_actual->PC) = *pcb_actual->PC + 1;
 			if (estado == waitID) {
 				int waitSem = 7;
 				int tamanio = strlen(nombreSemaforoWait)+1;
@@ -295,8 +295,7 @@ void tratarPCB() {
 			}
 
 			quantum--;
-			*(pcb_actual->PC) = *pcb_actual->PC + 1;
-			sleep(quantumSleep);
+			usleep(quantumSleep*1000);
 			esFuncion = 0;
 	} while (puedeContinuarEstado() && hayEspacio);
 
@@ -576,8 +575,8 @@ void enviarPCB() {
 //!!!!!!!!!!!!!!!!!!!!!!!!!
 //LIBERAR TODA MEMORIA PCB!
 //!!!!!!!!!!!!!!!!!!!!!!!!!
-	free(pcb_actual);
-	pcb_actual = NULL;
+	//free(pcb_actual);
+	//pcb_actual = NULL;
 	return;
 }
 

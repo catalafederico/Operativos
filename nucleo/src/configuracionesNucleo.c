@@ -310,7 +310,7 @@ void * administrar_cola_sem(void* semaforo){
 				pthread_mutex_unlock(&datos_sem->semsem);
 				sem_post(&datos_sem->sem_valor);//habilito el semaforo denuevo como si no se hubiese hecho el wait
 			}
-				free(elem_block);
+				//free(elem_block); por ahora lo saco
 	}
 	return 0;
 }

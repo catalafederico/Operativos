@@ -72,9 +72,11 @@ int main(void) {
 					finalizar();
 				break;
 				case 52:
+					usleep(swap_configuracion.RETARDO_ACCESO*1000);
 					leer();
 				break;
 				case 53:
+					usleep(swap_configuracion.RETARDO_ACCESO*1000);
 					escribir();
 				break;
 				case -1://pierde conexion
@@ -92,7 +94,7 @@ int main(void) {
 }
 
 void dormir(){
-	usleep(swap_configuracion.RETARDO_COMPACTACION*1000000);
+	usleep(swap_configuracion.RETARDO_COMPACTACION*1000);
 }
 
 void testEscribirEnPaginas() {

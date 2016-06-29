@@ -71,6 +71,16 @@ void get_config_params(void) {
 		printf("No se encontro TAMANIO_PAGINA \n");
 	}
 
+
+	if (config_has_property(swap_config, "RETARDO_ACCESO")) {
+		swap_configuracion.RETARDO_ACCESO = config_get_int_value(swap_config,
+				"RETARDO_ACCESO");
+		printf("RETARDO_ACCESO= %d \n", swap_configuracion.RETARDO_ACCESO);
+
+	} else {
+		printf("No se encontro RETARDO_COMPACTACION \n");
+	}
+
 	// 5 get RETARDO_COMPACTACION
 	if (config_has_property(swap_config, "RETARDO_COMPACTACION")) {
 		swap_configuracion.RETARDO_COMPACTACION = config_get_int_value(swap_config,

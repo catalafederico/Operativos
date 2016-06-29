@@ -14,7 +14,6 @@
 
 struct cliente{
 	int socketCliente;
-	int socketServer;
 	struct sockaddr_in direccionDestino;
 };
 
