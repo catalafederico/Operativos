@@ -284,6 +284,7 @@ void *administrar_cola_Block(){
 						//dictionary_put(reg_config.dic_IO,elem_block->dispositivo,datos_io); //verr No hace falta hacer un put ya q cuando lo modificas
 						//se guarda igual por ser puntero
 					pthread_mutex_unlock(&sem_reg_config);
+					log_debug(logger, "PCB con PID %d pasado a cola de dispositivo",pid_local);
 					break;
 				case 2:	// bloqueo por wait
 					pthread_mutex_lock(&sem_reg_config);
@@ -292,10 +293,9 @@ void *administrar_cola_Block(){
 						sem_post(&datos_sem->sem_semaforos); // ver si hay que usar el &
 						//dictionary_put(reg_config.dic_semaforos,elem_block->dispositivo,datos_sem); //verr
 					pthread_mutex_unlock(&sem_reg_config);
+					log_debug(logger, "PCB con PID %d pasado a cola de semaforos",pid_local);
 					break;
 			}
-
-		log_debug(logger, "PCB con PID %d pasado a cola de dispositivo",pid_local);
 		}
 		else{
 			pthread_mutex_lock(&sem_l_Reject);

@@ -235,9 +235,9 @@ void *atender_CPU(int* socket_desc) {
 					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
 				pthread_mutex_unlock(&sem_l_Exit);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
-//				pthread_mutex_lock(&sem_pid_consola);
+				pthread_mutex_lock(&sem_pid_consola);
 				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
-//				pthread_mutex_unlock(&sem_pid_consola);
+				pthread_mutex_unlock(&sem_pid_consola);
 				free(socketConsola->mensaje);
 				socketConsola->mensaje = strdup("Proceso_Finalizado_Correctamente");
 				sem_post(&sem_EXIT_dispo);
@@ -279,8 +279,9 @@ void *atender_CPU(int* socket_desc) {
 				send(socket_local,&cambioPcb,sizeof(int),0);
 				// si cambioPcb es 0 significa que el wait no bloqueo y el cpu puede seguir procesando,
 				// si es 1 entonces el proceso se bloqueo y el CPU debe tomar otro PCB
-			}
 				break;
+			}
+
 			case SIGNAL_SEM: // es la primitiva signal
 				ansisop_signal (socket_local);
 				break;
@@ -317,9 +318,9 @@ void *atender_CPU(int* socket_desc) {
 					log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",pid_local);
 				pthread_mutex_unlock(&sem_l_Reject);
 				cambioPcb = 1;//activo el cambio del pcb ya q termino el proceso
-//				pthread_mutex_lock(&sem_pid_consola);
+				pthread_mutex_lock(&sem_pid_consola);
 					socketConsola = dictionary_get(dict_pid_consola,&pid_local);
-//				pthread_mutex_unlock(&sem_pid_consola);
+				pthread_mutex_unlock(&sem_pid_consola);
 				free(socketConsola->mensaje);
 				socketConsola->mensaje = strdup("Proceso_Produjo_SEG_FAULT");
 				sem_post(&sem_REJECT_dispo);
@@ -628,7 +629,7 @@ int ansisop_wait (int socket_local, int pid_local){
 
 		pthread_mutex_lock(&sem_l_Exec);
 			list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
-			log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de IO",pid_local);
+			log_debug(logger, "PCB con PID %d sacado de EXEC x bloqueo de Semaforo",pid_local);
 		pthread_mutex_unlock(&sem_l_Exec);
 
 		pthread_mutex_lock(&sem_pid_consola);
@@ -656,7 +657,7 @@ int ansisop_wait (int socket_local, int pid_local){
 		}
 
 		retorno = 1; // retorna 1 si se bloquea el proceso para que cambie de PCB
-		}
+	}
 	pthread_mutex_unlock(&datos_sem->semsem);
 	return retorno;
 }

@@ -87,7 +87,6 @@ AnSISOP_kernel kernel_functions = {
 
 
 int main(void) {
-
 	struct sigaction sa;
 	sa.sa_handler = finalizarEjecucion;
 	sa.sa_flags = SA_RESTART;
@@ -121,7 +120,6 @@ int main(void) {
 	int seguir = 1;
 	while (seguir && !finEjecucion) {
 		printf("CPU LIBRE\n");
-		EINTR;
 		int* header = leerHeader(clienteCpuNucleo.socketCliente, "127.0.0.1");
 		switch (*header) {
 		case 163: //Recibir PCB
@@ -216,6 +214,7 @@ void conectarseConNucleo(struct cliente clienteCpuNucleo) {
 
 void procesarInstruccion(char* instruccion) {
 	analizadorLinea(instruccion, &functions, &kernel_functions);
+	free(instruccion);
 }
 
 char* proximaInstruccion() {
@@ -269,9 +268,10 @@ int puedeContinuarEstado(){
 
 void tratarPCB() {
 	int hayEspacio = 1;
+	int analizar = 1;
 	do {
-		hayEspacio = 1;
-		//if(hayMemoria()){
+		analizar = 1;
+			hayEspacio = 1;
 			estado = 0;
 			char* proxInstruccion = proximaInstruccion();
 			if(proxInstruccion == NULL){
@@ -281,6 +281,7 @@ void tratarPCB() {
 			}
 			//printf("procesando instruccion %d\n",*(pcb_actual->PC));
 			//printf("procesando inst:%s\n",proxInstruccion);
+			printf("PID %d, INST: %s\n",*(pcb_actual->PID),proxInstruccion);
 			procesarInstruccion(proxInstruccion);
 			*(pcb_actual->PC) = *pcb_actual->PC + 1;
 			if (estado == waitID) {
@@ -294,6 +295,7 @@ void tratarPCB() {
 				int* header = leerHeader(clienteCpuNucleo.socketCliente);
 				if(*header==0)
 					estado = 0;
+				analizar = 0;
 			}
 
 			quantum--;
@@ -301,6 +303,9 @@ void tratarPCB() {
 			esFuncion = 0;
 	} while (puedeContinuarEstado() && hayEspacio);
 
+	if(!analizar){
+		return;
+	}
 	if (estado == finalID) {
 		int FIN_Proc = 1;
 		send(clienteCpuNucleo.socketCliente, &FIN_Proc, sizeof(int), 0);
@@ -380,7 +385,7 @@ void recibirPCB() {
 				sizeof(funcionTemp));
 		char* funcionNombre = recibirStream(clienteCpuNucleo.socketCliente,
 				funcion->tamanioNombreFuncion);
-		funcion_sisop* new_funcion = malloc(sizeof(new_funcion));
+		funcion_sisop* new_funcion = malloc(sizeof(funcion_sisop));
 		new_funcion->funcion = funcionNombre;
 		new_funcion->posicion_codigo = malloc(sizeof(int));
 		*(new_funcion->posicion_codigo) = funcion->posicionPID;
@@ -429,9 +434,7 @@ void recibirPCB() {
 			list_add_in_index(stackNuevo->vars, j, new_direc);
 		}
 		free(tamVars);
-		int* key = malloc(sizeof(int));
-		*key = i;
-		dictionary_put(pcb_Recibido->indice_stack, key, stackNuevo);
+		dictionary_put(pcb_Recibido->indice_stack, &i, stackNuevo);
 	}
 //recibo quantum y quantumSleep
 	int * temp_quantum = recibirStream(clienteCpuNucleo.socketCliente, sizeof(int));

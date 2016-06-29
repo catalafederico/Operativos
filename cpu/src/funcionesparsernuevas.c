@@ -216,7 +216,7 @@ void fcall(t_nombre_etiqueta etiqueta, t_puntero funcion) {
 	direcMemory->tamanio = sizeof(int);
 	//SE LLAMA UNA FUNCION
 	//Creo una posicion de stack nueva
-	stack* nuevaPosicion = malloc(sizeof(int));
+	stack* nuevaPosicion = malloc(sizeof(stack));
 	//Creo lista de argumentos
 	nuevaPosicion->args = list_create();
 	//Guardo
@@ -268,6 +268,7 @@ void retornar(t_valor_variable retorno) {
 		list_destroy_and_destroy_elements(aLib->vars,liberarDS);
 	}
 	dictionary_remove_and_destroy(pcb_actual->indice_stack,(pcb_actual->SP),liberarStack);//SACO RENGLON DEL DICCIONARIO STACK
+	dictionary_remove(pcb_actual->indice_stack,(pcb_actual->SP));
 	*(pcb_actual->SP) = *(pcb_actual->SP) - 1;
 	//BORRAR RENGLON DE MEMORA
 	return;
@@ -440,13 +441,13 @@ void* pedirUMC(direccionMemoria* solicitarUMC){
 	//SEG FAULT = 777
 	enviarStream(socketMemoria, 52, sizeof(direccionMemoria), solicitarUMC);
 	send(socketMemoria, pcb_actual->PID, sizeof(int), 0);
-	free(solicitarUMC);
+	//free(solicitarUMC);
 	int* header = leerHeader(socketMemoria);
 	switch (*header) {
 		case OK:
 		{
 			int* valorRecibido = recibirStream(socketMemoria, sizeof(int));
-			free(header);
+			//free(header);
 			return valorRecibido;
 		}
 			break;
@@ -455,7 +456,7 @@ void* pedirUMC(direccionMemoria* solicitarUMC){
 			*(pcb_actual->PC) = *(pcb_actual->PC) - 1;//Bajo uno ya q alterminar sube uno, entonces para que quede igual
 			//Igual la ejecucion finaliza asi q no seria necesario
 			estado = segFaultID;
-			free(header);
+			//free(header);
 			return NULL;
 		}
 			break;
@@ -470,7 +471,7 @@ void almacenarUMC(almUMC aAlmacenar){
 	switch (*header) {
 		case OK:
 		{
-			free(header);
+			//free(header);
 			return;
 		}
 			break;
@@ -479,7 +480,7 @@ void almacenarUMC(almUMC aAlmacenar){
 			*(pcb_actual->PC) = *(pcb_actual->PC) - 1;//Bajo uno ya q alterminar sube uno, entonces para que quede igual
 			//Igual la ejecucion finaliza asi q no seria necesario
 			estado = segFaultID;
-			free(header);
+			//free(header);
 			return;
 		}
 			break;
