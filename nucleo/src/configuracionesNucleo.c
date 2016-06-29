@@ -11,6 +11,8 @@
 #include <pthread.h>
 #include "estructurasNUCLEO.h"
 #include "configuracionesNucleo.h"
+#include <sys/inotify.h>
+
 extern t_log *logger;
 extern t_reg_config reg_config;
 extern pthread_mutex_t sem_reg_config;
@@ -22,6 +24,11 @@ extern t_list* proc_Ready;
 extern sem_t sem_READY_dispo;
 extern sem_t sem_REJECT_dispo;
 extern t_dictionary* dict_pid_consola;
+
+//#define EVENT_SIZE  ( sizeof (struct inotify_event) )
+//#define EVENT_BUF_LEN     ( 1024 * ( EVENT_SIZE + 16 ) )
+#define EVENT_SIZE  ( sizeof (struct inotify_event) + 24 )
+#define BUF_LEN     ( 1024 * EVENT_SIZE )
 
 t_reg_config get_config_params(void){
 //	t_log* logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
@@ -210,6 +217,20 @@ t_reg_config get_config_params(void){
 		}
 		i++;
 	}
+
+//***************************************************************************
+// dispara un hilo para controlar si se modifica el archivo de configuracion
+//***************************************************************************
+//	char * semaforo;
+//	i = 0;
+	pthread_t thread_conf_file;
+//	semaforo = strdup(sem_id[i]);
+	if(pthread_create(&thread_conf_file, NULL , observar_config_file, NULL) < 0)
+	{
+		log_debug(logger, "No fue posible crear thread para observar cambios en archivo de config");
+	}
+		i++;
+
 	return reg_config;
 }
 
@@ -294,3 +315,91 @@ void * administrar_cola_sem(void* semaforo){
 	return 0;
 }
 
+void * observar_config_file(){
+	log_debug(logger, "Comenzo el observador de archivo de config");
+	int quantum_mod, quantum_sleep_mod;
+	int nro_vez=0;
+	 int length, i = 0;
+	 int fd;
+	 int wd;
+//	 char buffer[EVENT_BUF_LEN];
+	 char buffer[BUF_LEN];
+
+	 /*creating the INOTIFY instance*/
+	 fd = inotify_init();
+
+	 /*checking for error*/
+	 if ( fd < 0 ) {
+		log_debug(logger, "ERROR inotify_init");
+		return 0;
+	 }
+
+	 /*adding the "archivo_configuracion.cfg" file into watch list.*/
+	 wd = inotify_add_watch( fd, "archivo_configuracion.cfg", IN_MODIFY);
+//	 wd = inotify_add_watch( fd, "/config", IN_MODIFY);
+
+	 while(1){
+		 length=0;
+		 i = 0;
+
+		 /*read to determine the event change happens on file. This read blocks until the change event occurs*/
+
+		 length = read( fd, buffer, BUF_LEN );
+		 nro_vez++;
+
+		 /*checking for error*/
+		 if ( length < 0 ) {
+			log_debug(logger, "ERROR inotify_read");
+			return 0;
+		 }
+
+		 /*actually read return the list of change events happens. Here, read the change event one by one and process it accordingly.*/
+		 while ( i < length ) {
+			 struct inotify_event *event = ( struct inotify_event * ) &buffer[ i ];
+//			 if ( event->len ) {
+				 if ( (event->mask & IN_MODIFY) ) {
+					 if (nro_vez%2==0){
+					  log_debug(logger, "Conf File modificado, mask: %d, cookie: %d, len: %d, name: %s", event->mask, event->cookie, event->len, event->name);
+							t_config * archivo_config_aux = NULL;
+							char * archivo_config_nombre = "archivo_configuracion.cfg";
+							archivo_config_aux = config_create(archivo_config_nombre);
+						// 3 get QUANTUM
+							if (config_has_property(archivo_config_aux,"QUANTUM")){
+								quantum_mod = config_get_int_value(archivo_config_aux,"QUANTUM");
+							}
+							else{
+								log_debug(logger, "No se encontro QUANTUM");
+							}
+
+							// 4 get QUANTUM_SLEEP
+							if (config_has_property(archivo_config_aux,"QUANTUM_SLEEP")){
+								quantum_sleep_mod = config_get_int_value(archivo_config_aux,"QUANTUM_SLEEP");
+							}
+							else{
+								log_debug(logger, "No se encontro QUANTUM_SLEEP");
+							}
+
+						config_destroy(archivo_config_aux);
+						pthread_mutex_lock(&sem_reg_config);
+						  reg_config.quantum = quantum_mod;
+						  reg_config.quantum_sleep = quantum_sleep_mod;
+						pthread_mutex_unlock(&sem_reg_config);
+
+						log_debug(logger, "Se modifico el Quantum a %d",reg_config.quantum);
+						log_debug(logger, "Se modifico el Quantum_Sleep a %d",reg_config.quantum_sleep);
+					//--------------------------------------------------------------------------
+				   }
+				 }
+
+//			  }
+			i += EVENT_SIZE + event->len;
+		 }
+	 }
+	 /*removing the “/tmp” directory from the watch list.*/
+	  inotify_rm_watch( fd, wd );
+	  /*closing the INOTIFY instance*/
+	  close( fd );
+
+
+	return 0;
+}
