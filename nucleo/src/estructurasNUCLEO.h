@@ -118,10 +118,6 @@ typedef struct{
 typedef struct {
     int socket_dest;
     int proc_status;
-//    int tipo_de_lista; //por el tipo de contenido puede ser:
-    				   //	1-programaNoCargado, 2-pcb_t, 3-t_pcb_bloqueado
-//    void * cola_proceso; // apunta a la lista que contiene el proceso.
-//    void * semaforo_de_lista;
     char* mensaje;
 }t_sock_mje;
 

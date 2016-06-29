@@ -184,34 +184,26 @@ void *atender_CPU(int* socket_desc) {
 				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
 		pthread_mutex_unlock(&sem_pid_consola);
 
-		while (socketConsola->proc_status!=0){ //verifico si se cerro la consola del proceso
+		cambioPcb = 0;
+		if (socketConsola->proc_status!=0){ //verifico si se cerro la consola del proceso
 
 			pthread_mutex_lock(&sem_l_Reject);
 				list_add(proc_Reject, pcb_elegido);
 				log_debug(logger, "PCB con PID %d pasado a REJECT xfin de consola",pid_local);
 			pthread_mutex_unlock(&sem_l_Reject);
 			sem_post(&sem_REJECT_dispo);
-
-			pthread_mutex_lock(&sem_l_Ready);
-				pcb_elegido = list_remove(proc_Ready, 0); //Agarro el pcb
-				pid_local = *(pcb_elegido->PID);
-				log_debug(logger, "PCB con PID %d sacado de READY", pid_local);
-			pthread_mutex_unlock(&sem_l_Ready);
-
-			pthread_mutex_lock(&sem_pid_consola);
-					socketConsola = dictionary_get(dict_pid_consola,&pid_local);
-			pthread_mutex_unlock(&sem_pid_consola);
+			cambioPcb = 1;
 		}
 
-
-		enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
-		//Guardo pcb en la lista de ejecutandose
-		pthread_mutex_lock(&sem_l_Exec);
-			list_add(proc_Exec, pcb_elegido);
-			log_debug(logger, "PCB con PID %d pasado a EXEC", pid_local);
-		pthread_mutex_unlock(&sem_l_Exec);
-		cambioPcb = 0;
-		do {
+		if(!cambioPcb){
+			enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
+			//Guardo pcb en la lista de ejecutandose
+			pthread_mutex_lock(&sem_l_Exec);
+				list_add(proc_Exec, pcb_elegido);
+				log_debug(logger, "PCB con PID %d pasado a EXEC", pid_local);
+			pthread_mutex_unlock(&sem_l_Exec);
+		}
+		while (!cambioPcb && CpuActivo){
 			estado_proceso = leerHeader(socket_local);
 			switch (*estado_proceso) {
 			case FIN_QUANTUM:
@@ -337,7 +329,7 @@ void *atender_CPU(int* socket_desc) {
 				break;
 			}
 			free(estado_proceso);
-		} while (!cambioPcb && CpuActivo);
+		}
 	}
 }
 

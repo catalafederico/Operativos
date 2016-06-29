@@ -340,13 +340,15 @@ void *administrar_cola_Reject (){
 		log_debug(log_procesador_Reject, "Se removio el PID ( %d ) del dicc y se envio el mje ( SIN ESPACIO ) a consola: %d", pid_local, datos_a_consola->socket_dest);
 		log_debug(logger, "PCB con PID %d sacado de REJECT y se respondio a la consola %d",pid_local, datos_a_consola->socket_dest);
 		//log_debug(logger, "Se envio a consola: %d el mensaje: %s", datos_a_consola->socket_dest, mje_Rej);
-		int fin = -999;
-		send(datos_a_consola->socket_dest,&fin,sizeof(int),0);
-	    /*if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, MJE_RTA, 0) == -1){
-	    	log_debug(logger, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
-	    	log_debug(log_procesador_Reject, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
-	    }*/
-	    log_debug(log_procesador_Reject, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
-		free(datos_a_consola);
+		if(datos_a_consola->proc_status == 0){
+			int fin = -999;
+			send(datos_a_consola->socket_dest,&fin,sizeof(int),0);
+		    /*if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, MJE_RTA, 0) == -1){
+		    	log_debug(logger, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
+		    	log_debug(log_procesador_Reject, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
+		    }*/
+		    log_debug(log_procesador_Reject, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
+			free(datos_a_consola);
+		}
 	}
 }
