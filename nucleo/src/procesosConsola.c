@@ -167,8 +167,9 @@ void *atender_consola(int* socket_desc){
 		}while(cerrar != NULL && *cerrar != -123);
 
 		if(cerrar != NULL && *cerrar==-123){//-123 indica q la consola recibio un ctrl -c
-			eliminar_proceso_del_sistema(tempId);
+			return 0;
 		}
+		eliminar_proceso_del_sistema(tempId);
 		//Cierra consola
 		//si se cerro la consola debe eliminarse el proceso
 		//eliminar_proceso_del_sistema(tempId);

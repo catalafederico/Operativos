@@ -32,7 +32,7 @@ int tiempo_dispositivo;
 int socketMemoria;
 int socketNucleo;
 extern pcb_t* pcb_actual;
-direccionMemoria* ultimaDireccion; //Tenporal hasta q tengamos stack
+//direccionMemoria* ultimaDireccion; //Tenporal hasta q tengamos stack
 int esFuncion;
 int estado;
 extern int quantum;
@@ -63,10 +63,10 @@ void* pedirUMC(direccionMemoria* solicitarUMC);
 void inicialzarParser(int socketMem, int socketNuc) {
 	socketMemoria = socketMem;
 	socketNucleo = socketNuc;
-	ultimaDireccion = malloc(sizeof(direccionMemoria));
+	/*ultimaDireccion = malloc(sizeof(direccionMemoria));
 	ultimaDireccion->pagina = 0;
 	ultimaDireccion->offset = 0;
-	ultimaDireccion->tamanio = 0;
+	ultimaDireccion->tamanio = 0;*/
 	esFuncion = 0;
 }
 
@@ -351,27 +351,40 @@ void fcallNR(t_nombre_etiqueta nombre) {
 almUMC calculoDeDedireccionAlmalcenar() {
 	almUMC aAlmacenar;
 	//Obtego stack
+	direccionMemoria direcLast;
 	if (dictionary_is_empty(pcb_actual->indice_stack)) {
 		int nroUltmaDireccionDeCodigo = dictionary_size(
 				pcb_actual->indice_codigo) - 1;
 		direccionMemoria* ultimaDireccionCodigo = dictionary_get(
 				pcb_actual->indice_codigo, &nroUltmaDireccionDeCodigo);
-		ultimaDireccion->offset = 0;
-		ultimaDireccion->pagina = ultimaDireccionCodigo->pagina + 1;
+		direcLast.offset = 0;
+		direcLast.pagina = ultimaDireccionCodigo->pagina + 1;
 	} else {
 		stack* stackActual = dictionary_get(pcb_actual->indice_stack,
 				(pcb_actual->SP));
 		//Me fijo si al agregarle el offset a la ultima direccion, aumenta el del tamanio de la pagina
 		//Si aumenta paso a otra pagina
-		if (ultimaDireccion->offset + sizeof(int) > tamanioPaginaUMC) {
-			ultimaDireccion->pagina = ultimaDireccion->pagina + 1; // Aumento una pagina
-			ultimaDireccion->offset = 0; //resteo el offset xq es una pagina nueva
+		t_list* list;
+		if(stackActual->vars != NULL && !list_is_empty(stackActual->vars)){
+			list= stackActual->vars;
+			direccionStack* temp = list_get(list,list_size(list)-1);
+			direcLast = temp->lugarUMC;
+		}
+		else if(stackActual->args != NULL &&!list_is_empty(stackActual->args)){
+			list = stackActual->args;
+			direcLast = *((direccionMemoria*) list_get(list,list_size(list)-1));
+		}else{
+			direcLast = *((direccionMemoria*) stackActual->memoriaRetorno);
+		}
+		if (direcLast.offset + sizeof(int) > tamanioPaginaUMC) {
+			direcLast.pagina = direcLast.pagina + 1; // Aumento una pagina
+			direcLast.offset = 0; //resteo el offset xq es una pagina nueva
 		} else {
-			ultimaDireccion->offset = ultimaDireccion->offset + sizeof(int); //sino me paso aumeto offset
+			direcLast.offset = direcLast.offset + sizeof(int); //sino me paso aumeto offset
 		}
 	}
-	aAlmacenar.pagina = ultimaDireccion->pagina; // seteo ultima direccion a alamcenar
-	aAlmacenar.offset = ultimaDireccion->offset;
+	aAlmacenar.pagina = direcLast.pagina; // seteo ultima direccion a alamcenar
+	aAlmacenar.offset = direcLast.offset;
 	return aAlmacenar;
 }
 
