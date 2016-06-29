@@ -343,7 +343,7 @@ void fcallNR(t_nombre_etiqueta nombre) {
 	if(estado==segFaultID){
 		return;
 	}
-	quantum++;
+	//quantum++;
 }
 
 //FUNCIONES PARA STACK-----------------------------------------------------------------------------------
