@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 	int size;
 	char* buff;
 	FILE *archivoAnsisop;
-	archivoAnsisop =fopen("ansisop/segfault.ansisop","r");
+	archivoAnsisop =fopen("ansisop/stackoverflow.ansisop","r");
 	//archivoAnsisop =fopen("TestExpClod/facilglobalvars.ansisop","r");
 
 
@@ -121,6 +121,8 @@ int main(int argc, char **argv) {
 
 
 	}
+	int fok = -123;
+	send(clienteConsola.socketCliente,&fok,sizeof(int),0);
 	fclose(archivoAnsisop);
 	close(clienteConsola.socketCliente);
 
@@ -134,5 +136,4 @@ void finalizarEjecucionConsola(int a){
 
 	printf("La consola se cerro, recibi señal: %d",a);
 	raise(SIGTERM);// envia señal al propio proceso para que se cierre
-    //exit(0);
 }

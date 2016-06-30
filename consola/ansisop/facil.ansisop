@@ -1,12 +1,10 @@
 #!/usr/bin/ansisop
 begin
+begin
 	variables a, b
 	a = 3
 	b = 5
-	print a
-	a = b + 1200 + b +b +b +b                         +b
-	textPrint La variable a vale chaaaan chaaaaaaaaaan
-	print a
+	a = b + 12
 end
 
 

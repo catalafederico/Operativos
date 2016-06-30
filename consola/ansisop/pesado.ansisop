@@ -1,6 +1,6 @@
 #!/usr/bin/ansisop
 begin
-	goto Etiqueta19
+	goto Etiqueta16
 end
 
 :Etiqueta1

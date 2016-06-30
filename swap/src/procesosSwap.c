@@ -159,7 +159,7 @@ int hayHuecoDondeCabeProceso(proceso* proceso) {
 
 	}
 
-	if (paginasLibresConsecutivas == 0)
+	if (paginasLibresConsecutivas < proceso->cantidadDePaginas)
 		return -1;
 }
 

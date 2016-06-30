@@ -41,6 +41,9 @@ int algoritmoClockModificado(t_list* lista_pag_mry, int* elemento) {
 	int tamanioLista = list_size(lista_pag_mry);
 	int i = 0;
 	relojElem* temp;
+	if(*elemento>=list_size(lista_pag_mry)){
+		*elemento =0;
+	}
 	while (1) {
 		switch (nroVuelta) {
 		case 1:
@@ -52,6 +55,9 @@ int algoritmoClockModificado(t_list* lista_pag_mry, int* elemento) {
 					return temp->pag;
 				}
 				*elemento = *elemento + 1;
+				if(*elemento>=list_size(lista_pag_mry)){
+					*elemento =0;
+				}
 			}
 			nroVuelta++;
 			break;
@@ -65,6 +71,9 @@ int algoritmoClockModificado(t_list* lista_pag_mry, int* elemento) {
 				} else {
 					temp->marco->bit_uso = 0;
 					*elemento = *elemento + 1;
+				}
+				if(*elemento>=list_size(lista_pag_mry)){
+					*elemento =0;
 				}
 			}
 			nroVuelta--;
