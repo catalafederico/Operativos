@@ -123,14 +123,14 @@ indiceCodigo* nuevoPrograma(char* instrucciones,t_list* instrucc,t_list* lista_I
 		free(aAnalizar);
 		}
 	while(newInst != NULL);
-	int tamanioDicc = dictionary_size(ic->inst_tamanio);
+	/*int tamanioDicc = dictionary_size(ic->inst_tamanio);
 	for(i=0;i<tamanioDicc;i++){
 		printf("En la instruccion: %d\n",i);
 		int* temp = dictionary_get(ic->inst_tamanio,&i);
 		printf("Hay un tamanio de: %d\n",*temp);
 		char* tempS = list_get(instrucc,i);
 		printf("%s\n",tempS);
-	}
+	}*/
 	free(tempInstruccion);
 	//free(newInst);
 	return ic;
@@ -169,7 +169,7 @@ t_dictionary* paginarIC(t_dictionary* codigoSinPaginar) {
 		tamanioDisponible = tamanioDisponible - *tamanio;
 		dictionary_put(diccionariConMemoria,nroInt,dirInstucActual);
 	}
-	int tamanioDicc = dictionary_size(diccionariConMemoria);
+	/*int tamanioDicc = dictionary_size(diccionariConMemoria);
 	int i;
 	for(i=0;i<tamanioDicc;i++){
 		printf("En la instruccion: %d\n",i);
@@ -177,7 +177,7 @@ t_dictionary* paginarIC(t_dictionary* codigoSinPaginar) {
 		printf("Hay un tamanio de: %d\n",temp->tamanio);
 		printf("pagina:%d\n",temp->pagina);
 		printf("offset:%d\n",temp->offset);
-	}
+	}*/
 	return diccionariConMemoria;
 }
 

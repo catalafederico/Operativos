@@ -47,6 +47,7 @@ struct cliente clienteCpuNucleo;
 int tamanioPaginaUMC;
 pcb_t* pcb_actual;
 t_log* logCpu;
+t_log* logInst;
 int quantum;
 int quantumSleep;
 int finEjecucion;
@@ -95,6 +96,7 @@ int main(void) {
 	t_reg_config config = get_config_params();
 	finEjecucion = 0;
 	logCpu = log_create("cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
+	logInst = log_create("Inst.txt", "cpu", 1, LOG_LEVEL_TRACE);
 
 	//Empieza conexion UMC
 	clienteCpuUmc = crearCliente(config.puertoUMC, config.IPUMC);
@@ -119,12 +121,12 @@ int main(void) {
 
 	int seguir = 1;
 	while (seguir && !finEjecucion) {
-		printf("CPU LIBRE\n");
+		log_trace(logInst,"Cpu Libre.");
 		int* header = leerHeader(clienteCpuNucleo.socketCliente, "127.0.0.1");
 		switch (*header) {
 		case 163: //Recibir PCB
 			recibirPCB();
-			printf("CPU OCUPADO\n");
+			log_trace(logInst,"Cpu Ocupado.");
 			tratarPCB();
 			liberarPcb(pcb_actual);
 			break;
@@ -281,7 +283,8 @@ void tratarPCB() {
 			}
 			//printf("procesando instruccion %d\n",*(pcb_actual->PC));
 			//printf("procesando inst:%s\n",proxInstruccion);
-			printf("PID %d, INST: %s\n",*(pcb_actual->PID),proxInstruccion);
+			log_trace(logInst,"QUANTUM: %d, PID %d, INST: %s",quantum,*(pcb_actual->PID),proxInstruccion);
+			//printf("PID %d, INST: %s\n",*(pcb_actual->PID),proxInstruccion);
 			procesarInstruccion(proxInstruccion);
 			*(pcb_actual->PC) = *pcb_actual->PC + 1;
 			if (estado == waitID) {

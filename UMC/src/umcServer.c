@@ -113,6 +113,7 @@ void ponerUmcAEscuchar(struct server procesosServer){
 
 void atenderNucleo(pthread_attr_t atributo,int socketNucleo){
 	pthread_t nucleo;
+	printf("Se ha conectado NUCLEO\n");
 	log_info(umcConfg.loguer, "Creando proceso nucleo.");
 	pthread_create(&nucleo,&atributo,conexionNucleo,socketNucleo);
 	log_info(umcConfg.loguer, "Creado proceso nucleo.");
@@ -120,6 +121,7 @@ void atenderNucleo(pthread_attr_t atributo,int socketNucleo){
 
 void atenderCpu(pthread_attr_t atributo,int socketCPU){
 	pthread_t cpu;
+	printf("Se ha conectado un  CPU\n");
 	log_info(umcConfg.loguer, "Creando proceso cpu.");
 	pthread_create(&cpu,&atributo,conexionCpu,socketCPU);
 	log_info(umcConfg.loguer, "Creano proceso cpu.");
@@ -134,7 +136,6 @@ int atenderConexionNuevaSelect(struct server procesosServer, int* maxfichero){
 	if(nuevaConexion > *maxfichero){
 		*maxfichero=nuevaConexion;
 	}
-	printf("Se ha conectado alguien\n");
 	return nuevaConexion;
 }
 

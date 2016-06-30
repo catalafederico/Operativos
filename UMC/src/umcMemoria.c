@@ -156,10 +156,12 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 	infoPagina* paginaBuscada = buscarFrameEnTLB(*idProcesoActual,pagina);
 	void* obtenido = malloc(tamanio);
 	if(paginaBuscada!=NULL){
+		log_trace(log_memoria, "Obt, Se ha producido un TLB HIT ID: %d,PAG: %d, MARCO: %d", *idProcesoActual, pagina, paginaBuscada->nroMarco);
 		estaEnTLB = 1;
 	}
 	else if(!estaEnTLB)
 	{
+		log_trace(log_memoria, "Almc, Se ha producido un TLB MISS ID: %d,PAG: %d", *idProcesoActual, pagina);
 		paginaBuscada = dictionary_get(tabla_actual,&pagina);
 		reloj* pagEnMemoria = dictionary_get(programas_paraClock,idProcesoActual);
 		if(!(paginaBuscada->nroMarco == -1)){
@@ -249,8 +251,10 @@ int almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 	//sino me fijo si esta en tlb, sino me fijo en memoria, y sino swap
 	paginaBuscada = buscarFrameEnTLB(*idProcesoActual, pagina);
 	if (paginaBuscada != NULL) {
+		log_trace(log_memoria, "Almc, Se ha producido un TLB HIT ID: %d,PAG: %d, MARCO: %d", *idProcesoActual, pagina, paginaBuscada->nroMarco);
 		estaEnTlb = 1;
 	} else if (!estaEnTlb) {
+		log_trace(log_memoria, "Almc, Se ha producido un TLB MISS ID: %d,PAG: %d", *idProcesoActual, pagina);
 		paginaBuscada = dictionary_get(tabla_actual, &pagina);
 		reloj* pagEnMemoria = dictionary_get(programas_paraClock,idProcesoActual);
 		//-1 dice q esta en swap la pagina

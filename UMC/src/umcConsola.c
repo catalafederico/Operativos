@@ -31,7 +31,7 @@ void* mostrarEstructura(char* programaAImprimir, void* pag_marco);
 void* mostrarContenidoDeMemoria(char* programaAImprimir, void* pag_marco);
 void* flushTLB(tlb* elem);
 void* flushTabla(char* id,t_dictionary* pag_infoPag);
-void* mostrarTLB(tlb* elem);
+void* mostrarTLB(tlb* elem, int i);
 
 void consolaUMC(){
 	char* comandoCompleto = malloc(50);
@@ -103,12 +103,17 @@ void consolaUMC(){
 		}
 		else if(!strcmp(primerPalabra,flushTlb)){
 			printf("TLB INICIAL\n");
-			list_iterate(tlbCache,mostrarTLB);
+			int i;
+			for(i=0;i<list_size(tlbCache);i++){
+				mostrarTLB(list_get(tlbCache,i),i);
+			}
 			printf("TLB flush comenzado\n");
 			list_clean_and_destroy_elements(tlbCache,flushTLB);
 			printf("TLB flush finalizado\n");
 			printf("TLB FINAL\n");
-			list_iterate(tlbCache,mostrarTLB);
+			for(i=0;i<list_size(tlbCache);i++){
+				mostrarTLB(list_get(tlbCache,i),i);
+			}
 		}
 		else if(!strcmp(primerPalabra,flushMry)){
 			printf("Flush memory comenzado\n");
@@ -117,7 +122,11 @@ void consolaUMC(){
 		}
 		else if(!strcmp(primerPalabra,verTlb)){
 			printf("TLB mostrando\n");
-			list_iterate(tlbCache,mostrarTLB);
+			int i;
+			for(i=0;i<list_size(tlbCache);i++){
+				mostrarTLB(list_get(tlbCache,i),i);
+			}
+			//list_iterate(tlbCache,mostrarTLB);
 			printf("TLB mostrado completo\n");
 		}
 		else if(!strcmp(primerPalabra,cerrar)){
@@ -200,7 +209,7 @@ void* flushTabla(char* id,t_dictionary* pag_infoPag){
 	}
 }
 
-void* mostrarTLB(tlb* elem){
-	printf("ID: %d\tPAG: %d\tMARCO: %d\tUSO: %d\tMOD: %d\n",elem->idProg,elem->pag,elem->marco->nroMarco,elem->marco->bit_uso,elem->marco->modif);
+void* mostrarTLB(tlb* elem, int i){
+	printf("POS: %d\tID: %d\tPAG: %d\tMARCO: %d\tUSO: %d\tMOD: %d\n",i,elem->idProg,elem->pag,elem->marco->nroMarco,elem->marco->bit_uso,elem->marco->modif);
 }
 
