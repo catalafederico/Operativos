@@ -326,7 +326,10 @@ void *administrar_cola_Reject (){
 			pid_local = *(pcb_elegido->PID);
 		pthread_mutex_unlock(&sem_l_Reject);
 
-		notificarAUMCfpc(pid_local);
+		if(*(pcb_elegido->SP) != -1){
+			notificarAUMCfpc(pid_local);//Si el pid es -1 significa q no se pudo cargar en memoria asi q no le notifico a la umc
+			//ya q no lo tiene
+		}
 		log_debug(log_procesador_Reject, "Se removio el PCB de REJECT: %d", pid_local);
 
 		// quito el proceso del Diccionario, obtengo Consola_Id y mensaje de respuesta

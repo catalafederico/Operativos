@@ -90,6 +90,10 @@ void* conexionCpu(int socketEscuchaCpu){
 	int seguir = 1;
 	while(seguir){
 		int* header = recibirStream(socketEscuchaCpu,sizeof(int));
+		if(header==NULL){
+			header = malloc(sizeof(int));
+			*header = 4;
+		}
 		switch (*header) {
 			case 52://SOLICITAR
 				solicitar_Bytes(socketEscuchaCpu);

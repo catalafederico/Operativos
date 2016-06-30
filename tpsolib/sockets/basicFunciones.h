@@ -33,7 +33,7 @@ char* recibirMensaje_tamanio(int socketCliente, int * long_mje);
 
 
 void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir);
-void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje);
+int enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje);
 
 /**
 * @NAME: leerHeader

@@ -61,6 +61,7 @@ extern pthread_mutex_t sem_l_Reject;
 extern sem_t semaforoProgramasACargar;
 extern pthread_mutex_t semProgramasAProcesar;
 extern sem_t sem_READY_dispo;
+extern sem_t sem_REJECT_dispo;
 //extern sem_t  cpus_dispo;
 
 pcb_t* crearPCBinicial(char* instrucciones,int idProgramaNuevo,int* estado);
@@ -100,10 +101,12 @@ void *procesos_UMC(){
 			sem_post(&sem_READY_dispo);
 		}
 		else{					//No hay espacio y cargo el pcb para rechazar
+			*pcbNuevo->SP = -1;
 			pthread_mutex_lock(&sem_l_Reject);
 				list_add(proc_Reject, pcbNuevo);
 				log_debug(logger, "PCB con PID %d pasado a REJECT",progParaCargar->PID);
 			pthread_mutex_unlock(&sem_l_Reject);
+			sem_post(&sem_REJECT_dispo);
 		}
 	}
 	return NULL;

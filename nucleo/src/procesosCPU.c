@@ -11,13 +11,13 @@
 #include<pthread.h>
 
 #include <unistd.h>
-//#include <errno.h>
+#include <errno.h>
 //#include <netdb.h>
 //#include <sys/types.h>
 #include <netinet/in.h>
 //#include <sys/socket.h>
 //#include <sys/wait.h>
-//#include <signal.h>
+#include <signal.h>
 #include <commons/collections/list.h>
 //#include <commons/config.h>
 #include <commons/string.h>
@@ -87,6 +87,10 @@ pthread_mutex_t varsGlobals = PTHREAD_MUTEX_INITIALIZER;
 //extern pthread_mutex_t sem_log;
 
 
+void enviarCPUConHeader(int socketCPU,int header, int tamanio, void* mensaje,int pid_local);
+void enviarCPU(int socketCPU, int tamanio, void* mensaje,int pid_local);
+void* recibirCpu(int socketCPU, int tamanio,int pid_local);
+void perdioLaConexion();
 
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_conexion_CPU  --------------------------------
@@ -133,27 +137,28 @@ void *atender_conexion_CPU(){
 	return NULL;
 }
 
-
-
+void perdioLaConexion(){
+ //printf("Se ha perdido la conexion con consola\n");
+}
 //------------------------------------------------------------------------------------------
 // ---------------------------------- atender_CPU  -----------------------------------------
 //Esta funcion representa un thread que trabaja con un CPU conectado por socket
 //------------------------------------------------------------------------------------------
 void *atender_CPU(int* socket_desc) {
+	void perdioLaConexion();
+	signal(SIGPIPE,perdioLaConexion);
+
 	int socket_local = *socket_desc;
 
 	//Empieza handshake
-	int* recibido = recibirStream(socket_local, sizeof(int));
+	int* recibido = recibirCpu(socket_local, sizeof(int),-1);
 	if (*recibido == CPU) {
 		log_debug(logger, "Se ha conectado correctamente CPU: %d",socket_local);
 	}
 
 	//Confirmo conexio a cpu
 	int ok = OK;
-	if (send(socket_local, &ok, sizeof(int), 0) == -1) {
-		log_debug(logger, "CPU %d se Desconecto", socket_local);
-		close(*socket_desc);
-	}
+	enviarCPU(socket_local,sizeof(int),&ok,-1);
 
 	//Lo libero ya q era un malloc de atender_conexion_CPU
 	free(socket_desc);
@@ -171,6 +176,7 @@ void *atender_CPU(int* socket_desc) {
 		//////////////////////////////////////////////
 		//Le otorgo un pcb para tarabajar/////////////
 		//////////////////////////////////////////////
+		pid_local = -1;
 		sem_wait(&sem_READY_dispo); // espero que haya un proceso en READY disponible
 
 
@@ -204,11 +210,11 @@ void *atender_CPU(int* socket_desc) {
 			pthread_mutex_unlock(&sem_l_Exec);
 		}
 		while (!cambioPcb && CpuActivo){
-			estado_proceso = leerHeader(socket_local);
+			estado_proceso = recibirCpu(socket_local,sizeof(int),pid_local);
 			switch (*estado_proceso) {
 			case FIN_QUANTUM:
 			{
-				pcb_elegido = recibirPCBdeCPU(socket_local);
+				pcb_elegido = recibirPCBdeCPU(socket_local,pid_local);
 				pthread_mutex_lock(&sem_l_Exec);
 					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
 					log_debug(logger, "PCB con PID %d sacado de EXEC x fin Quantum",pid_local);
@@ -224,7 +230,7 @@ void *atender_CPU(int* socket_desc) {
 				break;
 			case FIN_PROC:
 			{
-				pcb_elegido = recibirPCBdeCPU(socket_local);
+				pcb_elegido = recibirPCBdeCPU(socket_local,pid_local);
 				pthread_mutex_lock(&sem_l_Exec);
 					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
 					log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",	pid_local);
@@ -245,7 +251,7 @@ void *atender_CPU(int* socket_desc) {
 				break;
 			case FIN_CPU:
 			{
-				pcb_elegido = recibirPCBdeCPU(socket_local);
+				pcb_elegido = recibirPCBdeCPU(socket_local,pid_local);
 				pthread_mutex_lock(&sem_l_Exec);
 					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
 					log_debug(logger, "PCB con PID %d sacado de EXEC xfin CPU",	pid_local);
@@ -268,47 +274,51 @@ void *atender_CPU(int* socket_desc) {
 			}
 				break;
 			case OBT_VALOR:  //es la primitiva obtenerValorCompartida
-				ansisop_obtenerValorCompartida (socket_local);
+				ansisop_obtenerValorCompartida (socket_local,pid_local);
 				break;
 			case GRABA_VALOR: //es la primitiva asignarValorCompartida
-				ansisop_asignarValorCompartida (socket_local);
+				ansisop_asignarValorCompartida (socket_local,pid_local);
 				break;
 			case WAIT_SEM:	 // es la primitiva wait
 			{
 				cambioPcb = ansisop_wait (socket_local, pid_local);
-				send(socket_local,&cambioPcb,sizeof(int),0);
+				enviarCPU(socket_local,sizeof(int),&cambioPcb,pid_local);
 				// si cambioPcb es 0 significa que el wait no bloqueo y el cpu puede seguir procesando,
 				// si es 1 entonces el proceso se bloqueo y el CPU debe tomar otro PCB
 				break;
 			}
 
 			case SIGNAL_SEM: // es la primitiva signal
-				ansisop_signal (socket_local);
+				ansisop_signal(socket_local,pid_local);
 				break;
 			case IMPRIMIR: // es la primitiva imprimir
 			{
-				int* valoraImprimir = leerHeader(socket_local);
+				int* valoraImprimir = recibirCpu(socket_local,sizeof(int),pid_local);
 			/*	t_sock_mje* */ socketConsola = dictionary_get(dict_pid_consola,&pid_local);
 				int envVar = 100;
-				enviarStream(socketConsola->socket_dest,envVar,sizeof(int),valoraImprimir);
+				if(socketConsola->proc_status == 0){
+					enviarCPUConHeader(socketConsola->socket_dest,envVar,sizeof(int),valoraImprimir,pid_local);
+				}
 				free(valoraImprimir);
 				break;
 			}
 			case IMPRIMIR_TXT: // es la primitiva imprimirTexto
 			{
 			/*	t_sock_mje* */ socketConsola = dictionary_get(dict_pid_consola,&pid_local);
-				int* tamanioAImprimir = leerHeader(socket_local);
-				void* mensaje = recibirStream(socket_local,*tamanioAImprimir);
+				int* tamanioAImprimir = recibirCpu(socket_local,sizeof(int),pid_local);
+				void* mensaje = recibirCpu(socket_local,*tamanioAImprimir,pid_local);
 				int envTexto = 101;
-				enviarStream(socketConsola->socket_dest,envTexto,sizeof(int),tamanioAImprimir);
-				send(socketConsola->socket_dest,mensaje,*tamanioAImprimir,0);
+				if(socketConsola->proc_status == 0){
+					enviarCPUConHeader(socketConsola->socket_dest,envTexto,sizeof(int),tamanioAImprimir,pid_local);
+					enviarCPU(socketConsola->socket_dest,*tamanioAImprimir,mensaje,pid_local);
+				}
 				free(tamanioAImprimir);
 				free(mensaje);
 				break;
 			}
 			case SEG_FAULT:
 			{
-				pcb_elegido = recibirPCBdeCPU(socket_local);
+				pcb_elegido = recibirPCBdeCPU(socket_local,pid_local);
 				pthread_mutex_lock(&sem_l_Exec);
 					list_remove_by_condition(proc_Exec, (void*) esEl_Pid);
 					log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",	pid_local);
@@ -348,7 +358,7 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	aMandaCpu.tamanioStack = dictionary_size(pcb->indice_stack);
 	aMandaCpu.tamanioIndiceDeFunciones = list_size(pcb->indice_funciones);
 	int enviaPCB = 163;
-	enviarStream(cpu,enviaPCB,sizeof(serializablePCB),&aMandaCpu);
+	enviarCPUConHeader(cpu,enviaPCB,sizeof(serializablePCB),&aMandaCpu,*(pcb->PID));
 	/*
 	 * Orden:
 	 * 	Indice de codigo
@@ -369,7 +379,7 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	int i;
 	for(i=0;i<tamanioIndiceCode && tamanioIndiceCode !=0;i++){
 		direccionMemoria* aMandar = dictionary_get(pcb->indice_codigo,&i);
-		send(cpu,aMandar,sizeof(direccionMemoria),0);
+		enviarCPU(cpu,sizeof(direccionMemoria),aMandar,*(pcb->PID));
 	}
 
 
@@ -383,9 +393,9 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 		func.tamanioNombreFuncion = strlen(funcionAMandarSS->funcion)+1;//+1 para garegar el \0
 		func.posicionPID = *(funcionAMandarSS->posicion_codigo);
 		//Envio Tamanio y posicion
-		send(cpu,&func,sizeof(funcionTemp),0);
+		enviarCPU(cpu,sizeof(funcionTemp),&func,*(pcb->PID));
 		//Envio nombre funcion
-		send(cpu,strcat(funcionAMandarSS->funcion,"\0"),func.tamanioNombreFuncion,0);
+		enviarCPU(cpu,func.tamanioNombreFuncion,strcat(funcionAMandarSS->funcion,"\0"),*(pcb->PID));
 	}
 
 
@@ -422,25 +432,25 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 			direccionRetornoFuncion.tamanio = -1;
 		}
 
-		send(cpu,&tamanioArgs,sizeof(int),0);
-		send(cpu,&tamanioVars,sizeof(int),0);
-		send(cpu,&PIDretorno,sizeof(int),0);
-		send(cpu,&direccionRetornoFuncion,sizeof(direccionMemoria),0);
+		enviarCPU(cpu,sizeof(int),&tamanioArgs,*(pcb->PID));
+		enviarCPU(cpu,sizeof(int),&tamanioVars,*(pcb->PID));
+		enviarCPU(cpu,sizeof(int),&PIDretorno,*(pcb->PID));
+		enviarCPU(cpu,sizeof(direccionMemoria),&direccionRetornoFuncion,*(pcb->PID));
 		int j;
 		t_list* args = stackAMandar->args;
 		for(j=0;j<tamanioArgs;j++){
 			direccionMemoria* direccionMemoriaArg = list_get(args,j);
-			send(cpu,direccionMemoriaArg,sizeof(direccionMemoria),0);
+			enviarCPU(cpu,sizeof(direccionMemoria),direccionMemoriaArg,*(pcb->PID));
 		}
 		t_list* vars = stackAMandar->vars;
 		for(j=0;j<tamanioVars;j++){
 			direccionStack* direccionStackVars = list_get(vars,j);
-			send(cpu,direccionStackVars,sizeof(direccionStack),0);
+			enviarCPU(cpu,sizeof(direccionStack),direccionStackVars,*(pcb->PID));
 		}
 	}
 
-	send(cpu,&quantum,sizeof(int),0);
-	send(cpu,&quantum_sleep,sizeof(int),0);
+	enviarCPU(cpu,sizeof(int),&quantum,*(pcb->PID));
+	enviarCPU(cpu,sizeof(int),&quantum_sleep,*(pcb->PID));
 
 	//!!!!!!!!!!!!!!!!!!!!!!!!!
 	//LIBERAR TODA MEMORIA PCB!
@@ -449,21 +459,22 @@ void enviarPCB(pcb_t* pcb,int cpu, int quantum, int quantum_sleep){
 	return;
 }
 
-pcb_t* recibirPCBdeCPU(int socket){
+pcb_t* recibirPCBdeCPU(int socket,int pidLocal){
 	pcb_t* pcb_Recibido = malloc(sizeof(pcb_t));
-	pcb_Recibido->PID = recibirStream(socket,sizeof(int));
-	pcb_Recibido->PC = recibirStream(socket,sizeof(int));
-	pcb_Recibido->PCI = recibirStream(socket,sizeof(int));
-	pcb_Recibido->SP = recibirStream(socket,sizeof(int));
-	pcb_Recibido->paginasDisponible = recibirStream(socket,sizeof(int));
+	pcb_Recibido->PID = recibirCpu(socket,sizeof(int),pidLocal);
+	pidLocal = *(pcb_Recibido->PID);
+	pcb_Recibido->PC = recibirCpu(socket,sizeof(int),pidLocal);
+	pcb_Recibido->PCI = recibirCpu(socket,sizeof(int),pidLocal);
+	pcb_Recibido->SP = recibirCpu(socket,sizeof(int),pidLocal);
+	pcb_Recibido->paginasDisponible = recibirCpu(socket,sizeof(int),pidLocal);
 
 	pcb_Recibido->indice_codigo = dictionary_create();
 	pcb_Recibido->indice_funciones = list_create();
 	pcb_Recibido->indice_stack = dictionary_create();
 
-	int* tamanioIC = recibirStream(socket, sizeof(int));
-	int* tamanioStack = recibirStream(socket, sizeof(int));
-	int* tamanioIF = recibirStream(socket, sizeof(int));
+	int* tamanioIC = recibirCpu(socket, sizeof(int),pidLocal);
+	int* tamanioStack = recibirCpu(socket, sizeof(int),pidLocal);
+	int* tamanioIF = recibirCpu(socket, sizeof(int),pidLocal);
 
 	int i;
 
@@ -471,7 +482,7 @@ pcb_t* recibirPCBdeCPU(int socket){
 	for(i=0;i<*tamanioIC && *tamanioIC != 0;i++){
 		int* nuevaPagina = malloc(sizeof(int));
 		*nuevaPagina = i;
-		direccionMemoria* nuevaDireccionMemoria = recibirStream(socket,sizeof(direccionMemoria));
+		direccionMemoria* nuevaDireccionMemoria = recibirCpu(socket,sizeof(direccionMemoria),pidLocal);
 		dictionary_put(pcb_Recibido->indice_codigo,nuevaPagina,nuevaDireccionMemoria);
 	}
 	free(tamanioIC);
@@ -479,8 +490,8 @@ pcb_t* recibirPCBdeCPU(int socket){
 
 	//RECIBO INDICE FUNCIONES
 	for(i=0;i<*tamanioIF && *tamanioIF!=0;i++){
-		funcionTemp* funcion = recibirStream(socket,sizeof(funcionTemp));
-		char* funcionNombre = recibirStream(socket,funcion->tamanioNombreFuncion);
+		funcionTemp* funcion = recibirCpu(socket,sizeof(funcionTemp),pidLocal);
+		char* funcionNombre = recibirCpu(socket,funcion->tamanioNombreFuncion,pidLocal);
 		funcion_sisop* new_funcion = malloc(sizeof(new_funcion));
 		new_funcion->funcion = funcionNombre;
 		new_funcion->posicion_codigo = malloc(sizeof(int));
@@ -494,37 +505,37 @@ pcb_t* recibirPCBdeCPU(int socket){
 	for(i=0;i<*tamanioStack && *tamanioStack!=0;i++){
 		stack* stackNuevo = malloc(sizeof(stack));
 		//Argumentos
-		int* tamArgs = recibirStream(socket, sizeof(int));
+		int* tamArgs = recibirCpu(socket, sizeof(int),pidLocal);
 		if(*tamArgs==-1)
 			stackNuevo->args = NULL;
 		else
 			stackNuevo->args = list_create();
 		//Variables
-		int* tamVars = recibirStream(socket, sizeof(int));
+		int* tamVars = recibirCpu(socket, sizeof(int),pidLocal);
 		if(*tamVars==-1)
 			stackNuevo->vars = NULL;
 		else
 			stackNuevo->vars = list_create();
 		//Retorno PID del renglon stack
-		int* RetornoPID = recibirStream(socket, sizeof(int));
+		int* RetornoPID = recibirCpu(socket, sizeof(int),pidLocal);
 		if(*RetornoPID == -1)
 			stackNuevo->pos_ret = NULL;
 		else
 			stackNuevo->pos_ret = RetornoPID;
 		//Retorno
-		direccionMemoria* memoriaRetorno = recibirStream(socket, sizeof(direccionMemoria));
+		direccionMemoria* memoriaRetorno = recibirCpu(socket, sizeof(direccionMemoria),pidLocal);
 		if(memoriaRetorno->offset == -1)
 			memoriaRetorno = NULL;
 
 		stackNuevo->memoriaRetorno = memoriaRetorno;
 		int j;
 		for(j=0;j<*tamArgs;j++){
-			direccionMemoria* new_direc = recibirStream(socket, sizeof(direccionMemoria));
+			direccionMemoria* new_direc = recibirCpu(socket, sizeof(direccionMemoria),pidLocal);
 			list_add_in_index(stackNuevo->args,j,new_direc);
 		}
 		free(tamArgs);
 		for(j=0;j<*tamVars;j++){
-			direccionStack* new_direc = recibirStream(socket, sizeof(direccionStack));
+			direccionStack* new_direc = recibirCpu(socket, sizeof(direccionStack),pidLocal);
 			list_add_in_index(stackNuevo->vars,j,new_direc);
 		}
 		free(tamVars);
@@ -539,12 +550,12 @@ pcb_t* recibirPCBdeCPU(int socket){
 void ansisop_entradaSalida(int socket_local, int pid_local){
 
 	//se recibe parametros para IO
-	int* long_char = recibirStream(socket_local,sizeof(int));
-	char * dispositivo = recibirStream(socket_local, *long_char);
-	int * unidades = recibirStream(socket_local,sizeof(int));
+	int* long_char = recibirCpu(socket_local,sizeof(int),pid_local);
+	char * dispositivo = recibirCpu(socket_local, *long_char,pid_local);
+	int * unidades = recibirCpu(socket_local,sizeof(int),pid_local);
 
 	//se recibe el PCB
-	pcb_t* pcb_bloqueado = recibirPCBdeCPU(socket_local);
+	pcb_t* pcb_bloqueado = recibirPCBdeCPU(socket_local,pid_local);
 
 	t_sock_mje* socketConsola;
 
@@ -583,22 +594,22 @@ void ansisop_entradaSalida(int socket_local, int pid_local){
 
 }
 
-void ansisop_obtenerValorCompartida(int socket_local){
+void ansisop_obtenerValorCompartida(int socket_local,int pid_local){
 	//se recibe parametros para obtener valor
-	int* long_char = recibirStream(socket_local,sizeof(int));
-	char* variable_comp = recibirStream(socket_local, *long_char);
+	int* long_char = recibirCpu(socket_local,sizeof(int),pid_local);
+	char* variable_comp = recibirCpu(socket_local, *long_char,pid_local);
 	int * valor_comp;
 	pthread_mutex_lock(&varsGlobals);
 		valor_comp = dictionary_get(reg_config.dic_variables,variable_comp);
 	pthread_mutex_unlock(&varsGlobals);
 
-	send(socket_local,valor_comp,sizeof(int),0);
+	enviarCPU(socket_local,sizeof(int),valor_comp,pid_local);
 }
 
-void ansisop_asignarValorCompartida(int socket_local){
-	int* tamanioNombreGV = recibirStream(socket_local,sizeof(int));
-	int* valorAGrabar = recibirStream(socket_local, sizeof(int));
-	char* nombreVariable = recibirStream(socket_local,*tamanioNombreGV);
+void ansisop_asignarValorCompartida(int socket_local,int pid_local){
+	int* tamanioNombreGV = recibirCpu(socket_local,sizeof(int),pid_local);
+	int* valorAGrabar = recibirCpu(socket_local, sizeof(int),pid_local);
+	char* nombreVariable = recibirCpu(socket_local,*tamanioNombreGV,pid_local);
 	pthread_mutex_lock(&varsGlobals);
 		free(dictionary_remove(reg_config.dic_variables,nombreVariable));//libero xq es un int* malloc lo q hay
 		dictionary_put(reg_config.dic_variables,nombreVariable, valorAGrabar);
@@ -608,9 +619,9 @@ void ansisop_asignarValorCompartida(int socket_local){
 }
 
 int ansisop_wait (int socket_local, int pid_local){
-	int* tamanioNombreWS = recibirStream(socket_local,sizeof(int));
-	char* nombreSemaforo = recibirStream(socket_local,*tamanioNombreWS);
-	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local);
+	int* tamanioNombreWS = recibirCpu(socket_local,sizeof(int),pid_local);
+	char* nombreSemaforo = recibirCpu(socket_local,*tamanioNombreWS,pid_local);
+	pcb_t* pcb_elegido = recibirPCBdeCPU(socket_local,pid_local);
 	int retorno=0;
 	t_datos_samaforos* datos_sem;
 	t_sock_mje* socketConsola;
@@ -662,9 +673,9 @@ int ansisop_wait (int socket_local, int pid_local){
 	return retorno;
 }
 
-void ansisop_signal(int socket_local){
-	int* tamanioNombre = recibirStream(socket_local,sizeof(int));
-	char* nombreSemaforo = recibirStream(socket_local,*tamanioNombre);
+void ansisop_signal(int socket_local, int pid_local){
+	int* tamanioNombre = recibirCpu(socket_local,sizeof(int),pid_local);
+	char* nombreSemaforo = recibirCpu(socket_local,*tamanioNombre,pid_local);
 	t_datos_samaforos* datos_sem;
 	datos_sem = dictionary_get(reg_config.dic_semaforos,nombreSemaforo);
 	pthread_mutex_lock(&datos_sem->semsem);
@@ -687,3 +698,66 @@ pcb_t* buscarYRemoverPCBporPID(int pidBuscado,t_list* lista){
 	}
 	return NULL;
 }
+
+
+void terminaDeFormaAbortiva(int pid_local) {
+	//Ak aviso a consola
+	int esEl_Pid(pcb_t* pcb_compara) {
+		return (*pcb_compara->PID == pid_local);
+	}
+	printf("Se termino un CPU de forma abortiva\n");
+	if (pid_local == -1) {
+
+	} else {
+		t_sock_mje* socketConsola;
+		pthread_mutex_lock(&sem_l_Exec);
+		pcb_t* pcb_elegido = list_remove_by_condition(proc_Exec,
+				(void*) esEl_Pid);
+		log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",
+				pid_local);
+		pthread_mutex_unlock(&sem_l_Exec);
+		pthread_mutex_lock(&sem_l_Reject);
+		list_add(proc_Reject, pcb_elegido);
+		log_debug(logger, "PCB con PID %d pasado a EXIT xfin Proceso",
+				pid_local);
+		pthread_mutex_unlock(&sem_l_Reject);
+		pthread_mutex_lock(&sem_pid_consola);
+		socketConsola = dictionary_get(dict_pid_consola, &pid_local);
+		pthread_mutex_unlock(&sem_pid_consola);
+		free(socketConsola->mensaje);
+		socketConsola->mensaje = strdup("CPU cerro de forma abortiva\n");
+		sem_post(&sem_REJECT_dispo);
+	}
+
+	pthread_exit(NULL);
+}
+
+
+void* recibirCpu(int socketCPU, int tamanio, int pid_local){
+	void* obtenido = recibirStream(socketCPU, tamanio);
+	if(obtenido==NULL){
+		terminaDeFormaAbortiva(pid_local);
+	}
+	else{
+		return obtenido;
+	}
+}
+
+void enviarCPU(int socketCPU, int tamanio, void* mensaje,int pid_local){
+	int resultado = send(socketCPU,mensaje,tamanio,0);
+	if(resultado == -1){
+		if(errno == EPIPE){
+			terminaDeFormaAbortiva(pid_local);
+		}
+	}
+}
+
+void enviarCPUConHeader(int socketCPU,int header, int tamanio, void* mensaje,int pid_local){
+	int resultado = enviarStream(socketCPU,header,tamanio,mensaje);
+	if(resultado == -987){
+			terminaDeFormaAbortiva(pid_local);
+	}
+}
+
+
+

@@ -45,6 +45,7 @@ void consolaUMC(){
 		i = strlen(comandoCompleto)-1;
 		if( comandoCompleto[ i ] == '\n')
 			  comandoCompleto[i] = '\0';
+		string_trim(&comandoCompleto);
 		char ** todasLasPalabras = string_split(comandoCompleto, " ");
 		primerPalabra = todasLasPalabras[0];
 		printf("Ha ingresado:\n\t------%s-------\n",comandoCompleto);

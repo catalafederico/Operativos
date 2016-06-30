@@ -71,13 +71,20 @@ char* recibirMensaje(int socketCliente){
 	}
 }
 
-void enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje){
+int enviarStream(int socketDestino,int header, int tamanioMensaje, void* mensaje){
 	if(send(socketDestino,&header,sizeof(int),0)==-1){
-		perror("Error al enviar stream.");
+		if(errno = EPIPE){
+			return -987;
+		}
+		return -1;
 	}
 	if(send(socketDestino,mensaje,tamanioMensaje,0)==-1){
-		perror("Error al enviar stream.");
+		if(errno = EPIPE){
+			return -987;
+		}
+		return -1;
 	}
+	return 0;
 
 }
 

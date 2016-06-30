@@ -117,6 +117,10 @@ void* conexionNucleo(int  socketEscuchaNucleo){
 		int* header = recibirStream(socketEscuchaNucleo,sizeof(int));
 		/*int* id = leerHeader(socketEscuchaNucleo);
 		cambiarProceso(*id);*/
+		if(header==NULL){
+			header = malloc(sizeof(int));
+			*header = -1;
+		}
 		log_trace(logConexiones,"Header recibido en Nucleo: %d\n", *header);
 		switch (*header) {
 			case FINALIZACIONPROGRAMA:
