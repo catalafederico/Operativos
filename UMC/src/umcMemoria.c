@@ -39,7 +39,7 @@ void* inicializarMemoria(t_reg_config* configuracionUMC){
 	entradasTLB = configuracionUMC->ENTRADAS_TLB;
 	tlbCache = list_create();
 	inicializarTLB(tlbCache,entradasTLB);
-	log_memoria = log_create("logs/logUmcMemoria.txt","UMC",0,LOG_LEVEL_TRACE);
+	log_memoria = log_create("../logs/logUmcMemoria.txt","UMC",0,LOG_LEVEL_TRACE);
 	pthread_mutex_init(&semaforoMemoria,NULL);
 	pthread_mutex_init(&memoriaLibre,NULL);
 	log_trace(log_memoria,"Creando memoria");

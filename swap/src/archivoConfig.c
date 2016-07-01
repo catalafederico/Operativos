@@ -26,7 +26,7 @@ extern t_reg_config swap_configuracion;
 void get_config_params(void) {
 
 	t_config * swap_config = NULL;
-	char * swap_config_path = "swap_config.cfg";
+	char * swap_config_path = "../swap_config.cfg";
 
 	swap_config = config_create(swap_config_path);
 

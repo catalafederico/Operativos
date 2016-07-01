@@ -95,8 +95,8 @@ int main(void) {
 	sigaction(SIGUSR1, &sa, NULL);
 	t_reg_config config = get_config_params();
 	finEjecucion = 0;
-	logCpu = log_create("cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
-	logInst = log_create("Inst.txt", "cpu", 1, LOG_LEVEL_TRACE);
+	logCpu = log_create("../cpuLog.txt", "cpu", false, LOG_LEVEL_TRACE);
+	logInst = log_create("../Inst.txt", "cpu", 1, LOG_LEVEL_TRACE);
 
 	//Empieza conexion UMC
 	clienteCpuUmc = crearCliente(config.puertoUMC, config.IPUMC);

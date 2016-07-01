@@ -41,7 +41,7 @@ t_log* logguerSwap;
 
 
 int main(void) {
-	logguerSwap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
+	logguerSwap = log_create("../log_swap", "Swap", false, LOG_LEVEL_INFO);
 	//creo semaforo
 	pthread_mutex_init(&mutex,NULL);
 	//cargo patametro

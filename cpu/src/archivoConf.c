@@ -19,7 +19,7 @@ t_config * CPU_config = NULL;
 
 t_reg_config get_config_params(){
 
-	char * Cpu_config_path = "cpu_config.cfg";
+	char * Cpu_config_path = "../cpu_config.cfg";
 	CPU_config = config_create(Cpu_config_path);
 	t_reg_config configuracion;
 	setearValorEntero(&configuracion.puertoUMC,"PUMC");
