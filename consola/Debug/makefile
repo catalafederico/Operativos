@@ -26,7 +26,7 @@ endif
 all: consola
 
 dependents:
-	-cd ../../tp-2016-1c-Explosive-code/tpsolib/Debug && $(MAKE) all
+	-cd ../../tpsolib/Debug && $(MAKE) all
 
 # Tool invocations
 consola: $(OBJS) $(USER_OBJS) ../../tpsolib/Debug/libtpsolib.so

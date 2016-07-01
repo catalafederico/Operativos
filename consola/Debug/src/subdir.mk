@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/configConsola.c \
 ../src/consola.c 
 
 OBJS += \
+./src/configConsola.o \
 ./src/consola.o 
 
 C_DEPS += \
+./src/configConsola.d \
 ./src/consola.d 
 
 
