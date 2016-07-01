@@ -26,13 +26,13 @@ endif
 all: UMC
 
 dependents:
-	-cd /home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug && $(MAKE) all
+	-cd ../../tpsolib/Debug && $(MAKE) all
 
 # Tool invocations
-UMC: $(OBJS) $(USER_OBJS) /home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so
+UMC: $(OBJS) $(USER_OBJS) ../../tpsolib/Debug/libtpsolib.so
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug" -o "UMC" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"../../tpsolib/Debug" -o "UMC" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -43,6 +43,6 @@ clean:
 
 .PHONY: all clean dependents
 .SECONDARY:
-/home/utnso/Escritorio/TPOperativos/tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so:
+../../tpsolib/Debug/libtpsolib.so:
 
 -include ../makefile.targets

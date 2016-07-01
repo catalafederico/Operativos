@@ -4,40 +4,28 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/archivoConf.c \
-../src/umc.c \
-../src/umcCliente.c \
-../src/umcClockV2.c \
-../src/umcConsola.c \
-../src/umcCpu.c \
-../src/umcMemoria.c \
-../src/umcNucleo.c \
-../src/umcServer.c \
-../src/umcTlb.c 
+../src/archivoConfig.c \
+../src/bitMap.c \
+../src/particionSwap.c \
+../src/procesosSwap.c \
+../src/swap.c \
+../src/swapUmc.c 
 
 OBJS += \
-./src/archivoConf.o \
-./src/umc.o \
-./src/umcCliente.o \
-./src/umcClockV2.o \
-./src/umcConsola.o \
-./src/umcCpu.o \
-./src/umcMemoria.o \
-./src/umcNucleo.o \
-./src/umcServer.o \
-./src/umcTlb.o 
+./src/archivoConfig.o \
+./src/bitMap.o \
+./src/particionSwap.o \
+./src/procesosSwap.o \
+./src/swap.o \
+./src/swapUmc.o 
 
 C_DEPS += \
-./src/archivoConf.d \
-./src/umc.d \
-./src/umcCliente.d \
-./src/umcClockV2.d \
-./src/umcConsola.d \
-./src/umcCpu.d \
-./src/umcMemoria.d \
-./src/umcNucleo.d \
-./src/umcServer.d \
-./src/umcTlb.d 
+./src/archivoConfig.d \
+./src/bitMap.d \
+./src/particionSwap.d \
+./src/procesosSwap.d \
+./src/swap.d \
+./src/swapUmc.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

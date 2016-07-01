@@ -23,22 +23,22 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: nucleo
+all: swap
 
 dependents:
 	-cd ../../tpsolib/Debug && $(MAKE) all
 
 # Tool invocations
-nucleo: $(OBJS) $(USER_OBJS) ../../tpsolib/Debug/libtpsolib.so
+swap: $(OBJS) $(USER_OBJS) ../../tpsolib/Debug/libtpsolib.so
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"../../tpsolib/Debug" -o "nucleo" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"../../tpsolib/Debug" -o "swap" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) nucleo
+	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) swap
 	-@echo ' '
 
 .PHONY: all clean dependents
