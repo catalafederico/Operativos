@@ -29,10 +29,10 @@ dependents:
 	-cd ../../tp-2016-1c-Explosive-code/tpsolib/Debug && $(MAKE) all
 
 # Tool invocations
-consola: $(OBJS) $(USER_OBJS) ../../tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so
+consola: $(OBJS) $(USER_OBJS) ../../tpsolib/Debug/libtpsolib.so
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"../../tp-2016-1c-Explosive-code/tpsolib/Debug" -o "consola" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"../../tpsolib/Debug" -o "consola" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -43,6 +43,6 @@ clean:
 
 .PHONY: all clean dependents
 .SECONDARY:
-../../tp-2016-1c-Explosive-code/tpsolib/Debug/libtpsolib.so:
+../../tpsolib/Debug/libtpsolib.so:
 
 -include ../makefile.targets
