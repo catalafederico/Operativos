@@ -52,6 +52,7 @@ void leer(void) {
 		} else {
 			int paginaALeer = proceso.comienzo + *numeroPagina;
 			void* texto;
+			logLectura(paginaALeer,proceso);
 			texto = leerPagina(paginaALeer);
 			int exito = 6;
 			enviarStream(socketAdministradorDeMemoria,exito,swap_configuracion.TAMANIO_PAGINA,texto);
@@ -82,6 +83,7 @@ void escribir() {
 			send(socketAdministradorDeMemoria, &fracaso, sizeof(int), 0);
 		} else {
 			int paginaAEscribir = proceso.comienzo + *numeroPagina;
+			logEscritura(paginaAEscribir,proceso.pid);
 			escribirPagina(paginaAEscribir, texto);
 			int exito = 6;
 			send(socketAdministradorDeMemoria, &exito, sizeof(int), 0);
@@ -106,12 +108,12 @@ void iniciar(void) {
 		pthread_mutex_lock(&mutex);
 		insertarProceso(proceso);
 		pthread_mutex_unlock(&mutex);
-		//logIniciar(*proceso);
+		logIniciar(proceso);
 		int exito = 6;
 		send(socketAdministradorDeMemoria, &exito, sizeof(int), 0);
 	} else {
 		//El proceso no entra, avisar rechazo
-		//logRechazar(*proceso);
+		logRechazar(proceso);
 		printf(
 				"No hay cantidad de paginas suficientes para alojar el proceso %d",
 				proceso->pid);
@@ -127,6 +129,7 @@ void finalizar(void) {
 	if (procesoSeEncuentraEnSwap(*pid)) {
 		proceso procesoAEliminar = obtenerProceso(*pid);
 		printf("Eliminando proceso\n");
+		logFinalizar(procesoAEliminar);
 		eliminarProceso(*pid);
 		printf("Proceso eliminado\n");
 		//Avisar a la UMC que se borro el proceso con exito
@@ -139,4 +142,59 @@ void finalizar(void) {
 		send(socketAdministradorDeMemoria, &fracaso, sizeof(int), 0);
 	}
 	free(pid);
+}
+
+//-- Logs
+
+void loguear(char *stringAloguear){
+	//t_log* log_swap = log_create("log_swap", "Swap", false, LOG_LEVEL_INFO);
+	log_info(logguerSwap, stringAloguear);
+	//log_destroy(log_swap);
+}
+
+void logIniciar(proceso* proceso1){
+	proceso procesoALoguear = *proceso1;
+	char stringAlogear[200];
+	sprintf(stringAlogear,"Proceso Asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d",procesoALoguear.pid, procesoALoguear.comienzo,procesoALoguear.cantidadDePaginas,procesoALoguear.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+	loguear(stringAlogear);
+}
+
+void logFinalizar(proceso proceso1){
+	proceso procesoALoguear = proceso1;
+	char stringAloguear[200];
+	sprintf(stringAloguear,"Proceso Liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d",procesoALoguear.pid, procesoALoguear.comienzo,procesoALoguear.cantidadDePaginas,procesoALoguear.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
+	loguear(stringAloguear);
+}
+
+void logRechazar(proceso* proceso1){
+	proceso procesoALoguear = *proceso1;
+	char stringAloguear[200];
+	sprintf(stringAloguear,"Proceso Rechazado - PID: %d - Falta de espacio",procesoALoguear.pid);
+	loguear(stringAloguear);
+}
+
+
+void logCompactacionIniciada(){
+	char stringAloguear[100];
+	sprintf(stringAloguear,"Compactacion Iniciada.");
+	loguear(stringAloguear);
+}
+
+
+void logCompactacionFinalizada(){
+	char stringAloguear[100];
+	sprintf(stringAloguear,"Compactacion Finalizada.");
+	loguear(stringAloguear);
+}
+
+void logLectura(int pagina, proceso proceso){
+	char stringAloguear[200];
+	sprintf(stringAloguear,"Leyendo pagina %d del proceso %d.",pagina,proceso.pid);
+	loguear(stringAloguear);
+}
+
+void logEscritura(int pagina, proceso proceso){
+	char stringAloguear[200];
+	sprintf(stringAloguear,"Escribiendo pagina %d del proceso %d.", pagina,proceso.pid);
+	loguear(stringAloguear);
 }
