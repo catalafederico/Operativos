@@ -23,10 +23,18 @@
 #include <commons/txt.h>
 #include <string.h>
 #include <signal.h>
+#include "estructurasConsola.h"
+#include "configConsola.h"
+
 struct cliente clienteConsola;
 void finalizarEjecucionConsola(int a);
 int nroSocketNucleo;
 int main(int argc, char **argv) {
+
+	t_reg_config archConfig;
+	archConfig = get_config_params();
+
+
 	int index;
 	  for(index = 0; index < argc; index++) {
 	    printf("  Parametro %d: %s\n", index, argv[index]);
@@ -37,18 +45,18 @@ int main(int argc, char **argv) {
 	int size;
 	char* buff;
 	FILE *archivoAnsisop;
-	archivoAnsisop =fopen("ansisop/stackoverflow.ansisop","r");
+	//archivoAnsisop =fopen("ansisop/stackoverflow.ansisop","r");
 	//archivoAnsisop =fopen("TestExpClod/facilglobalvars.ansisop","r");
 
 
 	//hay que abrirlo con el gcc ejecutarlo y pasarle los parametros el primer parametro(argv[0]) es el programa y el otro la rutadearchivo
 
 	//DESCOMENTAR ESTO PARA PASAR POR CONSOLA
-	/*archivoAnsisop =fopen(argv[1],"r");
+	archivoAnsisop =fopen(argv[1],"r");
 	if (archivoAnsisop == NULL) {
 		perror("Error al tratar de leer archivo");
 		exit(EXIT_FAILURE);
-	}*/
+	}
 
 	fseek (archivoAnsisop , 0 , SEEK_END);
 	size = ftell (archivoAnsisop);
@@ -57,7 +65,7 @@ int main(int argc, char **argv) {
 	buffer = malloc(size);
 
 	struct cliente clienteConsola;
-	clienteConsola = crearCliente(8080, "127.0.0.1");
+	clienteConsola = crearCliente(archConfig.PUERTO, archConfig.IP);
 
 	signal(SIGINT,finalizarEjecucionConsola);//me qeudo captando la señal ctrl c,le aviso al nucleo que voy a cerrar
 	int a = 1;
