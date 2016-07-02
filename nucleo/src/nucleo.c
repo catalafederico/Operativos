@@ -124,12 +124,12 @@ int main(int argc, char **argv) {
 //	dict_variables = dictionary_create();
 
 	// Inicializa el log.
-	logger = log_create("../nucleo.log", "NUCLEO", 0, LOG_LEVEL_TRACE);
+	logger = log_create("nucleo.log", "NUCLEO", 0, LOG_LEVEL_TRACE);
 
 	//inizializa logs de prueba
-	log_procesador_Exit = log_create("../procesador_EXIT.log", "procesador_EXIT", 0, LOG_LEVEL_TRACE);
-	log_procesador_Block = log_create("../procesador_BLOCK.log", "procesador_BLOCK", 0, LOG_LEVEL_TRACE);
-	log_procesador_Reject = log_create("../procesador_REJECT.log", "procesador_REJECT", 0, LOG_LEVEL_TRACE);
+	log_procesador_Exit = log_create("procesador_EXIT.log", "procesador_EXIT", 0, LOG_LEVEL_TRACE);
+	log_procesador_Block = log_create("procesador_BLOCK.log", "procesador_BLOCK", 0, LOG_LEVEL_TRACE);
+	log_procesador_Reject = log_create("procesador_REJECT.log", "procesador_REJECT", 0, LOG_LEVEL_TRACE);
 	//crear listas
 //	cpus_dispo = list_create();
 	proc_New = list_create();
@@ -343,8 +343,13 @@ void *administrar_cola_Reject (){
 		log_debug(logger, "PCB con PID %d sacado de REJECT y se respondio a la consola %d",pid_local, datos_a_consola->socket_dest);
 		//log_debug(logger, "Se envio a consola: %d el mensaje: %s", datos_a_consola->socket_dest, mje_Rej);
 		if(datos_a_consola->proc_status == 0){
-			int fin = -999;
-			send(datos_a_consola->socket_dest,&fin,sizeof(int),0);
+			if(!strcmp(datos_a_consola->mensaje,"123456")){
+				int fin = -998;
+				send(datos_a_consola->socket_dest,&fin,sizeof(int),0);
+			}else{
+				int fin = -999;
+				send(datos_a_consola->socket_dest,&fin,sizeof(int),0);
+			}
 		    /*if (send(datos_a_consola->socket_dest, datos_a_consola->mensaje, MJE_RTA, 0) == -1){
 		    	log_debug(logger, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
 		    	log_debug(log_procesador_Reject, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);

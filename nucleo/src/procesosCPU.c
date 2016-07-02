@@ -60,6 +60,7 @@ extern t_list* proc_Block;
 extern t_list* proc_Reject;
 extern t_list* proc_Exit;
 extern t_log *logger;
+t_list* temp;
 extern struct server serverPaCPU;
 
 // semaforos Compartidos
@@ -83,6 +84,7 @@ extern pthread_mutex_t sem_l_Reject;
 extern pthread_mutex_t sem_reg_config;
 extern pthread_mutex_t sem_pid_consola;
 pthread_mutex_t varsGlobals = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sem_temp = PTHREAD_MUTEX_INITIALIZER;
 //extern pthread_mutex_t sem_dic_semaforos;
 //extern pthread_mutex_t sem_log;
 
@@ -101,7 +103,6 @@ void *atender_conexion_CPU(){
 	log_debug(logger, "Crear socket para CPUs");
 	// Crear socket para CPU  ------------------------------
 	serverPaCPU = crearServer(reg_config.puerto_cpu);
-
 	//Pongo el server a escuchar.
 	ponerServerEscucha(serverPaCPU);
 	log_debug(logger, "Se han empezado a escuchar cpus.");
@@ -110,7 +111,7 @@ void *atender_conexion_CPU(){
 	pthread_t thread_cpu_con;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-
+	temp = list_create();
 	int seguir = 1;
 	while(seguir){
 		int* socket_nuevo = malloc(sizeof(int)); //socket donde va a estar nueva conexion
@@ -145,8 +146,8 @@ void perdioLaConexion(){
 //Esta funcion representa un thread que trabaja con un CPU conectado por socket
 //------------------------------------------------------------------------------------------
 void *atender_CPU(int* socket_desc) {
-	void perdioLaConexion();
-	signal(SIGPIPE,perdioLaConexion);
+	//void perdioLaConexion();
+	//signal(SIGPIPE,perdioLaConexion);
 
 	int socket_local = *socket_desc;
 
@@ -186,6 +187,10 @@ void *atender_CPU(int* socket_desc) {
 			log_debug(logger, "PCB con PID %d sacado de READY", pid_local);
 		pthread_mutex_unlock(&sem_l_Ready);
 
+		pthread_mutex_lock(&sem_temp);
+			list_add(temp,pcb_elegido); //Agarro el pcb
+		pthread_mutex_unlock(&sem_temp);
+
 		pthread_mutex_lock(&sem_pid_consola);
 				socketConsola = dictionary_get(dict_pid_consola,&pid_local);
 		pthread_mutex_unlock(&sem_pid_consola);
@@ -202,8 +207,14 @@ void *atender_CPU(int* socket_desc) {
 		}
 
 		if(!cambioPcb){
+
+
 			enviarPCB(pcb_elegido, socket_local, reg_config.quantum, reg_config.quantum_sleep);
 			//Guardo pcb en la lista de ejecutandose
+			pthread_mutex_lock(&sem_temp);
+				list_remove_by_condition(temp, (void*) esEl_Pid);
+			pthread_mutex_unlock(&sem_temp);
+
 			pthread_mutex_lock(&sem_l_Exec);
 				list_add(proc_Exec, pcb_elegido);
 				log_debug(logger, "PCB con PID %d pasado a EXEC", pid_local);
@@ -713,6 +724,17 @@ void terminaDeFormaAbortiva(int pid_local) {
 		pthread_mutex_lock(&sem_l_Exec);
 		pcb_t* pcb_elegido = list_remove_by_condition(proc_Exec,
 				(void*) esEl_Pid);
+		pthread_mutex_unlock(&sem_l_Exec);
+		if(pcb_elegido == NULL){
+			pthread_mutex_lock(&sem_temp);
+				pcb_elegido = list_remove_by_condition(temp,
+						(void*) esEl_Pid);
+			pthread_mutex_unlock(&sem_temp);
+			pthread_mutex_lock(&sem_l_Ready);
+				list_add_in_index(proc_Ready, 0, pcb_elegido);
+				log_debug(logger,"PCB con PID %d pasado al principio de READY xfin CPU",pid_local);
+			pthread_mutex_unlock(&sem_l_Ready);
+		}else{
 		log_debug(logger, "PCB con PID %d sacado de EXEC xfin Proceso",
 				pid_local);
 		pthread_mutex_unlock(&sem_l_Exec);
@@ -725,11 +747,11 @@ void terminaDeFormaAbortiva(int pid_local) {
 		socketConsola = dictionary_get(dict_pid_consola, &pid_local);
 		pthread_mutex_unlock(&sem_pid_consola);
 		free(socketConsola->mensaje);
-		socketConsola->mensaje = strdup("CPU cerro de forma abortiva\n");
-		sem_post(&sem_REJECT_dispo);
+		socketConsola->mensaje = strdup("123456");
+		sem_post(&sem_REJECT_dispo);}
 	}
-
-	pthread_exit(NULL);
+	int a = 100;
+	pthread_exit(&a);
 }
 
 

@@ -33,7 +33,7 @@ extern t_dictionary* dict_pid_consola;
 t_reg_config get_config_params(void){
 //	t_log* logger = log_create("nucleo.log", "NUCLEO", 1, LOG_LEVEL_TRACE);
 	t_config * archivo_config = NULL;
-	char * archivo_config_nombre = "../archivo_configuracion.cfg";
+	char * archivo_config_nombre = "archivo_configuracion.cfg";
 //	t_reg_config reg_config;
 	char** io_id;
 	char** sem_id;
