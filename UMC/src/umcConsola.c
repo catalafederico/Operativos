@@ -37,7 +37,7 @@ void consolaUMC(){
 	char* comandoCompleto = malloc(50);
 	char* primerPalabra;
 	vecesRepetir = umcConfg.configuracionUMC.MARCO_SIZE/1;
-	dump = log_create("dumps","UMC",1,LOG_LEVEL_INFO);
+	dump = log_create("../dumps","UMC",1,LOG_LEVEL_INFO);
 	do{
 		printf("Ingrese un comando.(help para ver comandos.) \n");
 		fgets(comandoCompleto,50,stdin);
