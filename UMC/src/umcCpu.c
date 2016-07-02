@@ -29,28 +29,42 @@ t_list* programasEjecucion;
 extern umcNucleo umcConfg;
 pthread_mutex_t memoriaLibre;
 
+void* recibirCpu(int socketCPU, int tamanio, int pid_local);
+void enviarCPU(int socketCPU, int tamanio, void* mensaje,int pid_local);
+void enviarCPUConHeader(int socketCPU,int header, int tamanio, void* mensaje,int pid_local);
+
+
+void terminaDeFormaAbortiva(int pid_local){
+	printf("Perdida la conexion con cpu\n");
+	int a = 100;
+	pthread_exit(&a);
+}
+
 void solicitar_Bytes(int socket){
-	int* pagina = (int*) recibirStream(socket, sizeof(int));
-	int* offset = (int*) recibirStream(socket, sizeof(int));
-	int* tamanio = (int*) recibirStream(socket, sizeof(int));
-	int* idProceso = (int*) recibirStream(socket,sizeof(int));
+	int* pagina = (int*) recibirCpu(socket, sizeof(int), -1);
+	int* offset = (int*) recibirCpu(socket, sizeof(int), -1);
+	int* tamanio = (int*) recibirCpu(socket, sizeof(int), -1);
+	int* idProceso = (int*) recibirCpu(socket, sizeof(int), -1);
 	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Obtener bytes iniciado");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
 	if(obtenido==NULL){
 		int segFault = 777;
-		send(socket,&segFault,sizeof(int),0);
+		enviarCPU(socket,sizeof(int),&segFault,-1);
+		//send(socket,&segFault,sizeof(int),0);
 		free(pagina);
 		free(offset);
 		free(tamanio);
 		return;
 	}else{
 		int ok = OK;
-		send(socket,&ok,sizeof(int),0);
+		//send(socket,&ok,sizeof(int),0);
+		enviarCPU(socket,sizeof(int),&ok,-1);
 		log_info(umcConfg.loguer, "Obtener bytes terminado");
 		//le envio lo obtenido a cpu
-		send(socket,obtenido,*tamanio,0);
+		enviarCPU(socket,*tamanio,obtenido,-1);
+		//send(socket,obtenido,*tamanio,0);
 		free(pagina);
 		free(offset);
 		free(tamanio);
@@ -60,21 +74,23 @@ void solicitar_Bytes(int socket){
 }
 
 void almacenar_Byte(int socket){
-	int* pagina = (int*) recibirStream(socket, sizeof(int));
-	int* offset = (int*) recibirStream(socket, sizeof(int));
-	int* tamanio =(int*) recibirStream(socket, sizeof(int));
-	void* aAlmacenar = recibirStream(socket, *tamanio);
-	int* idProceso = (int*) recibirStream(socket,sizeof(int));
+	int* pagina = (int*) recibirCpu(socket, sizeof(int), -1);
+	int* offset = (int*) recibirCpu(socket, sizeof(int), -1);
+	int* tamanio =(int*) recibirCpu(socket, sizeof(int), -1);
+	void* aAlmacenar = recibirCpu(socket, *tamanio, -1);
+	int* idProceso = (int*) recibirCpu(socket, sizeof(int), -1);
 	usleep(umcConfg.configuracionUMC.RETARDO*1000);
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
 	int conf = almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
 	if(conf==0){
 		int segFault = 777;
-		send(socket,&segFault,sizeof(int),0);
+		enviarCPU(socket,sizeof(int),&segFault,-1);
+		//send(socket,&segFault,sizeof(int),0);
 	}else{
 		int ok = OK;
-		send(socket,&ok,sizeof(int),0);
+		enviarCPU(socket,sizeof(int),&ok,-1);
+		//send(socket,&ok,sizeof(int),0);
 		log_info(umcConfg.loguer, "Obtener bytes terminado");
 		//le envio lo obtenido a cpu
 	}
@@ -116,5 +132,29 @@ void* conexionCpu(int socketEscuchaCpu){
 	}
 }
 
+void* recibirCpu(int socketCPU, int tamanio, int pid_local){
+	void* obtenido = recibirStream(socketCPU, tamanio);
+	if(obtenido==NULL){
+		terminaDeFormaAbortiva(pid_local);
+	}
+	else{
+		return obtenido;
+	}
+}
 
+void enviarCPU(int socketCPU, int tamanio, void* mensaje,int pid_local){
+	int resultado = send(socketCPU,mensaje,tamanio,0);
+	if(resultado == -1){
+		if(errno == EPIPE){
+			terminaDeFormaAbortiva(pid_local);
+		}
+	}
+}
+
+void enviarCPUConHeader(int socketCPU,int header, int tamanio, void* mensaje,int pid_local){
+	int resultado = enviarStream(socketCPU,header,tamanio,mensaje);
+	if(resultado == -987){
+			terminaDeFormaAbortiva(pid_local);
+	}
+}
 
