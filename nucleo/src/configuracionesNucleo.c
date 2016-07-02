@@ -336,8 +336,8 @@ void * observar_config_file(){
 	 }
 
 	 /*adding the "archivo_configuracion.cfg" file into watch list.*/
-//	 wd = inotify_add_watch( fd, "archivo_configuracion.cfg", IN_MODIFY);
-	 wd = inotify_add_watch( fd, "archivo_configuracion.cfg", IN_ALL_EVENTS );
+	 wd = inotify_add_watch( fd, "../archivo_configuracion.cfg", IN_MODIFY);
+//	 wd = inotify_add_watch( fd, "archivo_configuracion.cfg", IN_ALL_EVENTS );
 	printf("observa eventos \n");
 	 while(1){
 		 length=0;
@@ -362,7 +362,7 @@ void * observar_config_file(){
 					 if (nro_vez%2==0){
 					  log_debug(logger, "Conf File modificado, mask: %d, cookie: %d, len: %d, name: %s", event->mask, event->cookie, event->len, event->name);
 							t_config * archivo_config_aux = NULL;
-							char * archivo_config_nombre = "archivo_configuracion.cfg";
+							char * archivo_config_nombre = "../archivo_configuracion.cfg";
 							archivo_config_aux = config_create(archivo_config_nombre);
 						// 3 get QUANTUM
 							if (config_has_property(archivo_config_aux,"QUANTUM")){
