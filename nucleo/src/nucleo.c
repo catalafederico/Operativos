@@ -100,7 +100,7 @@ t_dictionary* dict_semaforos;
 void *administrar_cola_Exit();
 void *administrar_cola_Block();
 void *administrar_cola_Reject();
-
+void liberarPcb(pcb_t* pcb);
 // **************************************************************************************************
 // ******************************************    MAIN     ***************************************
 // **************************************************************************************************
@@ -241,6 +241,7 @@ void *administrar_cola_Exit(){
 	    	log_debug(logger, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
 	    	log_debug(log_procesador_Exit, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
 	    }*/
+		liberarPcb(pcb_elegido);
 		free(datos_a_consola->mensaje);
 		free(datos_a_consola);
 	    log_debug(log_procesador_Exit, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
@@ -355,7 +356,44 @@ void *administrar_cola_Reject (){
 		    	log_debug(log_procesador_Reject, "se intento enviar mensaje a consola: %d, pero el Send dio Error", datos_a_consola->socket_dest);
 		    }*/
 		    log_debug(log_procesador_Reject, "Envio correcto a consola: %d", datos_a_consola->socket_dest);
-			free(datos_a_consola);
+		    liberarPcb(pcb_elegido);
+		    free(datos_a_consola);
 		}
 	}
 }
+
+
+void liberarPcb(pcb_t* pcb){
+
+	free(pcb->PC);
+	free(pcb->PCI);
+	free(pcb->PID);
+	free(pcb->SP);
+	free(pcb->paginasDisponible);
+	void* liberarIC(direccionMemoria* aLib){
+		free(aLib);
+	}
+	dictionary_destroy_and_destroy_elements(pcb->indice_codigo,liberarIC);
+	void* liberarIF(funcion_sisop* aLib){
+		free(aLib->funcion);
+		free(aLib->posicion_codigo);
+	}
+	list_destroy_and_destroy_elements(pcb->indice_funciones,liberarIF);
+	void* liberarStack(stack* aLib){
+		free(aLib->pos_ret);
+		void* liberarDM(direccionMemoria* aLib){
+			free(aLib);
+		}
+		void* liberarDS(direccionStack* aLib){
+			free(aLib);
+		}
+		liberarDM(aLib->memoriaRetorno);
+		if(aLib->args!=NULL)
+		list_destroy_and_destroy_elements(aLib->args,liberarDM);
+		if(aLib->vars!=NULL)
+		list_destroy_and_destroy_elements(aLib->vars,liberarDS);
+	}
+	dictionary_destroy_and_destroy_elements(pcb->indice_stack,liberarStack);
+	free(pcb);
+}
+

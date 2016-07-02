@@ -317,6 +317,7 @@ void * administrar_cola_sem(void* semaforo){
 
 void * observar_config_file(){
 	log_debug(logger, "Comenzo el observador de archivo de config");
+	printf("Comenzo el observador de archivo de config");
 	int quantum_mod, quantum_sleep_mod;
 	int nro_vez=0;
 	 int length, i = 0;
@@ -335,9 +336,9 @@ void * observar_config_file(){
 	 }
 
 	 /*adding the "archivo_configuracion.cfg" file into watch list.*/
-	 wd = inotify_add_watch( fd, "archivo_configuracion.cfg", IN_MODIFY);
-//	 wd = inotify_add_watch( fd, "/config", IN_MODIFY);
-
+//	 wd = inotify_add_watch( fd, "archivo_configuracion.cfg", IN_MODIFY);
+	 wd = inotify_add_watch( fd, "archivo_configuracion.cfg", IN_ALL_EVENTS );
+	printf("observa eventos");
 	 while(1){
 		 length=0;
 		 i = 0;
@@ -346,7 +347,7 @@ void * observar_config_file(){
 
 		 length = read( fd, buffer, BUF_LEN );
 		 nro_vez++;
-
+			printf("hubo evento ");
 		 /*checking for error*/
 		 if ( length < 0 ) {
 			log_debug(logger, "ERROR inotify_read");
