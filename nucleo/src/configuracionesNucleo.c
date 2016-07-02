@@ -359,7 +359,7 @@ void * observar_config_file(){
 			 struct inotify_event *event = ( struct inotify_event * ) &buffer[ i ];
 //			 if ( event->len ) {
 				 if ( (event->mask & IN_MODIFY) ) {
-					 if (nro_vez%2==0){
+			//		 if (nro_vez%2==0){
 					  log_debug(logger, "Conf File modificado, mask: %d, cookie: %d, len: %d, name: %s", event->mask, event->cookie, event->len, event->name);
 							t_config * archivo_config_aux = NULL;
 							char * archivo_config_nombre = "../archivo_configuracion.cfg";
@@ -389,7 +389,7 @@ void * observar_config_file(){
 						log_debug(logger, "Se modifico el Quantum a %d",reg_config.quantum);
 						log_debug(logger, "Se modifico el Quantum_Sleep a %d",reg_config.quantum_sleep);
 					//--------------------------------------------------------------------------
-				   }
+				  // }
 				 }
 
 //			  }
