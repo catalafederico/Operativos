@@ -104,10 +104,10 @@ void* recibirStream(int socketDondeRecibe, int tamanioEstructuraARecibir){
 		}
 	}while(denuevo);
 	//errno = 0;
-	if(bytesRecibidos == -1){
+	/*if(bytesRecibidos == -1){
 		perror("error en recibir stream");
 		exit(-1);
-	}
+	}*/
 	memcpy(recibido,tempRcv,tamanioEstructuraARecibir);
 	if(bytesRecibidos<=0)
 	{
