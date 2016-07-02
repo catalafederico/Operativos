@@ -20,6 +20,7 @@ t_config * CPU_config = NULL;
 t_reg_config get_config_params(){
 
 	int ab = 16;
+	//char * UMC_config_path = "../umc_config.cfg";
 	char * UMC_config_path = "../umc_config.cfg";
 	CPU_config = config_create(UMC_config_path);
 	int a = sizeof(int)*8+sizeof(char*);

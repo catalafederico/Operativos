@@ -115,7 +115,7 @@ void iniciar(void) {
 		//El proceso no entra, avisar rechazo
 		logRechazar(proceso);
 		printf(
-				"No hay cantidad de paginas suficientes para alojar el proceso %d",
+				"No hay cantidad de paginas suficientes para alojar el proceso %d\n",
 				proceso->pid);
 		int fracaso = 7;
 		send(socketAdministradorDeMemoria, &fracaso, sizeof(int), 0);
@@ -154,47 +154,33 @@ void loguear(char *stringAloguear){
 
 void logIniciar(proceso* proceso1){
 	proceso procesoALoguear = *proceso1;
-	char stringAlogear[200];
-	sprintf(stringAlogear,"Proceso Asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d",procesoALoguear.pid, procesoALoguear.comienzo,procesoALoguear.cantidadDePaginas,procesoALoguear.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
-	loguear(stringAlogear);
+	log_info(logguerSwap, "Proceso Asignado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d",procesoALoguear.pid, procesoALoguear.comienzo,procesoALoguear.cantidadDePaginas,procesoALoguear.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
 }
 
 void logFinalizar(proceso proceso1){
 	proceso procesoALoguear = proceso1;
-	char stringAloguear[200];
-	sprintf(stringAloguear,"Proceso Liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d",procesoALoguear.pid, procesoALoguear.comienzo,procesoALoguear.cantidadDePaginas,procesoALoguear.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
-	loguear(stringAloguear);
+	log_info(logguerSwap,"Proceso Liberado - PID: %d - Pagina inicial: %d - Paginas: %d - Tamaño: %d",procesoALoguear.pid, procesoALoguear.comienzo,procesoALoguear.cantidadDePaginas,procesoALoguear.cantidadDePaginas*swap_configuracion.TAMANIO_PAGINA);
 }
 
 void logRechazar(proceso* proceso1){
 	proceso procesoALoguear = *proceso1;
-	char stringAloguear[200];
-	sprintf(stringAloguear,"Proceso Rechazado - PID: %d - Falta de espacio",procesoALoguear.pid);
-	loguear(stringAloguear);
+	log_info(logguerSwap,"Proceso Rechazado - PID: %d - Falta de espacio",procesoALoguear.pid);
 }
 
 
 void logCompactacionIniciada(){
-	char stringAloguear[100];
-	sprintf(stringAloguear,"Compactacion Iniciada.");
-	loguear(stringAloguear);
+	log_info(logguerSwap,"Compactacion Iniciada.");
 }
 
 
 void logCompactacionFinalizada(){
-	char stringAloguear[100];
-	sprintf(stringAloguear,"Compactacion Finalizada.");
-	loguear(stringAloguear);
+	log_info(logguerSwap,"Compactacion Finalizada.");
 }
 
 void logLectura(int pagina, proceso proceso){
-	char stringAloguear[200];
-	sprintf(stringAloguear,"Leyendo pagina %d del proceso %d.",pagina,proceso.pid);
-	loguear(stringAloguear);
+	log_info(logguerSwap,"Leyendo pagina %d del proceso %d.",pagina,proceso.pid);
 }
 
 void logEscritura(int pagina, proceso proceso){
-	char stringAloguear[200];
-	sprintf(stringAloguear,"Escribiendo pagina %d del proceso %d.", pagina,proceso.pid);
-	loguear(stringAloguear);
+	log_info(logguerSwap,"Escribiendo pagina %d del proceso %d.", pagina,proceso.pid);
 }

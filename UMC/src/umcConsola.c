@@ -164,15 +164,21 @@ void* mostrarContenidoDeMemoria(char* programaAImprimir, void* pag_marco) {
 	for (i = 0; i < tamanioDiccionario; i++) {
 		infoPagina* marcoTemp = dictionary_get(pag_marco, &i);
 		if (marcoTemp->nroMarco == -1) {
-			printf("ID: %d PAG: %d MARCO: %d\n", pidPrograma, i,
+			/*printf("ID: %d PAG: %d MARCO: %d\n", pidPrograma, i,
 								marcoTemp->nroMarco);
-			printf("Pagina no se encuentra en memoria\n\n");
+			printf("Pagina no se encuentra en memoria\n\n");*/
+
+			printf("ID: %d PAG: %d MARCO: %d Pagina no se encuentra en memoria\n", pidPrograma, i,
+								marcoTemp->nroMarco);
 		} else {
 			posicioDeMemoria = ((marcoTemp->nroMarco)
 					* umcConfg.configuracionUMC.MARCO_SIZE);
 			int j;
+			//char* temp = malloc(100);
 			printf("ID: %d PAG: %d MARCO: %d\n", pidPrograma, i,
 					marcoTemp->nroMarco);
+			//char *temp = string_new();//malloc(200);
+
 			for (j = 0; j < vecesRepetir; j++) {
 				char tempHexa;
 				int tempOffset = j;
@@ -180,7 +186,12 @@ void* mostrarContenidoDeMemoria(char* programaAImprimir, void* pag_marco) {
 						(memoriaPrincipal + posicioDeMemoria + tempOffset), 1);
 				if (j % 15 == 0 && j > 1) {
 					printf("\n");
+					//log_info(dump,temp);
+
+					//free(temp);
+				//	temp = 	string_new();
 				}
+				//sprintf(temp + strlen(temp),"%hhX\t", tempHexa);
 				printf("%hhX\t", tempHexa);
 			}
 			printf("\n");

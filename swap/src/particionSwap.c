@@ -92,6 +92,7 @@ void* leerPagina(int pagina) {
 }
 
 void compactar(void) {
+	printf("Ha comenzado la compactacion\n");
 	dormir();
 	proceso* auxiliar1 = listaSwap;
 	proceso* auxiliar2 = listaSwap;
@@ -124,7 +125,7 @@ void compactar(void) {
 			}
 		}
 	}
-
+	printf("Ha finalizado la compactacion\n");
 }
 
 void moverPaginas(proceso* procesoAJuntar, int nuevoComienzo) {

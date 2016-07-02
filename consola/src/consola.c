@@ -111,6 +111,10 @@ int main(int argc, char **argv) {
 						printf("Fin del proceso. Chau. by explosive code\n");
 						seguir = 0;
 						break;
+					case -998:
+						printf("Se ha cerrado cpu de forma abortiva.\n");
+						seguir = 0;
+						break;
 					case -999:
 						printf("Se ha producido un SEG FAULT, se cierra proceso.\n");
 						seguir = 0;
