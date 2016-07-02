@@ -32,12 +32,13 @@ pthread_mutex_t memoriaLibre;
 void* recibirCpu(int socketCPU, int tamanio, int pid_local);
 void enviarCPU(int socketCPU, int tamanio, void* mensaje,int pid_local);
 void enviarCPUConHeader(int socketCPU,int header, int tamanio, void* mensaje,int pid_local);
+void terminaDeFormaAbortiva(int pid_local);
 
 
 void terminaDeFormaAbortiva(int pid_local){
 	printf("Perdida la conexion con cpu\n");
 	int a = 100;
-	pthread_exit(&a);
+	//pthread_exit(&a);
 }
 
 void solicitar_Bytes(int socket){
