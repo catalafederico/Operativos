@@ -340,7 +340,7 @@ void *administrar_cola_Reject (){
 		pthread_mutex_unlock(&sem_pid_consola);
 
 
-		log_debug(log_procesador_Reject, "Se removio el PID ( %d ) del dicc y se envio el mje ( SIN ESPACIO ) a consola: %d", pid_local, datos_a_consola->socket_dest);
+		log_debug(log_procesador_Reject, "Se removio el PID ( %d ) del dicc y se envio el mje a consola: %d", pid_local, datos_a_consola->socket_dest);
 		log_debug(logger, "PCB con PID %d sacado de REJECT y se respondio a la consola %d",pid_local, datos_a_consola->socket_dest);
 		//log_debug(logger, "Se envio a consola: %d el mensaje: %s", datos_a_consola->socket_dest, mje_Rej);
 		if(datos_a_consola->proc_status == 0){
