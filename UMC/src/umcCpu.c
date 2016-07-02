@@ -36,7 +36,7 @@ void terminaDeFormaAbortiva(int pid_local);
 
 
 void terminaDeFormaAbortiva(int pid_local){
-	printf("Perdida la conexion con cpu\n");
+	printf("Perdida la conexion con cpu abortiva\n");
 	int a = 100;
 	//pthread_exit(&a);
 }
@@ -50,7 +50,12 @@ void solicitar_Bytes(int socket){
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Obtener bytes iniciado");
 	void* obtenido = obtenerBytesMemoria(*pagina,*offset,*tamanio);
-	if(obtenido==NULL){
+	if(obtenido==1){
+		free(pagina);
+		free(offset);
+		free(tamanio);
+	}
+	else if(obtenido==NULL){
 		int segFault = 777;
 		enviarCPU(socket,sizeof(int),&segFault,-1);
 		//send(socket,&segFault,sizeof(int),0);
@@ -84,6 +89,9 @@ void almacenar_Byte(int socket){
 	cambiarProceso(*idProceso);
 	log_info(umcConfg.loguer, "Almacenar byte comenzado");
 	int conf = almacenarBytes(*pagina,*offset,*tamanio,aAlmacenar);
+	if(conf==1){
+		return;
+	}
 	if(conf==0){
 		int segFault = 777;
 		enviarCPU(socket,sizeof(int),&segFault,-1);
@@ -131,6 +139,7 @@ void* conexionCpu(int socketEscuchaCpu){
 		}
 		free(header);
 	}
+	return NULL;
 }
 
 void* recibirCpu(int socketCPU, int tamanio, int pid_local){

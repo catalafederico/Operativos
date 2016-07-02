@@ -145,6 +145,11 @@ int desalojarPrograma(int id){
 }
 
 void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
+
+	if(tabla_actual==NULL){
+		pthread_mutex_unlock(&semaforoMemoria);
+		return 1;
+	}
 	//Chekeo SEG FAULT
 	if(pagina>=dictionary_size(tabla_actual)){
 		pthread_mutex_unlock(&semaforoMemoria);
@@ -236,6 +241,11 @@ void* obtenerBytesMemoria(int pagina,int offset,int tamanio){
 }
 
 int almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
+	if(tabla_actual==NULL){
+		pthread_mutex_unlock(&semaforoMemoria);
+		return 1;
+	}
+
 	//Chekeo SEG FAULT
 	if(pagina>=dictionary_size(tabla_actual)){
 		pthread_mutex_unlock(&semaforoMemoria);
@@ -325,7 +335,7 @@ int almacenarBytes(int pagina, int offset, int tamanio, void* buffer) {
 	paginaBuscada->modif = 1;
 	//log_trace(log_memoria,"Lock off");
 	pthread_mutex_unlock(&semaforoMemoria);
-	return 1;
+	return 2;
 }
 
 void cambiarProceso(int idProceso){
